@@ -89,7 +89,7 @@ public class DaVigilanciaIntegrada {
 
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="COD_SILAIS_ATENCION", referencedColumnName = "ENTIDAD_ADTVA_ID")
+    @JoinColumn(name="COD_SILAIS_ATENCION", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_SILAIS_FK")
     public EntidadesAdtvas getCodSilaisAtencion() { return codSilaisAtencion;
     }
@@ -97,7 +97,7 @@ public class DaVigilanciaIntegrada {
     public void setCodSilaisAtencion(EntidadesAdtvas codSilaisAtencion) { this.codSilaisAtencion = codSilaisAtencion;}
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="COD_UNIDAD_ATENCION", referencedColumnName = "UNIDAD_ID")
+    @JoinColumn(name="COD_UNIDAD_ATENCION", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_UNIDAD_FK")
     public Unidades getCodUnidadAtencion() { return codUnidadAtencion;
     }
