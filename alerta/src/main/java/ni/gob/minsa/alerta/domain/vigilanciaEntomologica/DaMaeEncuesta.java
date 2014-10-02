@@ -126,7 +126,7 @@ public class DaMaeEncuesta {
     }
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="COD_SILAIS", referencedColumnName = "ENTIDAD_ADTVA_ID")
+    @JoinColumn(name="COD_SILAIS", referencedColumnName = "CODIGO")
     @ForeignKey(name = "MAENCUESTA_ENTIDAD_FK")
     public EntidadesAdtvas getEntidadesAdtva() {
         return entidadesAdtva;
@@ -148,7 +148,7 @@ public class DaMaeEncuesta {
     }
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="COD_UNIDAD_SALUD", referencedColumnName = "UNIDAD_ID")
+    @JoinColumn(name="COD_UNIDAD_SALUD", referencedColumnName = "CODIGO")
     @ForeignKey(name = "MAENCUESTA_UNIDADES_FK")
     public Unidades getUnidadSalud() {
         return unidadSalud;
@@ -192,7 +192,7 @@ public class DaMaeEncuesta {
     }
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="COD_DEPARTAMENTO", referencedColumnName = "DIVISIONPOLITICA_ID")
+    @JoinColumn(name="COD_DEPARTAMENTO", referencedColumnName = "CODIGO_NACIONAL")
     @ForeignKey(name = "MAENCUESTA_DEPARTAMENTO_FK")
     public Divisionpolitica getDepartamento() {
         return departamento;
@@ -203,7 +203,7 @@ public class DaMaeEncuesta {
     }
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="COD_MUNICIPIO", referencedColumnName = "DIVISIONPOLITICA_ID")
+    @JoinColumn(name="COD_MUNICIPIO", referencedColumnName = "CODIGO_NACIONAL")
     @ForeignKey(name = "MAENCUESTA_MUNICIPIO_FK")
     public Divisionpolitica getMunicipio() {
         return municipio;
