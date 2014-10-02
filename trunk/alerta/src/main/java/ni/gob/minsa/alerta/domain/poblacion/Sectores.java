@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "sectores", catalog = "hsf")
+@Table(name = "sectores", schema = "alerta")
 public class Sectores {
 
 	private Integer sectorId;

@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "comunidades", catalog = "hsf")
+@Table(name = "comunidades", schema = "alerta")
 public class Comunidades implements Serializable{
 
 	/**
