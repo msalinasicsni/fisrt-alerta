@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.domain.vigilanciaEntomologica;
 
+import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.mapping.PrimaryKey;
@@ -11,7 +12,7 @@ import java.sql.Timestamp;
  * Created by MSalinas
  */
 @Entity
-@Table(name = "DA_DETALLE_ENCUESTA_LARVARIA", schema = "ALERTA2")
+@Table(name = "DA_DETALLE_ENCUESTA_LARVARIA", schema = "ALERTA")
 public class DaDetalleEncuestaLarvaria {
     private String detaEncuestaId;
     private String codLocalidad;
@@ -38,8 +39,8 @@ public class DaDetalleEncuestaLarvaria {
     private Integer especieCulexFatigans;
     private Integer especieCulexAlbim;
     private Timestamp feRegistro;
-    private int usuarioRegistroId;
     private DaMaeEncuesta maeEncuesta;
+    private Usuarios usuarioRegistro;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -293,15 +294,6 @@ public class DaDetalleEncuestaLarvaria {
         this.feRegistro = feRegistro;
     }
 
-    @Basic
-    @Column(name = "USUARIO_REGISTRO_ID", nullable = false, insertable = true, updatable = false, precision = 0)
-    public int getUsuarioRegistroId() {
-        return usuarioRegistroId;
-    }
-    public void setUsuarioRegistroId(int usuarioRegistroId) {
-        this.usuarioRegistroId = usuarioRegistroId;
-    }
-
     @ManyToOne(optional=false)
     @JoinColumn(name="ENCUESTA_ID", referencedColumnName = "ENCUESTA_ID")
     @ForeignKey(name = "MAENCUESTA_ENCUESTALARVARIA_FK")
@@ -311,6 +303,17 @@ public class DaDetalleEncuestaLarvaria {
 
     public void setMaeEncuesta(DaMaeEncuesta maeEncuesta) {
         this.maeEncuesta = maeEncuesta;
+    }
+
+    @ManyToOne(optional=false)
+    @JoinColumn(name="USUARIO_REGISTRO_ID", referencedColumnName = "USUARIO_ID")
+    @ForeignKey(name = "ENCUESTALARVARIA_USUARIO_FK")
+    public Usuarios getUsuarioRegistro() {
+        return usuarioRegistro;
+    }
+
+    public void setUsuarioRegistro(Usuarios usuarioRegistro) {
+        this.usuarioRegistro = usuarioRegistro;
     }
 
     @Override

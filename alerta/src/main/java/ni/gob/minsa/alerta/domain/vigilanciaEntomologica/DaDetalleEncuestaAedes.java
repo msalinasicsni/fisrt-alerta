@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.domain.vigilanciaEntomologica;
 
+import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -11,7 +12,7 @@ import java.util.Date;
  * Created by MSalinas
  */
 @Entity
-@Table(name = "DA_DETALLE_ENCUESTA_AEDES", schema = "ALERTA2")
+@Table(name = "DA_DETALLE_ENCUESTA_AEDES", schema = "ALERTA")
 public class DaDetalleEncuestaAedes {
     private String detaEncuestaId;
     private String codLocalidad;
@@ -29,8 +30,8 @@ public class DaDetalleEncuestaAedes {
     private Date feRepot;
     private Date feVEnt;
     private Timestamp feRegistro;
-    private int usuarioRegistroId;
     private DaMaeEncuesta maeEncuesta;
+    private Usuarios usuarioRegistro;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -194,65 +195,17 @@ public class DaDetalleEncuestaAedes {
         this.feRegistro = feRegistro;
     }
 
-    @Basic
-    @Column(name = "USUARIO_REGISTRO_ID", nullable = false, insertable = true, updatable = false, precision = 0)
-    public int getUsuarioRegistroId() {
-        return usuarioRegistroId;
-    }
-    public void setUsuarioRegistroId(int usuarioRegistroId) {
-        this.usuarioRegistroId = usuarioRegistroId;
+    @ManyToOne(optional=false)
+    @JoinColumn(name="USUARIO_REGISTRO_ID", referencedColumnName = "USUARIO_ID")
+    @ForeignKey(name = "ENCUESTAAEDES_USUARIO_FK")
+    public Usuarios getUsuarioRegistro() {
+        return usuarioRegistro;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DaDetalleEncuestaAedes that = (DaDetalleEncuestaAedes) o;
-
-        if (depositoInspeccionado != that.depositoInspeccionado) return false;
-        if (depositoPositivo != that.depositoPositivo) return false;
-        if (detaEncuestaId != that.detaEncuestaId) return false;
-        //if (encuestaId != that.encuestaId) return false;
-        if (manzanaInspeccionada != that.manzanaInspeccionada) return false;
-        if (manzanaPositiva != that.manzanaPositiva) return false;
-        if (pupaPositiva != that.pupaPositiva) return false;
-        if (viviendaInspeccionada != that.viviendaInspeccionada) return false;
-        if (viviendaPositiva != that.viviendaPositiva) return false;
-        if (codLocalidad != null ? !codLocalidad.equals(that.codLocalidad) : that.codLocalidad != null) return false;
-        if (feAbatizado != null ? !feAbatizado.equals(that.feAbatizado) : that.feAbatizado != null) return false;
-        if (feRepot != null ? !feRepot.equals(that.feRepot) : that.feRepot != null) return false;
-        if (feVEnt != null ? !feVEnt.equals(that.feVEnt) : that.feVEnt != null) return false;
-        if (noAbatizado != null ? !noAbatizado.equals(that.noAbatizado) : that.noAbatizado != null) return false;
-        if (noEliminado != null ? !noEliminado.equals(that.noEliminado) : that.noEliminado != null) return false;
-        if (noNeutralizado != null ? !noNeutralizado.equals(that.noNeutralizado) : that.noNeutralizado != null) return  false;
-        if (feRegistro != null ? !feRegistro.equals(that.feRegistro) : that.feRegistro != null)
-            return false;
-
-        return true;
+    public void setUsuarioRegistro(Usuarios usuarioRegistro) {
+        this.usuarioRegistro = usuarioRegistro;
     }
 
-    @Override
-    public int hashCode() {
-        int result = detaEncuestaId.hashCode();
-        //result = 31 * result + encuestaId.hashCode();
-        result = 31 * result + (codLocalidad != null ? codLocalidad.hashCode() : 0);
-        result = 31 * result + viviendaInspeccionada;
-        result = 31 * result + viviendaPositiva;
-        result = 31 * result + manzanaInspeccionada;
-        result = 31 * result + manzanaPositiva;
-        result = 31 * result + depositoInspeccionado;
-        result = 31 * result + depositoPositivo;
-        result = 31 * result + pupaPositiva;
-        result = 31 * result + (noAbatizado != null ? noAbatizado.hashCode() : 0);
-        result = 31 * result + (noEliminado != null ? noEliminado.hashCode() : 0);
-        result = 31 * result + (noNeutralizado != null ? noNeutralizado.hashCode() : 0);
-        result = 31 * result + (feAbatizado != null ? feAbatizado.hashCode() : 0);
-        result = 31 * result + (feRepot != null ? feRepot.hashCode() : 0);
-        result = 31 * result + (feVEnt != null ? feVEnt.hashCode() : 0);
-        result = 31 * result + (feRegistro != null ? feRegistro.hashCode() : 0);
-        return result;
-    }
 
     @ManyToOne(optional=false)
     @JoinColumn(name="ENCUESTA_ID", referencedColumnName = "ENCUESTA_ID")
@@ -275,7 +228,6 @@ public class DaDetalleEncuestaAedes {
         if (depositoInspeccionado != that.depositoInspeccionado) return false;
         if (depositoPositivo != that.depositoPositivo) return false;
         if (detaEncuestaId != that.detaEncuestaId) return false;
-        //if (encuestaId != that.encuestaId) return false;
         if (manzanaInspeccionada != that.manzanaInspeccionada) return false;
         if (manzanaPositiva != that.manzanaPositiva) return false;
         if (pupaPositiva != that.pupaPositiva) return false;
@@ -297,7 +249,6 @@ public class DaDetalleEncuestaAedes {
     @Override
     public int hashCode() {
         int result = detaEncuestaId.hashCode();
-        //esult = 31 * result + encuestaId.hashCode();
         result = 31 * result + (codLocalidad != null ? codLocalidad.hashCode() : 0);
         result = 31 * result + viviendaInspeccionada;
         result = 31 * result + viviendaPositiva;
@@ -312,7 +263,8 @@ public class DaDetalleEncuestaAedes {
         result = 31 * result + (feAbatizado != null ? feAbatizado.hashCode() : 0);
         result = 31 * result + (feRepot != null ? feRepot.hashCode() : 0);
         result = 31 * result + (feVEnt != null ? feVEnt.hashCode() : 0);
-        result = 31 * result + (feRegistro != null ? feRegistro.hashCode() : 0);
+        result =31 * result + (feRegistro != null ? feRegistro.hashCode() : 0);
         return result;
     }
+
 }

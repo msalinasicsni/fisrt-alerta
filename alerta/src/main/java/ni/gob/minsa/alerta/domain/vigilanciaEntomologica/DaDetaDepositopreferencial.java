@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.domain.vigilanciaEntomologica;
 
+import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -10,7 +11,7 @@ import java.sql.Timestamp;
  * Created by MSalinas
  */
 @Entity
-@Table(name = "DA_DETA_DEPOSITOPREFERENCIAL", schema = "ALERTA2")
+@Table(name = "DA_DETA_DEPOSITOPREFERENCIAL", schema = "ALERTA")
 public class DaDetaDepositopreferencial {
     private String detaEncuestaId;
     private String codLocalidad;
@@ -33,8 +34,8 @@ public class DaDetaDepositopreferencial {
     private String decripOtroDeposito;
     private String decripcionCister;
     private Timestamp feRegistro;
-    private int usuarioRegistroId;
     private DaMaeEncuesta maeEncuesta;
+    private Usuarios usuarioRegistro;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -248,15 +249,6 @@ public class DaDetaDepositopreferencial {
         this.feRegistro = feRegistro;
     }
 
-    @Basic
-    @Column(name = "USUARIO_REGISTRO_ID", nullable = false, insertable = true, updatable = false, precision = 0)
-    public int getUsuarioRegistroId() {
-        return usuarioRegistroId;
-    }
-    public void setUsuarioRegistroId(int usuarioRegistroId) {
-        this.usuarioRegistroId = usuarioRegistroId;
-    }
-
     @ManyToOne(optional=false)
     @JoinColumn(name="ENCUESTA_ID", referencedColumnName = "ENCUESTA_ID")
     @ForeignKey(name = "MAENCU_ENCUDEPOSITO_FK")
@@ -268,6 +260,17 @@ public class DaDetaDepositopreferencial {
         this.maeEncuesta = maeEncuesta;
     }
 
+    @ManyToOne(optional=false)
+    @JoinColumn(name="USUARIO_REGISTRO_ID", referencedColumnName = "USUARIO_ID")
+    @ForeignKey(name = "ENCUDEPOSITO_USUARIO_FK")
+    public Usuarios getUsuarioRegistro() {
+        return usuarioRegistro;
+    }
+
+    public void setUsuarioRegistro(Usuarios usuarioRegistro) {
+        this.usuarioRegistro = usuarioRegistro;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -276,7 +279,6 @@ public class DaDetaDepositopreferencial {
         DaDetaDepositopreferencial that = (DaDetaDepositopreferencial) o;
 
         if (detaEncuestaId != that.detaEncuestaId) return false;
-        //if (encuestaId != that.encuestaId) return false;
         if (arbolInfestado != null ? !arbolInfestado.equals(that.arbolInfestado) : that.arbolInfestado != null)
             return false;
         if (artEspecialInfes != null ? !artEspecialInfes.equals(that.artEspecialInfes) : that.artEspecialInfes != null)
@@ -318,7 +320,6 @@ public class DaDetaDepositopreferencial {
     @Override
     public int hashCode() {
         int result = detaEncuestaId.hashCode();
-        //result = 31 * result + encuestaId.hashCode();
         result = 31 * result + (codLocalidad != null ? codLocalidad.hashCode() : 0);
         result = 31 * result + (pilaInfestado != null ? pilaInfestado.hashCode() : 0);
         result = 31 * result + (llantaInfestado != null ? llantaInfestado.hashCode() : 0);

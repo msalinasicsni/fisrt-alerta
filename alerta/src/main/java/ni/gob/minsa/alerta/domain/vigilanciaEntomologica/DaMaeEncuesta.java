@@ -17,17 +17,13 @@ import java.util.Date;
  * Created by MSalinas
  */
 @Entity
-@Table(name = "DA_MAE_ENCUESTA", schema = "ALERTA2")
+@Table(name = "DA_MAE_ENCUESTA", schema = "ALERTA")
 public class DaMaeEncuesta {
     private String encuestaId;
-    //private int codSilais;
-    //private String codDepartamento;
-    //private String codMunicipio;
     private Divisionpolitica departamento;
     private Divisionpolitica municipio;
     private String codDistrito;
     private String codArea;
-    //private int codUnidadSalud;
     private Unidades unidadSalud;
     private Catalogo procedencia;
     private Date feInicioEncuesta;
@@ -37,7 +33,6 @@ public class DaMaeEncuesta {
     private int semanaEpi;
     private int mesEpi;
     private int anioEpi;
-    //private int usuarioRegistroId;
     private Timestamp fechaRegistro;
     private EntidadesAdtvas entidadesAdtva;
     private Usuarios usuario;
@@ -226,17 +221,9 @@ public class DaMaeEncuesta {
         DaMaeEncuesta that = (DaMaeEncuesta) o;
 
         if (anioEpi != that.anioEpi) return false;
-        //if (codSilais != that.codSilais) return false;
-        //if (codUnidadSalud != that.codUnidadSalud) return false;
         if (encuestaId != that.encuestaId) return false;
-        //if (usuarioRegistroId != that.usuarioRegistroId) return false;
         if (codArea != null ? !codArea.equals(that.codArea) : that.codArea != null) return false;
-        //if (codDepartamento != null ? !codDepartamento.equals(that.codDepartamento) : that.codDepartamento != null)   return false;
         if (codDistrito != null ? !codDistrito.equals(that.codDistrito) : that.codDistrito != null) return false;
-        //if (codModeloEncu != null ? !codModeloEncu.equals(that.codModeloEncu) : that.codModeloEncu != null)            return false;
-        //if (codMunicipio != null ? !codMunicipio.equals(that.codMunicipio) : that.codMunicipio != null) return false;
-        //if (codOrdinalEncu != null ? !codOrdinalEncu.equals(that.codOrdinalEncu) : that.codOrdinalEncu != null)            return false;
-        //if (codProcedencia != null ? !codProcedencia.equals(that.codProcedencia) : that.codProcedencia != null)            return false;
         if (feFinEncuesta != null ? !feFinEncuesta.equals(that.feFinEncuesta) : that.feFinEncuesta != null)
             return false;
         if (feInicioEncuesta != null ? !feInicioEncuesta.equals(that.feInicioEncuesta) : that.feInicioEncuesta != null)
@@ -252,21 +239,13 @@ public class DaMaeEncuesta {
     @Override
     public int hashCode() {
         int result = encuestaId.hashCode();
-        //result = 31 * result + codSilais;
-        //result = 31 * result + (codDepartamento != null ? codDepartamento.hashCode() : 0);
-        //result = 31 * result + (codMunicipio != null ? codMunicipio.hashCode() : 0);
         result = 31 * result + (codDistrito != null ? codDistrito.hashCode() : 0);
         result = 31 * result + (codArea != null ? codArea.hashCode() : 0);
-        //result = 31 * result + codUnidadSalud;
-        //result = 31 * result + (codProcedencia != null ? codProcedencia.hashCode() : 0);
         result = 31 * result + (feInicioEncuesta != null ? feInicioEncuesta.hashCode() : 0);
         result = 31 * result + (feFinEncuesta != null ? feFinEncuesta.hashCode() : 0);
-        //result = 31 * result + (codOrdinalEncu != null ? codOrdinalEncu.hashCode() : 0);
-        //result = 31 * result + (codModeloEncu != null ? codModeloEncu.hashCode() : 0);
         result = 31 * result + semanaEpi;
         result = 31 * result + mesEpi;
         result = 31 * result + anioEpi;
-        //result = 31 * result + usuarioRegistroId;
         result = 31 * result + (fechaRegistro != null ? fechaRegistro.hashCode() : 0);
         return result;
     }
