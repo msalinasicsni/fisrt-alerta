@@ -63,7 +63,12 @@ public class SisPersona  implements java.io.Serializable {
     private boolean confirmado;
     private Timestamp fechaRegistro;
     private String usuarioRegistro;
-    private long fallecida;    
+    private long fallecida;
+    private char pasivo;
+    private String idRegistroCentral;
+    private String email;
+    private String fax;
+    
   
    
     public SisPersona() {
@@ -143,7 +148,7 @@ public class SisPersona  implements java.io.Serializable {
     }
    
     @Id 
-    @Column(name="PERSONA_ID", unique=true, nullable=false, precision=10, scale=0)
+    @Column(name="PERSONA_ID", nullable=false, precision=10, scale=0)
     public long getPersonaId() {
         return this.personaId;
     }
@@ -406,6 +411,8 @@ public class SisPersona  implements java.io.Serializable {
     public void setTipoAsegurado(TipoAsegurado tipoasegurado) {
         this.tipoAsegurado = tipoasegurado;
     }
+    
+    
 
    /* @OneToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch=FetchType.LAZY,mappedBy = "personaFallecido")
     public Defuncion getDefuncion() {
@@ -414,9 +421,49 @@ public class SisPersona  implements java.io.Serializable {
 
     public void setDefuncion(Defuncion defuncion) {
         this.defuncion = defuncion;
-    }*/
- 
-    @Transient
+    }*/    
+    @Column(name="ID_REGISTRO_CENTRAL", nullable = true, length=100)
+    public String getIdRegistroCentral() {
+		return idRegistroCentral;
+	}
+
+
+	public void setIdRegistroCentral(String idRegistroCentral) {
+		this.idRegistroCentral = idRegistroCentral;
+	}
+
+	@Column(name="EMAIL", nullable = true, length=100)
+	public String getEmail() {
+		return email;
+	}
+
+	@Column(name="FAX", nullable = true, length=100)
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+
+	public String getFax() {
+		return fax;
+	}
+
+
+	public void setFax(String fax) {
+		this.fax = fax;
+	}
+
+	@Column(name = "PASIVO", nullable = false, length = 1)
+	public char getPasivo() {
+		return pasivo;
+	}
+
+
+	public void setPasivo(char pasivo) {
+		this.pasivo = pasivo;
+	}
+
+
+	@Transient
     public boolean isSexoFemenino() {
         boolean resultado = false;
                 

@@ -39,7 +39,7 @@ public class RelacionGrupoOcupacion  implements java.io.Serializable {
     }
    
     @Id 
-    @Column(name="GRUPOOCUPACION_ID", unique=true, nullable=false, precision=10, scale=0)
+    @Column(name="GRUPOOCUPACION_ID", nullable=false, precision=10, scale=0)
     public long getGrupoocupacionId() {
         return this.grupoocupacionId;
     }

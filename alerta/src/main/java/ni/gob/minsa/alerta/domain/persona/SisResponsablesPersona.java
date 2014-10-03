@@ -89,7 +89,7 @@ public class SisResponsablesPersona implements java.io.Serializable {
     }
 
     @Id
-    @Column(name="RESPONSABLEPERSONA_ID", unique=true, nullable=false, precision=10, scale=0)
+    @Column(name="RESPONSABLEPERSONA_ID", nullable=false, precision=10, scale=0)
     public long getResponsablePersonaId() {
         return responsablePersonaId;
     }
