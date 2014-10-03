@@ -3,16 +3,15 @@ package ni.gob.minsa.alerta.service;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * Servicio para el objeto Entidades Administrativas
+ * Servicio para el objeto Entidad Administrativa
  *
  * @author Miguel Salinas
  */
@@ -20,8 +19,7 @@ import java.util.List;
 @Transactional
 public class EntidadAdmonService {
 
-    @Autowired()
-    @Qualifier("sessionFactory")
+    @Resource(name = "sessionFactory")
     SessionFactory sessionFactory;
 
     public SessionFactory getSessionFactory(){
@@ -34,27 +32,13 @@ public class EntidadAdmonService {
         }
     }
 
-    public List<EntidadesAdtvas> getAllEntidadesAdtvas() throws Exception {
-        List<EntidadesAdtvas> result = null;
-        Session session=null;
-        try{
-            String query = "select a from EntidadesAdtvas as a order by nombre asc";
 
-            session = sessionFactory.openSession();
-            Query q = session.createQuery(query);
-            result = (List<EntidadesAdtvas>)q.list();
-        }
-         catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
-        }finally {
-            if(session !=null && session.isOpen())
-            {
-                session.close();
-                session=null;
-            }
-        }
-        return result;
+    public List<EntidadesAdtvas> getAllEntidadesAdtvas() throws Exception {
+        String query = "from EntidadesAdtvas as a order by nombre asc";
+
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        return q.list();
     }
 
     /**
@@ -63,55 +47,25 @@ public class EntidadAdmonService {
      * @throws Exception
      */
     public EntidadesAdtvas getSilaisFromMunicipio(String idMunicipio) throws Exception {
-        EntidadesAdtvas aux;
-        Session session=null;
-        try{
-            String query = "select a from EntidadesAdtvas as a where municipio=:idMunicipio order by nombre asc";
+        String query = "from EntidadesAdtvas as a where municipio=:idMunicipio order by nombre asc";
 
-            session = sessionFactory.openSession();
-            Query q = session.createQuery(query);
-            q.setString("idMunicipio",idMunicipio);
-            aux = (EntidadesAdtvas)q.uniqueResult();
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
-        }finally {
-            if(session !=null && session.isOpen())
-            {
-                session.close();
-                session=null;
-            }
-        }
-        return aux;
-    }
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("idMunicipio",idMunicipio);
+        return  (EntidadesAdtvas)q.uniqueResult();
+     }
 
     /**
      * @param codigo Id para obtener un objeto en especifico del tipo <code>EntidadesAdtvas</code>
      * @return retorna un objeto filtrado del tipo <code>EntidadesAdtvas</code>
      * @throws Exception
      */
-    public EntidadesAdtvas getSilaisById(Integer codigo) throws Exception {
-        EntidadesAdtvas result;
-        Session session=null;
-        try{
-            String query = "select a from EntidadesAdtvas as a where codigo= :codigo order by nombre asc";
+    public EntidadesAdtvas getSilaisByCodigo(Integer codigo) throws Exception {
+        String query = "from EntidadesAdtvas as a where codigo= :codigo order by nombre asc";
 
-            session = sessionFactory.openSession();
-            Query q = session.createQuery(query);
-            q.setInteger("codigo",codigo);
-            result = (EntidadesAdtvas)q.uniqueResult();
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
-        }finally {
-            if(session !=null && session.isOpen())
-            {
-                session.close();
-                session=null;
-            }
-        }
-        return result;
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setInteger("codigo",codigo);
+        return  (EntidadesAdtvas)q.uniqueResult();
     }
 }

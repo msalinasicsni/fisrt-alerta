@@ -3,12 +3,11 @@ package ni.gob.minsa.alerta.service;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -21,8 +20,7 @@ import java.util.List;
 @Transactional
 public class DivisionPoliticaService {
 
-    @Autowired(required = true)
-    @Qualifier(value = "sessionFactory")
+    @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
 
     public SessionFactory getSessionFactory(){
@@ -41,94 +39,37 @@ public class DivisionPoliticaService {
      * @throws Exception
      */
     public List<Divisionpolitica> getAllDepartamentos() throws Exception {
-        List<Divisionpolitica> aux;
-        Session session=null;
-        try{
-            String query = "select a from Divisionpolitica as a where dependencia is null order by nombre asc";
+        String query = "from Divisionpolitica where dependencia is null order by nombre asc";
 
-            session = sessionFactory.openSession();
-            Query q = session.createQuery(query);
-            aux = q.list();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
-        } finally {
-            if(session !=null && session.isOpen())
-            {
-                session.close();
-                session=null;
-            }
-        }
-        return
-                aux;
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        return  q.list();
     }
 
     public List<Divisionpolitica> getAllMunicipios() throws Exception {
-        List<Divisionpolitica> aux;
-        Session session=null;
-        try{
-            String query = "select a from Divisionpolitica as a where dependencia is not null order by nombre asc";
+        String query = "from Divisionpolitica where dependencia is not null order by nombre asc";
 
-            session = sessionFactory.openSession();
-            Query q = session.createQuery(query);
-            session.close();
-            aux = q.list();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
-        } finally {
-            if(session !=null && session.isOpen())
-            {
-                session.close();
-                session=null;
-            }
-        }
-        return
-                aux;
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        session.close();
+        return q.list();
     }
 
     public List<Divisionpolitica> getMunicipiosFromDepartamento(String idDepartamento) throws Exception {
-        List<Divisionpolitica> aux;
-        Session session=null;
-        try{
-            String query = "select a from Divisionpolitica as a where dependencia is not null and dependencia=:idDepartamento order by nombre asc";
+        String query = "from Divisionpolitica where dependencia is not null and dependencia=:idDepartamento order by nombre asc";
 
-            session = sessionFactory.openSession();
-            Query q = session.createQuery(query);
-            q.setString("idDepartamento", idDepartamento);
-            aux = q.list();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
-        } finally {
-            if(session !=null && session.isOpen())
-            {
-                session.close();
-                session=null;
-            }
-        }
-        return aux;
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("idDepartamento", idDepartamento);
+        return q.list();
     }
 
     public Divisionpolitica getDivisionPolitiacaByCodNacional(String codNac){
-        Divisionpolitica dp = null;
-        Session session=null;
-        try{
-            String query = "select a from Divisionpolitica as a where codigoNacional =:codigoNacional";
+        String query = "from Divisionpolitica where codigoNacional =:codigoNacional";
 
-            session = sessionFactory.openSession();
-            Query q = session.createQuery(query);
-            q.setString("codigoNacional", codNac);
-        }catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
-        }finally {
-            if(session !=null && session.isOpen())
-            {
-                session.close();
-                session=null;
-            }
-        }
-        return   dp;
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("codigoNacional", codNac);
+        return (Divisionpolitica)q.uniqueResult();
     }
 }
