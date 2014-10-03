@@ -56,7 +56,8 @@ public class DivisionPoliticaService {
     }
 
     public List<Divisionpolitica> getMunicipiosFromDepartamento(String idDepartamento) throws Exception {
-        String query = "from Divisionpolitica where dependencia is not null and dependencia=:idDepartamento order by nombre asc";
+        String query = "select a from Divisionpolitica as a, Divisionpolitica as b " +
+                "where a.dependencia is not null and a.dependencia=b.divisionpoliticaId and b.codigoNacional =:idDepartamento order by a.nombre asc";
 
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
