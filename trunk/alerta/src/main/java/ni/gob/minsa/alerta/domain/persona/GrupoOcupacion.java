@@ -72,7 +72,7 @@ public class GrupoOcupacion  implements java.io.Serializable {
     }
    
     @Id 
-    @Column(name="GRUPO_OCUPACION_ID", unique=true, nullable=false, precision=10, scale=0)
+    @Column(name="GRUPO_OCUPACION_ID", nullable=false, precision=10, scale=0)
     public long getGrupoOcupacionId() {
         return this.grupoOcupacionId;
     }
@@ -90,7 +90,7 @@ public class GrupoOcupacion  implements java.io.Serializable {
         this.tituloSp = tituloSp;
     }
     
-    @Column(name="CODIGO_CIUO", unique=true, nullable=false, length=40)
+    @Column(name="CODIGO_CIUO", nullable=false, length=40)
     public String getCodigoCiuo() {
         return this.codigoCiuo;
     }

@@ -73,7 +73,7 @@ public class Ocupacion  implements java.io.Serializable {
     }
    
     @Id 
-    @Column(name="OCUPACION_ID", unique=true, nullable=false, precision=10, scale=0)
+    @Column(name="OCUPACION_ID", nullable=false, precision=10, scale=0)
     public long getOcupacionId() {
         return this.ocupacionId;
     }
@@ -91,7 +91,7 @@ public class Ocupacion  implements java.io.Serializable {
         this.nombre = nombre;
     }
     
-    @Column(name="CODIGO", unique=true, nullable=false, length=40)
+    @Column(name="CODIGO", nullable=false, length=40)
     public String getCodigo() {
         return this.codigo;
     }
