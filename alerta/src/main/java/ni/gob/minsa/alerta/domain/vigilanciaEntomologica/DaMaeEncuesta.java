@@ -49,7 +49,7 @@ public class DaMaeEncuesta {
     }
 
     @Basic
-    @Column(name = "COD_DISTRITO", nullable = false, insertable = true, updatable = true, length = 10)
+    @Column(name = "COD_DISTRITO", nullable = true, insertable = true, updatable = true, length = 10)
     public String getCodDistrito() {
         return codDistrito;
     }
@@ -58,7 +58,7 @@ public class DaMaeEncuesta {
     }
 
     @Basic
-    @Column(name = "COD_AREA", nullable = false, insertable = true, updatable = true, length = 10)
+    @Column(name = "COD_AREA", nullable = true, insertable = true, updatable = true, length = 10)
     public String getCodArea() {
         return codArea;
     }
