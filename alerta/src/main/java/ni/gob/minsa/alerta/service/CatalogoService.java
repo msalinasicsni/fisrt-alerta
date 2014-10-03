@@ -1,6 +1,5 @@
 package ni.gob.minsa.alerta.service;
 
-import ni.gob.minsa.alerta.domain.Catalogos;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -14,10 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.wagnerandade.coollection.Coollection.*;
-
 /**
- * Created by MSalinas on 09/06/14 09:18
+ * Created by MSalinas
  */
 
 @Service("catalogosService")
@@ -54,8 +51,10 @@ public class CatalogoService {
             Query q = session.createQuery(query);
             q.setString("discriminador", discriminador);
             result = q.list();
-        }
-        finally {
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        } finally {
             if(session !=null && session.isOpen())
             {
                 session.close();
@@ -76,8 +75,10 @@ public class CatalogoService {
             Query q = session.createQuery(query);
             q.setString("codigo", codigo);
             res = (Catalogo)q.uniqueResult();
-        }
-        finally {
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        } finally {
             if(session !=null && session.isOpen())
             {
                 session.close();
