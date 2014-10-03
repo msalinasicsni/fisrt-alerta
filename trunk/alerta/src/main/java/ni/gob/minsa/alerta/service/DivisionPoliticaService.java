@@ -49,8 +49,10 @@ public class DivisionPoliticaService {
             session = sessionFactory.openSession();
             Query q = session.createQuery(query);
             aux = q.list();
-        }
-        finally {
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        } finally {
             if(session !=null && session.isOpen())
             {
                 session.close();
@@ -65,14 +67,16 @@ public class DivisionPoliticaService {
         List<Divisionpolitica> aux;
         Session session=null;
         try{
-        String query = "select a from Divisionpolitica as a where dependencia is not null order by nombre asc";
+            String query = "select a from Divisionpolitica as a where dependencia is not null order by nombre asc";
 
-        session = sessionFactory.openSession();
-        Query q = session.createQuery(query);
-        session.close();
-        aux = q.list();
-        }
-        finally {
+            session = sessionFactory.openSession();
+            Query q = session.createQuery(query);
+            session.close();
+            aux = q.list();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        } finally {
             if(session !=null && session.isOpen())
             {
                 session.close();
@@ -87,14 +91,16 @@ public class DivisionPoliticaService {
         List<Divisionpolitica> aux;
         Session session=null;
         try{
-        String query = "select a from Divisionpolitica as a where dependencia is not null and dependencia=:idDepartamento order by nombre asc";
+            String query = "select a from Divisionpolitica as a where dependencia is not null and dependencia=:idDepartamento order by nombre asc";
 
-        session = sessionFactory.openSession();
-        Query q = session.createQuery(query);
-        q.setString("idDepartamento", idDepartamento);
-        aux = q.list();
-        }
-        finally {
+            session = sessionFactory.openSession();
+            Query q = session.createQuery(query);
+            q.setString("idDepartamento", idDepartamento);
+            aux = q.list();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        } finally {
             if(session !=null && session.isOpen())
             {
                 session.close();
@@ -108,13 +114,15 @@ public class DivisionPoliticaService {
         Divisionpolitica dp = null;
         Session session=null;
         try{
-        String query = "select a from Divisionpolitica as a where codigoNacional =:codigoNacional";
+            String query = "select a from Divisionpolitica as a where codigoNacional =:codigoNacional";
 
-        session = sessionFactory.openSession();
-        Query q = session.createQuery(query);
-        q.setString("codigoNacional", codNac);
-        }
-        finally {
+            session = sessionFactory.openSession();
+            Query q = session.createQuery(query);
+            q.setString("codigoNacional", codNac);
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }finally {
             if(session !=null && session.isOpen())
             {
                 session.close();
