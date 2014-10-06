@@ -17,7 +17,7 @@
 		<!-- RIBBON -->
 		<div id="ribbon">
 			<span class="ribbon-button-alignment"> 
-				<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-placement="bottom" data-original-title="<i class='text-warning fa fa-warning'></i> <spring:message code="msg.reset" />" data-html="true">
+				<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets(fff)" data-placement="bottom" data-original-title="<i class='text-warning fa fa-warning'></i> <spring:message code="msg.reset" />" data-html="true">
 					<i class="fa fa-refresh"></i>
 				</span> 
 			</span>
