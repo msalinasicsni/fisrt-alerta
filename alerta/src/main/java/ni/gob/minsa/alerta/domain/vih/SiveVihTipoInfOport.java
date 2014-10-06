@@ -16,7 +16,7 @@ public class SiveVihTipoInfOport {
     private String usuarioAlta;
     private Timestamp fechaBaja;
     private String usuarioBaja;
-    private String band;
+    private String band1;
 
     @Id
     @Column(name = "ID", nullable = false, insertable = true, updatable = true, precision = 0)
