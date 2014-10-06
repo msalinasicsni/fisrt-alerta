@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Table(name = "SIVE_VIH_TIPO_INF_OPORT", schema = "ALERTA", catalog = "")
 public class SiveVihTipoInfOport {
     private Integer id;
-    private String nombre;
+    private String nombre1;
     private String descripcion;
     private Timestamp fechaAlta;
     private String usuarioAlta;
@@ -29,12 +29,12 @@ public class SiveVihTipoInfOport {
 
     @Basic
     @Column(name = "NOMBRE", nullable = true, insertable = true, updatable = true, length = 100)
-    public String getNombre() {
-        return nombre;
+    public String getNombre1() {
+        return nombre1;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombre1(String nombre) {
+        this.nombre1 = nombre;
     }
 
     @Basic
@@ -98,7 +98,7 @@ public class SiveVihTipoInfOport {
         if (fechaAlta != null ? !fechaAlta.equals(that.fechaAlta) : that.fechaAlta != null) return false;
         if (fechaBaja != null ? !fechaBaja.equals(that.fechaBaja) : that.fechaBaja != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (nombre != null ? !nombre.equals(that.nombre) : that.nombre != null) return false;
+        if (nombre1 != null ? !nombre1.equals(that.nombre1) : that.nombre1 != null) return false;
         if (usuarioAlta != null ? !usuarioAlta.equals(that.usuarioAlta) : that.usuarioAlta != null) return false;
         if (usuarioBaja != null ? !usuarioBaja.equals(that.usuarioBaja) : that.usuarioBaja != null) return false;
 
@@ -108,7 +108,7 @@ public class SiveVihTipoInfOport {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (nombre != null ? nombre.hashCode() : 0);
+        result = 31 * result + (nombre1 != null ? nombre1.hashCode() : 0);
         result = 31 * result + (descripcion != null ? descripcion.hashCode() : 0);
         result = 31 * result + (fechaAlta != null ? fechaAlta.hashCode() : 0);
         result = 31 * result + (usuarioAlta != null ? usuarioAlta.hashCode() : 0);
