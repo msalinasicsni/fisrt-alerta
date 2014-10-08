@@ -55,13 +55,13 @@ public class DivisionPoliticaService {
         return q.list();
     }
 
-    public List<Divisionpolitica> getMunicipiosFromDepartamento(String idDepartamento) throws Exception {
+    public List<Divisionpolitica> getMunicipiosFromDepartamento(String codigoNacional) throws Exception {
         String query = "select a from Divisionpolitica as a, Divisionpolitica as b " +
-                "where a.dependencia is not null and a.dependencia=b.divisionpoliticaId and b.codigoNacional =:idDepartamento order by a.nombre asc";
+                "where a.dependencia is not null and a.dependencia=b.divisionpoliticaId and b.codigoNacional =:codigoNacional order by a.nombre asc";
 
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
-        q.setString("idDepartamento", idDepartamento);
+        q.setString("codigoNacional", codigoNacional);
         return q.list();
     }
 

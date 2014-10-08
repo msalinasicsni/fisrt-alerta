@@ -39,7 +39,7 @@ public class DaMaeEncuesta {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @Column(name = "ENCUESTA_ID", nullable = false, insertable = true, updatable = true, precision = 0)
     public String getEncuestaId() {
         return encuestaId;

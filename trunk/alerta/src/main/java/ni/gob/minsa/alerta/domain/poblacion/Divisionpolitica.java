@@ -2,6 +2,7 @@ package ni.gob.minsa.alerta.domain.poblacion;
 
 // Generated 12-06-2012 03:38:40 PM by Hibernate Tools 3.6.0
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "divisionpolitica", schema = "alerta")
-public class Divisionpolitica {
+public class Divisionpolitica implements Serializable {
 
 	private long divisionpoliticaId;
 	private String nombre;
