@@ -47,7 +47,7 @@ public class UnidadesService {
 
     public List<Unidades> getUnidadesFromEntidades(int idEntidad) throws Exception {
         Session session = sessionFactory.getCurrentSession();
-        String query = "from Unidades where entidadAdtva=:idEntidad order by nombre asc";
+        String query = "from Unidades where entidadAdtva =:idEntidad order by nombre asc";
         Query q = session.createQuery(query);
         q.setInteger("idEntidad",idEntidad);
         return q.list();

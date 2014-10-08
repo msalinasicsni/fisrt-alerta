@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
+import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -42,11 +43,11 @@ public class CatalogoService {
     }
 
     public List<Catalogo> ElementosCatalogos(String discriminador) throws Exception {
-        String query = "from Catalogo where pasivo = false and nodoPadre= :discriminador order by orden";
-
+        //String query = "from Catalogo where pasivo = false and nodoPadre.codigo= :discriminador order by orden";
+        String query = "from Catalogo";
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
-        q.setString("discriminador", discriminador);
+        //q.setString("discriminador", discriminador);
         return q.list();
     }
     
@@ -59,4 +60,96 @@ public class CatalogoService {
         return  (Catalogo)q.uniqueResult();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<ModeloEncuesta> getModeloEncuesta() {
+        // Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        // Create a Hibernate query (HQL)
+        Query query = session.createQuery("FROM ModeloEncuesta where pasivo = :pasivo order by orden");
+        query.setParameter("pasivo", false);
+        // Retrieve all
+        return  query.list();
+    }
+    @SuppressWarnings("unchecked")
+         public List<Ordinal> getOrdinalEncuesta() {
+        // Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        // Create a Hibernate query (HQL)
+        Query query = session.createQuery("FROM Ordinal where pasivo = :pasivo order by orden");
+        query.setParameter("pasivo", false);
+        // Retrieve all
+        return  query.list();
+    }
+    @SuppressWarnings("unchecked")
+    public List<Procedencia> getProcedencia() {
+        // Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        // Create a Hibernate query (HQL)
+        Query query = session.createQuery("FROM Procedencia where pasivo = :pasivo order by orden");
+        query.setParameter("pasivo", false);
+        // Retrieve all
+        return  query.list();
+    }
+    @SuppressWarnings("unchecked")
+    public List<Distritos> getDistritos() {
+        // Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        // Create a Hibernate query (HQL)
+        Query query = session.createQuery("FROM Distritos where pasivo = :pasivo order by orden");
+        query.setParameter("pasivo", false);
+        // Retrieve all
+        return  query.list();
+    }
+    @SuppressWarnings("unchecked")
+    public List<Areas> getAreas() {
+        // Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        // Create a Hibernate query (HQL)
+        Query query = session.createQuery("FROM Areas where pasivo = :pasivo order by orden");
+        query.setParameter("pasivo", false);
+        // Retrieve all
+        return  query.list();
+    }
+
+    public ModeloEncuesta getModeloEncuesta(String mencuesta) {
+        // Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        // Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerModelosEncuestaPorCodigo").setString("pCodigo", mencuesta);
+        // Retrieve all
+        return  (ModeloEncuesta) query.uniqueResult();
+    }
+
+    public Ordinal getOrdinalEncuesta(String oencuesta) {
+        // Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        // Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerOrdinalEncuestaPorCodigo").setString("pCodigo", oencuesta);
+        // Retrieve all
+        return  (Ordinal) query.uniqueResult();
+    }
+    public Procedencia getProcedencia(String procedencia) {
+        // Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        // Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerProcedenciaPorCodigo").setString("pCodigo", procedencia);
+        // Retrieve all
+        return  (Procedencia) query.uniqueResult();
+    }
+    public Distritos getDistritos(String distrito) {
+        // Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        // Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerOrdinalEncuestaPorCodigo").setString("pCodigo", distrito);
+        // Retrieve all
+        return  (Distritos) query.uniqueResult();
+    }
+    public Areas getAreas(String area) {
+        // Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        // Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerAreasPorCodigo").setString("pCodigo", area);
+        // Retrieve all
+        return  (Areas) query.uniqueResult();
+    }
 }

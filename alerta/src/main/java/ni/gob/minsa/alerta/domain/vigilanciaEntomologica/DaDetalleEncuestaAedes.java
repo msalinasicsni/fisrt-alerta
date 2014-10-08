@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.domain.vigilanciaEntomologica;
 
+import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
@@ -15,7 +16,7 @@ import java.util.Date;
 @Table(name = "DA_DETALLE_ENCUESTA_AEDES", schema = "ALERTA")
 public class DaDetalleEncuestaAedes {
     private String detaEncuestaId;
-    private String codLocalidad;
+    private Comunidades localidad;
     private int viviendaInspeccionada;
     private int viviendaPositiva;
     private int manzanaInspeccionada;
@@ -35,7 +36,7 @@ public class DaDetalleEncuestaAedes {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @Column(name = "DETA_ENCUESTA_ID", nullable = false, insertable = true, updatable = true, precision = 0)
     public String getDetaEncuestaId() {
         return detaEncuestaId;
@@ -43,16 +44,6 @@ public class DaDetalleEncuestaAedes {
 
     public void setDetaEncuestaId(String detaEncuestaId) {
         this.detaEncuestaId = detaEncuestaId;
-    }
-
-    @Basic
-    @Column(name = "COD_LOCALIDAD", nullable = false, insertable = true, updatable = true, length = 10)
-    public String getCodLocalidad() {
-        return codLocalidad;
-    }
-
-    public void setCodLocalidad(String codLocalidad) {
-        this.codLocalidad = codLocalidad;
     }
 
     @Basic
@@ -196,6 +187,17 @@ public class DaDetalleEncuestaAedes {
     }
 
     @ManyToOne(optional=false)
+    @JoinColumn(name="COD_LOCALIDAD", referencedColumnName = "CODIGO")
+    @ForeignKey(name = "ENCUESTAAEDES_COMUNIDAD_FK")
+    public Comunidades getLocalidad() {
+        return localidad;
+    }
+
+    public void setLocalidad(Comunidades localidad) {
+        this.localidad = localidad;
+    }
+
+    @ManyToOne(optional=false)
     @JoinColumn(name="USUARIO_REGISTRO_ID", referencedColumnName = "USUARIO_ID")
     @ForeignKey(name = "ENCUESTAAEDES_USUARIO_FK")
     public Usuarios getUsuarioRegistro() {
@@ -205,7 +207,6 @@ public class DaDetalleEncuestaAedes {
     public void setUsuarioRegistro(Usuarios usuarioRegistro) {
         this.usuarioRegistro = usuarioRegistro;
     }
-
 
     @ManyToOne(optional=false)
     @JoinColumn(name="ENCUESTA_ID", referencedColumnName = "ENCUESTA_ID")
@@ -233,7 +234,6 @@ public class DaDetalleEncuestaAedes {
         if (pupaPositiva != that.pupaPositiva) return false;
         if (viviendaInspeccionada != that.viviendaInspeccionada) return false;
         if (viviendaPositiva != that.viviendaPositiva) return false;
-        if (codLocalidad != null ? !codLocalidad.equals(that.codLocalidad) : that.codLocalidad != null) return false;
         if (feAbatizado != null ? !feAbatizado.equals(that.feAbatizado) : that.feAbatizado != null) return false;
         if (feRepot != null ? !feRepot.equals(that.feRepot) : that.feRepot != null) return false;
         if (feVEnt != null ? !feVEnt.equals(that.feVEnt) : that.feVEnt != null) return false;
@@ -249,7 +249,6 @@ public class DaDetalleEncuestaAedes {
     @Override
     public int hashCode() {
         int result = detaEncuestaId.hashCode();
-        result = 31 * result + (codLocalidad != null ? codLocalidad.hashCode() : 0);
         result = 31 * result + viviendaInspeccionada;
         result = 31 * result + viviendaPositiva;
         result = 31 * result + manzanaInspeccionada;

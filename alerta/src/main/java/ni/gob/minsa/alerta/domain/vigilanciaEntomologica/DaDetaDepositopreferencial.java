@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.domain.vigilanciaEntomologica;
 
+import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
@@ -14,7 +15,7 @@ import java.sql.Timestamp;
 @Table(name = "DA_DETA_DEPOSITOPREFERENCIAL", schema = "ALERTA")
 public class DaDetaDepositopreferencial {
     private String detaEncuestaId;
-    private String codLocalidad;
+    private Comunidades localidad;
     private Integer pilaInfestado;
     private Integer llantaInfestado;
     private Integer barrilInfestado;
@@ -39,7 +40,7 @@ public class DaDetaDepositopreferencial {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @Column(name = "DETA_ENCUESTA_ID", nullable = false, insertable = true, updatable = true, precision = 0)
     public String getDetaEncuestaId() {
         return detaEncuestaId;
@@ -47,16 +48,6 @@ public class DaDetaDepositopreferencial {
 
     public void setDetaEncuestaId(String detaEncuestaId) {
         this.detaEncuestaId = detaEncuestaId;
-    }
-
-    @Basic
-    @Column(name = "COD_LOCALIDAD", nullable = true, insertable = true, updatable = true, length = 10)
-    public String getCodLocalidad() {
-        return codLocalidad;
-    }
-
-    public void setCodLocalidad(String codLocalidad) {
-        this.codLocalidad = codLocalidad;
     }
 
     @Basic
@@ -271,6 +262,17 @@ public class DaDetaDepositopreferencial {
         this.usuarioRegistro = usuarioRegistro;
     }
 
+    @ManyToOne(optional=false)
+    @JoinColumn(name="COD_LOCALIDAD", referencedColumnName = "CODIGO")
+    @ForeignKey(name = "ENCUDEPOSITO_COMUNIDAD_FK")
+    public Comunidades getLocalidad() {
+        return localidad;
+    }
+
+    public void setLocalidad(Comunidades localidad) {
+        this.localidad = localidad;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -289,7 +291,6 @@ public class DaDetaDepositopreferencial {
             return false;
         if (cisterInfestado != null ? !cisterInfestado.equals(that.cisterInfestado) : that.cisterInfestado != null)
             return false;
-        if (codLocalidad != null ? !codLocalidad.equals(that.codLocalidad) : that.codLocalidad != null) return false;
         if (bebederoInfestado != null ? !bebederoInfestado.equals(that.bebederoInfestado) : that.bebederoInfestado != null)
             return false;
         if (decripOtroDeposito != null ? !decripOtroDeposito.equals(that.decripOtroDeposito) : that.decripOtroDeposito != null)
@@ -320,7 +321,6 @@ public class DaDetaDepositopreferencial {
     @Override
     public int hashCode() {
         int result = detaEncuestaId.hashCode();
-        result = 31 * result + (codLocalidad != null ? codLocalidad.hashCode() : 0);
         result = 31 * result + (pilaInfestado != null ? pilaInfestado.hashCode() : 0);
         result = 31 * result + (llantaInfestado != null ? llantaInfestado.hashCode() : 0);
         result = 31 * result + (barrilInfestado != null ? barrilInfestado.hashCode() : 0);
