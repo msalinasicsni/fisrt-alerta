@@ -5,6 +5,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 import javax.persistence.*;
 
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
@@ -29,7 +32,7 @@ import ni.gob.minsa.alerta.domain.poblacion.Paises;
 	)
 })
 
-@Entity
+@Entity  @Indexed
 @Table(name="SIS_PERSONAS",schema="alerta")
 public class SisPersona  implements java.io.Serializable {
 
@@ -166,7 +169,6 @@ public class SisPersona  implements java.io.Serializable {
         this.identificacionHse = identificacionHse;
     }
     
-    
     @Column(name="IDENTIFICACION", length=20)
     public String getIdentificacion() {
         return this.identificacion;
@@ -185,6 +187,7 @@ public class SisPersona  implements java.io.Serializable {
         this.fechaNacimiento = fechaNacimiento;
     }
     
+    @Field
     @Column(name="PRIMER_NOMBRE", nullable=false, length=50)
     public String getPrimerNombre() {
         return this.primerNombre;
@@ -194,6 +197,7 @@ public class SisPersona  implements java.io.Serializable {
         this.primerNombre = primerNombre;
     }
     
+    @Field
     @Column(name="PRIMER_APELLIDO", nullable=false, length=50)
     public String getPrimerApellido() {
         return this.primerApellido;
@@ -203,6 +207,7 @@ public class SisPersona  implements java.io.Serializable {
         this.primerApellido = primerApellido;
     }
     
+    @Field
     @Column(name="SEGUNDO_NOMBRE", length=50)
     public String getSegundoNombre() {
         return this.segundoNombre;
@@ -212,6 +217,7 @@ public class SisPersona  implements java.io.Serializable {
         this.segundoNombre = segundoNombre;
     }
     
+    @Field
     @Column(name="SEGUNDO_APELLIDO", length=50)
     public String getSegundoApellido() {
         return this.segundoApellido;

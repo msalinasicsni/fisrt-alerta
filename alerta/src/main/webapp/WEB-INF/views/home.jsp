@@ -23,7 +23,7 @@
 			</span>
 			<!-- breadcrumb -->
 			<ol class="breadcrumb">
-				<li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="#" htmlEscape="true "/>"><spring:message code="lbl.breadcrumb" /></a></li>
+				<li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a></li>
 			</ol>
 			<!-- end breadcrumb -->
 			<jsp:include page="fragments/layoutOptions.jsp" />
@@ -38,10 +38,7 @@
 					<h1 class="page-title txt-color-blueDark">
 						<!-- PAGE HEADER -->
 						<i class="fa-fw fa fa-home"></i> 
-							<spring:message code="lbl.pageheader" />
-						<span> <i class="fa fa-angle-right"></i>  
-							<spring:message code="lbl.pagesubtitle" />
-						</span>
+							<spring:message code="menu.home" />
 					</h1>
 				</div>
 				<!-- end col -->

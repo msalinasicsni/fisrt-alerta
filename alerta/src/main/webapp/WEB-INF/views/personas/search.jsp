@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <!-- BEGIN HEAD -->
 <head>
@@ -17,13 +18,13 @@
 		<!-- RIBBON -->
 		<div id="ribbon">
 			<span class="ribbon-button-alignment"> 
-				<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets()" data-placement="bottom" data-original-title="<i class='text-warning fa fa-warning'></i> <spring:message code="msg.reset" />" data-html="true">
+				<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-placement="bottom" data-original-title="<i class='text-warning fa fa-warning'></i> <spring:message code="msg.reset" />" data-html="true">
 					<i class="fa fa-refresh"></i>
 				</span> 
 			</span>
 			<!-- breadcrumb -->
 			<ol class="breadcrumb">
-				<li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="#" htmlEscape="true "/>"><spring:message code="lbl.breadcrumb" /></a></li>
+				<li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/personas/search" htmlEscape="true "/>"><spring:message code="menu.persons" /></a></li>
 			</ol>
 			<!-- end breadcrumb -->
 			<jsp:include page="../fragments/layoutOptions.jsp" />
@@ -84,7 +85,7 @@
 						<div class="jarviswidget" id="wid-id-0">
 							<header>
 								<span class="widget-icon"> <i class="fa fa-search"></i> </span>
-								<h2><spring:message code="lbl.widgettitle" /> </h2>				
+								<h2><spring:message code="lbl.parameters" /> </h2>				
 							</header>
 							<!-- widget div-->
 							<div>
@@ -95,8 +96,59 @@
 								</div>
 								<!-- end widget edit box -->
 								<!-- widget content -->
-								<div class="widget-body">
-									<!-- this is what the user will see -->
+								<div class="widget-body no-padding">
+									<form id="search-form" class="smart-form">
+										<fieldset>
+											<section>
+												<label class="input"> <i class="icon-append fa fa-check"></i>
+													<input type="text" id="filtro" name="filtro" placeholder="<spring:message code="person.search.parameters"/>">
+													<b class="tooltip tooltip-bottom-right"><spring:message code="person.search.parameters"/></b> </label>
+											</section>
+										</fieldset>
+										<footer>
+											<button type="submit" id="search-person" class="btn btn-info"><i class="fa fa-search"></i> <spring:message code="act.search" /></button>
+										</footer>
+									</form>						
+								</div>
+								<!-- end widget content -->
+							</div>
+							<!-- end widget div -->
+						</div>
+						<!-- end widget -->
+					</article>
+					<!-- WIDGET END -->
+					<!-- NEW WIDGET START -->
+					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<!-- Widget ID (each widget will need unique ID)-->
+						<div class="jarviswidget" id="wid-id-1">
+							<header>
+								<span class="widget-icon"> <i class="fa fa-reorder"></i> </span>
+								<h2><spring:message code="lbl.results" /> </h2>				
+							</header>
+							<!-- widget div-->
+							<div>
+								<!-- widget edit box -->
+								<div class="jarviswidget-editbox">
+									<!-- This area used as dropdown edit box -->
+									<input class="form-control" type="text">	
+								</div>
+								<!-- end widget edit box -->
+								<!-- widget content -->
+								<div class="widget-body no-padding">
+									<table id="persons_result" class="table table-striped table-bordered table-hover" data-width="100%">
+										<thead>			                
+											<tr>
+												<th data-class="expand"><i class="fa fa-fw fa-key text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.id"/></th>
+												<th data-class="expand"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name2"/></th>
+												<th data-class="expand"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.fecnac"/></th>
+												<th data-hide="phone,tablet"><i class="fa fa-fw fa-map-marker text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.mun.res"/></th>
+												<th></th>
+											</tr>
+										</thead>
+									</table>
 								</div>
 								<!-- end widget content -->
 							</div>
@@ -127,18 +179,38 @@
 	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 	<jsp:include page="../fragments/corePlugins.jsp" />
 	<!-- BEGIN PAGE LEVEL PLUGINS -->
+	<spring:url value="/resources/js/plugin/datatables/jquery.dataTables.min.js" var="dataTables" />
+	<script src="${dataTables}"></script>
+	<spring:url value="/resources/js/plugin/datatables/dataTables.colVis.min.js" var="dataTablesColVis" />
+	<script src="${dataTablesColVis}"></script>
+	<spring:url value="/resources/js/plugin/datatables/dataTables.tableTools.min.js" var="dataTablesTableTools" />
+	<script src="${dataTablesTableTools}"></script>
+	<spring:url value="/resources/js/plugin/datatables/dataTables.bootstrap.min.js" var="dataTablesBootstrap" />
+	<script src="${dataTablesBootstrap}"></script>
+	<spring:url value="/resources/js/plugin/datatable-responsive/datatables.responsive.min.js" var="dataTablesResponsive" />
+	<script src="${dataTablesResponsive}"></script>
+	<!-- JQUERY VALIDATE -->
+	<spring:url value="/resources/js/plugin/jquery-validate/jquery.validate.min.js" var="jqueryValidate" />
+	<script src="${jqueryValidate}"></script>
+	<spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
+	<spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>				
+	<script src="${jQValidationLoc}"/></script>
 	<!-- END PAGE LEVEL PLUGINS -->
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
+	<spring:url value="/resources/scripts/personas/person-search.js" var="personSearch" />
+	<script src="${personSearch}"></script>
 	<!-- END PAGE LEVEL SCRIPTS -->
-	<script>
-	    $(function () {
-	    	$("li.mantenimiento").addClass("active");
-	    	$("li.personas").addClass("active");
-	    });
-	</script>
+	<spring:url value="/personas/persons" var="sPersonUrl"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
+			var parametros = {sPersonUrl: "${sPersonUrl}"};
+			SearchPerson.init(parametros);
+	    	$("li.mantenimiento").addClass("open");
+	    	$("li.personas").addClass("active");
+	    	if("top"!=localStorage.getItem("sm-setmenu")){
+	    		$("li.personas").parents("ul").slideDown(200);
+	    	}
 		});
 	</script>
 	<!-- END JAVASCRIPTS -->
