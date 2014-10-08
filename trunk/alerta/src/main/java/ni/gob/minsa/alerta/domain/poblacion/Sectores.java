@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.domain.poblacion;
 
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -11,8 +12,12 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "sectores", schema = "alerta")
-public class Sectores {
+public class Sectores implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer sectorId;
 	private String nombre;
 	private String referencias;

@@ -2,6 +2,7 @@ package ni.gob.minsa.alerta.domain.poblacion;
 
 // Generated Mar 28, 2014 11:26:42 AM by Hibernate Tools 4.0.0
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -18,8 +19,12 @@ import javax.persistence.UniqueConstraint;
 		@UniqueConstraint(columnNames = "CODIGO_ALFADOS"),
 		@UniqueConstraint(columnNames = "CODIGO_NUMERICO"),
 		@UniqueConstraint(columnNames = "CODIGO_ALFATRES") })
-public class Paises {
+public class Paises implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private long paisId;
 	private String nombre;
 	private String codigoNumerico;

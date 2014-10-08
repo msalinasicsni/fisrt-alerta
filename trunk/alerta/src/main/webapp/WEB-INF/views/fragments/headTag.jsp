@@ -1,5 +1,5 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<meta charset="utf-8">
+<meta charset="ISO-8859-1">
 <title><spring:message code="title" /> | <spring:message code="heading" /></title>
 <meta name="description" content="">
 <meta name="author" content="">
