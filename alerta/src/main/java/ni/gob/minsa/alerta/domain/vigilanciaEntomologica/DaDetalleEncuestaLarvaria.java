@@ -4,7 +4,6 @@ import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.mapping.PrimaryKey;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

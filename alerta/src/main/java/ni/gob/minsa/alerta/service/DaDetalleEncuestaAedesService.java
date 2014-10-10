@@ -71,7 +71,7 @@ public class DaDetalleEncuestaAedesService {
      */
     public List<DaDetalleEncuestaAedes> getDetalleEncuestaByLocalidad(String idLocalidad, String idEncuestaMaestro) throws Exception {
         Session session = sessionFactory.getCurrentSession();
-        String query = "from DaDetalleEncuestaAedes as a join a.maeEncuesta b where a.codLocalidad = :idLocalidad and b.encuestaId = :idMaestro";
+        String query = "from DaDetalleEncuestaAedes as a join a.maeEncuesta b join a.localidad l where l.codigo = :idLocalidad and b.encuestaId = :idMaestro";
         Query q = session.createQuery(query);
         q.setString("idLocalidad",idLocalidad);
         q.setString("idMaestro",idEncuestaMaestro);

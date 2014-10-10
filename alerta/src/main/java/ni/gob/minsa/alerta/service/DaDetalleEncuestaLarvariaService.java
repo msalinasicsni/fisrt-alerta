@@ -35,7 +35,7 @@ public class DaDetalleEncuestaLarvariaService {
         try {
             if (dto != null) {
                 Session session = sessionFactory.getCurrentSession();
-                session.update(dto);
+                session.save(dto);
             }
             else
                 throw new Exception("");
@@ -55,7 +55,7 @@ public class DaDetalleEncuestaLarvariaService {
             if (dto != null) {
                 Session session = sessionFactory.getCurrentSession();
                 session.update(dto);
-            }
+            }else
                 throw new Exception("");
         }catch (Exception ex){
             throw ex;
@@ -71,7 +71,7 @@ public class DaDetalleEncuestaLarvariaService {
      */
     public List<DaDetalleEncuestaLarvaria> getDetalleEncuestaByLocalidad(String idLocalidad, String idEncuestaMaestro) throws Exception {
         Session session = sessionFactory.getCurrentSession();
-        String query = "from DaDetalleEncuestaLarvaria as a join a.maeEncuesta b where a.codLocalidad = :idLocalidad and b.encuestaId = :idMaestro";
+        String query = "from DaDetalleEncuestaLarvaria as a join a.maeEncuesta b join a.localidad l where l.codigo = :idLocalidad and b.encuestaId = :idMaestro";
         Query q = session.createQuery(query);
         q.setString("idLocalidad",idLocalidad);
         q.setString("idMaestro",idEncuestaMaestro);

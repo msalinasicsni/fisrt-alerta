@@ -25,11 +25,11 @@ public class DaMaeEncuesta {
     private String codDistrito;
     private String codArea;
     private Unidades unidadSalud;
-    private Catalogo procedencia;
+    private Procedencia procedencia;
     private Date feInicioEncuesta;
     private Date feFinEncuesta;
-    private Catalogo ordinalEncuesta;
-    private Catalogo modeloEncuesta;
+    private Ordinal ordinalEncuesta;
+    private ModeloEncuesta modeloEncuesta;
     private int semanaEpi;
     private int mesEpi;
     private int anioEpi;
@@ -158,36 +158,36 @@ public class DaMaeEncuesta {
         this.unidadSalud = unidadSalud;
     }
 
-    @ManyToOne(optional=false)
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
     @JoinColumn(name="COD_ORDINAL_ENCU", referencedColumnName = "CODIGO")
     @ForeignKey(name = "MAENCUESTA_ORDINALENCUESTA_FK")
-    public Catalogo getOrdinalEncuesta() {
+    public Ordinal getOrdinalEncuesta() {
         return ordinalEncuesta;
     }
 
-    public void setOrdinalEncuesta(Catalogo ordinalEncuesta) {
+    public void setOrdinalEncuesta(Ordinal ordinalEncuesta) {
         this.ordinalEncuesta = ordinalEncuesta;
     }
 
-    @ManyToOne(optional=false)
+    @ManyToOne(optional=false,fetch=FetchType.LAZY,targetEntity=Catalogo.class)
     @JoinColumn(name="COD_MODELO_ENCU", referencedColumnName = "CODIGO")
     @ForeignKey(name = "MAENCUESTA_MODELOENCUESTA_FK")
-    public Catalogo getModeloEncuesta() {
+    public ModeloEncuesta getModeloEncuesta() {
         return modeloEncuesta;
     }
 
-    public void setModeloEncuesta(Catalogo modeloEncuesta) {
+    public void setModeloEncuesta(ModeloEncuesta modeloEncuesta) {
         this.modeloEncuesta = modeloEncuesta;
     }
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="COD_PROCEDENCIA", referencedColumnName = "CODIGO")
+    @ManyToOne(optional=false,fetch=FetchType.LAZY,targetEntity=Catalogo.class)
+    @JoinColumn(name="COD_PROCEDENCIA", referencedColumnName = "CODIGO", nullable = true)
     @ForeignKey(name = "MAENCUESTA_PROCEDENCIA_FK")
-    public Catalogo getProcedencia() {
+    public Procedencia getProcedencia() {
         return procedencia;
     }
 
-    public void setProcedencia(Catalogo procedencia) {
+    public void setProcedencia(Procedencia procedencia) {
         this.procedencia = procedencia;
     }
 
