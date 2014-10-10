@@ -8,7 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -82,20 +86,24 @@ public class DaMaeEncuestaService {
     }
 
     public List<DaMaeEncuesta> searchMaestroEncuestaByDaMaeEncuesta(DaMaeEncuesta maeEncuesta) {
-        List<DaMaeEncuesta> aux = new ArrayList<DaMaeEncuesta>();
+        List<DaMaeEncuesta> result = new ArrayList<DaMaeEncuesta>();
+        boolean exist = false;
         try {
             //result = controllersBase.loadAll(DaMaeEncuesta.class);
             //silais, departamento, municipio, unidad salud, año, ordinal, procedencia, fecha inicio, fecha fin, modelo
-            String query = "from DaMaeEncuesta as ma inner join ma.entidadesAdtva as en " +
+            Timestamp tsFechaIni = new Timestamp(maeEncuesta.getFeInicioEncuesta().getTime());
+            Timestamp tsFechaFin = new Timestamp(maeEncuesta.getFeFinEncuesta().getTime());
+            String query = "select ma from DaMaeEncuesta as ma inner join ma.entidadesAdtva as en " +
                     "inner join ma.unidadSalud as un " +
                     "inner join ma.departamento as de " +
                     "inner join ma.municipio as mu " +
-                    "inner join ma.ordinalEncuesta as or " +
+                    "inner join ma.ordinalEncuesta as ordi " +
                     "inner join ma.procedencia as pr " +
                     "inner join ma.modeloEncuesta as mo " +
                     "where en.codigo =:codSilais and de.codigoNacional=:departamento and mu.codigoNacional=:municipio " +
-                    "and un.codigo=:unidadSalud and ma.anioEpi=:anioEpi and or.codigo=:ordinalEncu and pr.codigo=:procedencia " +
-                    "and mo.codigo=:modelo";//" and feFinEncuesta =: fecInicio and feFinEncuesta =: fecFin";
+                    "and un.codigo=:unidadSalud and ma.anioEpi=:anioEpi and ordi.codigo=:ordinalEncu and pr.codigo=:procedencia " +
+                    "and mo.codigo=:modelo and ma.feInicioEncuesta = :fecInicio and ma.feFinEncuesta =:fecFin";
+
             Session session = sessionFactory.getCurrentSession();
             Query q = session.createQuery(query);
             q.setLong("codSilais", maeEncuesta.getEntidadesAdtva().getCodigo());
@@ -106,21 +114,10 @@ public class DaMaeEncuestaService {
             q.setString("ordinalEncu", maeEncuesta.getOrdinalEncuesta().getCodigo());
             q.setString("procedencia", maeEncuesta.getProcedencia().getCodigo());
             q.setString("modelo", maeEncuesta.getModeloEncuesta().getCodigo());
-            //q.setDate("fecInicio", maeEncuesta.getFeInicioEncuesta());
-            //q.setDate("fecFin", maeEncuesta.getFeFinEncuesta());
+            q.setTimestamp("fecInicio", tsFechaIni);
+            q.setTimestamp("fecFin", tsFechaFin);
+            result = q.list();
 
-            aux = q.list();
-            /*aux = from(result).where("getCodSilais", eq(maeEncuesta.getCodSilais()))
-                                .and("getCodDepartamento", eq(maeEncuesta.getCodDepartamento()))
-                                .and("getCodMunicipio",eq(maeEncuesta.getCodMunicipio()))
-                                .and("getCodUnidadSalud",eq(maeEncuesta.getCodUnidadSalud()))
-                                .and("getAnioEpi",eq(maeEncuesta.getAnioEpi()))
-                                .and("getCodOrdinalEncu",eq(maeEncuesta.getCodOrdinalEncu()))
-                                .and("getCodProcedencia", eq(maeEncuesta.getCodProcedencia()))
-                                .and("getCodModeloEncu",eq(maeEncuesta.getCodModeloEncu()))
-                                .and("getFeInicioEncuesta",eq(maeEncuesta.getFeInicioEncuesta()))
-                                .and("getFeFinEncuesta",eq(maeEncuesta.getFeFinEncuesta())
-                                ).all();*/
         } catch (Exception ex) {
             try {
                 throw new Exception(ex);
@@ -128,7 +125,9 @@ public class DaMaeEncuestaService {
                 e.printStackTrace();
             }
         }
-        return aux;
+        //if (!exist)
+          //  result = new ArrayList<DaMaeEncuesta>();
+        return result;
     }
 
     public List<DaMaeEncuesta> searchMaestroEncuestaByFiltros(Integer codSilais, Integer codUnidadSalud, Integer anioEpi, Integer mesEpi, String codModeloEncu) {
@@ -174,5 +173,15 @@ public class DaMaeEncuestaService {
             }
         }
         return aux;
+    }
+
+    private Date StringToDate(String strFecha) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        return simpleDateFormat.parse(strFecha);
+    }
+
+    private String DatetToString(Date dtFecha) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        return simpleDateFormat.format(dtFecha);
     }
 }

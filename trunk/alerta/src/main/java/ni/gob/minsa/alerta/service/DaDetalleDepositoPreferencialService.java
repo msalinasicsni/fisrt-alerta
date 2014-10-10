@@ -35,7 +35,7 @@ public class DaDetalleDepositoPreferencialService {
         try {
             if (dto != null) {
                 Session session = sessionFactory.getCurrentSession();
-                session.update(dto);
+                session.save(dto);
             }
             else
                 throw new Exception("");
@@ -72,7 +72,7 @@ public class DaDetalleDepositoPreferencialService {
      */
     public List<DaDetaDepositopreferencial> getDetalleEncuestaByLocalidad(String idLocalidad, String idEncuestaMaestro) throws Exception {
         Session session = sessionFactory.getCurrentSession();
-        String query = "from DaDetaDepositopreferencial as a join a.maeEncuesta b where a.codLocalidad = :idLocalidad and b.encuestaId = :idMaestro";
+        String query = "from DaDetaDepositopreferencial as a join a.maeEncuesta b join a.localidad l where l.codigo = :idLocalidad and b.encuestaId = :idMaestro";
         Query q = session.createQuery(query);
         q.setString("idLocalidad",idLocalidad);
         q.setString("idMaestro",idEncuestaMaestro);
