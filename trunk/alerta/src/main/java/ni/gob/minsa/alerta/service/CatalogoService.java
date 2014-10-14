@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
+import ni.gob.minsa.alerta.domain.irag.*;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -111,6 +112,123 @@ public class CatalogoService {
         return  query.list();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<Captacion> getCaptacion(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Captacion capta where capta.pasivo = false order by orden");
+       //retrieve all
+        return query.list();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Clasificacion> getClasificacion(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Clasificacion clas where clas.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Respuesta> getRespuesta(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Respuesta res where res.pasivo = false  order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ViaAntibiotico> getViaAntibiotico(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM ViaAntibiotico via where via.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ResultadoRadiologia> getResultadoRadiologia(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM ResultadoRadiologia resRad where resRad.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<CondicionEgreso> getCondicionEgreso(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM CondicionEgreso cond where cond.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ClasificacionFinal> getClasificacionFinal(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM ClasificacionFinal clas where clas.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Vacuna> getVacuna(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Vacuna vac where vac.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<TipoVacuna> getTipoVacuna(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoVacuna tvac where tvac.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<CondicionPrevia> getCondicionPrevia(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM CondicionPrevia cond where cond.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ManifestacionClinica> getManifestacionClinica(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM ManifestacionClinica mani where mani.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+
+    }
+
+
     public ModeloEncuesta getModeloEncuesta(String mencuesta) {
         // Retrieve session from Hibernate
         Session session = sessionFactory.getCurrentSession();
@@ -152,4 +270,106 @@ public class CatalogoService {
         // Retrieve all
         return  (Areas) query.uniqueResult();
     }
+
+
+    public Captacion getCaptacion(String captacion){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("getCaptacionByCodigo").setString("pCodigo", captacion);
+        //Retrieve all
+        return (Captacion) query.uniqueResult();
+    }
+
+    public Clasificacion getClasificacion(String clasificacion){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("getClasificacionByCodigo").setString("pCodigo", clasificacion);
+        //Retrieve all
+        return (Clasificacion) query.uniqueResult();
+    }
+
+    public Respuesta getRespuesta(String respuesta){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("getRespuestaByCodigo").setString("pCodigo", respuesta);
+        //Retrieve all
+        return (Respuesta) query.uniqueResult();
+    }
+
+    public ViaAntibiotico getViaAntibiotico(String via){
+        //Retrieve session from hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("getViaAntibioticoByCodigo").setString("pCodigo", via);
+        //Retrieve all
+        return (ViaAntibiotico) query.uniqueResult();
+    }
+
+    public ResultadoRadiologia getResultadoRadiologia (String res){
+        //Retrieve session from hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getResRadiologiaByCodigo").setString("pCodigo", res);
+        //Retrieve all
+        return (ResultadoRadiologia) query.uniqueResult();
+    }
+
+    public CondicionEgreso getCondicionEgreso (String cond){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getCondicionEgresoByCodigo").setString("pCodigo", cond);
+        //Retrieve all
+        return (CondicionEgreso) query.uniqueResult();
+    }
+
+    public ClasificacionFinal getClasificacionFinal (String clas){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getClasificacionFinalByCodigo").setString("pCodigo", clas);
+        //Retrieve all
+        return (ClasificacionFinal) query.uniqueResult();
+    }
+
+    public Vacuna getVacuna (String vac){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getVacunaByCodigo").setString("pCodigo", vac);
+        //Retrieve all
+        return (Vacuna) query.uniqueResult();
+    }
+
+    public TipoVacuna getTipoVacuna (String tvac){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getTipoVacunaByCodigo").setString("pCodigo", tvac);
+        //Retrieve all
+        return (TipoVacuna) query.uniqueResult();
+    }
+
+    public CondicionPrevia getCondicionPrevia (String cond){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getCondicionPreviaByCodigo").setString("pCodigo", cond);
+        //Retrieve all
+        return (CondicionPrevia) query.uniqueResult();
+    }
+
+
+    public ManifestacionClinica getManifestacionClinica(String mani){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getManifestacionClinicaByCodigo").setString("pCodigo", mani);
+        //Retrieve all
+        return (ManifestacionClinica) query.uniqueResult();
+    }
+
 }
