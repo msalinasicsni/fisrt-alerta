@@ -1,24 +1,25 @@
-package ni.gob.minsa.alerta.domain.vigilanciaIntegrada;
+package ni.gob.minsa.alerta.domain.irag;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
  * Created by souyen-ics
  */
 @Entity
-@Table(name = "DA_MANCLI_VIGILANCIA", schema = "ALERTA")
-public class DaMClinVigilancia {
+@Table(name = "DA_MANIFESTACIONES_IRAG", schema = "ALERTA")
+public class DaManifestacionesIrag implements Serializable {
 
     private Integer idManifestacion;
-    private DaVigilanciaIntegrada idFichaVigilancia;
-    private Catalogo codManiClinica;
-    private Catalogo codRespMani;
-    private String otraManifestacionCli;
+    private DaIrag idIrag;
+    private ManifestacionClinica codManifestacion;
+    private Respuesta codRespuestaM;
+    private String otraManifestacion;
     private Timestamp fechaRegistro;
     private Usuarios usuario;
     private boolean pasivo;
@@ -35,25 +36,27 @@ public class DaMClinVigilancia {
     }
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="ID_FICHA_VIGILANCIA", referencedColumnName = "ID_FICHA_VIGILANCIA")
-    @ForeignKey(name = "ID_FVIG_MCLIN_FK")
-    public DaVigilanciaIntegrada getIdFichaVigilancia() { return idFichaVigilancia;}
+    @JoinColumn(name="ID_IRAG", referencedColumnName = "ID_IRAG")
+    @ForeignKey(name = "ID_IRAG_MCLIN_FK")
+    public DaIrag getIdIrag() {  return idIrag; }
 
-    public void setIdFichaVigilancia(DaVigilanciaIntegrada idFichaVigilancia) { this.idFichaVigilancia = idFichaVigilancia;}
+    public void setIdIrag(DaIrag idIrag) { this.idIrag = idIrag;     }
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="COD_MANICLINICA", referencedColumnName = "CODIGO")
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
+    @JoinColumn(name="COD_MANIFESTACION", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_MANICLINICA_FK")
-    public Catalogo getCodManiClinica() { return codManiClinica; }
+    public ManifestacionClinica getCodManifestacion() { return codManifestacion; }
 
-    public void setCodManiClinica(Catalogo codManiClinica) { this.codManiClinica = codManiClinica; }
+    public void setCodManifestacion(ManifestacionClinica codManifestacion) { this.codManifestacion = codManifestacion; }
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="COD_RESPMANI", referencedColumnName = "CODIGO")
+
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
+    @JoinColumn(name="COD_RESPUESTAM", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_RESPMANI_FK")
-    public Catalogo getCodRespMani() { return codRespMani; }
+    public Respuesta getCodRespuestaM() { return codRespuestaM; }
 
-    public void setCodRespMani(Catalogo codRespMani) { this.codRespMani = codRespMani; }
+    public void setCodRespuestaM(Respuesta codRespuestaM) { this.codRespuestaM = codRespuestaM; }
+
 
     @Basic
     @Column(name = "FECHA_REGISTRO", nullable = false, insertable = true, updatable = true)
@@ -71,12 +74,12 @@ public class DaMClinVigilancia {
 
     public void setPasivo(boolean pasivo) { this.pasivo = pasivo; }
 
-
     @Basic
-    @Column(name = "OTRA_MANIFESTACIONCLI", nullable = true, insertable = true, updatable = true, length = 50)
-    public String getOtraManifestacionCli() { return otraManifestacionCli; }
+    @Column(name = "OTRA_MANIFESTACION", nullable = true, insertable = true, updatable = true, length = 50)
+    public String getOtraManifestacion() { return otraManifestacion; }
 
-    public void setOtraManifestacionCli(String otraManifestacionCli) { this.otraManifestacionCli = otraManifestacionCli; }
+    public void setOtraManifestacion(String otraManifestacion) { this.otraManifestacion = otraManifestacion; }
+
 
     @ManyToOne(optional=false)
     @JoinColumn(name="USUARIO_ID", referencedColumnName = "USUARIO_ID")
@@ -91,15 +94,15 @@ public class DaMClinVigilancia {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DaMClinVigilancia that = (DaMClinVigilancia) o;
+        DaManifestacionesIrag that = (DaManifestacionesIrag) o;
 
         if (pasivo != that.pasivo) return false;
-        if (!codManiClinica.equals(that.codManiClinica)) return false;
-        if (!codRespMani.equals(that.codRespMani)) return false;
+        if (!codManifestacion.equals(that.codManifestacion)) return false;
+        if (!codRespuestaM.equals(that.codRespuestaM)) return false;
         if (!fechaRegistro.equals(that.fechaRegistro)) return false;
-        if (!idFichaVigilancia.equals(that.idFichaVigilancia)) return false;
+        if (!idIrag.equals(that.idIrag)) return false;
         if (!idManifestacion.equals(that.idManifestacion)) return false;
-        if (!otraManifestacionCli.equals(that.otraManifestacionCli)) return false;
+        if (!otraManifestacion.equals(that.otraManifestacion)) return false;
         if (!usuario.equals(that.usuario)) return false;
 
         return true;
@@ -108,10 +111,10 @@ public class DaMClinVigilancia {
     @Override
     public int hashCode() {
         int result = idManifestacion.hashCode();
-        result = 31 * result + idFichaVigilancia.hashCode();
-        result = 31 * result + codManiClinica.hashCode();
-        result = 31 * result + codRespMani.hashCode();
-        result = 31 * result + otraManifestacionCli.hashCode();
+        result = 31 * result + idIrag.hashCode();
+        result = 31 * result + codManifestacion.hashCode();
+        result = 31 * result + codRespuestaM.hashCode();
+        result = 31 * result + otraManifestacion.hashCode();
         result = 31 * result + fechaRegistro.hashCode();
         result = 31 * result + usuario.hashCode();
         result = 31 * result + (pasivo ? 1 : 0);

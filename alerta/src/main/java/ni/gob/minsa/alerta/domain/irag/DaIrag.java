@@ -1,16 +1,18 @@
-package ni.gob.minsa.alerta.domain.vigilanciaIntegrada;
+package ni.gob.minsa.alerta.domain.irag;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
 import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
+import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
 import org.hibernate.annotations.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -18,36 +20,36 @@ import java.util.Date;
  * Created by souyen-ics
  */
 @Entity
-@Table(name = "DA_VIGILANCIA_INTEGRADA", schema = "ALERTA")
-public class DaVigilanciaIntegrada {
+@Table(name = "DA_IRAG", schema = "ALERTA")
+public class DaIrag implements Serializable {
 
-    private String idFichaVigilancia;
+    private String idIrag;
     private SisPersona persona;
     private EntidadesAdtvas codSilaisAtencion;
     private Unidades codUnidadAtencion;
     private Date fechaConsulta;
     private Date fechaPrimeraConsulta;
     private String codExpediente;
-    private Catalogo codClasificacion;
+    private Clasificacion codClasificacion;
     private String nombreMadreTutor;
-    private Catalogo codProcedencia;
-    private Catalogo codCaptacion;
+    private Procedencia codProcedencia;
+    private Captacion codCaptacion;
     private String diagnostico;
     private boolean tarjetaVacuna;
     private Date fechaInicioSintomas;
-    private Catalogo codAntbUlSem;
+    private Respuesta codAntbUlSem;
     private Integer cantidadAntib;
     private String nombreAntibiotico;
     private Date fechaPrimDosisAntib;
     private Date fechaUltDosisAntib;
     private Integer noDosisAntib;
-    private Catalogo codViaAntb;
+    private ViaAntibiotico codViaAntb;
     private boolean usoAntivirales;
     private String nombreAntiviral;
     private Date fechaPrimDosisAntiviral;
     private Date fechaUltDosisAntiviral;
     private Integer noDosisAntiviral;
-    private Catalogo codResRadiologia;
+    private ResultadoRadiologia codResRadiologia;
     private String otroResultadoRadiologia;
     private boolean uci;
     private Integer noDiasHospitalizado;
@@ -55,8 +57,8 @@ public class DaVigilanciaIntegrada {
     private String diagnostico1Egreso;
     private String diagnostico2Egreso;
     private Date fechaEgreso;
-    private Catalogo codCondEgreso;
-    private Catalogo codClasFCaso;
+    private CondicionEgreso codCondEgreso;
+    private ClasificacionFinal codClasFCaso;
     private String agenteBacteriano;
     private String serotipificacion;
     private String agenteViral;
@@ -70,15 +72,12 @@ public class DaVigilanciaIntegrada {
 
     @Id
     @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
-    @Column(name = "ID_FICHA_VIGILANCIA", nullable = false, insertable = true, updatable = true, length = 32)
-    public String getIdFichaVigilancia() {
-        return idFichaVigilancia;
-    }
+    @GenericGenerator(name="system-uuid", strategy = "uuid2")
+    @Column(name = "ID_IRAG", nullable = false, insertable = true, updatable = true, length = 36)
+    public String getIdIrag() { return idIrag; }
 
-    public void setIdFichaVigilancia(String idFichaVigilancia) {
-        this.idFichaVigilancia = idFichaVigilancia;
-    }
+    public void setIdIrag(String idIrag) { this.idIrag = idIrag; }
+
 
     @ManyToOne(optional=false)
     @JoinColumn(name="PERSONA_ID", referencedColumnName = "PERSONA_ID")
@@ -140,12 +139,14 @@ public class DaVigilanciaIntegrada {
         this.codExpediente = codExpediente;
     }
 
-    @ManyToOne(optional=false)
+
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
     @JoinColumn(name="COD_CLASIFICACION", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_CLASIF_FK")
-    public Catalogo getCodClasificacion() {  return codClasificacion;  }
+    public Clasificacion getCodClasificacion() { return codClasificacion;  }
 
-    public void setCodClasificacion(Catalogo codClasificacion) { this.codClasificacion = codClasificacion; }
+    public void setCodClasificacion(Clasificacion codClasificacion) { this.codClasificacion = codClasificacion; }
+
 
     @Basic
     @Column(name = "NOMBRE_MADRE_TUTOR", nullable = true, insertable = true, updatable = true, length = 100)
@@ -157,19 +158,21 @@ public class DaVigilanciaIntegrada {
         this.nombreMadreTutor = nombreMadreTutor;
     }
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="COD_PROCEDENCIA", referencedColumnName = "CODIGO")
+
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
+    @JoinColumn(name="COD_PROCEDENCIA",referencedColumnName="CODIGO", nullable=true)
     @ForeignKey(name = "COD_PROC_FK")
-    public Catalogo getCodProcedencia() { return codProcedencia;  }
+    public Procedencia getCodProcedencia() { return codProcedencia; }
 
-    public void setCodProcedencia(Catalogo codProcedencia) { this.codProcedencia = codProcedencia; }
+    public void setCodProcedencia(Procedencia codProcedencia) { this.codProcedencia = codProcedencia; }
 
-    @ManyToOne(optional=false)
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
     @JoinColumn(name="COD_CAPTACION", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_CAPT_FK")
-    public Catalogo getCodCaptacion() { return codCaptacion;  }
+    public Captacion getCodCaptacion() { return codCaptacion; }
 
-    public void setCodCaptacion(Catalogo codCaptacion) { this.codCaptacion = codCaptacion; }
+    public void setCodCaptacion(Captacion codCaptacion) {  this.codCaptacion = codCaptacion; }
+
 
     @Basic
     @Column(name = "DIAGNOSTICO", nullable = true, insertable = true, updatable = true, length = 100)
@@ -203,12 +206,14 @@ public class DaVigilanciaIntegrada {
         this.fechaInicioSintomas = fechaInicioSintomas;
     }
 
-    @ManyToOne(optional=false)
+
+
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
     @JoinColumn(name="COD_ANTB_ULSEM", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_ANTB_ULSEM_FK")
-    public Catalogo getCodAntbUlSem() { return codAntbUlSem;     }
+    public Respuesta getCodAntbUlSem() { return codAntbUlSem; }
 
-    public void setCodAntbUlSem(Catalogo codAntbUlSem) { this.codAntbUlSem = codAntbUlSem;}
+    public void setCodAntbUlSem(Respuesta codAntbUlSem) { this.codAntbUlSem = codAntbUlSem; }
 
     @Basic
     @Column(name = "CANT_ANTIBIOTICOS", nullable = true, insertable = true, updatable = true, precision = 0)
@@ -265,12 +270,13 @@ public class DaVigilanciaIntegrada {
         this.noDosisAntib = noDosisAntib;
     }
 
-    @ManyToOne(optional=false)
+
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
     @JoinColumn(name="COD_VIA_ANTB", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_VIA_ANTB_FK")
-    public Catalogo getCodViaAntb() { return codViaAntb; }
+    public ViaAntibiotico getCodViaAntb() { return codViaAntb; }
 
-    public void setCodViaAntb(Catalogo codViaAntb) { this.codViaAntb = codViaAntb; }
+    public void setCodViaAntb(ViaAntibiotico codViaAntb) { this.codViaAntb = codViaAntb; }
 
     @Basic
     @Column(name = "USO_ANTIVIRALES", nullable = true, insertable = true, updatable = true)
@@ -327,12 +333,13 @@ public class DaVigilanciaIntegrada {
         this.noDosisAntiviral = noDosisAntiviral;
     }
 
-    @ManyToOne(optional=false)
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
     @JoinColumn(name="COD_RES_RADIOLOGIA", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_RESRADIOLOGIA_FK")
-    public Catalogo getCodResRadiologia() { return codResRadiologia; }
+    public ResultadoRadiologia getCodResRadiologia() { return codResRadiologia; }
 
-    public void setCodResRadiologia(Catalogo codResRadiologia) { this.codResRadiologia = codResRadiologia; }
+    public void setCodResRadiologia(ResultadoRadiologia codResRadiologia) {  this.codResRadiologia = codResRadiologia; }
+
 
     @Basic
     @Column(name = "OTRO_RES_RADIOLOGIA", nullable = true, insertable = true, updatable = true, length = 50)
@@ -405,20 +412,21 @@ public class DaVigilanciaIntegrada {
         this.fechaEgreso = fechaEgreso;
     }
 
-    @ManyToOne(optional=false)
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
     @JoinColumn(name="COD_COND_EGRESO", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_CONDEGRESO_FK")
-    public Catalogo getCodCondEgreso() { return codCondEgreso; }
+    public CondicionEgreso getCodCondEgreso() { return codCondEgreso; }
 
-    public void setCodCondEgreso(Catalogo codCondEgreso) { this.codCondEgreso = codCondEgreso; }
+    public void setCodCondEgreso(CondicionEgreso codCondEgreso) { this.codCondEgreso = codCondEgreso; }
 
 
-    @ManyToOne(optional=false)
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
     @JoinColumn(name="COD_CLASF_CASO", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_CLASFCASO_FK")
-    public Catalogo getCodClasFCaso() { return codClasFCaso; }
+    public ClasificacionFinal getCodClasFCaso() { return codClasFCaso; }
 
-    public void setCodClasFCaso(Catalogo codClasFCaso) { this.codClasFCaso = codClasFCaso; }
+    public void setCodClasFCaso(ClasificacionFinal codClasFCaso) { this.codClasFCaso = codClasFCaso; }
+
 
     @Basic
     @Column(name = "AGENTE_BACTERIANO", nullable = true, insertable = true, updatable = true, length = 50)
@@ -507,109 +515,4 @@ public class DaVigilanciaIntegrada {
     public void setUsuario(Usuarios usuario) { this.usuario = usuario;   }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DaVigilanciaIntegrada that = (DaVigilanciaIntegrada) o;
-
-        if (anulada != that.anulada) return false;
-        if (fichaCompleta != that.fichaCompleta) return false;
-        if (tarjetaVacuna != that.tarjetaVacuna) return false;
-        if (uci != that.uci) return false;
-        if (usoAntivirales != that.usoAntivirales) return false;
-        if (ventilacionAsistida != that.ventilacionAsistida) return false;
-        if (!agenteBacteriano.equals(that.agenteBacteriano)) return false;
-        if (!agenteEtiologico.equals(that.agenteEtiologico)) return false;
-        if (!agenteViral.equals(that.agenteViral)) return false;
-        if (!cantidadAntib.equals(that.cantidadAntib)) return false;
-        if (!codAntbUlSem.equals(that.codAntbUlSem)) return false;
-        if (!codCaptacion.equals(that.codCaptacion)) return false;
-        if (!codClasFCaso.equals(that.codClasFCaso)) return false;
-        if (!codClasificacion.equals(that.codClasificacion)) return false;
-        if (!codCondEgreso.equals(that.codCondEgreso)) return false;
-        if (!codExpediente.equals(that.codExpediente)) return false;
-        if (!codProcedencia.equals(that.codProcedencia)) return false;
-        if (!codResRadiologia.equals(that.codResRadiologia)) return false;
-        if (!codSilaisAtencion.equals(that.codSilaisAtencion)) return false;
-        if (!codUnidadAtencion.equals(that.codUnidadAtencion)) return false;
-        if (!codViaAntb.equals(that.codViaAntb)) return false;
-        if (!diagnostico.equals(that.diagnostico)) return false;
-        if (!diagnostico1Egreso.equals(that.diagnostico1Egreso)) return false;
-        if (!diagnostico2Egreso.equals(that.diagnostico2Egreso)) return false;
-        if (!fechaAnulacion.equals(that.fechaAnulacion)) return false;
-        if (!fechaConsulta.equals(that.fechaConsulta)) return false;
-        if (!fechaEgreso.equals(that.fechaEgreso)) return false;
-        if (!fechaInicioSintomas.equals(that.fechaInicioSintomas)) return false;
-        if (!fechaPrimDosisAntib.equals(that.fechaPrimDosisAntib)) return false;
-        if (!fechaPrimDosisAntiviral.equals(that.fechaPrimDosisAntiviral)) return false;
-        if (!fechaPrimeraConsulta.equals(that.fechaPrimeraConsulta)) return false;
-        if (!fechaRegistro.equals(that.fechaRegistro)) return false;
-        if (!fechaUltDosisAntib.equals(that.fechaUltDosisAntib)) return false;
-        if (!fechaUltDosisAntiviral.equals(that.fechaUltDosisAntiviral)) return false;
-        if (!idFichaVigilancia.equals(that.idFichaVigilancia)) return false;
-        if (!noDiasHospitalizado.equals(that.noDiasHospitalizado)) return false;
-        if (!noDosisAntib.equals(that.noDosisAntib)) return false;
-        if (!noDosisAntiviral.equals(that.noDosisAntiviral)) return false;
-        if (!nombreAntibiotico.equals(that.nombreAntibiotico)) return false;
-        if (!nombreAntiviral.equals(that.nombreAntiviral)) return false;
-        if (!nombreMadreTutor.equals(that.nombreMadreTutor)) return false;
-        if (!otroResultadoRadiologia.equals(that.otroResultadoRadiologia)) return false;
-        if (!persona.equals(that.persona)) return false;
-        if (!serotipificacion.equals(that.serotipificacion)) return false;
-        if (!usuario.equals(that.usuario)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = idFichaVigilancia.hashCode();
-        result = 31 * result + persona.hashCode();
-        result = 31 * result + codSilaisAtencion.hashCode();
-        result = 31 * result + codUnidadAtencion.hashCode();
-        result = 31 * result + fechaConsulta.hashCode();
-        result = 31 * result + fechaPrimeraConsulta.hashCode();
-        result = 31 * result + codExpediente.hashCode();
-        result = 31 * result + codClasificacion.hashCode();
-        result = 31 * result + nombreMadreTutor.hashCode();
-        result = 31 * result + codProcedencia.hashCode();
-        result = 31 * result + codCaptacion.hashCode();
-        result = 31 * result + diagnostico.hashCode();
-        result = 31 * result + (tarjetaVacuna ? 1 : 0);
-        result = 31 * result + fechaInicioSintomas.hashCode();
-        result = 31 * result + codAntbUlSem.hashCode();
-        result = 31 * result + cantidadAntib.hashCode();
-        result = 31 * result + nombreAntibiotico.hashCode();
-        result = 31 * result + fechaPrimDosisAntib.hashCode();
-        result = 31 * result + fechaUltDosisAntib.hashCode();
-        result = 31 * result + noDosisAntib.hashCode();
-        result = 31 * result + codViaAntb.hashCode();
-        result = 31 * result + (usoAntivirales ? 1 : 0);
-        result = 31 * result + nombreAntiviral.hashCode();
-        result = 31 * result + fechaPrimDosisAntiviral.hashCode();
-        result = 31 * result + fechaUltDosisAntiviral.hashCode();
-        result = 31 * result + noDosisAntiviral.hashCode();
-        result = 31 * result + codResRadiologia.hashCode();
-        result = 31 * result + otroResultadoRadiologia.hashCode();
-        result = 31 * result + (uci ? 1 : 0);
-        result = 31 * result + noDiasHospitalizado.hashCode();
-        result = 31 * result + (ventilacionAsistida ? 1 : 0);
-        result = 31 * result + diagnostico1Egreso.hashCode();
-        result = 31 * result + diagnostico2Egreso.hashCode();
-        result = 31 * result + fechaEgreso.hashCode();
-        result = 31 * result + codCondEgreso.hashCode();
-        result = 31 * result + codClasFCaso.hashCode();
-        result = 31 * result + agenteBacteriano.hashCode();
-        result = 31 * result + serotipificacion.hashCode();
-        result = 31 * result + agenteViral.hashCode();
-        result = 31 * result + agenteEtiologico.hashCode();
-        result = 31 * result + (fichaCompleta ? 1 : 0);
-        result = 31 * result + (anulada ? 1 : 0);
-        result = 31 * result + fechaAnulacion.hashCode();
-        result = 31 * result + fechaRegistro.hashCode();
-        result = 31 * result + usuario.hashCode();
-        return result;
-    }
 }

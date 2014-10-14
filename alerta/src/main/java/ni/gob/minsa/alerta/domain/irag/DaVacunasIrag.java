@@ -1,4 +1,4 @@
-package ni.gob.minsa.alerta.domain.vigilanciaIntegrada;
+package ni.gob.minsa.alerta.domain.irag;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
@@ -6,6 +6,7 @@ import org.hibernate.annotations.ForeignKey;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -13,14 +14,16 @@ import java.util.Date;
  * Created by souyen-ics
  */
 @Entity
-@Table(name = "DA_VAC_VIGILANCIA", schema = "ALERTA")
-public class DaVacVigilancia {
+@Table(name = "DA_VACUNAS_IRAG", schema = "ALERTA")
+public class DaVacunasIrag implements Serializable {
+
+
 
     private Integer idVacuna;
-    private DaVigilanciaIntegrada idFichaVigilancia;
-    private Catalogo codNombreVacuna;
-    private Catalogo codAplicada;
-    private Catalogo codTipoVacuna;
+    private DaIrag idIrag;
+    private Vacuna codVacuna;
+    private Respuesta codAplicada;
+    private TipoVacuna codTipoVacuna;
     private Integer dosis;
     private Date fechaUltimaDosis;
     private Timestamp fechaRegistro;
@@ -39,33 +42,38 @@ public class DaVacVigilancia {
         this.idVacuna = idVacuna;
     }
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="ID_FICHA_VIGILANCIA", referencedColumnName = "ID_FICHA_VIGILANCIA")
-    @ForeignKey(name = "ID_FVIG_VAC_FK")
-    public DaVigilanciaIntegrada getIdFichaVigilancia() { return idFichaVigilancia; }
-
-    public void setIdFichaVigilancia(DaVigilanciaIntegrada idFichaVigilancia) { this.idFichaVigilancia = idFichaVigilancia; }
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="COD_NOMBRE_VACUNA", referencedColumnName = "CODIGO")
+    @JoinColumn(name="ID_IRAG", referencedColumnName = "ID_IRAG")
+    @ForeignKey(name = "ID_IRAG_VAC_FK")
+
+    public DaIrag getIdIrag() { return idIrag; }
+
+    public void setIdIrag(DaIrag idIrag) { this.idIrag = idIrag; }
+
+
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
+    @JoinColumn(name="COD_VACUNA", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_VACUNA_FK")
-    public Catalogo getCodNombreVacuna() { return codNombreVacuna; }
+    public Vacuna getCodVacuna() { return codVacuna; }
 
-    public void setCodNombreVacuna(Catalogo codNombreVacuna) { this.codNombreVacuna = codNombreVacuna; }
+    public void setCodVacuna(Vacuna codVacuna) { this.codVacuna = codVacuna; }
 
-    @ManyToOne(optional=false)
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
     @JoinColumn(name="COD_APLICADA", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_APLICADA_FK")
-    public Catalogo getCodAplicada() { return codAplicada; }
+    public Respuesta getCodAplicada() { return codAplicada; }
 
-    public void setCodAplicada(Catalogo codAplicada) {  this.codAplicada = codAplicada; }
+    public void setCodAplicada(Respuesta codAplicada) { this.codAplicada = codAplicada; }
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="COD_TVACUNA", referencedColumnName = "CODIGO")
+
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
+    @JoinColumn(name="COD_TIPO_VACUNA", referencedColumnName = "CODIGO")
     @ForeignKey(name = "COD_TVACUNA_FK")
-    public Catalogo getCodTipoVacuna() { return codTipoVacuna; }
+    public TipoVacuna getCodTipoVacuna() { return codTipoVacuna; }
 
-    public void setCodTipoVacuna(Catalogo codTipoVacuna) { this.codTipoVacuna = codTipoVacuna; }
+    public void setCodTipoVacuna(TipoVacuna codTipoVacuna) { this.codTipoVacuna = codTipoVacuna; }
+
 
     @Basic
     @Column(name = "DOSIS", nullable = true, updatable = true, insertable = true, precision = 0)
@@ -80,7 +88,7 @@ public class DaVacVigilancia {
     @Basic
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @Column(name = "FECHA_ULT_DOSIS", nullable = true, insertable = true, updatable = true)
+    @Column(name = "FECHA_ULTIMA_DOSIS", nullable = true, insertable = true, updatable = true)
     public Date getFechaUltimaDosis() {
         return fechaUltimaDosis;
     }
@@ -117,16 +125,16 @@ public class DaVacVigilancia {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DaVacVigilancia that = (DaVacVigilancia) o;
+        DaVacunasIrag that = (DaVacunasIrag) o;
 
         if (pasivo != that.pasivo) return false;
         if (!codAplicada.equals(that.codAplicada)) return false;
-        if (!codNombreVacuna.equals(that.codNombreVacuna)) return false;
         if (!codTipoVacuna.equals(that.codTipoVacuna)) return false;
+        if (!codVacuna.equals(that.codVacuna)) return false;
         if (!dosis.equals(that.dosis)) return false;
         if (!fechaRegistro.equals(that.fechaRegistro)) return false;
         if (!fechaUltimaDosis.equals(that.fechaUltimaDosis)) return false;
-        if (!idFichaVigilancia.equals(that.idFichaVigilancia)) return false;
+        if (!idIrag.equals(that.idIrag)) return false;
         if (!idVacuna.equals(that.idVacuna)) return false;
         if (!usuario.equals(that.usuario)) return false;
 
@@ -136,8 +144,8 @@ public class DaVacVigilancia {
     @Override
     public int hashCode() {
         int result = idVacuna.hashCode();
-        result = 31 * result + idFichaVigilancia.hashCode();
-        result = 31 * result + codNombreVacuna.hashCode();
+        result = 31 * result + idIrag.hashCode();
+        result = 31 * result + codVacuna.hashCode();
         result = 31 * result + codAplicada.hashCode();
         result = 31 * result + codTipoVacuna.hashCode();
         result = 31 * result + dosis.hashCode();
