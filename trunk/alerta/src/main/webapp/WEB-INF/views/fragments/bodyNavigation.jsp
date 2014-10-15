@@ -50,7 +50,7 @@ traditional href="" links. See documentation for details.
                 	<a href="<spring:url value="/irag/create" htmlEscape="true "/>" title="<spring:message code="menu.irageti" />"><i class="fa fa-lg fa-fw fa-"></i> <spring:message code="menu.irageti" /></a>
                 </li>
                 <li class="vih">
-                	<a href="<spring:url value="/vih/create" htmlEscape="true "/>" title="<spring:message code="menu.vih" />"><i class="fa fa-lg fa-fw fa-"></i> <spring:message code="menu.vih" /></a>
+                	<a href="<spring:url value="/vih/search" htmlEscape="true "/>" title="<spring:message code="menu.vih" />"><i class="fa fa-lg fa-fw fa-"></i> <spring:message code="menu.vih" /></a>
                 </li>
             </ul>
         </li>
