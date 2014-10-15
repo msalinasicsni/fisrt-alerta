@@ -7,16 +7,16 @@ import java.sql.Timestamp;
  * Created by USER on 22/09/2014.
  */
 @Entity
-@Table(name = "SIVE_VIH_TIPO_INF_OPORT", schema = "ALERTA", catalog = "")
-public class SiveVihTipoInfOport {
+@Table(name = "SIVE_VIH_TIPO_INF_OPORT", schema = "ALERTA")
+public class VihTipoInfOport {
     private Integer id;
-    private String nombre1;
+    private String nombre;
     private String descripcion;
     private Timestamp fechaAlta;
     private String usuarioAlta;
     private Timestamp fechaBaja;
     private String usuarioBaja;
-    private String band1;
+
 
     @Id
     @Column(name = "ID", nullable = false, insertable = true, updatable = true, precision = 0)
@@ -30,12 +30,12 @@ public class SiveVihTipoInfOport {
 
     @Basic
     @Column(name = "NOMBRE", nullable = true, insertable = true, updatable = true, length = 100)
-    public String getNombre1() {
-        return nombre1;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombre1(String nombre) {
-        this.nombre1 = nombre;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     @Basic
@@ -93,13 +93,13 @@ public class SiveVihTipoInfOport {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SiveVihTipoInfOport that = (SiveVihTipoInfOport) o;
+        VihTipoInfOport that = (VihTipoInfOport) o;
 
         if (descripcion != null ? !descripcion.equals(that.descripcion) : that.descripcion != null) return false;
         if (fechaAlta != null ? !fechaAlta.equals(that.fechaAlta) : that.fechaAlta != null) return false;
         if (fechaBaja != null ? !fechaBaja.equals(that.fechaBaja) : that.fechaBaja != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (nombre1 != null ? !nombre1.equals(that.nombre1) : that.nombre1 != null) return false;
+        if (nombre != null ? !nombre.equals(that.nombre) : that.nombre != null) return false;
         if (usuarioAlta != null ? !usuarioAlta.equals(that.usuarioAlta) : that.usuarioAlta != null) return false;
         if (usuarioBaja != null ? !usuarioBaja.equals(that.usuarioBaja) : that.usuarioBaja != null) return false;
 
@@ -109,7 +109,7 @@ public class SiveVihTipoInfOport {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (nombre1 != null ? nombre1.hashCode() : 0);
+        result = 31 * result + (nombre != null ? nombre.hashCode() : 0);
         result = 31 * result + (descripcion != null ? descripcion.hashCode() : 0);
         result = 31 * result + (fechaAlta != null ? fechaAlta.hashCode() : 0);
         result = 31 * result + (usuarioAlta != null ? usuarioAlta.hashCode() : 0);
