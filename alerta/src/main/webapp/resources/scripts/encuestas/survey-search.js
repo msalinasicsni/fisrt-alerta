@@ -76,36 +76,60 @@ var SearchSurvey = function () {
     				ajax : 'true'
     			}, function(dataToLoad) {
     				var len = dataToLoad.length;
-    				for ( var i = 0; i < len; i++) {
-						var surveyUrl = parametros.sSurveyEditUrl + '?idMaestro='+dataToLoad[i][0].encuestaId;
-						table1.fnAddData(
-                                [dataToLoad[i][0].silais, dataToLoad[i][0].unidadSalud, dataToLoad[i][0].mesEpi, dataToLoad[i][0].anioEpi, dataToLoad[i][0].departamento, dataToLoad[i][0].municipio, dataToLoad[i][0].distrito, dataToLoad[i][0].area, dataToLoad[i][0].ordinalEncu, dataToLoad[i][0].procedencia, dataToLoad[i][0].feInicioEncuesta, dataToLoad[i][0].feFinEncuesta, dataToLoad[i][0].modeloEncu,'<a href='+ surveyUrl + ' class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>']);
-    							//[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].municipioResidencia.nombre,'<a href='+ personUrl + ' class="btn btn-default btn-xs"><i class="fa fa-search"></i></a>']);
-    				}
+                    if (len > 0) {
+                        ocultarMensaje();
+                        for (var i = 0; i < len; i++) {
+                            var surveyUrl = parametros.sSurveyEditUrl + '?idMaestro=' + dataToLoad[i][0].encuestaId;
+                            table1.fnAddData(
+                                [dataToLoad[i][0].silais, dataToLoad[i][0].unidadSalud, dataToLoad[i][0].mesEpi, dataToLoad[i][0].anioEpi, dataToLoad[i][0].departamento, dataToLoad[i][0].municipio, dataToLoad[i][0].distrito, dataToLoad[i][0].area, dataToLoad[i][0].ordinalEncu, dataToLoad[i][0].procedencia, dataToLoad[i][0].feInicioEncuesta, dataToLoad[i][0].feFinEncuesta, dataToLoad[i][0].modeloEncu, '<a href=' + surveyUrl + ' class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>']);
+                            //[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].municipioResidencia.nombre,'<a href='+ personUrl + ' class="btn btn-default btn-xs"><i class="fa fa-search"></i></a>']);
+                        }
+                    }else{
+                        var html = '<div class="alert alert-block alert-warning"> ' +
+                            '<a class="close" data-dismiss="alert" href="#">×</a> ' +
+                            '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
+                            '<p> ' + $("#msg_no_results_found").val() +
+                            '</p> ' +
+                            '</div>';
+                        mostrarMensaje(html);
+                    }
     			})
     			.fail(function() {
 				    alert( "error" );
 				    
 				});
-            };
+            }
+
+            function mostrarMensaje(msgHtml){
+                $("#mensaje").html(msgHtml).show().focus();
+                //$("#mensaje").show("slow");
+                //$("#mensaje").focus();
+            }
+
+            function ocultarMensaje() {
+                $("#mensaje").hide("slow");
+            }
 
             <!-- al seleccionar SILAIS -->
             $('#codSilais').change(function(){
-                $.getJSON(parametros.sUnidadesUrl, {
-                    silaisId: $(this).val(),
-                    ajax: 'true'
-                }, function(data){
-                    var html = null;
-                    var len = data.length;
-                    html += '<option value="">Seleccione...</option>';
-                    for(var i = 0; i < len; i++){
-                        html += '<option value="' + data[i].codigo + '">'
-                            + data[i].nombre
-                            + '</option>';
-                        // html += '</option>';
-                    }
-                    $('#codUnidadSalud').html(html);
-                })
+                $('#codUnidadSalud').val('').change();
+                if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sUnidadesUrl, {
+                        silaisId: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            // html += '</option>';
+                        }
+                        $('#codUnidadSalud').html(html);
+                    })
+                }
             });
         }
     };

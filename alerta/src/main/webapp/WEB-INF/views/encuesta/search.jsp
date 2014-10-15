@@ -44,7 +44,7 @@
 			<!-- row -->
 			<div class="row">
 				<!-- col -->
-				<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+				<div class="col-xs-12 col-sm-7 col-md-7 col-lg-5">
 					<h1 class="page-title txt-color-blueDark">
 						<!-- PAGE HEADER -->
 						<i class="fa-fw fa fa-home"></i> 
@@ -57,7 +57,7 @@
 				<!-- end col -->
 				<!-- right side of the page with the sparkline graphs -->
 				<!-- col -->
-				<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
+				<div class="col-xs-12 col-sm-5 col-md-5 col-lg-7">
 					<!-- sparks -->
 					<ul id="sparks">
 						<li class="sparks-info">
@@ -96,7 +96,7 @@
 					<!-- NEW WIDGET START -->
 					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<!-- Widget ID (each widget will need unique ID)-->
-						<div class="jarviswidget" id="wid-id-0">
+						<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0">
 							<!-- widget options:
 								usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
 								data-widget-colorbutton="false"	
@@ -109,8 +109,8 @@
 								data-widget-sortable="false"
 							-->
 							<header>
-								<span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-								<h2><spring:message code="lbl.widgettitle.ento.search" /> </h2>
+								<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+								<h2><spring:message code="lbl.widgettitle.ento.search" /></h2>
 							</header>
 							<!-- widget div-->
 							<div>
@@ -126,16 +126,24 @@
                                     <form class="smart-form" id="frmPrincipal" novalidate="novalidate">
                                         <fieldset>
                                             <div class="row">
+                                                <div id="mensaje" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                </div>
+                                                <c:set var="valmsg1"><spring:message code="msg.ento.no.results.found"/></c:set>
+                                                <input id="msg_no_results_found" type="hidden" value="${valmsg1}"/>
+                                                <c:set var="valselect"><spring:message code="lbl.select"/></c:set>
+                                                <input id="text_opt_select" type="hidden" value="${valselect}"/>
+                                            </div>
+                                            <div class="row">
                                                 <section class="col col-3">
                                                     <label class="text-left txt-color-blue font-md">
-                                                        <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>Modelo de Encuesta
+                                                        <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.survey.model" />
                                                     </label>
                                                     <div class="input-group">
                                                     <span class="input-group-addon">
                                                         <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
                                                         <select class="select2" id="codModeloEncu" name="codModeloEncu">
-                                                            <option value="">Seleccione...</option>
+                                                            <option value=""><spring:message code="lbl.select" />...</option>
                                                             <c:forEach items="${modelos}" var="modelos">
                                                                 <option value="${modelos.codigo}">${modelos.valor}</option>
                                                             </c:forEach>
@@ -144,14 +152,14 @@
                                                 </section>
                                                 <section class="col col-3">
                                                     <label class="text-left txt-color-blue font-md">
-                                                        <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>SILAIS </label>
+                                                        <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.silais" /> </label>
                                                     <div class="input-group">
                                                     <span class="input-group-addon">
                                                          <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
                                                         <select path="codSilais" id="codSilais" name="codSilais"
                                                                 class="select2">
-                                                            <option value="">Seleccione...</option>
+                                                            <option value=""><spring:message code="lbl.select" />...</option>
                                                             <c:forEach items="${entidades}" var="entidad">
                                                                 <option value="${entidad.entidadAdtvaId}">${entidad.nombre}</option>
                                                             </c:forEach>
@@ -160,31 +168,31 @@
                                                 </section>
                                                 <section class="col col-4">
                                                     <label class="text-left txt-color-blue font-md">
-                                                        <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>Unidad de Salud
+                                                        <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.health.unit" />
                                                     </label>
                                                     <div class="input-group">
                                                     <span class="input-group-addon">
                                                         <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
                                                         <select class="select2" id="codUnidadSalud" name="codUnidadSalud">
-                                                            <option value="">Seleccione...</option>
+                                                            <option value=""><spring:message code="lbl.select" />...</option>
                                                         </select>
                                                     </div>
                                                 </section>
                                                 <section class="col col-1">
                                                     <label class="text-left txt-color-blue font-md">
-                                                        <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>Mes
+                                                        <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.month" />
                                                     </label>
                                                     <label class="input">
-                                                        <input type="number" id="mesEpi" name="mesEpi" path="mesEpi" placeholder="Mes" class="input-sm">
+                                                        <input type="number" id="mesEpi" name="mesEpi" path="mesEpi" placeholder="<spring:message code="lbl.month"/>" class="input-sm">
                                                     </label>
                                                 </section>
                                                 <section class="col col-1">
                                                     <label class="text-left txt-color-blue font-md">
-                                                        <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>Año
+                                                        <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.year" />
                                                     </label>
                                                     <label class="input">
-                                                        <input type="number" id="anioEpi" name="anioEpi" path="anioEpi" placeholder="Año" class="input-sm">
+                                                        <input type="number" id="anioEpi" name="anioEpi" path="anioEpi" placeholder="<spring:message code="lbl.year"/>" class="input-sm">
                                                     </label>
                                                 </section>
                                             </div>
@@ -196,7 +204,7 @@
                                                     </a>-->
                                                     <button id="buscarEncuesta" type="submit"
                                                             class="btn btn-primary btn-lg pull-right header-btn hidden-mobile">
-                                                        Consultar
+                                                        <spring:message code="act.search" />
                                                     </button>
                                                 </div>
                                             </div>
@@ -229,7 +237,7 @@
                         <div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
                             <header>
                                 <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                                <h2>Resultados Búsqueda</h2>
+                                <h2><spring:message code="lbl.widgettitle.ento.search.res" /></h2>
                             </header>
                             <!-- widget div-->
                             <div>
@@ -242,20 +250,20 @@
                                 <div class="widget-body no-padding">
                                     <table id="dtBusqueda" class="table table-striped table-bordered table-hover" data-width="100%">
                                         <thead>
-                                        <tr><th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">SILAIS</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Unidad de Salud&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Mes</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Año</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Departamento</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Municipio</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Distrito</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Area</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Ordinal</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Procedencia</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Fecha Inicio</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Fecha Fin</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Modelo</p></th>
-                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Editar</p></th>
+                                        <tr><th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.silais" /></p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.health.unit" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.month" /></p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.year" /></p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.department" /></p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="muni" /></p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.district" /></p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.area" /></p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.ordinal" /></p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.provenance" /></p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.start.date" /></p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.end.date" /></p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.model" /></p></th>
+                                            <th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="act.edit" /></p></th>
                                             </tr></thead>
                                     </table>
                                 </div>
@@ -315,137 +323,6 @@
         pageSetUp();
         var parametros = {sSurveyUrl: "${consultaEncuestasURL}", sSurveyEditUrl : "${editarEncuestasURL}", sUnidadesUrl: "${unidadesURL}"};
         SearchSurvey.init(parametros);
-
-
-        /*
-        $('#buscarEncuesta').click(function(){
-
-            var $valid = $("#frmPrincipal").valid();
-            if (!$valid) {
-                $formPrincipal.focusInvalid();
-                return false;
-            }else {
-                var encuestaFiltros = {};
-                encuestaFiltros['codModeloEncu'] = $('#codModeloEncu option:selected').val();
-                encuestaFiltros['codSilais'] = $('#codSilais option:selected').val();
-                encuestaFiltros['codUnidadSalud'] = $('#codUnidadSalud option:selected').val();
-                encuestaFiltros['anioEpi'] = $('#anioEpi').val();
-                encuestaFiltros['mesEpi'] = $('#mesEpi').val();
-                $.ajax({
-                    url: "${consultaEncuestasURL}",
-                    data: {filtrosEncuesta: JSON.stringify(encuestaFiltros)},
-                    dataType: "json",
-                    type: "GET",
-                    contentType: "application/json; charset=utf-8",
-                    success: function(dataToLoad) {
-
-                        $('#dtBusqueda').empty();
-
-                        $('#dtBusqueda').append('<thead>' +
-                                '<tr><th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">SILAIS</p></th>' +
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Unidad de Salud&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p></th>' +
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Mes</p></th>' +
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Año</p></th>'+
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Departamento</p></th>' +
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Municipio</p></th>' +
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Distrito</p></th>' +
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Area</p></th>'+
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Ordinal</p></th>' +
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Procedencia</p></th>' +
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Fecha Inicio</p></th>' +
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Fecha Fin</p></th>'+
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Modelo</p></th>' +
-                                '<th style="background-color: #3276b1"><p class="text-center font-sm txt-color-white">Editar</p></th>' +
-                                '</tr></thead><tbody>');
-
-                        for (var i = 0; i < dataToLoad.length; i++) {
-                            $('#dtBusqueda').append('<tr>' +
-                                    '<td class="font-sm">' + dataToLoad[i][0].silais + '</td>' +
-                                    '<td class="font-sm">' + dataToLoad[i][0].unidadSalud + '</td>'+
-                                    '<td class="font-sm" style="text-align: right">' + dataToLoad[i][0].mesEpi + '</td>' +
-                                    '<td class="font-sm" style="text-align: right">' + dataToLoad[i][0].anioEpi + '</td>' +
-                                    '<td class="font-sm" style="text-align: left">' + dataToLoad[i][0].departamento + '</td>' +
-                                    '<td class="font-sm" style="text-align: left">' + dataToLoad[i][0].municipio + '</td>' +
-                                    '<td class="font-sm" style="text-align: left">' + dataToLoad[i][0].distrito + '</td>' +
-                                    '<td class="font-sm" style="text-align: left">' + dataToLoad[i][0].area + '</td>' +
-                                    '<td class="font-sm" style="text-align: left">' + dataToLoad[i][0].ordinalEncu + '</td>' +
-                                    '<td class="font-sm" style="text-align: left">' + dataToLoad[i][0].procedencia + '</td>' +
-                                    '<td class="font-sm" style="text-align: right">' + dataToLoad[i][0].feInicioEncuesta + '</td>' +
-                                    '<td class="font-sm" style="text-align: right">' + dataToLoad[i][0].feFinEncuesta + '</td>' +
-                                    '<td class="font-sm" style="text-align: left">' + dataToLoad[i][0].modeloEncu + '</td>' +
-                                    '<td class="font-sm" style="text-align: center">' +
-                                //'<a data-toggle="modal" class="btn btn-default btn-xs editDetalle" data-id='+response[i].idDetEncuesta+'><i class="fa fa-pencil fa-fw"></i></a>'+
-                                    "<button class='btn btn-xs btn-default' data-original-title='Edit Row' onclick=\"document.location.href='/alerta/encuesta/edit?idMaestro="+dataToLoad[i][0].encuestaId+"';\"><i class='fa fa-edit'></i></button>"+
-                                    '</td>'+
-                                    '</tr>');
-                        }
-                        $('#dtBusqueda').append('</tbody>');
-                        $('#dtBusqueda').dataTable({
-                            "sPaginationType": "bootstrap",
-                            "bFilter": false,
-                            "bPaginate": true,
-                            "bDestroy": true,
-                            "sPaging": true
-                        });
-                    },
-                    error: function (result) {
-                        alert("Error " + result.status + '' + result.statusText);
-                    }
-                });
-            }
-        });
-
-        var $formPrincipal = $("#frmPrincipal").validate({
-            rules: {
-                codModeloEncu: {
-                    required: true
-                },
-                codSilais: {
-                    required: true
-                },
-                codUnidadSalud: {
-                    required: true
-                },
-                mesEpi: {
-                    required: true,
-                    digits: true,
-                    maxlength: 2,
-                    range: [1, 12]
-                },
-                anioEpi: {
-                    required: true,
-                    digits: true,
-                    maxlength: 4
-                }
-            },
-            messages: {
-                codModeloEncu: {
-                    required: 'Debe seleccionar un modelo de encuesta'
-                },                codSilais: {
-                    required: 'Debe seleccionar un SILAIS'
-                },
-                codUnidadSalud: {
-                    required: 'Debe seleccionar unidad de salud'
-                },
-                mesEpi: {
-                    required: 'Debe ingresar el mes',
-                    digits: 'Debe ingresar únicamente valores positivos',
-                    maxlength: 'Sólo se permiten dos dígitos',
-                    range: 'Sólo se permiten valores entre 1 y 12'
-                },
-                anioEpi: {
-                    required: 'Debe ingresar el año',
-                    digits: 'Debe ingresar únicamente valores positivos',
-                    maxlength: 'Sólo se permiten cuatro dígitos'
-                }
-            },
-            // Do not change code below
-            errorPlacement: function (error, element) {
-                error.insertAfter(element.parent());
-
-            }
-        });
-*/
     });
     </script>
 	<!-- END JAVASCRIPTS -->

@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.DaMaeEncuesta;
+import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.ModeloEncuesta;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -165,6 +166,24 @@ public class DaMaeEncuestaService {
             Query q = session.createQuery(query);
             q.setString("idMaestro", idMaeEncuesta);
             aux = (DaMaeEncuesta)q.uniqueResult();
+        } catch (Exception ex) {
+            try {
+                throw new Exception(ex);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return aux;
+    }
+
+    public ModeloEncuesta getModeloEncuByIdMaestro(String idMaeEncuesta) {
+        ModeloEncuesta aux = null;
+        try {
+            String query = "select mae.modeloEncuesta as mode from DaMaeEncuesta as mae where mae.encuestaId=:idMaestro";//" and feFinEncuesta =: fecInicio and feFinEncuesta =: fecFin";
+            Session session = sessionFactory.getCurrentSession();
+            Query q = session.createQuery(query);
+            q.setString("idMaestro", idMaeEncuesta);
+            aux = (ModeloEncuesta)q.uniqueResult();
         } catch (Exception ex) {
             try {
                 throw new Exception(ex);
