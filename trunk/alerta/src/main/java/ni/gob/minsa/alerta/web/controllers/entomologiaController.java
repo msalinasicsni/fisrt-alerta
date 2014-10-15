@@ -13,11 +13,13 @@ import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.*;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.enumeration.surveyModelType;
 import ni.gob.minsa.alerta.utilities.typeAdapter.*;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +58,9 @@ public class entomologiaController {
 
     @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
+
+    @Autowired
+    MessageSource messageSource;
 
     @Autowired
     @Qualifier(value = "divisionPoliticaService")
@@ -199,18 +204,19 @@ public class entomologiaController {
                     //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
                     if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty())
                         daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
-                    resultado="Error al agregar detalle de encuesta";
-                    throw new Exception("Error al agregar detalle de encuesta");
+                    resultado=messageSource.getMessage("msg.ento.error.adding.detail",null,null);
+                    logger.error(ExceptionUtils.getStackTrace(ex));
+                    throw new Exception(resultado);
                 }
             }else
             {
-                resultado="No se puedo obtener el id del maestro";
-                throw new Exception("No se puedo obtener el id del maestro");
+                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+                throw new Exception(resultado);
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage(),ex);
-            if (resultado!=null)
-                resultado="Error al guardar registro. \n"+ex.getMessage();
+            resultado = messageSource.getMessage("msg.ento.error.add",null,null);
+            resultado=resultado+". \n "+ex.getMessage();
         }finally {
             Map<String, String> map = new HashMap<String, String>();
             map.put("idMaestro", idMaestro);
@@ -407,14 +413,19 @@ public class entomologiaController {
                     //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
                     if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty())
                         daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
-                    throw new Exception("Error al agregar detalle de encuesta");
+                    resultado=messageSource.getMessage("msg.ento.error.adding.detail",null,null);
+                    logger.error(ExceptionUtils.getStackTrace(ex));
+                    throw new Exception(resultado);
                 }
             }else
             {
-                throw new Exception("No se puedo obtener el id del maestro");
+                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+                throw new Exception(resultado);
             }
         } catch (Exception ex) {
-            resultado="Error al guardar registro. \n"+ex.getMessage();
+            logger.error(ex.getMessage(),ex);
+            resultado = messageSource.getMessage("msg.ento.error.add",null,null);
+            resultado=resultado+". \n"+ex.getMessage();
         }finally {
             Map<String, String> map = new HashMap<String, String>();
             map.put("idMaestro", idMaestro);
@@ -587,15 +598,19 @@ public class entomologiaController {
                     //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
                     if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty())
                         daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
-                    throw new Exception("Error al agregar detalle de encuesta");
+                    resultado=messageSource.getMessage("msg.ento.error.adding.detail",null,null);
+                    logger.error(ExceptionUtils.getStackTrace(ex));
+                    throw new Exception(resultado);
                 }
             }else
             {
-                throw new Exception("No se puedo obtener el id del maestro");
+                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+                throw new Exception(resultado);
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage(),ex);
-            resultado="Error al guardar registro. \n"+ex.getMessage();
+            resultado = messageSource.getMessage("msg.ento.error.add",null,null);
+            resultado=resultado+". \n"+ex.getMessage();
         }finally {
             Map<String, String> map = new HashMap<String, String>();
             map.put("idMaestro", idMaestro);
@@ -626,38 +641,6 @@ public class entomologiaController {
             if (idMaestroEncuesta!=null) {
                 detEncuestas = detalleDepositoPreferencialService.getDetalleEncuestaByIdMaestro(idMaestroEncuesta);
                 int num=1;
-                /*for (DaDetaDepositopreferencial detEncu : detEncuestas) {
-                    DaDatosDetDepositopreferencial dato = new DaDatosDetDepositopreferencial();
-
-                    dato.setIdEncuesta(detEncu.getEncuestaId());
-                    dato.setIdDetEncuesta(detEncu.getDetaEncuestaId());
-                    comunidadesService.setSessionFactory(sessionFactory);
-                    Comunidades localidad = comunidadesService.getComunidad(detEncu.getCodLocalidad());
-                    dato.setCodLocalidad(detEncu.getCodLocalidad());
-                    dato.setLocalidad(localidad.getNombre());
-                    dato.setNo(num);
-                    dato.setPilaInfestado(detEncu.getPilaInfestado());
-                    dato.setLlantaInfestado(detEncu.getLlantaInfestado());
-                    dato.setBarrilInfestado(detEncu.getBarrilInfestado());
-                    dato.setFloreroInfestado(detEncu.getFloreroInfestado());
-                    dato.setBebederoInfestado(detEncu.getBebederoInfestado());
-                    dato.setArtEspecialInfes(detEncu.getArtEspecialInfes());
-                    dato.setOtrosDepositosInfes(detEncu.getOtrosDepositosInfes());
-                    dato.setCisterInfestado(detEncu.getCisterInfestado());
-                    dato.setInodoroInfestado(detEncu.getInodoroInfestado());
-                    dato.setBarroInfestado(detEncu.getBarroInfestado());
-                    dato.setPlantaInfestado(detEncu.getPlantaInfestado());
-                    dato.setArbolInfestado(detEncu.getArbolInfestado());
-                    dato.setPozoInfestado(detEncu.getPozoInfestado());
-                    dato.setManzana(detEncu.getManzana());
-                    dato.setVivienda(detEncu.getVivienda());
-                    dato.setNombre(detEncu.getNombre());
-                    dato.setDecripOtroDeposito(detEncu.getDecripOtroDeposito());
-                    dato.setDecripcionCister(detEncu.getDecripcionCister());
-
-                    datosEncuestas.add(dato);
-                    num++;
-                }*/
                 final GsonBuilder gson = new GsonBuilder()
                         .registerTypeAdapter(DaDetaDepositopreferencial.class, new DetalleDepositoPreferencialTypeAdapter())
                         .setPrettyPrinting()
@@ -758,47 +741,7 @@ public class entomologiaController {
                 Integer mesEpi = jsonpObject.get("mesEpi").getAsInt();
 
                 encuestas = daMaeEncuestaService.searchMaestroEncuestaByFiltros(codSilais, codUnidadSalud, anioEpi, mesEpi, strModeloEncu);
-                /*
-                for (DaMaeEncuesta encu : encuestas) {
-                    silaisServce.setSessionFactory(sessionFactory);
-                    EntidadesAdtvas silais = silaisServce.getSilaisByCodigo(encu.getCodSilais());
-                    unidadesService.setSessionFactory(sessionFactory);
-                    Unidades unidadS = unidadesService.getUnidadByCodigo(encu.getCodUnidadSalud());
-                    Divisionpolitica depar = divisionPoliticaService.getDivisionPolitiacaByCodNacional(encu.getCodDepartamento());
-                    Divisionpolitica muni = divisionPoliticaService.getDivisionPolitiacaByCodNacional(encu.getCodMunicipio());
-                    Catalogos cat = null;
-                    DaDatosEncuesta dato = new DaDatosEncuesta();
-                    dato.setIdEncuesta(encu.getEncuestaId());
-                    dato.setFechaInicio(encu.getFeInicioEncuesta());
-                    dato.setFechaFin(encu.getFeFinEncuesta());
-                    dato.setAnio(encu.getAnioEpi());
-                    dato.setMes(String.valueOf(encu.getMesEpi()));
-                    dato.setSilais(silais.getNombre());
-                    dato.setUnidadDeSalud(unidadS.getNombre());
-                    dato.setDepartamento(depar.getNombre());
-                    dato.setMunicipio(muni.getNombre());
-                    if (encu.getCodDistrito()!=null) {
-                        cat = catalogosService.getElementoByCodigo(encu.getCodDistrito());
-                        dato.setDistrito(cat.getValor());
-                    }
-                    if (encu.getCodArea()!=null) {
-                        cat = catalogosService.getElementoByCodigo(encu.getCodArea());
-                        dato.setArea(cat.getValor());
-                    }
-                    if (encu.getCodModeloEncu()!=null) {
-                        cat = catalogosService.getElementoByCodigo(encu.getCodModeloEncu());
-                        dato.setModelo(cat.getValor());
-                    }
-                    if (encu.getCodOrdinalEncu()!=null) {
-                        cat = catalogosService.getElementoByCodigo(encu.getCodOrdinalEncu());
-                        dato.setOrdinal(cat.getValor());
-                    }
-                    if (encu.getCodProcedencia()!=null){
-                        cat = catalogosService.getElementoByCodigo(encu.getCodProcedencia());
-                        dato.setProcedencia(cat.getValor());
-                    }
-                    datosEncuestas.add(dato);
-                }*/
+
                 final GsonBuilder gson = new GsonBuilder()
                         .registerTypeAdapter(DaMaeEncuesta.class, new MaestroEncuestaTypeAdapter(sessionFactory))
                         .setPrettyPrinting()
@@ -877,6 +820,55 @@ public class entomologiaController {
         mav.addObject("mae",new DaMaeEncuesta());
         mav.addObject("areas",areasMng);
         return  mav;
+    }
+
+    /**
+     * Método para actualizar el maestro de una encuesta
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
+    @RequestMapping(value = "actualizarMaestro", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    private void updateMaestroEncu(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.info("Se procede a la actualización del maestro");
+        String json = "";
+        String resultado = "";
+        String strMaestro = "";
+        try {
+            boolean existeMaestro=true;
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            json = br.readLine();
+            //Recuperando Json enviado desde el cliente
+            JsonObject jsonpObject = new Gson().fromJson(json, JsonObject.class);
+            strMaestro = jsonpObject.get("maestro").toString();
+
+            //Obteniendo maestro encuesta
+            DaMaeEncuesta daMaeEncuesta = JsonToMaestroEncuesta(strMaestro,null);
+            if (daMaeEncuesta.getCodDistrito()!=null && daMaeEncuesta.getCodDistrito().isEmpty())
+                daMaeEncuesta.setCodDistrito(null);
+            if (daMaeEncuesta.getCodArea()!=null && daMaeEncuesta.getCodArea().isEmpty())
+                daMaeEncuesta.setCodArea(null);
+
+            if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty()){
+                daMaeEncuestaService.updateDaMaeEncuesta(daMaeEncuesta);
+            }else
+            {
+                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+                throw new Exception(resultado);
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(),ex);
+            resultado=messageSource.getMessage("msg.ento.error.update",null,null);
+            resultado=resultado+". \n"+ex.getMessage();
+        }finally {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("mensaje",resultado);
+            map.put("maestro", strMaestro);
+            String jsonResponse = new Gson().toJson(map);
+            response.getOutputStream().write(jsonResponse.getBytes());
+            response.getOutputStream().close();
+        }
     }
     //endregion
 
@@ -974,15 +966,19 @@ public class entomologiaController {
                     //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
                     if (!existeMaestro)
                         daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
-                    throw new Exception("Error al agregar o actualizar detalle de encuesta");
+                    logger.error(ex.getMessage(),ex);
+                    resultado=messageSource.getMessage("msg.ento.error.saveorupdate.detail",null,null);
+                    throw new Exception(resultado);
                 }
             }else
             {
-                throw new Exception("No se puedo obtener el id del maestro");
+                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+                throw new Exception(resultado);
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage(),ex);
-            resultado="Error al actualizar registro. \n"+ex.getMessage();
+            resultado=messageSource.getMessage("msg.ento.error.update",null,null);
+            resultado=resultado+". \n"+ex.getMessage();
         }finally {
             Map<String, String> map = new HashMap<String, String>();
             map.put("idMaestro", idMaestro);
@@ -1064,15 +1060,19 @@ public class entomologiaController {
                     //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
                     if (!existeMaestro)
                         daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
-                    throw new Exception("Error al agregar o actualizar detalle de encuesta");
+                    logger.error(ex.getMessage(),ex);
+                    resultado=messageSource.getMessage("msg.ento.error.saveorupdate.detail",null,null);
+                    throw new Exception(resultado);
                 }
             }else
             {
-                throw new Exception("No se puedo obtener el id del maestro");
+                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+                throw new Exception(resultado);
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage(),ex);
-            resultado="Error al actualizar registro. \n"+ex.getMessage();
+            resultado=messageSource.getMessage("msg.ento.error.update",null,null);
+            resultado=resultado+". \n"+ex.getMessage();
         }finally {
             Map<String, String> map = new HashMap<String, String>();
             map.put("idMaestro", idMaestro);
@@ -1182,15 +1182,19 @@ public class entomologiaController {
                     //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
                     if (!existeMaestro)
                         daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
-                    throw new Exception("Error al agregar o actualizar detalle de encuesta");
+                    logger.error(ex.getMessage(),ex);
+                    resultado=messageSource.getMessage("msg.ento.error.saveorupdate.detail",null,null);
+                    throw new Exception(resultado);
                 }
             }else
             {
-                throw new Exception("No se puedo obtener el id del maestro");
+                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+                throw new Exception(resultado);
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage(),ex);
-            resultado="Error al actualizar registro. \n"+ex.getMessage();
+            resultado=messageSource.getMessage("msg.ento.error.update",null,null);
+            resultado=resultado+". \n"+ex.getMessage();
         }finally {
             Map<String, String> map = new HashMap<String, String>();
             map.put("idMaestro", idMaestro);
@@ -1234,6 +1238,13 @@ public class entomologiaController {
 
     //region ******* GENERALES ******
 
+    /**
+     * Método para convertir una cadena JSON a DaMaeEncuesta
+     * @param strJsonMaestro String con estructura JSON
+     * @param tipoModelo El tipo de modelo al que pertenece el maestro, cuando sólo es edición del maestro se toma el tipo existente en BD
+     * @return DaMaeEncuesta
+     * @throws Exception
+     */
     private DaMaeEncuesta JsonToMaestroEncuesta(String strJsonMaestro, String tipoModelo) throws Exception{
         JsonObject jObjectMae = new Gson().fromJson(strJsonMaestro, JsonObject.class);
         String strEncuestaId = jObjectMae.get("encuestaId").getAsString();
@@ -1257,7 +1268,11 @@ public class entomologiaController {
         Divisionpolitica divisionpolitica = divisionPoliticaService.getDivisionPolitiacaByCodNacional(strCodDepartamento);
         Unidades unidadSalud = unidadesService.getUnidadByCodigo(Integer.valueOf(strCodUnidadSalud));
         Procedencia procedencia = catalogosService.getProcedencia(strCodProcedencia);
-        ModeloEncuesta modeloEncuesta = catalogosService.getModeloEncuesta(tipoModelo);
+        ModeloEncuesta modeloEncuesta = null;
+        if (tipoModelo!=null)
+            modeloEncuesta = catalogosService.getModeloEncuesta(tipoModelo);
+        else
+            modeloEncuesta = daMaeEncuestaService.getModeloEncuByIdMaestro(strEncuestaId);
         Ordinal ordinal = catalogosService.getOrdinalEncuesta(strCodOrdinalEncu);
         Usuarios usuario = usuarioService.getUsuarioById(Integer.valueOf(strUsuarioRegistroId));
 
@@ -1281,6 +1296,12 @@ public class entomologiaController {
         return maeEncuesta;
     }
 
+    /**
+     * Método para convertir cadena json a un objeto DaDetalleEncuestaAedes
+     * @param strJsonDetalle
+     * @return DaDetalleEncuestaAedes
+     * @throws Exception
+     */
     private DaDetalleEncuestaAedes JsonToDetalleEncuestaAedes(String strJsonDetalle) throws  Exception{
         DaDetalleEncuestaAedes daDetalleEncuestaAedes = new DaDetalleEncuestaAedes();
         JsonObject jObjectDeta = new Gson().fromJson(strJsonDetalle, JsonObject.class);
@@ -1333,6 +1354,12 @@ public class entomologiaController {
         return  daDetalleEncuestaAedes;
     }
 
+    /**
+     * Método para convertir cadena json a un objeto DaDetalleEncuestaLarvaria
+     * @param strJsonDetalle
+     * @return DaDetalleEncuestaLarvaria
+     * @throws Exception
+     */
     private DaDetalleEncuestaLarvaria JsonToDetalleEncuestaLarvaria(String strJsonDetalle) throws Exception{
         DaDetalleEncuestaLarvaria detalleEncuestaLarvaria = new DaDetalleEncuestaLarvaria();
 
@@ -1397,6 +1424,12 @@ public class entomologiaController {
         return detalleEncuestaLarvaria;
     }
 
+    /**
+     * Método para convertir cadena json a un objeto DaDetaDepositopreferencial
+     * @param strJsonDetalle
+     * @return DaDetaDepositopreferencial
+     * @throws Exception
+     */
     private DaDetaDepositopreferencial JsonToDetalleDepositoPreferencial(String strJsonDetalle) throws Exception{
         DaDetaDepositopreferencial detaDepositopreferencial = new DaDetaDepositopreferencial();
 
@@ -1474,6 +1507,7 @@ public class entomologiaController {
         }
         return daMaeEncuestaExiste;
     }
+
     //endregion
 
     //region ****** UTILITARIOS *******
