@@ -1,16 +1,13 @@
 package ni.gob.minsa.alerta.api;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import ni.gob.minsa.alerta.domain.estructura.CalendarioEpi;
-import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Distritos;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Areas;
 import ni.gob.minsa.alerta.service.*;
+import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,14 +90,33 @@ public class expose {
     }
 
     @RequestMapping(value = "municipio", method = RequestMethod.GET, produces = "application/json")
-    public
-    @ResponseBody
-    List<Divisionpolitica> getmunicipio(@RequestParam(value = "departamentoId", required = true) String departamentoId) throws Exception {
+         public
+         @ResponseBody
+         List<Divisionpolitica> getmunicipio(@RequestParam(value = "departamentoId", required = true) String departamentoId) throws Exception {
         logger.info("Obteniendo los silais por Departamento en JSON");
         return
                 divisionPoliticaService.getMunicipiosFromDepartamento(departamentoId);
     }
-/*
+
+    @RequestMapping(value = "municipiosbysilais", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    List<Divisionpolitica> getMunicipiosBySilas(@RequestParam(value = "idSilais", required = true) long idSilais) throws Exception {
+        logger.info("Obteniendo los municipios por silais en JSON");
+        return
+                divisionPoliticaService.getMunicipiosBySilais(idSilais);
+    }
+
+    @RequestMapping(value = "unidadesPrimarias", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    List<Unidades> getPrimaryUnitsBySilais(@RequestParam(value = "silaisId", required = true) long silaisId) throws Exception {
+        logger.info("Obteniendo las unidades por municipio en JSON");
+        return
+                unidadesService.getPrimaryUnitsBySilais(silaisId, HealthUnitType.UnidadesPrimarias.getDiscriminator().split(","));
+    }
+
+    /*
     @RequestMapping(value = "patient/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody

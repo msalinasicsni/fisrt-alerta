@@ -3,7 +3,26 @@ var EditAedesSurvey = function () {
     return {
         //main function to initiate the module
         init: function (parametros) {
-			var responsiveHelper_dt_basic = undefined;
+            $(document).on('keypress','form input',function(event)
+            {
+                event.stopImmediatePropagation();
+                if( event.which == 13 )
+                {
+                    event.preventDefault();
+                    var $input = $('form input');
+                    if( $(this).is( $input.last() ) )
+                    {
+                        //Time to submit the form!!!!
+                        //alert( 'Hooray .....' );
+                    }
+                    else
+                    {
+                        $input.eq( $input.index(this) + 1 ).focus();
+                    }
+                }
+            });
+
+            var responsiveHelper_dt_basic = undefined;
 			var breakpointDefinition = {
 				tablet : 1024,
 				phone : 480
@@ -14,7 +33,7 @@ var EditAedesSurvey = function () {
 					"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
 				"autoWidth" : true,
                 "aoColumns" : [
-                    {sClass: "aw-center" },null,{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },null,null,null,{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-center,editDetalle"}
+                    {sClass: "aw-center" },null,{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },null,null,{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-center,editDetalle"}
                 ],
 				"preDrawCallback" : function() {
 					// Initialize the responsive datatables helper once.
@@ -66,7 +85,6 @@ var EditAedesSurvey = function () {
                 var maestro = {
                     encuestaId: $("#idMaestroEditado").val(), // se pasa el id del maestro que se esta editando,
                     codSilais: $('#codSilais option:selected').val(),
-                    codDepartamento: $('#codigoDepartamento option:selected').val(),
                     codMunicipio: $('#codigoMunicipio option:selected').val(),
                     codDistrito: $('#codigoDistrito option:selected').val(),
                     codArea: $('#codigoArea option:selected').val(),
@@ -95,7 +113,7 @@ var EditAedesSurvey = function () {
                     noEliminado: $('#noElimni').val(),
                     noNeutralizado: $('#noNeutr').val(),
                     feAbatizado: $('#fecAbat').val(),
-                    feRepot: $('#fecReport').val(),
+                    feRepot: '',//$('#fecReport').val(),
                     feVEnt: $('#fecVent').val(),
                     usuarioRegistroId: 1
                 };
@@ -153,7 +171,6 @@ var EditAedesSurvey = function () {
                 var maestro = {
                     encuestaId: $("#idMaestroEditado").val(), // se pasa el id del maestro que se esta editando,
                     codSilais: $('#codSilais option:selected').val(),
-                    codDepartamento: $('#codigoDepartamento option:selected').val(),
                     codMunicipio: $('#codigoMunicipio option:selected').val(),
                     codDistrito: $('#codigoDistrito option:selected').val(),
                     codArea: $('#codigoArea option:selected').val(),
@@ -218,7 +235,9 @@ var EditAedesSurvey = function () {
                     idMaestroEncuesta: idMaestro,
     				ajax : 'true'
     			}, function(data) {
-    				var len = data.length;
+                    table1.fnClearTable();
+
+                    var len = data.length;
     				for ( var i = 0; i < len; i++) {
                         nTotalViviendasInspec = nTotalViviendasInspec + data[i][0].viviendasInspec;
                         nTotalViviendasPosit     = nTotalViviendasPosit + data[i][0].viviendasPosit;
@@ -229,7 +248,7 @@ var EditAedesSurvey = function () {
                         nTotalPupas              = nTotalPupas + data[i][0].pupasPosit;
 
 						table1.fnAddData(
-                                [i+1, data[i][0].localidad, data[i][0].viviendasInspec, data[i][0].viviendasPosit, data[i][0].indiceViviendas, data[i][0].manzanasInspec, data[i][0].manzanasPosit, data[i][0].indiceManzanas, data[i][0].depositosInspec, data[i][0].depositosPosit, data[i][0].indiceDepositos, data[i][0].indiceBrete, data[i][0].pupasPosit, data[i][0].indicePupas, data[i][0].fechaAbat, data[i][0].fechaReport, data[i][0].fechaVEnt, data[i][0].noAbati, data[i][0].noElimin,  data[i][0].noNeutr, '<a data-toggle="modal" class="btn btn-default btn-xs editDetalle" data-id='+data[i][0].detaEncuestaId+'><i class="fa fa-edit fa-fw"></i></a>']);
+                                [i+1, data[i][0].localidad, data[i][0].viviendasInspec, data[i][0].viviendasPosit, data[i][0].indiceViviendas, data[i][0].manzanasInspec, data[i][0].manzanasPosit, data[i][0].indiceManzanas, data[i][0].depositosInspec, data[i][0].depositosPosit, data[i][0].indiceDepositos, data[i][0].indiceBrete, data[i][0].pupasPosit, data[i][0].indicePupas, data[i][0].fechaAbat, data[i][0].fechaVEnt, data[i][0].noAbati, data[i][0].noElimin,  data[i][0].noNeutr, '<a data-toggle="modal" class="btn btn-default btn-xs editDetalle" data-id='+data[i][0].detaEncuestaId+'><i class="fa fa-edit fa-fw"></i></a>']);
     							//[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].municipioResidencia.nombre,'<a href='+ personUrl + ' class="btn btn-default btn-xs"><i class="fa fa-search"></i></a>']);
                         var nTotalViviendasIndice    = parseFloat((nTotalViviendasPosit / nTotalViviendasInspec)*100).toFixed(1);
                         var nTotalManzanasIndice     = parseFloat((nTotalManzanasPosit / nTotalManzanasInspec)*100).toFixed(1);
@@ -303,7 +322,7 @@ var EditAedesSurvey = function () {
                         $("#depositosPositovos").val(response.depositosPosit);
                         $("#pupasPositivas").val(response.pupasPosit);
                         $("#fecAbat").val(response.fechaAbat);
-                        $("#fecReport").val(response.fechaRepot);
+                        //$("#fecReport").val(response.fechaRepot);
                         $("#fecVent").val(response.fechaVEnt);
                         $("#noAbati").val(response.noAbati);
                         $("#noElimni").val(response.noElimin);
@@ -333,28 +352,6 @@ var EditAedesSurvey = function () {
                     return false;
                 }else {
                     updateSurvey();
-                }
-            });
-
-            <!-- al seleccionar departamento -->
-            $('#codigoDepartamento').change(function(){
-                $('#codigoMunicipio').val('').change();
-                if ($(this).val().length > 0) {
-                    $.getJSON(parametros.sMunicipiosUrl, {
-                        departamentoId: $(this).val(),
-                        ajax: 'true'
-                    }, function (data) {
-                        var html = null;
-                        var len = data.length;
-                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
-                        for (var i = 0; i < len; i++) {
-                            html += '<option value="' + data[i].codigoNacional + '">'
-                                + data[i].nombre
-                                + '</option>';
-                            html += '</option>';
-                        }
-                        $('#codigoMunicipio').html(html);
-                    })
                 }
             });
 
@@ -413,8 +410,24 @@ var EditAedesSurvey = function () {
 
             <!-- al seleccionar SILAIS -->
             $('#codSilais').change(function(){
+                $('#codigoMunicipio').val('').change();
                 $('#codUnidadSalud').val('').change();
                 if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sMunicipiosUrl, {
+                        idSilais: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigoNacional + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            html += '</option>';
+                        }
+                        $('#codigoMunicipio').html(html);
+                    });
                     $.getJSON(parametros.sUnidadesUrl, {
                         silaisId: $(this).val(),
                         ajax: 'true'
@@ -469,9 +482,6 @@ var EditAedesSurvey = function () {
             var $formPrincipal = $("#frmPrincipal").validate({
                 rules: {
                     codSilais: {
-                        required: true
-                    },
-                    codigoDepartamento: {
                         required: true
                     },
                     codigoMunicipio: {
@@ -551,20 +561,23 @@ var EditAedesSurvey = function () {
                         digits: true
                     },
                     noAbati:{
+                        required: true,
                         digits: true
                     },
                     noElimni:{
+                        required: true,
                         digits: true
                     },
                     noNeutr: {
+                        required: true,
                         digits: true
                     },
                     fecAbat: {
                         dpDate: true
-                    },
+                    },/*
                     fecReport: {
                         dpDate: true
-                    },
+                    },*/
                     fecVent: {
                         dpDate: true
                     }
@@ -574,7 +587,6 @@ var EditAedesSurvey = function () {
 
                 },
                 submitHandler: function (form) {
-                    table1.fnClearTable();
                     //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
                     saveSurvey();
                 }
@@ -603,7 +615,6 @@ var EditAedesSurvey = function () {
             function limpiarCamposMaestro(){
                 $('#codSilais').val('').change();
                 $('#codUnidadSalud').val('').change();
-                $('#codigoDepartamento').val('').change();
                 $('#codigoMunicipio').val('').change();
                 $('#codigoDistrito').val('').change();
                 $('#codigoArea').val('').change();
@@ -628,7 +639,7 @@ var EditAedesSurvey = function () {
                 $("#noAbati").val('');
                 $("#noElimni").val('');
                 $("#noNeutr").val('');
-                $("#fecReport").val('');
+                //$("#fecReport").val('');
                 $("#fecVent").val('');
                 $("#fecAbat").val('');
                 $('#idDetalleEditar').val('');
@@ -665,12 +676,31 @@ var EditLarvariaSurvey = function () {
     return {
         //main function to initiate the module
         init: function (parametros) {
+            $(document).on('keypress','form input',function(event)
+            {
+                event.stopImmediatePropagation();
+                if( event.which == 13 )
+                {
+                    event.preventDefault();
+                    var $input = $('form input');
+                    if( $(this).is( $input.last() ) )
+                    {
+                        //Time to submit the form!!!!
+                        //alert( 'Hooray .....' );
+                    }
+                    else
+                    {
+                        $input.eq( $input.index(this) + 1 ).focus();
+                    }
+                }
+            });
+
             var responsiveHelper_dt_basic = undefined;
             var breakpointDefinition = {
                 tablet : 1024,
                 phone : 480
             };
-            var table1 = $('#dtDetalleIndices').dataTable({
+            /*var table1 = $('#dtDetalleIndices').dataTable({
                 "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
                     "t"+
                     "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
@@ -690,7 +720,7 @@ var EditLarvariaSurvey = function () {
                 "drawCallback" : function(oSettings) {
                     responsiveHelper_dt_basic.respond();
                 }
-            });
+            });*/
             var table2 = $('#dtDetalleDistribucion').dataTable({
                 "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
                     "t"+
@@ -717,7 +747,6 @@ var EditLarvariaSurvey = function () {
                 var maestro = {
                     encuestaId: $("#idMaestroEditado").val(), // se pasa el id del maestro que se esta editando,
                     codSilais: $('#codSilais option:selected').val(),
-                    codDepartamento: $('#codigoDepartamento option:selected').val(),
                     codMunicipio: $('#codigoMunicipio option:selected').val(),
                     codDistrito: $('#codigoDistrito option:selected').val(),
                     codArea: $('#codigoArea option:selected').val(),
@@ -735,7 +764,7 @@ var EditLarvariaSurvey = function () {
                 var detalle = {
                     detaEncuestaId: $("#idDetalleEditar").val(),
                     codLocalidad: $('#codigoLocalidad option:selected').val(),
-                    pilaInfestado: $('#txtPila').val(),
+                    /*pilaInfestado: $('#txtPila').val(),
                     llantaInfestado: $('#txtLlanta').val(),
                     barrilInfestado: $('#txtBarril').val(),
                     floreroInfestado: $('#txtFlorero').val(),
@@ -747,7 +776,7 @@ var EditLarvariaSurvey = function () {
                     barroInfestado: $('#txtBarro').val(),
                     plantaInfestado: $('#txtPlanta').val(),
                     arbolInfestado: $('#txtArbol').val(),
-                    pozoInfestado: $('#txtPozo').val(),
+                    pozoInfestado: $('#txtPozo').val(),*/
                     especieAegypti: $('#txtAedesAegyti').val(),
                     especieAlbopic: $('#txtAedesAlbopic').val(),
                     especieCulexQuinque: $('#txtCulexQuinque').val(),
@@ -815,7 +844,6 @@ var EditLarvariaSurvey = function () {
                 var maestro = {
                     encuestaId: $("#idMaestroEditado").val(), // se pasa el id del maestro que se esta editando,
                     codSilais: $('#codSilais option:selected').val(),
-                    codDepartamento: $('#codigoDepartamento option:selected').val(),
                     codMunicipio: $('#codigoMunicipio option:selected').val(),
                     codDistrito: $('#codigoDistrito option:selected').val(),
                     codArea: $('#codigoArea option:selected').val(),
@@ -873,19 +901,23 @@ var EditLarvariaSurvey = function () {
                     idMaestroEncuesta: idMaestro,
                     ajax : 'true'
                 }, function(response) {
-                    var nIndicePilas    = 0, nIndiceLlanta   = 0, nIndiceBarril   = 0, nIndiceFlorero  = 0,nIndiceBebedero = 0, nIndiceArtEspec = 0, nIndiceODep     = 0, nIndiceCister   = 0, nIndiceInodo    = 0;
-                    var nIndicePlanta   = 0, nIndiceBarro    = 0, nIndiceArbol    = 0,nIndicePozo     = 0, nIndiceAegypti  = 0, nIndiceAlbopic  = 0, nIndiceQuinque  = 0, nIndiceNigrip   = 0, nIndiceCoronat  = 0;
-                    var nIndiceErratico = 0, nIndiceTarsalis = 0, nIndiceFatigans = 0, nIndiceAlbim    = 0, nTotalPilas    = 0, nTotalLlanta   = 0, nTotalBarril   = 0, nTotalFlorero  = 0, nTotalBebedero = 0;
-                    var nTotalArtEspec = 0, nTotalODep     = 0, nTotalCister   = 0, nTotalInodo    = 0, nTotalPlanta   = 0, nTotalBarro    = 0, nTotalArbol    = 0, nTotalPozo     = 0, nTotalAegypti  = 0;
-                    var nTotalAlbopic  = 0, nTotalQuinque  = 0, nTotalNigrip   = 0, nTotalCoronat  = 0, nTotalErratico = 0, nTotalTarsalis = 0, nTotalFatigans = 0, nTotalAlbim    = 0, nTotalTotalIndice = 0, nTotalTotalDist=0;
+                    //table1.fnClearTable();
+                    table2.fnClearTable();
+
+                    //var nIndicePilas    = 0, nIndiceLlanta   = 0, nIndiceBarril   = 0, nIndiceFlorero  = 0,nIndiceBebedero = 0, nIndiceArtEspec = 0, nIndiceODep     = 0, nIndiceCister   = 0, nIndiceInodo    = 0;
+                    //var nIndicePlanta   = 0, nIndiceBarro    = 0, nIndiceArbol    = 0,nIndicePozo     = 0;
+                    var nIndiceAegypti  = 0, nIndiceAlbopic  = 0, nIndiceQuinque  = 0, nIndiceNigrip   = 0, nIndiceCoronat  = 0, nIndiceErratico = 0, nIndiceTarsalis = 0, nIndiceFatigans = 0, nIndiceAlbim    = 0;
+                    //var nTotalPilas    = 0, nTotalLlanta   = 0, nTotalBarril   = 0, nTotalFlorero  = 0, nTotalBebedero = 0, nTotalTotalIndice = 0;
+                    //var nTotalArtEspec = 0, nTotalODep     = 0, nTotalCister   = 0, nTotalInodo    = 0, nTotalPlanta   = 0, nTotalBarro    = 0, nTotalArbol    = 0, nTotalPozo     = 0;
+                    var nTotalAegypti  = 0, nTotalAlbopic  = 0, nTotalQuinque  = 0, nTotalNigrip   = 0, nTotalCoronat  = 0, nTotalErratico = 0, nTotalTarsalis = 0, nTotalFatigans = 0, nTotalAlbim    = 0, nTotalTotalDist=0;
 
                     var len = response.length;
                     for ( var i = 0; i < len; i++) {
 
-                        var nTotalIndice = response[i][0].pilaInfestado + response[i][0].llantaInfestado + response[i][0].barrilInfestado + response[i][0].floreroInfestado + response[i][0].bebederoInfestado + response[i][0].artEspecialInfes +
-                            response[i][0].otrosDepositosInfes + response[i][0].cisterInfestado + response[i][0].inodoroInfestado + response[i][0].barroInfestado  +response[i][0].plantaInfestado + response[i][0].arbolInfestado +response[i][0].pozoInfestado;
+                        //var nTotalIndice = response[i][0].pilaInfestado + response[i][0].llantaInfestado + response[i][0].barrilInfestado + response[i][0].floreroInfestado + response[i][0].bebederoInfestado + response[i][0].artEspecialInfes +
+                        //    response[i][0].otrosDepositosInfes + response[i][0].cisterInfestado + response[i][0].inodoroInfestado + response[i][0].barroInfestado  +response[i][0].plantaInfestado + response[i][0].arbolInfestado +response[i][0].pozoInfestado;
 
-                        nTotalTotalIndice = nTotalTotalIndice + nTotalIndice;
+                        /*nTotalTotalIndice = nTotalTotalIndice + nTotalIndice;
                         nTotalPilas    =    nTotalPilas    + response[i][0].pilaInfestado;
                         nTotalLlanta   =    nTotalLlanta   + response[i][0].llantaInfestado ;
                         nTotalBarril   =    nTotalBarril   + response[i][0].barrilInfestado ;
@@ -898,7 +930,7 @@ var EditLarvariaSurvey = function () {
                         nTotalBarro    =    nTotalBarro    + response[i][0].barroInfestado ;
                         nTotalPlanta   =    nTotalPlanta   + response[i][0].plantaInfestado;
                         nTotalArbol    =    nTotalArbol    + response[i][0].arbolInfestado;
-                        nTotalPozo     =    nTotalPozo     + response[i][0].pozoInfestado;
+                        nTotalPozo     =    nTotalPozo     + response[i][0].pozoInfestado;*/
                         nTotalAegypti  =    nTotalAegypti  + response[i][0].especieAegypti;
                         nTotalAlbopic  =    nTotalAlbopic  + response[i][0].especieAlbopic;
                         nTotalQuinque  =    nTotalQuinque  + response[i][0].especieCulexQuinque;
@@ -919,14 +951,14 @@ var EditLarvariaSurvey = function () {
                             response[i][0].especieCulexAlbim;
                         nTotalTotalDist = nTotalTotalDist + nTotalDistribucion;
 
-                        table1.fnAddData(
-                            [i+1, response[i][0].localidad, response[i][0].pilaInfestado, response[i][0].llantaInfestado, response[i][0].barrilInfestado, response[i][0].floreroInfestado, response[i][0].bebederoInfestado, response[i][0].artEspecialInfes, response[i][0].otrosDepositosInfes, response[i][0].cisterInfestado, response[i][0].inodoroInfestado, response[i][0].barroInfestado, response[i][0].plantaInfestado, response[i][0].arbolInfestado, response[i][0].pozoInfestado, nTotalIndice, '<a data-toggle="modal" class="btn btn-default btn-xs editDetalle" data-id='+response[i][0].detaEncuestaId+'><i class="fa fa-edit fa-fw"></i></a>']);
+                        //table1.fnAddData(
+                        //    [i+1, response[i][0].localidad, response[i][0].pilaInfestado, response[i][0].llantaInfestado, response[i][0].barrilInfestado, response[i][0].floreroInfestado, response[i][0].bebederoInfestado, response[i][0].artEspecialInfes, response[i][0].otrosDepositosInfes, response[i][0].cisterInfestado, response[i][0].inodoroInfestado, response[i][0].barroInfestado, response[i][0].plantaInfestado, response[i][0].arbolInfestado, response[i][0].pozoInfestado, nTotalIndice, '<a data-toggle="modal" class="btn btn-default btn-xs editDetalle" data-id='+response[i][0].detaEncuestaId+'><i class="fa fa-edit fa-fw"></i></a>']);
 
                         table2.fnAddData(
                             [i+1, response[i][0].localidad, response[i][0].especieAegypti , response[i][0].especieAlbopic, response[i][0].especieCulexQuinque, response[i][0].especieCulexNigrip, response[i][0].especieCulexCoronat, response[i][0].especieCulexErratico, response[i][0].especieCulexTarsalis, response[i][0].especieCulexFatigans, response[i][0].especieCulexAlbim, nTotalDistribucion,'<a data-toggle="modal" class="btn btn-default btn-xs editDetalle" data-id='+response[i][0].detaEncuestaId+'><i class="fa fa-edit fa-fw"></i></a>']);
                     }
 
-                    nIndicePilas = parseFloat((nTotalPilas / nTotalTotalIndice)*100).toFixed(1);
+                    /*nIndicePilas = parseFloat((nTotalPilas / nTotalTotalIndice)*100).toFixed(1);
                     nIndiceLlanta = parseFloat((nTotalLlanta / nTotalTotalIndice)*100).toFixed(1);
                     nIndiceBarril = parseFloat((nTotalBarril / nTotalTotalIndice)*100).toFixed(1);
                     nIndiceFlorero = parseFloat((nTotalFlorero / nTotalTotalIndice)*100).toFixed(1);
@@ -938,7 +970,7 @@ var EditLarvariaSurvey = function () {
                     nIndicePlanta = parseFloat((nTotalPlanta / nTotalTotalIndice)*100).toFixed(1);
                     nIndiceBarro = parseFloat((nTotalBarro / nTotalTotalIndice)*100).toFixed(1);
                     nIndiceArbol = parseFloat((nTotalArbol / nTotalTotalIndice)*100).toFixed(1);
-                    nIndicePozo = parseFloat((nTotalPozo / nTotalTotalIndice)*100).toFixed(1);
+                    nIndicePozo = parseFloat((nTotalPozo / nTotalTotalIndice)*100).toFixed(1);*/
                     nIndiceAegypti = parseFloat((nTotalAegypti / nTotalTotalDist)*100).toFixed(1);
                     nIndiceAlbopic = parseFloat((nTotalAlbopic / nTotalTotalDist)*100).toFixed(1);
                     nIndiceQuinque = parseFloat((nTotalQuinque / nTotalTotalDist)*100).toFixed(1);
@@ -949,7 +981,7 @@ var EditLarvariaSurvey = function () {
                     nIndiceFatigans = parseFloat((nTotalFatigans / nTotalTotalDist)*100).toFixed(1);
                     nIndiceAlbim = parseFloat((nTotalAlbim / nTotalTotalDist)*100).toFixed(1);
 
-                    $("#indicePila").text(nIndicePilas);
+                    /*$("#indicePila").text(nIndicePilas);
                     $("#indiceLlanta").text(nIndiceLlanta);
                     $("#indiceBarril").text(nIndiceBarril);
                     $("#indiceFloreros").text(nIndiceFlorero);
@@ -961,7 +993,7 @@ var EditLarvariaSurvey = function () {
                     $("#indiceBarro").text(nIndiceBarro);
                     $("#indicePlanta").text(nIndicePlanta);
                     $("#indiceArbol").text(nIndiceArbol);
-                    $("#indicePozo").text(nIndicePozo);
+                    $("#indicePozo").text(nIndicePozo);*/
 
                     $("#indiceAegypti").text(nIndiceAegypti  );
                     $("#indiceAlbopic").text(nIndiceAlbopic  );
@@ -973,7 +1005,7 @@ var EditLarvariaSurvey = function () {
                     $("#indiceFatigans").text(nIndiceFatigans );
                     $("#indiceAnophAlbim").text(nIndiceAlbim    );
 
-                    $("#totalPila").text(nTotalPilas);
+                    /*$("#totalPila").text(nTotalPilas);
                     $("#totalLlanta").text(nTotalLlanta);
                     $("#totalBarril").text(nTotalBarril);
                     $("#totalFloreros").text(nTotalFlorero);
@@ -986,7 +1018,7 @@ var EditLarvariaSurvey = function () {
                     $("#totalPlanta").text(nTotalPlanta);
                     $("#totalArbol").text(nTotalArbol);
                     $("#totalPozo").text(nTotalPozo);
-                    $("#totalTotalI").text(nTotalTotalIndice);
+                    $("#totalTotalI").text(nTotalTotalIndice);*/
 
                     $("#totalAegypti").text(nTotalAegypti  );
                     $("#totalAlbopic").text(nTotalAlbopic  );
@@ -1041,7 +1073,7 @@ var EditLarvariaSurvey = function () {
                     dataType: "json",
                     success: function (response) {
                         $("#codLocalidadEdicion").val(response.codLocalidad);
-                        $("#txtPila").val(response.pilaInfestado);
+                        /*$("#txtPila").val(response.pilaInfestado);
                         $("#txtLlanta").val(response.llantaInfestado);
                         $("#txtBarril").val(response.barrilInfestado);
                         $("#txtFlorero").val(response.floreroInfestado);
@@ -1053,7 +1085,7 @@ var EditLarvariaSurvey = function () {
                         $("#txtBarro").val(response.barroInfestado);
                         $("#txtPlanta").val(response.plantaInfestado);
                         $("#txtArbol").val(response.arbolInfestado);
-                        $("#txtPozo").val(response.pozoInfestado);
+                        $("#txtPozo").val(response.pozoInfestado);*/
                         $("#txtAedesAegyti").val(response.especieAegypti);
                         $("#txtAedesAlbopic").val(response.especieAlbopic);
                         $("#txtCulexQuinque").val(response.especieCulexQuinque);
@@ -1091,28 +1123,6 @@ var EditLarvariaSurvey = function () {
                     return false;
                 }else {
                     updateSurvey();
-                }
-            });
-
-            <!-- al seleccionar departamento -->
-            $('#codigoDepartamento').change(function(){
-                $('#codigoMunicipio').val('').change();
-                if ($(this).val().length > 0) {
-                    $.getJSON(parametros.sMunicipiosUrl, {
-                        departamentoId: $(this).val(),
-                        ajax: 'true'
-                    }, function (data) {
-                        var html = null;
-                        var len = data.length;
-                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
-                        for (var i = 0; i < len; i++) {
-                            html += '<option value="' + data[i].codigoNacional + '">'
-                                + data[i].nombre
-                                + '</option>';
-                            html += '</option>';
-                        }
-                        $('#codigoMunicipio').html(html);
-                    })
                 }
             });
 
@@ -1171,8 +1181,24 @@ var EditLarvariaSurvey = function () {
 
             <!-- al seleccionar SILAIS -->
             $('#codSilais').change(function(){
+                $('#codigoMunicipio').val('').change();
                 $('#codUnidadSalud').val('').change();
                 if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sMunicipiosUrl, {
+                        idSilais: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigoNacional + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            html += '</option>';
+                        }
+                        $('#codigoMunicipio').html(html);
+                    });
                     $.getJSON(parametros.sUnidadesUrl, {
                         silaisId: $(this).val(),
                         ajax: 'true'
@@ -1187,7 +1213,7 @@ var EditLarvariaSurvey = function () {
                             html += '</option>';
                         }
                         $('#codUnidadSalud').html(html);
-                    })
+                    });
                 }
             });
 
@@ -1226,9 +1252,6 @@ var EditLarvariaSurvey = function () {
             var $formPrincipal = $("#frmPrincipal").validate({
                 rules: {
                     codSilais: {
-                        required: true
-                    },
-                    codigoDepartamento: {
                         required: true
                     },
                     codigoMunicipio: {
@@ -1279,58 +1302,6 @@ var EditLarvariaSurvey = function () {
                     codigoLocalidad:{
                         required: true
                     },
-                    txtPila:{
-                        required: true,
-                        digits: true
-                    },
-                    txtLlanta:{
-                        required: true,
-                        digits: true
-                    },
-                    txtBarril:{
-                        required: true,
-                        digits: true
-                    },
-                    txtFlorero:{
-                        required: true,
-                        digits: true
-                    },
-                    txtBebedero:{
-                        required: true,
-                        digits: true
-                    },
-                    txtArt_Esp:{
-                        required: true,
-                        digits: true
-                    },
-                    txtO_Dep:{
-                        required: true,
-                        digits: true
-                    },
-                    txtCister:{
-                        required: true,
-                        digits: true
-                    },
-                    txtInodoro:{
-                        required: true,
-                        digits: true
-                    },
-                    txtBarro: {
-                        required: true,
-                        digits: true
-                    },
-                    txtPlanta: {
-                        required: true,
-                        digits: true
-                    },
-                    txtArbol: {
-                        required: true,
-                        digits: true
-                    },
-                    txtPozo: {
-                        required: true,
-                        digits: true
-                    },
                     txtAedesAegyti: {
                         required: true,
                         digits: true
@@ -1374,8 +1345,6 @@ var EditLarvariaSurvey = function () {
 
                 },
                 submitHandler: function (form) {
-                    table1.fnClearTable();
-                    table2.fnClearTable();
                     //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
                     saveSurvey();
                 }
@@ -1404,7 +1373,6 @@ var EditLarvariaSurvey = function () {
             function limpiarCamposMaestro(){
                 $('#codSilais').val('').change();
                 $('#codUnidadSalud').val('').change();
-                $('#codigoDepartamento').val('').change();
                 $('#codigoMunicipio').val('').change();
                 $('#codigoDistrito').val('').change();
                 $('#codigoArea').val('').change();
@@ -1422,7 +1390,7 @@ var EditLarvariaSurvey = function () {
                 $("#idDetalleEditar").val('');
                 $('#codigoLocalidad option:first').prop("selected", true).change();
                 $("#codLocalidadEdicion").val('');
-                $("#txtPila").val('');
+                /*$("#txtPila").val('');
                 $("#txtLlanta").val('');
                 $("#txtBarril").val('');
                 $("#txtFlorero").val('');
@@ -1434,7 +1402,7 @@ var EditLarvariaSurvey = function () {
                 $("#txtBarro").val('');
                 $("#txtPlanta").val('');
                 $("#txtArbol").val('');
-                $("#txtPozo").val('');
+                $("#txtPozo").val('');*/
                 $("#txtAedesAegyti").val('');
                 $("#txtAedesAlbopic").val('');
                 $("#txtCulexQuinque").val('');
@@ -1447,9 +1415,9 @@ var EditLarvariaSurvey = function () {
             }
 
             function limpiarTablasDetalle(){
-                table1.fnClearTable();
+                //table1.fnClearTable();
                 table2.fnClearTable();
-                $("#indicePila").text('0');
+                /*$("#indicePila").text('0');
                 $("#indiceLlanta").text('0');
                 $("#indiceBarril").text('0');
                 $("#indiceFloreros").text('0');
@@ -1461,7 +1429,7 @@ var EditLarvariaSurvey = function () {
                 $("#indiceBarro").text('0');
                 $("#indicePlanta").text('0');
                 $("#indiceArbol").text('0');
-                $("#indicePozo").text('0');
+                $("#indicePozo").text('0');*/
 
                 $("#indiceAegypti").text('0');
                 $("#indiceAlbopic").text('0');
@@ -1473,7 +1441,7 @@ var EditLarvariaSurvey = function () {
                 $("#indiceFatigans").text('0');
                 $("#indiceAnophAlbim").text('0');
 
-                $("#totalPila").text('0');
+                /*$("#totalPila").text('0');
                 $("#totalLlanta").text('0');
                 $("#totalBarril").text('0');
                 $("#totalFloreros").text('0');
@@ -1486,7 +1454,7 @@ var EditLarvariaSurvey = function () {
                 $("#totalPlanta").text('0');
                 $("#totalArbol").text('0');
                 $("#totalPozo").text('0');
-                $("#totalTotalI").text('0');
+                $("#totalTotalI").text('0');*/
 
                 $("#totalAegypti").text('0');
                 $("#totalAlbopic").text('0');
@@ -1547,6 +1515,25 @@ var EditDepositoSurvey = function(){
     return {
         //main function to initiate the module
         init: function (parametros){
+            $(document).on('keypress','form input',function(event)
+            {
+                event.stopImmediatePropagation();
+                if( event.which == 13 )
+                {
+                    event.preventDefault();
+                    var $input = $('form input');
+                    if( $(this).is( $input.last() ) )
+                    {
+                        //Time to submit the form!!!!
+                        //alert( 'Hooray .....' );
+                    }
+                    else
+                    {
+                        $input.eq( $input.index(this) + 1 ).focus();
+                    }
+                }
+            });
+
             var responsiveHelper_dt_basic = undefined;
             var breakpointDefinition = {
                 tablet : 1024,
@@ -1578,7 +1565,6 @@ var EditDepositoSurvey = function(){
                 var maestro = {
                     encuestaId: $("#idMaestroEditado").val(), // se pasa el id del maestro que se esta trabajando, la primera vez es null
                     codSilais: $('#codSilais option:selected').val(),
-                    codDepartamento: $('#codigoDepartamento option:selected').val(),
                     codMunicipio: $('#codigoMunicipio option:selected').val(),
                     codDistrito: $('#codigoDistrito option:selected').val(),
                     codArea: $('#codigoArea option:selected').val(),
@@ -1671,7 +1657,6 @@ var EditDepositoSurvey = function(){
                 var maestro = {
                     encuestaId: $("#idMaestroEditado").val(), // se pasa el id del maestro que se esta editando,
                     codSilais: $('#codSilais option:selected').val(),
-                    codDepartamento: $('#codigoDepartamento option:selected').val(),
                     codMunicipio: $('#codigoMunicipio option:selected').val(),
                     codDistrito: $('#codigoDistrito option:selected').val(),
                     codArea: $('#codigoArea option:selected').val(),
@@ -1729,6 +1714,8 @@ var EditDepositoSurvey = function(){
                     idMaestroEncuesta: idMaestro,
                     ajax : 'true'
                 }, function(response) {
+                    table1.fnClearTable();
+
                     var nIndicePilas, nIndiceLlanta, nIndiceBarril, nIndiceFlorero,nIndiceBebedero, nIndiceArtEspec, nIndiceODep, nIndiceCister, nIndiceInodo;
                     var nIndicePlanta   = 0, nIndiceBarro    = 0, nIndiceArbol    = 0,nIndicePozo     = 0, nTotalPilas    = 0, nTotalLlanta   = 0, nTotalBarril   = 0, nTotalFlorero  = 0, nTotalBebedero = 0;
                     var nTotalArtEspec = 0, nTotalODep     = 0, nTotalCister   = 0, nTotalInodo    = 0, nTotalPlanta   = 0, nTotalBarro    = 0, nTotalArbol    = 0, nTotalPozo     = 0, nTotalTotalIndice = 0;
@@ -1753,7 +1740,7 @@ var EditDepositoSurvey = function(){
                         nTotalPozo     =    nTotalPozo     + response[i][0].pozoInfestado;
 
                         table1.fnAddData(
-                            [i+1, response[i][0].localidad, response[i][0].pilaInfestado, response[i][0].llantaInfestado, response[i][0].barrilInfestado, response[i][0].floreroInfestado, response[i][0].bebederoInfestado, response[i][0].artEspecialInfes, response[i][0].otrosDepositosInfes, response[i][0].cisterInfestado, response[i][0].inodoroInfestado, response[i][0].barroInfestado, response[i][0].plantaInfestado, response[i][0].arbolInfestado, response[i][0].pozoInfestado, nTotalIndice,response[i][0].manzana, response[i][0].vivienda, response[i][0].nombre , response[i][0].decripOtroDeposito, response[i][0].decripcionCister,
+                            [i+1, response[i][0].localidad, response[i][0].manzana, response[i][0].vivienda, response[i][0].pilaInfestado, response[i][0].llantaInfestado, response[i][0].barrilInfestado, response[i][0].floreroInfestado, response[i][0].bebederoInfestado, response[i][0].artEspecialInfes, response[i][0].otrosDepositosInfes, response[i][0].cisterInfestado, response[i][0].inodoroInfestado, response[i][0].barroInfestado, response[i][0].plantaInfestado, response[i][0].arbolInfestado, response[i][0].pozoInfestado, nTotalIndice, response[i][0].nombre , response[i][0].decripOtroDeposito, response[i][0].decripcionCister,
                                     '<a data-toggle="modal" class="btn btn-default btn-xs editDetalle" data-id='+response[i][0].detaEncuestaId+'><i class="fa fa-edit fa-fw"></i></a>']);
 
                     }
@@ -1892,7 +1879,6 @@ var EditDepositoSurvey = function(){
             function limpiarCamposMaestro(){
                 $('#codSilais').val('').change();
                 $('#codUnidadSalud').val('').change();
-                $('#codigoDepartamento').val('').change();
                 $('#codigoMunicipio').val('').change();
                 $('#codigoDistrito').val('').change();
                 $('#codigoArea').val('').change();
@@ -1974,9 +1960,6 @@ var EditDepositoSurvey = function(){
             var $formPrincipal = $("#frmPrincipal").validate({
                 rules: {
                     codSilais: {
-                        required: true
-                    },
-                    codigoDepartamento: {
                         required: true
                     },
                     codigoMunicipio: {
@@ -2094,7 +2077,6 @@ var EditDepositoSurvey = function(){
 
                 },
                 submitHandler: function (form) {
-                    table1.fnClearTable();
                     //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
                     saveSurvey();
                 }
@@ -2123,28 +2105,6 @@ var EditDepositoSurvey = function(){
             $("#openModal").click(function(){
                 limpiarCamposDetalle();
                 mostrarModalDetalle();
-            });
-
-            <!-- al seleccionar departamento -->
-            $('#codigoDepartamento').change(function(){
-                $('#codigoMunicipio').val('').change();
-                if ($(this).val().length > 0) {
-                    $.getJSON(parametros.sMunicipiosUrl, {
-                        departamentoId: $(this).val(),
-                        ajax: 'true'
-                    }, function (data) {
-                        var html = null;
-                        var len = data.length;
-                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
-                        for (var i = 0; i < len; i++) {
-                            html += '<option value="' + data[i].codigoNacional + '">'
-                                + data[i].nombre
-                                + '</option>';
-                            html += '</option>';
-                        }
-                        $('#codigoMunicipio').html(html);
-                    })
-                }
             });
 
             <!-- al seleccionar municipio -->
@@ -2202,8 +2162,24 @@ var EditDepositoSurvey = function(){
 
             <!-- al seleccionar SILAIS -->
             $('#codSilais').change(function(){
+                $('#codigoMunicipio').val('').change();
                 $('#codUnidadSalud').val('').change();
                 if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sMunicipiosUrl, {
+                        idSilais: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigoNacional + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            html += '</option>';
+                        }
+                        $('#codigoMunicipio').html(html);
+                    });
                     $.getJSON(parametros.sUnidadesUrl, {
                         silaisId: $(this).val(),
                         ajax: 'true'
@@ -2218,12 +2194,13 @@ var EditDepositoSurvey = function(){
                             html += '</option>';
                         }
                         $('#codUnidadSalud').html(html);
-                    })
+                    });
                 }
             });
 
             <!-- al seleccionar localidad -->
             $('#codigoLocalidad').change(function() {
+                /*
                 if ($(this).val() != $("#codLocalidadEdicion").val() && ($(this).val().length > 0 )){
 
                     var encuestaObj = {};
@@ -2254,6 +2231,7 @@ var EditDepositoSurvey = function(){
                         ocultarMensajePop()
                     }, 2000);
                 }
+                */
             });
 
             <!-- al ingresar fecha de inicio de encuesta-->

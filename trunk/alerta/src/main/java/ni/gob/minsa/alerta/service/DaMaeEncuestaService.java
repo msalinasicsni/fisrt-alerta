@@ -96,19 +96,17 @@ public class DaMaeEncuestaService {
             Timestamp tsFechaFin = new Timestamp(maeEncuesta.getFeFinEncuesta().getTime());
             String query = "select ma from DaMaeEncuesta as ma inner join ma.entidadesAdtva as en " +
                     "inner join ma.unidadSalud as un " +
-                    "inner join ma.departamento as de " +
                     "inner join ma.municipio as mu " +
                     "inner join ma.ordinalEncuesta as ordi " +
                     "inner join ma.procedencia as pr " +
                     "inner join ma.modeloEncuesta as mo " +
-                    "where en.codigo =:codSilais and de.codigoNacional=:departamento and mu.codigoNacional=:municipio " +
+                    "where en.codigo =:codSilais and mu.codigoNacional=:municipio " +
                     "and un.codigo=:unidadSalud and ma.anioEpi=:anioEpi and ordi.codigo=:ordinalEncu and pr.codigo=:procedencia " +
                     "and mo.codigo=:modelo and ma.feInicioEncuesta = :fecInicio and ma.feFinEncuesta =:fecFin";
 
             Session session = sessionFactory.getCurrentSession();
             Query q = session.createQuery(query);
             q.setLong("codSilais", maeEncuesta.getEntidadesAdtva().getCodigo());
-            q.setString("departamento", maeEncuesta.getDepartamento().getCodigoNacional());
             q.setString("municipio", maeEncuesta.getMunicipio().getCodigoNacional());
             q.setLong("unidadSalud",maeEncuesta.getUnidadSalud().getCodigo());
             q.setInteger("anioEpi",maeEncuesta.getAnioEpi());
@@ -135,7 +133,7 @@ public class DaMaeEncuestaService {
         List<DaMaeEncuesta> aux = null;
         try {
             //silais, unidad salud, año, mes y modelo
-            String query = "from DaMaeEncuesta as a join a.entidadesAdtva as b " +
+            String query = "select a from DaMaeEncuesta as a join a.entidadesAdtva as b " +
                     "join a.unidadSalud as c " +
                     "join a.modeloEncuesta as d " +
                     "where b.codigo =:codSilais and c.codigo =:unidadSalud and a.anioEpi=:anioEpi and a.mesEpi=:mesEpi and d.codigo =:modelo";//" and feFinEncuesta =: fecInicio and feFinEncuesta =: fecFin";

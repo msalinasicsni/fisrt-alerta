@@ -298,7 +298,7 @@ public class CatalogoService {
         // Retrieve session from Hibernate
         Session session = sessionFactory.getCurrentSession();
         // Create a Hibernate query (HQL)
-        Query query = session.getNamedQuery("obtenerOrdinalEncuestaPorCodigo").setString("pCodigo", distrito);
+        Query query = session.getNamedQuery("obtenerDistritosPorCodigo").setString("pCodigo", distrito);
         // Retrieve all
         return  (Distritos) query.uniqueResult();
     }

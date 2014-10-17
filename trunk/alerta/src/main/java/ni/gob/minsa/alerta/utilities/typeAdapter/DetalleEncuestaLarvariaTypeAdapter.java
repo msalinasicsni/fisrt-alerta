@@ -40,7 +40,7 @@ public class DetalleEncuestaLarvariaTypeAdapter extends TypeAdapter<DaDetalleEnc
         out.name("encuestaId").value(value.getMaeEncuesta().getEncuestaId());
         out.name("codLocalidad").value(value.getLocalidad().getCodigo());
         out.name("localidad").value(value.getLocalidad().getNombre());
-        out.name("pilaInfestado").value(value.getPilaInfestado());
+        /*out.name("pilaInfestado").value(value.getPilaInfestado());
         out.name("llantaInfestado").value(value.getLlantaInfestado());
         out.name("barrilInfestado").value(value.getBarrilInfestado());
         out.name("floreroInfestado").value(value.getFloreroInfestado());
@@ -52,7 +52,7 @@ public class DetalleEncuestaLarvariaTypeAdapter extends TypeAdapter<DaDetalleEnc
         out.name("barroInfestado").value(value.getBarroInfestado());
         out.name("plantaInfestado").value(value.getPlantaInfestado());
         out.name("arbolInfestado").value(value.getArbolInfestado());
-        out.name("pozoInfestado").value(value.getPozoInfestado());
+        out.name("pozoInfestado").value(value.getPozoInfestado());*/
         out.name("especieAegypti").value(value.getEspecieAegypti());
         out.name("especieAlbopic").value(value.getEspecieAlbopic());
         out.name("especieCulexQuinque").value(value.getEspecieCulexQuinque());

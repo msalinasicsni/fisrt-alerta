@@ -4,7 +4,7 @@
 <html>
 <!-- BEGIN HEAD -->
 <head>
-	<jsp:include page="../fragments/headTag.jsp" />
+    <jsp:include page="../fragments/headTag.jsp" />
     <style>
         .midatepicker {
             z-index: 1051 !important;
@@ -22,17 +22,17 @@
             padding-right: 10px;
             text-align: right;
         }.aw-center {
-            padding-left: 0;
-            padding-right: 10px;
-            text-align: center;
-        }
+             padding-left: 0;
+             padding-right: 10px;
+             text-align: center;
+         }
     </style>
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
 <body class="">
-<c:url var="unidadesURL" value="/api/v1/unidades"/>
-<c:url var="municipiosURL" value="/api/v1/municipio"/>
+<c:url var="unidadesURL" value="/api/v1/unidadesPrimarias"/>
+<c:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
 <c:url var="comunidadesURL" value="/api/v1/comunidad"/>
 <c:url var="distritosURL" value="/api/v1/distritosMng"/>
 <c:url var="areasURL" value="/api/v1/areasMng"/>
@@ -156,18 +156,17 @@
 </div>
 <fieldset>
     <div class="row">
-        <section class="col col-4">
+        <section class="col col-sm-12 col-md-6 col-lg-3">
             <!--<label class="input">
                 <input type="text" placeholder="2/12">
             </label>-->
             <label class="text-left txt-color-blue font-md">
-                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="silais" /> </label>
+                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.silais" /> </label>
             <div class="input-group">
                                                     <span class="input-group-addon">
                                                          <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
-                <select path="codSilais" id="codSilais" name="codSilais"
-                        class="select2">
+                <select path="codSilais" id="codSilais" name="codSilais" class="select2">
                     <option value=""><spring:message code="lbl.select" />...</option>
                     <c:forEach items="${entidades}" var="entidad">
                         <option value="${entidad.codigo}">${entidad.nombre}</option>
@@ -175,13 +174,26 @@
                 </select>
             </div>
         </section>
-        <section class="col col-2">
+        <section class="col col-sm-12 col-md-6 col-lg-3">
+            <label class="text-left txt-color-blue font-md">
+                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.health.unit" />
+            </label>
+            <div class="input-group">
+	    					<span class="input-group-addon">
+                                <i class="fa fa-location-arrow fa-fw"></i>
+		    				</span>
+                <select class="select2" id="codUnidadSalud" name="codUnidadSalud">
+                    <option value=""><spring:message code="lbl.select" />...</option>
+                </select>
+            </div>
+        </section>
+        <!--<section class="col col-2">
             <label class="text-left txt-color-blue font-md">
                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.department" /> </label>
             <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-location-arrow fa-fw"></i>
-                                                    </span>
+						<span class="input-group-addon">
+			                           <i class="fa fa-location-arrow fa-fw"></i>
+		    				</span>
                 <select name="codigoDepartamento" id="codigoDepartamento" class="select2">
                     <option value=""><spring:message code="lbl.select" />...</option>
                     <c:forEach items="${departamentos}" var="departamentos">
@@ -189,41 +201,41 @@
                     </c:forEach>
                 </select>
             </div>
-        </section>
-        <section class="col col-2">
+        </section>-->
+        <section class="col col-sm-6 col-md-4 col-lg-2">
             <label class="text-left txt-color-blue font-md">
                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="muni" /> </label>
             <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-location-arrow fa-fw"></i>
-                                                    </span>
+	    					<span class="input-group-addon">
+                                <i class="fa fa-location-arrow fa-fw"></i>
+		    				</span>
                 <select  class="select2" name="codigoMunicipio" id="codigoMunicipio" path="codigoMunicipio">
                     <option value=""><spring:message code="lbl.select" />...</option>
                 </select>
             </div>
         </section>
-        <section class="col col-2">
+        <section class="col col-sm-6 col-md-4 col-lg-2">
             <label class="text-left txt-color-blue font-md">
-                <!--<i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>--><spring:message code="lbl.district" />
+                <spring:message code="lbl.district" />
             </label>
             <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-location-arrow fa-fw"></i>
-                                                    </span>
+	    					<span class="input-group-addon">
+                                <i class="fa fa-location-arrow fa-fw"></i>
+		    				</span>
                 <select class="select2" id="codigoDistrito" name="codigoDistrito" path="codigoDistrito">
                     <option value=""><spring:message code="lbl.select" />...</option>
 
                 </select>
             </div>
         </section>
-        <section class="col col-2">
+        <section class="col col-sm-6 col-md-4 col-lg-2">
             <label class="text-left txt-color-blue font-md">
-                <!--<i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>--><spring:message code="lbl.area" />
+                <spring:message code="lbl.area" />
             </label>
             <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-location-arrow fa-fw"></i>
-                                                    </span>
+	    					<span class="input-group-addon">
+                                <i class="fa fa-location-arrow fa-fw"></i>
+		    				</span>
                 <select class="select2" id="codigoArea" name="codigoArea"  path="codigoArea">
                     <option value=""><spring:message code="lbl.select" />...</option>
                 </select>
@@ -232,20 +244,7 @@
     </div>
     <!-- primera fila -->
     <div class="row">
-        <section class="col col-4">
-            <label class="text-left txt-color-blue font-md">
-                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.health.unit" />
-            </label>
-            <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-location-arrow fa-fw"></i>
-                                                    </span>
-                <select class="select2" id="codUnidadSalud" name="codUnidadSalud">
-                    <option value=""><spring:message code="lbl.select" />...</option>
-                </select>
-            </div>
-        </section>
-        <section class="col col-2">
+        <section class="col col-sm-6 col-md-4 col-lg-2">
             <label class="text-left txt-color-blue font-md">
                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.start.date" />
             </label>
@@ -254,11 +253,11 @@
                        placeholder="<spring:message code="lbl.date.format"/>"
                        class="form-control datepicker"
                        data-dateformat="dd/mm/yy"/>
-                                                        <span class="input-group-addon"> <i    class="fa fa-calendar fa-fw"></i>
-                                                        </span>
+                                                <span class="input-group-addon"> <i    class="fa fa-calendar fa-fw"></i>
+                                                </span>
             </div>
         </section>
-        <section class="col col-2">
+        <section class="col col-sm-6 col-md-4 col-lg-2">
             <label class="text-left txt-color-blue font-md">
                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.end.date" />
             </label>
@@ -267,18 +266,46 @@
                        placeholder="<spring:message code="lbl.date.format"/>"
                        class="form-control datepicker"
                        data-dateformat="dd/mm/yy"/>
-                                                    <span class="input-group-addon"> <i class="fa fa-calendar fa-fw"></i>
-                                                    </span>
+                            <span class="input-group-addon"> <i class="fa fa-calendar fa-fw"></i>
+                            </span>
             </div>
         </section>
-        <section class="col col-2">
+        <section class="col col-sm-12 col-md-4 col-lg-4">
+            <!--<div class="col col-12">-->
+            <section class="col col-3">
+                <label class="text-left txt-color-blue font-md">
+                    <spring:message code="lbl.month" />
+                </label>
+                <label class="input">
+                    <input type="number" id="mesEpi" name="mesEpi" path="mesEpi" disabled="true" placeholder="<spring:message code="lbl.month"/>" class="input-sm">
+                </label>
+            </section>
+            <section class="col col-3">
+                <label class="text-left txt-color-blue font-md">
+                    <spring:message code="lbl.year" />
+                </label>
+                <label class="input">
+                    <input type="number" id="anioEpi" name="anioEpi" path="anioEpi" disabled="true" placeholder="<spring:message code="lbl.year"/>" class="input-sm">
+                </label>
+            </section>
+            <section class="col col-6">
+                <label class="text-left txt-color-blue font-md">
+                    <spring:message code="lbl.ew" />
+                </label>
+                <label class="input" >
+                    <input type="number" id="semanaEpi" name="semanaEpi" path="semanaEpi" disabled="true" placeholder="<spring:message code="lbl.ew"/>" class="input-sm">
+                </label>
+            </section>
+            <!--</div>-->
+        </section>
+        <section class="col col-sm-6 col-md-4 col-lg-2">
             <label class="text-left txt-color-blue font-md">
                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.ordinal" />
             </label>
             <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-location-arrow fa-fw"></i>
-                                                    </span>
+	    					<span class="input-group-addon">
+                                <i class="fa fa-location-arrow fa-fw"></i>
+		    				</span>
                 <select class="select2" id="codOrdinal" name="codOrdinal"  path="codOrdinal">
                     <option value=""><spring:message code="lbl.select" />...</option>
                     <c:forEach items="${ordinales}" var="ordinales">
@@ -287,14 +314,14 @@
                 </select>
             </div>
         </section>
-        <section class="col col-2">
+        <section class="col col-sm-6 col-md-4 col-lg-2">
             <label class="text-left txt-color-blue font-md">
                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.provenance" />
             </label>
             <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-location-arrow fa-fw"></i>
-                                                    </span>
+	    					<span class="input-group-addon">
+                                <i class="fa fa-location-arrow fa-fw"></i>
+		    				</span>
                 <select class="select2" id="codProcedencia" name="codProcedencia" path="codProcedencia">
                     <option value=""><spring:message code="lbl.select" />...</option>
                     <c:forEach items="${procedencias}" var="procedencias">
@@ -303,39 +330,6 @@
                 </select>
             </div>
         </section>
-    </div>
-    <div class="row">
-        <section class="col col-5">
-            <!--<div class="col col-12">-->
-            <section class="col col-2">
-                <label class="text-left txt-color-blue font-md">
-                    <spring:message code="lbl.month" />
-                </label>
-                <label class="input">
-                    <input type="number" id="mesEpi" name="mesEpi" path="mesEpi" disabled="true" placeholder="<spring:message code="lbl.month"/>" class="input-sm">
-                </label>
-            </section>
-            <section class="col col-2">
-                <label class="text-left txt-color-blue font-md">
-                    <spring:message code="lbl.year" />
-                </label>
-                <label class="input">
-                    <input type="number" id="anioEpi" name="anioEpi" path="anioEpi" disabled="true" placeholder="<spring:message code="lbl.year"/>" class="input-sm">
-                </label>
-            </section>
-            <section class="col col-5">
-                <label class="text-left txt-color-blue font-md">
-                    <spring:message code="lbl.ew" />
-                </label>
-                <div class="col-6">
-                    <label class="input" >
-                        <input type="number" id="semanaEpi" name="semanaEpi" path="semanaEpi" disabled="true" placeholder="<spring:message code="lbl.ew"/>" class="input-sm">
-                    </label>
-                </div>
-            </section>
-            <!--</div>-->
-        </section>
-
     </div>
 </fieldset>
 <fieldset>
@@ -386,32 +380,32 @@
         <div class="widget-body no-padding">
             <table id="dtDetalleDepositos" class="table table-striped table-bordered table-hover" data-width="100%">
                 <thead>
-                <tr><th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.no" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.locality" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.pila" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.tire" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.barrel" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.vase" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.sprue" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.special.items" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.oDep" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.cistern" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.toilet" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.barro" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.plant" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.tree" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.well" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.total" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.dep.block" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.dep.homes" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.dep.name" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.dep.desc.odep" /></p></th>
-                    <th colspan="1" style="background-color: #3276b1"><p class="text-center font-sm txt-color-white"><spring:message code="lbl.ento.dep.desc.cistern" /></p></th>
+                <tr><th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.no" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.locality" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm ">#<spring:message code="lbl.ento.dep.block" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm ">#<spring:message code="lbl.ento.dep.homes" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.pila" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.tire" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.barrel" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.vase" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.sprue" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.special.items" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.oDep" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.cistern" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.toilet" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.barro" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.plant" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.tree" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.well" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.total" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.name" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.desc.odep" /></p></th>
+                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.desc.cistern" /></p></th>
                 </tr>
                 </thead>
                 <tfoot>
                 <tr><th style="text-align: right; background-color: #86b4dd"></th>
-                    <th class="font-sm" style="text-align: center; background-color: #86b4dd"><spring:message code="lbl.ento.totals" /></th>
+                    <th class="font-sm" colspan="3" style="text-align: center; background-color: #86b4dd"><spring:message code="lbl.ento.totals" /></th>
                     <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalPila" style="font-weight: bold">0</label></th>
                     <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalLlanta"  style="font-weight: bold">0</label></th>
                     <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalBarril" style="font-weight: bold">0</label></th>
@@ -426,10 +420,10 @@
                     <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalArbol" style="font-weight: bold">0</label></th>
                     <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalPozo" style="font-weight: bold">0</label></th>
                     <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalTotalI" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="5" rowspan="1" style="text-align: right; background-color: #86b4dd"></th>
+                    <th class="font-sm" colspan="3" rowspan="1" style="text-align: right; background-color: #86b4dd"></th>
                 </tr>
                 <tr><th colspan="1" style="text-align: right; background-color: #86b4dd"></th>
-                    <th class="font-sm" colspan="1" style="text-align: center; background-color: #86b4dd"><spring:message code="lbl.ento.indexs" /></th>
+                    <th class="font-sm" colspan="3" style="text-align: center; background-color: #86b4dd"><spring:message code="lbl.ento.indexs" /></th>
                     <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indicePila" style="font-weight: bold">0</label></th>
                     <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceLlanta"  style="font-weight: bold"><strong>0</strong></label></th>
                     <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceBarril" style="font-weight: bold">0</label></th>
@@ -443,7 +437,8 @@
                     <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indicePlanta" style="font-weight: bold">0</label></th>
                     <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceArbol" style="font-weight: bold">0</label></th>
                     <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indicePozo" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="6" rowspan="1" style="text-align: right; background-color: #86b4dd"></th></tr>
+                    <th class="font-sm" colspan="4" rowspan="1" style="text-align: right; background-color: #86b4dd"></th>
+                </tr>
                 </tfoot>
             </table>
         </div>
@@ -494,6 +489,27 @@
             </select>
         </div>
     </section>
+    <section class="col col-sm-6 col-md-4 col-lg-2">
+        <label class=" txt-color-blue font-md"><!--col col-4-->
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.modal.depo.block" />
+        </label>
+        <div class="">
+            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
+                <input type="number" name="txtManzanas" id="txtManzanas">
+            </label>
+        </div>
+    </section>
+    <section class="col col-sm-6 col-md-4 col-lg-2">
+        <label class="txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.modal.depo.home" />
+        </label>
+        <div class="">
+            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
+                <input type="number" name="txtViviendas" id="txtViviendas">
+            </label>
+        </div>
+    </section>
+
 </div>
 <!-- FIN LOCALIDAD -->
 <header><spring:message code="lbl.ento.modal.subtitle.dep" /></header>
@@ -560,8 +576,6 @@
         </div>
     </section>
 </div>
-<!--FIN VIVIENDAS -->
-<!-- MANZANAS -->
 <div class="row">
     <section class="col col-sm-6 col-md-4 col-lg-2">
         <label class="txt-color-blue font-md">
@@ -637,27 +651,7 @@
             </label>
         </div>
     </section>
-    <section class="col col-sm-6 col-md-4 col-lg-2">
-        <label class=" txt-color-blue font-md"><!--col col-4-->
-            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.block" />
-        </label>
-        <div class="">
-            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                <input type="number" name="txtManzanas" id="txtManzanas">
-            </label>
-        </div>
-    </section>
-    <section class="col col-sm-6 col-md-4 col-lg-2">
-        <label class="txt-color-blue font-md">
-            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.homes" />
-        </label>
-        <div class="">
-            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                <input type="number" name="txtViviendas" id="txtViviendas">
-            </label>
-        </div>
-    </section>
-    <section class="col col-sm-6 col-md-4 col-lg-6">
+    <section class="col col-sm-6 col-md-4 col-lg-4">
         <label class="txt-color-blue font-md">
             <spring:message code="lbl.ento.dep.name" />
         </label>
@@ -667,8 +661,6 @@
             </label>
         </div>
     </section>
-</div>
-<div class="row">
     <section class="col col-sm-6 col-md-4 col-lg-6">
         <label class="txt-color-blue font-md">
             <spring:message code="lbl.ento.dep.desc.odep.modal" />
@@ -679,6 +671,8 @@
             </label>
         </div>
     </section>
+</div>
+<div class="row">
     <section class="col col-sm-6 col-md-4 col-lg-6">
         <label class="txt-color-blue font-md">
             <spring:message code="lbl.ento.dep.desc.cistern.modal" />

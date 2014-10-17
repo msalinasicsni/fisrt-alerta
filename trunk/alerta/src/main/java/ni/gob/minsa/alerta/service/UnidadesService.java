@@ -1,13 +1,17 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,5 +68,26 @@ public class UnidadesService {
         Query q = session.createQuery(query);
         q.setInteger("idUnidad", codUnidad);
         return  (Unidades)q.uniqueResult();
+    }
+
+    public List<Unidades> getPrimaryUnitsBySilais(long idEntidad, String[] codTiposUnidades) throws Exception {
+        List<Unidades> res = new ArrayList<Unidades>();
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Criteria criteria = session.createCriteria(Unidades.class);
+            criteria.add(Restrictions.eq("entidadAdtva",idEntidad));
+            Long[] dataTipUnidades = new Long[codTiposUnidades.length];
+            for(int i=0; i < codTiposUnidades.length; i++){
+                dataTipUnidades[i] = Long.parseLong(codTiposUnidades[i]);
+            }
+            criteria.add(Restrictions.in("tipoUnidad", dataTipUnidades));
+            criteria.addOrder(Order.asc("nombre"));
+            res = criteria.list();
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        return res;
     }
 }
