@@ -75,13 +75,16 @@ var SearchSurvey = function () {
                     filtrosEncuesta: JSON.stringify(encuestaFiltros),
     				ajax : 'true'
     			}, function(dataToLoad) {
-    				var len = dataToLoad.length;
+                    console.log(dataToLoad);
+                    var len = Object.keys(dataToLoad).length;
+                    //var d = dataToLoad['encu0'];
                     if (len > 0) {
                         ocultarMensaje();
                         for (var i = 0; i < len; i++) {
-                            var surveyUrl = parametros.sSurveyEditUrl + '?idMaestro=' + dataToLoad[i][0].encuestaId;
+                            var surveyUrl = parametros.sSurveyEditUrl + '?idMaestro=' + dataToLoad['encu'+i].encuestaId;
                             table1.fnAddData(
-                                [dataToLoad[i][0].silais, dataToLoad[i][0].unidadSalud, dataToLoad[i][0].mesEpi, dataToLoad[i][0].anioEpi, dataToLoad[i][0].departamento, dataToLoad[i][0].municipio, dataToLoad[i][0].distrito, dataToLoad[i][0].area, dataToLoad[i][0].ordinalEncu, dataToLoad[i][0].procedencia, dataToLoad[i][0].feInicioEncuesta, dataToLoad[i][0].feFinEncuesta, dataToLoad[i][0].modeloEncu, '<a href=' + surveyUrl + ' class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>']);
+                                [dataToLoad['encu'+i].silais, dataToLoad['encu'+i].unidadSalud, dataToLoad['encu'+i].mesEpi, dataToLoad['encu'+i].anioEpi, dataToLoad['encu'+i].departamento, dataToLoad['encu'+i].municipio, dataToLoad['encu'+i].distrito, dataToLoad['encu'+i].area, dataToLoad['encu'+i].ordinalEncu, dataToLoad['encu'+i].procedencia, dataToLoad['encu'+i].feInicioEncuesta, dataToLoad['encu'+i].feFinEncuesta, dataToLoad['encu'+i].modeloEncu, '<a href=' + surveyUrl + ' class="btn btn-default btn-xs"><i class="fa fa-edit fa-fw"></i></a>']);
+                                //[dataToLoad[i][0].silais, dataToLoad[i][0].unidadSalud, dataToLoad[i][0].mesEpi, dataToLoad[i][0].anioEpi, dataToLoad[i][0].departamento, dataToLoad[i][0].municipio, dataToLoad[i][0].distrito, dataToLoad[i][0].area, dataToLoad[i][0].ordinalEncu, dataToLoad[i][0].procedencia, dataToLoad[i][0].feInicioEncuesta, dataToLoad[i][0].feFinEncuesta, dataToLoad[i][0].modeloEncu, '<a href=' + surveyUrl + ' class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>']);
                             //[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].municipioResidencia.nombre,'<a href='+ personUrl + ' class="btn btn-default btn-xs"><i class="fa fa-search"></i></a>']);
                         }
                     }else{

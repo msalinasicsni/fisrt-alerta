@@ -20,7 +20,6 @@ import java.util.Date;
 @Table(name = "DA_MAE_ENCUESTA", schema = "ALERTA")
 public class DaMaeEncuesta {
     private String encuestaId;
-    private Divisionpolitica departamento;
     private Divisionpolitica municipio;
     private String codDistrito;
     private String codArea;
@@ -189,17 +188,6 @@ public class DaMaeEncuesta {
 
     public void setProcedencia(Procedencia procedencia) {
         this.procedencia = procedencia;
-    }
-
-    @ManyToOne(optional=false)
-    @JoinColumn(name="COD_DEPARTAMENTO", referencedColumnName = "CODIGO_NACIONAL")
-    @ForeignKey(name = "MAENCUESTA_DEPARTAMENTO_FK")
-    public Divisionpolitica getDepartamento() {
-        return departamento;
-    }
-
-    public void setDepartamento(Divisionpolitica departamento) {
-        this.departamento = departamento;
     }
 
     @ManyToOne(optional=false)

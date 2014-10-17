@@ -56,12 +56,31 @@ public class DivisionPoliticaService {
     }
 
     public List<Divisionpolitica> getMunicipiosFromDepartamento(String codigoNacional) throws Exception {
-        String query = "select a from Divisionpolitica as a, Divisionpolitica as b " +
-                "where a.dependencia is not null and a.dependencia=b.divisionpoliticaId and b.codigoNacional =:codigoNacional order by a.nombre asc";
+        String query = "select muni from Divisionpolitica as muni, Divisionpolitica as depa " +
+                "where muni.dependencia is not null and muni.dependencia=depa.divisionpoliticaId and depa.codigoNacional =:codigoNacional order by muni.nombre asc";
 
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
         q.setString("codigoNacional", codigoNacional);
+        return q.list();
+    }
+
+    public Divisionpolitica getDepartamentoByMunicipi(String codNac){
+        String query = "select depa from Divisionpolitica as muni, Divisionpolitica as depa " +
+                "where muni.dependencia is not null and muni.dependencia=depa.divisionpoliticaId and muni.codigoNacional =:codigoNacional";
+
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("codigoNacional", codNac);
+        return (Divisionpolitica)q.uniqueResult();
+    }
+
+    public List<Divisionpolitica> getMunicipiosBySilais(long idSilas){
+        String query = "from Divisionpolitica where dependenciaSilais =:idSilas";
+
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setLong("idSilas", idSilas);
         return q.list();
     }
 

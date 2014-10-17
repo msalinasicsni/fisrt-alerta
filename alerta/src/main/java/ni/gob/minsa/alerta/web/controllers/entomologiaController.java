@@ -727,9 +727,8 @@ public class entomologiaController {
     @ResponseBody
     String getEncuestasBusqueda(@RequestParam(value = "filtrosEncuesta", required = true) String filtrosEncuesta) throws Exception {
         logger.info("Obteniendo encuestas según filtros informados en JSON");
-        //List<DaDatosEncuesta> datosEncuestas = new ArrayList<DaDatosEncuesta>();
         String result = "";
-        List<DaMaeEncuesta> encuestas = new ArrayList<DaMaeEncuesta>();
+        List<DaMaeEncuesta> encuestas;
         try {
             if (filtrosEncuesta!=null) {
                 //Recuperando Json enviado desde el cliente
@@ -741,21 +740,35 @@ public class entomologiaController {
                 Integer mesEpi = jsonpObject.get("mesEpi").getAsInt();
 
                 encuestas = daMaeEncuestaService.searchMaestroEncuestaByFiltros(codSilais, codUnidadSalud, anioEpi, mesEpi, strModeloEncu);
+                Divisionpolitica departamento;
+                Distritos distrito;
+                Areas area;
+                Map<String, Object> data  = new HashMap<>();
 
-                final GsonBuilder gson = new GsonBuilder()
-                        .registerTypeAdapter(DaMaeEncuesta.class, new MaestroEncuestaTypeAdapter(sessionFactory))
-                        .setPrettyPrinting()
-                        .enableComplexMapKeySerialization()
-                        .serializeNulls()
-                        .setDateFormat(DateFormat.LONG)
-                        .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-                        .setVersion(1.0);
+                for(int i=0;i < encuestas.size();i++){
+                    Map<String, String> map = new HashMap<>();
+                    departamento =divisionPoliticaService.getDepartamentoByMunicipi(encuestas.get(i).getMunicipio().getCodigoNacional());
+                    distrito = catalogosService.getDistritos(encuestas.get(i).getCodDistrito());
+                    area = catalogosService.getAreas(encuestas.get(i).getCodArea());
 
-                final Gson gson1 = gson.create();
-                result = gson1.toJson(encuestas,ArrayList.class);
-                //result = gson1.toJson(from(datosEncuestas).orderBy("getMes").orderBy("getAnio").orderBy("getSilais").
-                  //      orderBy("getUnidadDeSalud").orderBy("getDepartamento").orderBy("getMunicipio").orderBy("getOrdinal").all(), ArrayList.class);
-            }
+                    map.put("encuestaId", encuestas.get(i).getEncuestaId());
+                    map.put("silais",encuestas.get(i).getEntidadesAdtva().getNombre());
+                    map.put("unidadSalud", encuestas.get(i).getUnidadSalud().getNombre());
+                    map.put("mesEpi",String.valueOf(encuestas.get(i).getMesEpi()));
+                    map.put("anioEpi", String.valueOf(encuestas.get(i).getAnioEpi()));
+                    map.put("departamento",departamento!=null?departamento.getNombre():"");
+                    map.put("municipio", encuestas.get(i).getMunicipio().getNombre());
+                    map.put("distrito",distrito!=null?distrito.getValor():"");
+                    map.put("area", area!=null?area.getValor():"");
+                    map.put("ordinalEncu",encuestas.get(i).getOrdinalEncuesta().getValor());
+                    map.put("procedencia", encuestas.get(i).getProcedencia().getValor());
+                    map.put("feInicioEncuesta",DateToString(encuestas.get(i).getFeInicioEncuesta()));
+                    map.put("feFinEncuesta", DateToString(encuestas.get(i).getFeFinEncuesta()));
+                    map.put("modeloEncu",encuestas.get(i).getModeloEncuesta().getValor());
+                    data.put("encu"+String.valueOf(i),map);
+                }
+                result = new Gson().toJson(data);
+          }
         }catch (Exception ex){
             logger.error(ex.getStackTrace().toString());
         }
@@ -785,7 +798,7 @@ public class entomologiaController {
             mav.setViewName("encuesta/editarDepositoPreferencial");
         if (departamentos == null)
             departamentos = divisionPoliticaService.getAllDepartamentos();
-        municipios = divisionPoliticaService.getMunicipiosFromDepartamento(maestro.getDepartamento().getCodigoNacional());
+        municipios = divisionPoliticaService.getMunicipiosBySilais(maestro.getEntidadesAdtva().getEntidadAdtvaId());
 
         if (silais == null)
         silais = silaisServce.getAllEntidadesAdtvas();
@@ -1249,7 +1262,6 @@ public class entomologiaController {
         JsonObject jObjectMae = new Gson().fromJson(strJsonMaestro, JsonObject.class);
         String strEncuestaId = jObjectMae.get("encuestaId").getAsString();
         String strCodSilais = jObjectMae.get("codSilais").getAsString();
-        String strCodDepartamento = jObjectMae.get("codDepartamento").getAsString();
         String strCodMunicipio = jObjectMae.get("codMunicipio").getAsString();
         String strCodDistrito = jObjectMae.get("codDistrito").getAsString();
         String strCodArea = jObjectMae.get("codArea").getAsString();
@@ -1265,7 +1277,7 @@ public class entomologiaController {
         String strUsuarioRegistroId = jObjectMae.get("usuarioRegistroId").getAsString();
         DaMaeEncuesta maeEncuesta = new DaMaeEncuesta();
         EntidadesAdtvas silais = silaisServce.getSilaisByCodigo(Integer.valueOf(strCodSilais));
-        Divisionpolitica divisionpolitica = divisionPoliticaService.getDivisionPolitiacaByCodNacional(strCodDepartamento);
+        Divisionpolitica divisionpolitica = divisionPoliticaService.getDivisionPolitiacaByCodNacional(strCodMunicipio);
         Unidades unidadSalud = unidadesService.getUnidadByCodigo(Integer.valueOf(strCodUnidadSalud));
         Procedencia procedencia = catalogosService.getProcedencia(strCodProcedencia);
         ModeloEncuesta modeloEncuesta = null;
@@ -1278,13 +1290,11 @@ public class entomologiaController {
 
         maeEncuesta.setEncuestaId(strEncuestaId);
         maeEncuesta.setEntidadesAdtva(silais);
-        maeEncuesta.setDepartamento(divisionpolitica);
         maeEncuesta.setUnidadSalud(unidadSalud);
         maeEncuesta.setProcedencia(procedencia);
         maeEncuesta.setOrdinalEncuesta(ordinal);
         maeEncuesta.setModeloEncuesta(modeloEncuesta);
         maeEncuesta.setUsuario(usuario);
-        divisionpolitica = divisionPoliticaService.getDivisionPolitiacaByCodNacional(strCodMunicipio);
         maeEncuesta.setMunicipio(divisionpolitica);
         maeEncuesta.setFeInicioEncuesta(StringToDate(strFeInicioEncuesta));
         maeEncuesta.setFeFinEncuesta(StringToDate(strFeFinEncuesta));
@@ -1322,7 +1332,7 @@ public class entomologiaController {
         String strNoEliminado = jObjectDeta.get("noEliminado").getAsString();
         String strNoNeutralizado = jObjectDeta.get("noNeutralizado").getAsString();
         String strFeAbatizado = jObjectDeta.get("feAbatizado").getAsString();
-        String strFeRepot = jObjectDeta.get("feRepot").getAsString();
+        String strFeRepot =  jObjectDeta.get("feRepot").getAsString();
         String strFeVEnt = jObjectDeta.get("feVEnt").getAsString();
         String strUsuarioRegistroId = jObjectDeta.get("usuarioRegistroId").getAsString();
 
@@ -1369,7 +1379,7 @@ public class entomologiaController {
             detalleEncuestaLarvaria.setDetaEncuestaId(idDetalle);
         }
         String strCodLocalidad = jObjectDeta.get("codLocalidad").getAsString();
-        int pilaInfestado = jObjectDeta.get("pilaInfestado").getAsInt();
+        /*int pilaInfestado = jObjectDeta.get("pilaInfestado").getAsInt();
         int llantaInfestado = jObjectDeta.get("llantaInfestado").getAsInt();
         int barrilInfestado = jObjectDeta.get("barrilInfestado").getAsInt();
         int floreroInfestado = jObjectDeta.get("floreroInfestado").getAsInt();
@@ -1381,7 +1391,7 @@ public class entomologiaController {
         int barroInfestado = jObjectDeta.get("barroInfestado").getAsInt();
         int plantaInfestado = jObjectDeta.get("plantaInfestado").getAsInt();
         int arbolInfestado = jObjectDeta.get("arbolInfestado").getAsInt();
-        int pozoInfestado =  jObjectDeta.get("pozoInfestado").getAsInt();
+        int pozoInfestado =  jObjectDeta.get("pozoInfestado").getAsInt();*/
         int especieAegypti = jObjectDeta.get("especieAegypti").getAsInt();
         int especieAlbopic = jObjectDeta.get("especieAlbopic").getAsInt();
         int especieCulexQuinque = jObjectDeta.get("especieCulexQuinque").getAsInt();
@@ -1398,7 +1408,7 @@ public class entomologiaController {
         detalleEncuestaLarvaria.setUsuarioRegistro(usuario);
         detalleEncuestaLarvaria.setLocalidad(localidad);
 
-        detalleEncuestaLarvaria.setPilaInfestado(pilaInfestado);
+        /*detalleEncuestaLarvaria.setPilaInfestado(pilaInfestado);
         detalleEncuestaLarvaria.setLlantaInfestado(llantaInfestado);
         detalleEncuestaLarvaria.setBarrilInfestado(barrilInfestado);
         detalleEncuestaLarvaria.setFloreroInfestado(floreroInfestado);
@@ -1410,7 +1420,7 @@ public class entomologiaController {
         detalleEncuestaLarvaria.setBarroInfestado(barroInfestado);
         detalleEncuestaLarvaria.setPlantaInfestado(plantaInfestado);
         detalleEncuestaLarvaria.setArbolInfestado(arbolInfestado);
-        detalleEncuestaLarvaria.setPozoInfestado(pozoInfestado);
+        detalleEncuestaLarvaria.setPozoInfestado(pozoInfestado);*/
         detalleEncuestaLarvaria.setEspecieAegypti(especieAegypti);
         detalleEncuestaLarvaria.setEspecieAlbopic(especieAlbopic);
         detalleEncuestaLarvaria.setEspecieCulexQuinque(especieCulexQuinque);
