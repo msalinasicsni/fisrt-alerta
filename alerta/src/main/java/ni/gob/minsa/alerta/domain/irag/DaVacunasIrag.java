@@ -53,14 +53,14 @@ public class DaVacunasIrag implements Serializable {
 
 
     @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_VACUNA", referencedColumnName = "CODIGO")
+    @JoinColumn(name="COD_VACUNA", referencedColumnName = "CODIGO", nullable = false)
     @ForeignKey(name = "COD_VACUNA_FK")
     public Vacuna getCodVacuna() { return codVacuna; }
 
     public void setCodVacuna(Vacuna codVacuna) { this.codVacuna = codVacuna; }
 
     @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_APLICADA", referencedColumnName = "CODIGO")
+    @JoinColumn(name="COD_APLICADA", referencedColumnName = "CODIGO", nullable = false)
     @ForeignKey(name = "COD_APLICADA_FK")
     public Respuesta getCodAplicada() { return codAplicada; }
 
@@ -68,7 +68,7 @@ public class DaVacunasIrag implements Serializable {
 
 
     @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_TIPO_VACUNA", referencedColumnName = "CODIGO")
+    @JoinColumn(name="COD_TIPO_VACUNA", referencedColumnName = "CODIGO", nullable = false)
     @ForeignKey(name = "COD_TVACUNA_FK")
     public TipoVacuna getCodTipoVacuna() { return codTipoVacuna; }
 

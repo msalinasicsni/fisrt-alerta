@@ -130,7 +130,8 @@
                             <div class="widget-body fuelux">
 
                                 <!-- this is what the user will see -->
-                                <form:form modelAttribute="formVI" id="wizard-1" class="smart-form">
+                                <form:form modelAttribute="formVI" id="wizard-1" class ="smart-form" >
+
                                 <div id="bootstrap-wizard-1" class="col-lg-12">
 
                                 <div class="wizard">
@@ -437,6 +438,7 @@
 
 
                                     <div class="row">
+
                                         <section class="col col-6">
                                             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
                                             <label class="text-left txt-color-blue font-md">
@@ -491,11 +493,12 @@
 
                                         </section>
 
-                                        <section id="sAddVaccine" hidden="hidden" class="col col-2">
-                                            <button type="button" id="btnAddVaccine" class="btn btn-primary btn-" data-toggle="modal" data-target="#myModal">
+                                            <div id="sAddVaccine" hidden="hidden" >
+                                            <button type="button" id="btnAddVaccine" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
                                                 <spring:message code="act.add.vaccine" />
                                             </button>
-                                        </section>
+                                            </div>
+
                                     </div>
 
 
@@ -513,11 +516,17 @@
 
 
                                             <table  id="lista_vacunas"
-                                                    class="table table-striped table-bordered smart-form">
-                                                <tbody>
+                                                    class="table table-striped table-bordered table-hover" data-width="100%">
+                                                <thead>
+                                                <tr>
+                                                    <th data-class="expand"><i class="fa fa-fw fa-eyedropper text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.vaccine"/></th>
+                                                    <th data-class="expand"><i class="fa fa-fw fa-check text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.applied"/></th>
+                                                    <th data-hide="phone"><i class="fa fa-fw fa-list-alt text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.which"/></th>
+                                                    <th data-class="expand"><i class="fa fa-fw fa-sort-numeric-asc text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.dose.number"/></th>
+                                                    <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.dose.last.date"/></th>
 
-                                                </tbody>
-
+                                                </tr>
+                                                </thead>
                                             </table>
                                         </div>
 
@@ -535,7 +544,7 @@
 
                                     <diV class="row">
                                         <section class="col col-2">
-                                            <button type="button" class="btn btn-primary btn-" data-toggle="modal" data-target="#modalCondPre">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCondPre">
                                                 <spring:message code="act.add.preexisting.conditions" />
                                             </button>
                                         </section>
@@ -557,9 +566,13 @@
 
                                             <table  id="lista_condiciones"
                                                     class="table table-striped table-bordered smart-form">
-                                                <tbody>
+                                                <thead>
+                                                <tr>
+                                                    <th data-class="expand"><i class="fa fa-fw fa-user-md text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.preexisting.condition"/></th>
+                                                    <th data-class="expand"><i class="fa fa-fw fa-question text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.answer"/></th>
 
-                                                </tbody>
+                                                </tr>
+                                                </thead>
 
                                             </table>
                                         </div>
@@ -619,9 +632,13 @@
 
                                                     <table  id="lista_CM"
                                                             class="table table-striped table-bordered smart-form">
-                                                        <tbody>
+                                                        <thead>
+                                                        <tr>
+                                                            <th data-class="expand"><i class="fa fa-fw fa-user-md text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.clinical.manifestation"/></th>
+                                                            <th data-class="expand"><i class="fa fa-fw fa-question text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.answer"/></th>
 
-                                                        </tbody>
+                                                        </tr>
+                                                        </thead>
 
                                                     </table>
                                                 </div>
@@ -918,7 +935,7 @@
                                                 <thead>
                                                 <tr>
                                                     <th><spring:message code="lbl.test" /></th>
-                                                    <th><spring:message code="lbl.result" /></th
+                                                    <th><spring:message code="lbl.result" /></th>
                                                     <th><spring:message code="lbl.laboratory" /></th>
                                                     <th><spring:message code="lbl.result.date" /></th>
 
@@ -1196,8 +1213,156 @@
         <!-- end widget grid -->
     </div>
     <!-- END MAIN CONTENT -->
-</div>
 
+    <!-- Modal Vacuna -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"  style="background-color:#3276b1 ">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title txt-color-white" id="myModalLabel"><spring:message code="lbl.new.vaccine"/>  </h4>
+                </div>
+
+                <div class="modal-body">
+                    <form:form id="fVaccine" modelAttribute="fVacuna" class="smart-form">
+
+                        <div class="row">
+                           <section class="col col-sm-12 col-md-6 col-lg-4">
+
+                                <label class="text-left txt-color-blue font-md">
+                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
+                                    <spring:message code="lbl.vaccine" />
+                                </label>
+
+                                <div >
+                                    <form:select id="codVacuna" name="codVacuna" class="select2" path="codVacuna">
+                                        <option value="">Seleccione...</option>
+                                        <c:forEach items="${catVacunas}" var="vac">
+                                            <form:option value="${vac.codigo}">${vac.valor}</form:option>
+                                        </c:forEach>
+                                    </form:select>
+                                </div>
+                           </section>
+
+
+                            <section class="col col-sm-12 col-md-6 col-lg-4">
+                                <label class="text-left txt-color-blue font-md">
+                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
+                                    <spring:message code="lbl.applied" />
+                                </label>
+
+                                <div>
+                                    <form:select id="codAplicada" name="codAplicada" class="select2" path="codAplicada">
+                                        <option value="">Seleccione...</option>
+                                        <c:forEach items="${catResp}" var="resp">
+                                            <form:option value="${resp.codigo}">${resp.valor}</form:option>
+                                        </c:forEach>
+                                    </form:select>
+                                </div>
+
+                            </section>
+
+                            <section class="col col-sm-12 col-md-6 col-lg-4">
+
+                                <label class="text-left txt-color-blue font-md">
+                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
+                                    <spring:message code="lbl.which" />
+                                </label>
+
+                                <div id="dVacHib">
+
+                                    <select id="tVacHib" hidden="hidden"  class="select2" >
+                                        <option value="">Seleccione...</option>
+                                        <c:forEach items="${catTVacHib}" var="hib">
+                                            <option value="${hib.codigo}">${hib.valor}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+
+                                <div id="dVacMenin" hidden="hidden" >
+                                    <select id="tVacMenin" class="select2">
+                                        <option value="">Seleccione...</option>
+                                        <c:forEach items="${catTVacMenin}" var="menin">
+                                            <option value="${menin.codigo}">${menin.valor}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+
+                                <div id="dVacNeumo" hidden="hidden">
+                                    <select id="tVacNeumo"  class="select2">
+                                        <option value="">Seleccione...</option>
+                                        <c:forEach  items="${catTVacNeumo}" var="neumo">
+                                            <option value="${neumo.codigo}">${neumo.valor}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+
+                                <div id="dVacFlu" hidden="hidden">
+                                    <select id="tVacFlu" class="select2">
+                                        <option value="">Seleccione...</option>
+                                        <c:forEach items="${catTVacFlu}" var="flu">
+                                            <option value="${flu.codigo}">${flu.valor}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </section>
+
+                        </div>
+
+                        <div class="row">
+
+                            <section class="col col-sm-12 col-md-6 col-lg-4">
+                                <label class="text-left txt-color-blue font-md">
+                                    <spring:message code="lbl.dose.number" />
+                                </label>
+
+                                <label class="input"> <i
+                                        class="icon-prepend fa fa-sort-numeric-asc fa-fw"></i> <form:input
+                                        type="text" name="dosis" id="dosis"
+                                        path="dosis"
+                                        />
+                                </label>
+
+
+                            </section>
+
+                            <section class="col col-sm-12 col-md-6 col-lg-4">
+                                <label class="text-left txt-color-blue font-md">
+                                    <spring:message code="lbl.dose.last.date" />
+                                </label>
+
+                                <div class="input-group">
+                                    <form:input id="fechaUltimaDosis" cssStyle="z-index: 1051" type="text" name="fechaUltimaDosis"
+                                                path="fechaUltimaDosis"
+                                                class="form-control datepicker"
+                                                data-dateformat="dd/mm/yy"/>
+                    <span class="input-group-addon"> <i
+                            class="fa fa-calendar fa-fw"></i></span>
+
+                                </div>
+                            </section>
+
+                        </div>
+
+
+                    </form:form>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="btnCancel" type="button" class="btn btn-default" data-dismiss="modal">
+                        <spring:message code="act.cancel" />
+                    </button>
+                    <button id="btnSaveVaccine" type="submit" class="btn btn-primary">
+                        <spring:message code="act.save" />
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</div>
 
 
 <!-- END MAIN PANEL -->
@@ -1207,6 +1372,18 @@
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <jsp:include page="../fragments/corePlugins.jsp" />
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+<!-- Data table -->
+<spring:url value="/resources/js/plugin/datatables/jquery.dataTables.min.js" var="dataTables" />
+<script src="${dataTables}"></script>
+<spring:url value="/resources/js/plugin/datatables/dataTables.colVis.min.js" var="dataTablesColVis" />
+<script src="${dataTablesColVis}"></script>
+<spring:url value="/resources/js/plugin/datatables/dataTables.tableTools.min.js" var="dataTablesTableTools" />
+<script src="${dataTablesTableTools}"></script>
+<spring:url value="/resources/js/plugin/datatables/dataTables.bootstrap.min.js" var="dataTablesBootstrap" />
+<script src="${dataTablesBootstrap}"></script>
+<spring:url value="/resources/js/plugin/datatable-responsive/datatables.responsive.min.js" var="dataTablesResponsive" />
+<script src="${dataTablesResponsive}"></script>
+
 <!-- Bootstrap Wizard -->
 <spring:url value="/resources/js/plugin/bootstrap-wizard/jquery.bootstrap.wizard.min.js" var="jqueryBootstrap" />
 <script src="${jqueryBootstrap}"></script>
@@ -1221,17 +1398,7 @@
 <!-- jQuery Validate datepicker -->
 <spring:url value="/resources/js/plugin/jquery-validate-datepicker/jquery.ui.datepicker.validation.min.js" var="jQueryValidateDatepicker"/>
 <script src="${jQueryValidateDatepicker}" ></script>
-<!-- Data table -->
-<spring:url value="/resources/js/plugin/datatables/jquery.dataTables.min.js" var="dataTables" />
-<script src="${dataTables}"></script>
-<spring:url value="/resources/js/plugin/datatables/dataTables.colVis.min.js" var="dataTablesColVis" />
-<script src="${dataTablesColVis}"></script>
-<spring:url value="/resources/js/plugin/datatables/dataTables.tableTools.min.js" var="dataTablesTableTools" />
-<script src="${dataTablesTableTools}"></script>
-<spring:url value="/resources/js/plugin/datatables/dataTables.bootstrap.min.js" var="dataTablesBootstrap" />
-<script src="${dataTablesBootstrap}"></script>
-<spring:url value="/resources/js/plugin/datatable-responsive/datatables.responsive.min.js" var="dataTablesResponsive" />
-<script src="${dataTablesResponsive}"></script>
+
 
 <!-- jQuery Selecte2 Input -->
 <spring:url value="/resources/js/plugin/select2/select2.min.js" var="selectPlugin"/>
@@ -1250,6 +1417,8 @@
 </script>
 <spring:url value="/irag/saveIrag" var="sAddIragUrl"/>
 <spring:url value="/api/v1/unidades" var="unidadesURL" />
+<spring:url value="/irag/newVaccine" var="sAddVaccineUrl" />
+<spring:url value="/irag/vaccines" var="sLoadVaccinesUrl" />
 <script type="text/javascript">
 
     $(document).ready(function() {
@@ -1257,9 +1426,11 @@
 
         var parametros = {sAddIragUrl: "${sAddIragUrl}",
                           sUnidadesUrl: "${unidadesURL}",
-                          dToday: "${today}"
+                          dToday: "${today}",
+                          sAddVaccineUrl: "${sAddVaccineUrl}",
+                          vaccines: "${sLoadVaccinesUrl}"
         };
-        console.log( "${today}");
+        <%--console.log( "${today}");--%>
         CreateIrag.init(parametros);
     });
 </script>

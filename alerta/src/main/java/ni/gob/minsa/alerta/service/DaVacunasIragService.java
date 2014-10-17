@@ -29,12 +29,15 @@ public class DaVacunasIragService {
        * Retorna lista de Vacunas
        * @param id
        */
-    public List<DaVacunasIrag> getAllVaccinesByIdFicha(String id) {
-        Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM DaVacunasIrag vac where vac.idFichaVigilancia = ' " + id + " ' and vac.pasivo = false ");
-        return query.list();
-    }
-
+      @SuppressWarnings("unchecked")
+      public List<DaVacunasIrag> getAllVaccinesByIdIrag(String id){
+          //Retrieve session from Hibernate
+          Session session = sessionFactory.getCurrentSession();
+          //Create a hibernate query (HQL)
+          Query query = session.createQuery("select vacu FROM DaVacunasIrag vacu where vacu.idIrag = '"+ id +"'");
+          //retrieve all
+          return query.list();
+      }
 
 
     /**
@@ -49,6 +52,13 @@ public class DaVacunasIragService {
         return vac;
     }
 
+
+    public DaVacunasIrag searchVaccineRecord(String id, String vac, String tipo){
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("FROM DaVacunasIrag vac where vac.idIrag ='"+id+"'and vac.codVacuna = '"+vac+"' and vac.codTipoVacuna = '"+tipo+"' ");
+        DaVacunasIrag vacu = (DaVacunasIrag) query.uniqueResult();
+        return vacu;
+    }
 
     /**
      * Agrega Vacuna
@@ -67,6 +77,8 @@ public class DaVacunasIragService {
         Session session = sessionFactory.getCurrentSession();
         session.update(vac);
     }
+
+
 
 
 }
