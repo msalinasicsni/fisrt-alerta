@@ -324,7 +324,7 @@ public class IragController {
         irag.setCodProcedencia(catalogoService.getProcedencia(codProcedencia));
 
         irag.setFechaRegistro(new Timestamp(new Date().getTime()));
-        irag.setPersona(personaService.getSisPersona("6956"));
+        irag.setPersona(personaService.getPersona(6956));
         irag.setUsuario(usuarioService.getUsuarioById(1));
         //datos relacionados a persona
       //  irag.setPersona(6958);
