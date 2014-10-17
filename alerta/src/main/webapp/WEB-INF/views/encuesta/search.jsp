@@ -196,6 +196,8 @@
                                         </label>
                                     </section>
                                 </div>
+                            </fieldset>
+                            <fieldset>
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <!--<a href="#" id="buscarEncuesta" data-toggle="modal" class="btn btn-primary btn-lg pull-right header-btn hidden-mobile">
@@ -216,24 +218,6 @@
                 <!-- end widget div -->
             </div>
             <!-- end widget -->
-        </article>
-        <!-- WIDGET END -->
-    </div>
-    <!-- end row -->
-    <!-- row -->
-    <div class="row">
-        <!-- a blank row to get started -->
-        <div class="col-sm-12">
-            <!-- your contents here -->
-        </div>
-    </div>
-    <!-- end row -->
-</section>
-<section id="widget-grid1" class="">
-    <!-- row -->
-    <div class="row">
-        <!-- NEW WIDGET START -->
-        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
                 <header>
                     <span class="widget-icon"> <i class="fa fa-table"></i> </span>
@@ -244,6 +228,7 @@
                     <!-- widget edit box -->
                     <div class="jarviswidget-editbox">
                         <!-- This area used as dropdown edit box -->
+                        <input class="form-control" type="text">
                     </div>
                     <!-- end widget edit box -->
                     <!-- widget content -->
@@ -272,6 +257,14 @@
             </div>
         </article>
         <!-- WIDGET END -->
+    </div>
+    <!-- end row -->
+    <!-- row -->
+    <div class="row">
+        <!-- a blank row to get started -->
+        <div class="col-sm-12">
+            <!-- your contents here -->
+        </div>
     </div>
     <!-- end row -->
 </section>
