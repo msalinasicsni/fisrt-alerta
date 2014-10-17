@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * Controlador web de peticiones relacionadas a SisPersona
  * 
- * @author William Avilés
+ * @author William Aviles
  */
 @Controller
 @RequestMapping("/personas/*")

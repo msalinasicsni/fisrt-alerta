@@ -18,4 +18,14 @@ public class HomeController {
         return "home";
     }
     
+    @RequestMapping(value="/403", method = RequestMethod.GET)
+	public String noAcceso() {
+		return "403"; 
+	}
+	
+	@RequestMapping(value="/404", method = RequestMethod.GET)
+	public String noEncontrado() { 
+		return "404";
+	}
+    
 }

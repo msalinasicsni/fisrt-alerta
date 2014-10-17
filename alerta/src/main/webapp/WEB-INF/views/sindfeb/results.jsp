@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <html>
 <!-- BEGIN HEAD -->
 <head>
@@ -24,7 +25,7 @@
 			</span>
 			<!-- breadcrumb -->
 			<ol class="breadcrumb">
-				<li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/personas/search" htmlEscape="true "/>"><spring:message code="menu.persons" /></a></li>
+				<li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/febriles/create" htmlEscape="true "/>"><spring:message code="menu.sindfeb" /></a></li>
 			</ol>
 			<!-- end breadcrumb -->
 			<jsp:include page="../fragments/layoutOptions.jsp" />
@@ -38,11 +39,8 @@
 				<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
 					<h1 class="page-title txt-color-blueDark">
 						<!-- PAGE HEADER -->
-						<i class="fa-fw fa fa-group"></i> 
-							<spring:message code="persons" />
-						<span> <i class="fa fa-angle-right"></i>  
-							<spring:message code="person.search" />
-						</span>
+						<i class="fa-fw fa fa-fire"></i> 
+							<spring:message code="sindfeb.prevev" />
 					</h1>
 				</div>
 				<!-- end col -->
@@ -79,51 +77,18 @@
 			<section id="widget-grid" class="">
 				<!-- row -->
 				<div class="row">
+					<!-- a blank row to get started -->
+				</div>
+				<!-- end row -->
+				<!-- row -->
+				<div class="row">
 					<!-- NEW WIDGET START -->
 					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<!-- Widget ID (each widget will need unique ID)-->
 						<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0">
 							<header>
-								<span class="widget-icon"> <i class="fa fa-search"></i> </span>
-								<h2><spring:message code="lbl.parameters" /> </h2>				
-							</header>
-							<!-- widget div-->
-							<div>
-								<!-- widget edit box -->
-								<div class="jarviswidget-editbox">
-									<!-- This area used as dropdown edit box -->
-									<input class="form-control" type="text">	
-								</div>
-								<!-- end widget edit box -->
-								<!-- widget content -->
-								<div class="widget-body no-padding">
-									<form id="search-form" class="smart-form" autocomplete="off">
-										<fieldset>
-											<section>
-												<label class="input"> <i class="icon-append fa fa-check"></i>
-													<input type="text" id="filtro" name="filtro" placeholder="<spring:message code="person.search.parameters"/>">
-													<b class="tooltip tooltip-bottom-right"><spring:message code="person.search.parameters"/></b> </label>
-											</section>
-										</fieldset>
-										<footer>
-											<button type="submit" id="search-person" class="btn btn-info"><i class="fa fa-search"></i> <spring:message code="act.search" /></button>
-										</footer>
-									</form>						
-								</div>
-								<!-- end widget content -->
-							</div>
-							<!-- end widget div -->
-						</div>
-						<!-- end widget -->
-					</article>
-					<!-- WIDGET END -->
-					<!-- NEW WIDGET START -->
-					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<!-- Widget ID (each widget will need unique ID)-->
-						<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1">
-							<header>
 								<span class="widget-icon"> <i class="fa fa-reorder"></i> </span>
-								<h2><spring:message code="lbl.results" /> </h2>				
+								<h2><spring:message code="sindfeb.selectev" /> </h2>				
 							</header>
 							<!-- widget div-->
 							<div>
@@ -138,16 +103,33 @@
 									<table id="persons_result" class="table table-striped table-bordered table-hover" data-width="100%">
 										<thead>			                
 											<tr>
-												<th data-class="expand"><i class="fa fa-fw fa-key text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.id"/></th>
-												<th data-class="expand"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
-												<th data-hide="phone"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name2"/></th>
-												<th data-class="expand"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
-												<th data-hide="phone"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
-												<th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.fecnac"/></th>
-												<th data-hide="phone,tablet"><i class="fa fa-fw fa-map-marker text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.mun.res"/></th>
+												<th data-class="expand"><i class="fa fa-fw fa-key text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.numFicha"/></th>
+												<th data-class="expand"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.date"/></th>
+												<th data-class="expand"><i class="fa fa-fw fa-folder-o txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.exp"/></th>
+												<th data-class="expand"><i class="fa fa-fw fa-stethoscope txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.unidad"/></th>
+												<th data-class="expand"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
+												<th data-class="expand"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
+												<th data-class="expand"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
 												<th></th>
 											</tr>
 										</thead>
+										<tbody>
+										<c:forEach items="${fichas}" var="ficha">
+											<tr>
+												<td><c:out value="${ficha.numFicha}" /></td>
+												<td><c:out value="${ficha.fechaFicha}" /></td>
+												<td><c:out value="${ficha.codExpediente}" /></td>
+												<td><c:out value="${ficha.codUnidadAtencion.nombre}" /></td>
+												<td><c:out value="${ficha.persona.primerNombre}" /></td>
+												<td><c:out value="${ficha.persona.primerApellido}" /></td>
+												<td><c:out value="${ficha.persona.segundoApellido}" /></td>
+												<spring:url value="/febriles/edit/{idficha}" var="editUrl">
+													<spring:param name="idficha" value="${ficha.idFichaEpidem}" />
+												</spring:url>
+												<td><a href="${fn:escapeXml(editUrl)}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a></td>
+											</tr>
+										</c:forEach>
+										</tbody>
 									</table>
 								</div>
 								<!-- end widget content -->
@@ -157,14 +139,6 @@
 						<!-- end widget -->
 					</article>
 					<!-- WIDGET END -->
-				</div>
-				<!-- end row -->
-				<!-- row -->
-				<div class="row">
-					<!-- a blank row to get started -->
-					<div class="col-sm-12">
-						<!-- your contents here -->
-					</div>
 				</div>
 				<!-- end row -->
 			</section>
@@ -189,30 +163,16 @@
 	<script src="${dataTablesBootstrap}"></script>
 	<spring:url value="/resources/js/plugin/datatable-responsive/datatables.responsive.min.js" var="dataTablesResponsive" />
 	<script src="${dataTablesResponsive}"></script>
-	<!-- JQUERY VALIDATE -->
-	<spring:url value="/resources/js/plugin/jquery-validate/jquery.validate.min.js" var="jqueryValidate" />
-	<script src="${jqueryValidate}"></script>
-	<spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
-	<spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>				
-	<script src="${jQValidationLoc}"/></script>
-	<!-- JQUERY BLOCK UI -->
-	<spring:url value="/resources/js/plugin/jquery-blockui/jquery.blockUI.js" var="jqueryBlockUi" />
-	<script src="${jqueryBlockUi}"></script>
 	<!-- END PAGE LEVEL PLUGINS -->
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
-	<spring:url value="/resources/scripts/personas/person-search.js" var="personSearch" />
-	<script src="${personSearch}"></script>
 	<!-- END PAGE LEVEL SCRIPTS -->
-	<spring:url value="/personas/persons" var="sPersonUrl"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
-			var parametros = {sPersonUrl: "${sPersonUrl}"};
-			SearchPerson.init(parametros);
-	    	$("li.mantenimiento").addClass("open");
-	    	$("li.personas").addClass("active");
+	    	$("li.notificacion").addClass("open");
+	    	$("li.sindfeb").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
-	    		$("li.personas").parents("ul").slideDown(200);
+	    		$("li.sindfeb").parents("ul").slideDown(200);
 	    	}
 		});
 	</script>

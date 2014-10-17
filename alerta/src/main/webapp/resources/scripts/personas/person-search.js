@@ -48,21 +48,34 @@ var SearchPerson = function () {
 
             
             function getPersons() {
-    			
+            	var loc = window.location;
+                var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
+                var mess = 'Favor espere <img src=' + pathName + 'resources/img/loading.gif>';
+                $.blockUI({ message: mess,
+                	css: { 
+                        border: 'none', 
+                        padding: '15px', 
+                        backgroundColor: '#000', 
+                        '-webkit-border-radius': '10px', 
+                        '-moz-border-radius': '10px', 
+                        opacity: .5, 
+                        color: '#fff' 
+                    }}); 
     			$.getJSON(parametros.sPersonUrl, {
-    				strFilter : $('#filtro').val(),
+    				strFilter : encodeURI($('#filtro').val()),
     				ajax : 'true'
     			}, function(data) {
     				var len = data.length;
     				for ( var i = 0; i < len; i++) {
-						var personUrl = parametros.sPersonUrl + '/'+data[i].personaId;
+						var actionUrl = parametros.sActionUrl + '/'+data[i].personaId;
 						table1.fnAddData(
-    							[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].municipioResidencia.nombre,'<a href='+ personUrl + ' class="btn btn-default btn-xs"><i class="fa fa-search"></i></a>']);
+    							[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].municipioResidencia.nombre,'<a href='+ actionUrl + ' class="btn btn-default btn-xs"><i class="fa fa-mail-forward"></i></a>']);
     				}
+    				setTimeout($.unblockUI, 500); 
     			})
     			.fail(function() {
 				    alert( "error" );
-				    
+				    setTimeout($.unblockUI, 500); 
 				});
             };
         }
