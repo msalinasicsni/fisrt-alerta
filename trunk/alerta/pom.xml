@@ -12,7 +12,6 @@
 		<org.springframework-version>3.2.10.RELEASE</org.springframework-version>
 		<org.aspectj-version>1.6.10</org.aspectj-version>
 		<org.slf4j-version>1.6.1</org.slf4j-version>
-		<org.codehaus.jackson-version>1.9.7</org.codehaus.jackson-version>
 		<gson-version>2.3</gson-version>
         <org.codehaus.jackson-version>1.9.7</org.codehaus.jackson-version>
         <log4j-version>1.2.16</log4j-version>
@@ -103,13 +102,6 @@
             <artifactId>jackson-mapper-asl</artifactId>
             <version>${org.codehaus.jackson-version}</version>
         </dependency>
-
-		<!-- Jackson JSON Processor -->
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>${org.codehaus.jackson-version}</version>
-		</dependency>
 		
 		<!-- Google JSON Processor -->
 		<dependency>
