@@ -16,16 +16,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +64,9 @@ public class IragController {
     @Autowired(required = true)
     @Qualifier(value = "usuarioService")
     public UsuarioService usuarioService;
-
+    @Autowired(required = true)
+    @Qualifier(value = "personaService")
+    public PersonaService personaService;
 
 
     List<EntidadesAdtvas> entidades;
@@ -80,7 +79,10 @@ public class IragController {
     List<CondicionEgreso> catConEgreso;
     List<ClasificacionFinal> catClaFinal;
     List<Vacuna> catVacunas;
-    List<TipoVacuna> catTipoVacuna;
+    List<TipoVacuna> catTVacHib;
+    List<TipoVacuna> catTVacMenin;
+    List<TipoVacuna> catTVacNeumo;
+    List<TipoVacuna> catTVacFlu;
     List<CondicionPrevia> catCondPre;
     List<ManifestacionClinica> catManCli;
     Map<String, Object> mapModel;
@@ -117,27 +119,34 @@ public class IragController {
             catConEgreso = catalogoService.getCondicionEgreso();
             catClaFinal = catalogoService.getClasificacionFinal();
             catVacunas = catalogoService.getVacuna();
-            catTipoVacuna = catalogoService.getTipoVacuna();
             catCondPre = catalogoService.getCondicionPrevia();
             catManCli = catalogoService.getManifestacionClinica();
+            catTVacHib = catalogoService.getTipoVacunaHib();
+            catTVacMenin = catalogoService.getTipoVacunaMeningococica();
+            catTVacNeumo = catalogoService.getTipoVacunaNeumococica();
+            catTVacFlu = catalogoService.getTipoVacunaFlu();
 
             model.addAttribute("entidades", entidades);
             model.addAttribute("catProcedencia", catProcedencia);
             model.addAttribute("catClasif", catClasif);
             model.addAttribute("catCaptac", catCaptac);
+            model.addAttribute("catResp", catResp);
             model.addAttribute("catVia", catVia);
             model.addAttribute("catResRad", catResRad);
             model.addAttribute("catConEgreso", catConEgreso);
             model.addAttribute("catClaFinal", catClaFinal);
             model.addAttribute("catVacunas", catVacunas);
-            model.addAttribute("catTipoVacuna", catTipoVacuna);
+            model.addAttribute("catTVacHib", catTVacHib);
+            model.addAttribute("catTVacMenin", catTVacMenin);
+            model.addAttribute("catTVacNeumo", catTVacNeumo);
+            model.addAttribute("catTVacFlu", catTVacFlu);
             model.addAttribute("catCondPre", catCondPre);
             model.addAttribute("catManCli", catManCli);
             model.addAttribute("formVI", irag);
             model.addAttribute("fVacuna", new DaVacunasIrag());
             model.addAttribute("fCondPre", new DaCondicionesPreviasIrag());
             model.addAttribute("fCM", new DaManifestacionesIrag());
-            model.addAttribute("today", "18/10/2014");
+            model.addAttribute("today", DateToString(new Date()));
             return "irag/create";
 
     }
@@ -315,7 +324,8 @@ public class IragController {
         irag.setCodProcedencia(catalogoService.getProcedencia(codProcedencia));
 
         irag.setFechaRegistro(new Timestamp(new Date().getTime()));
-
+        irag.setPersona(personaService.getSisPersona("6956"));
+        irag.setUsuario(usuarioService.getUsuarioById(1));
         //datos relacionados a persona
       //  irag.setPersona(6958);
 /*
@@ -355,6 +365,61 @@ public class IragController {
         daIragService.updateIrag(irag);
         return "redirect:/ficha/VigilanciaIntegrada/searchFormVI";
     }
+
+
+    @RequestMapping( value="newVaccine", method= RequestMethod.GET, produces = "application/json" )
+    public @ResponseBody List<DaVacunasIrag> processCreationVaccine(@RequestParam(value = "codVacuna", required = true) String codVacuna,
+                                         @RequestParam(value = "codAplicada", required = true) String codAplicada,
+                                         @RequestParam(value = "codTipoVacuna", required = true) String codTipoVacuna,
+                                         @RequestParam(value = "dosis", required = true) Integer dosis,
+                                         @RequestParam(value = "fechaUltimaDosis", required = true) String fechaUltimaDosis) throws Exception {
+
+
+        if(irag.getIdIrag() != null){
+            //buscar si existe registrada la vacuna y el tipo de vacuna
+            DaVacunasIrag vac = daVacunasIragService.searchVaccineRecord(irag.getIdIrag(), codVacuna, codTipoVacuna);
+
+            if(vac == null){
+                vacunas.setIdIrag(daIragService.getFormById(irag.getIdIrag()));
+                vacunas.setUsuario(usuarioService.getUsuarioById(1));
+                vacunas.setFechaRegistro(new Timestamp(new Date().getTime()));
+                vacunas.setCodVacuna(catalogoService.getVacuna(codVacuna));
+                vacunas.setCodAplicada(catalogoService.getRespuesta(codAplicada));
+                vacunas.setCodTipoVacuna(catalogoService.getTipoVacuna(codTipoVacuna));
+                vacunas.setDosis(dosis);
+                if(!fechaUltimaDosis.equals("")){
+                    vacunas.setFechaUltimaDosis(new Date(fechaUltimaDosis));
+                }
+
+                daVacunasIragService.addVaccine(vacunas);
+
+
+            }else{
+            throw new Exception("La vacuna ya existe");
+            }
+        }else{
+            throw new Exception("Debe guardar primeramente el formulario irag antes de agregar una vacuna.");
+        }
+
+
+        return loadVaccines();
+
+    }
+
+    @RequestMapping(value = "vaccines", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<DaVacunasIrag> loadVaccines(){
+        logger.info("Obteniendo las vacunas agregadas");
+
+        List<DaVacunasIrag> listaVacunas = daVacunasIragService.getAllVaccinesByIdIrag(vacunas.getIdIrag().getIdIrag());
+
+        if (listaVacunas.isEmpty()){
+            logger.debug("Null");
+        }
+
+        return listaVacunas;
+    }
+
+
 /*
     @RequestMapping( value="newPreCondition", method= RequestMethod.GET)
     @ResponseBody
@@ -377,30 +442,6 @@ public class IragController {
     }
 
 
-    @RequestMapping( value="newVaccine", method= RequestMethod.GET)
-    @ResponseBody
-    public String processCreationVaccine(@RequestParam(value = "codNombreVacuna", required = true) String codNombreVacuna,
-                                         @RequestParam(value = "codAplicada", required = true) String codAplicada,
-                                         @RequestParam(value = "codTipoVacuna", required = true) String codTipoVacuna,
-                                         @RequestParam(value = "dosis", required = true) Integer dosis,
-                                         @RequestParam(value = "fechaUltimaDosis", required = true) String fechaUltimaDosis) throws Exception {
-
-        vacunas.setIdFichaVigilancia(irag.getIdFichaVigilancia());
-        vacunas.setUsuario(3);
-        vacunas.setFechaRegistro(new Timestamp(new Date().getTime()));
-        vacunas.setCodVacuna(codNombreVacuna);
-        vacunas.setCodAplicada(codAplicada);
-        vacunas.setCodTipoVacuna(codTipoVacuna);
-        vacunas.setDosis(dosis);
-
-        if(!fechaUltimaDosis.equals("")){
-            vacunas.setFechaUltimaDosis(new Date(fechaUltimaDosis));
-        }
-
-        daVacunasIragService.addVaccine(vacunas);
-
-        return  loadVaccines();
-    }
 
     @RequestMapping( value="newCM", method= RequestMethod.GET)
     @ResponseBody
@@ -422,24 +463,7 @@ public class IragController {
     }
 
 
-    public String loadVaccines() throws AlertaException {
 
-        try {
-            final GsonBuilder gson = new GsonBuilder();
-            gson.registerTypeAdapter(DaVacVigilancia.class, new VacTypeAdapter(sessionFactory));
-            gson.setPrettyPrinting();
-
-            final Gson gson1 = gson.create();
-
-            List<DaVacVigilancia> response = daVacVigilanciaService.getAllVaccinesByIdFicha(ficha.getIdFichaVigilancia());
-
-            String jsonResponse = gson1. toJson(response, ArrayList.class);
-            return  jsonResponse;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
-        }
-    }
 
     public String loadConditions() throws AlertaException {
 
@@ -499,6 +523,15 @@ public class IragController {
                 "/ficha/patients/searchPatientInflz";
     }*/
 
-
+    /**
+     * Convierte un Date a string con formato dd/MM/yyyy
+     * @param dtFecha fecha a convertir
+     * @return String
+     * @throws java.text.ParseException
+     */
+    private String DateToString(Date dtFecha) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        return simpleDateFormat.format(dtFecha);
+    }
 
 }

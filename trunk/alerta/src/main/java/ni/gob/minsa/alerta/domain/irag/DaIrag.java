@@ -140,8 +140,8 @@ public class DaIrag implements Serializable {
     }
 
 
-    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_CLASIFICACION", referencedColumnName = "CODIGO")
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class, optional = true)
+    @JoinColumn(name="COD_CLASIFICACION", referencedColumnName = "CODIGO", nullable = true)
     @ForeignKey(name = "COD_CLASIF_FK")
     public Clasificacion getCodClasificacion() { return codClasificacion;  }
 
@@ -208,8 +208,8 @@ public class DaIrag implements Serializable {
 
 
 
-    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_ANTB_ULSEM", referencedColumnName = "CODIGO")
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class, optional = true)
+    @JoinColumn(name="COD_ANTB_ULSEM", referencedColumnName = "CODIGO", nullable = true)
     @ForeignKey(name = "COD_ANTB_ULSEM_FK")
     public Respuesta getCodAntbUlSem() { return codAntbUlSem; }
 
@@ -271,8 +271,8 @@ public class DaIrag implements Serializable {
     }
 
 
-    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_VIA_ANTB", referencedColumnName = "CODIGO")
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class, optional = true)
+    @JoinColumn(name="COD_VIA_ANTB", referencedColumnName = "CODIGO", nullable = true)
     @ForeignKey(name = "COD_VIA_ANTB_FK")
     public ViaAntibiotico getCodViaAntb() { return codViaAntb; }
 
@@ -333,8 +333,8 @@ public class DaIrag implements Serializable {
         this.noDosisAntiviral = noDosisAntiviral;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_RES_RADIOLOGIA", referencedColumnName = "CODIGO")
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class, optional = true)
+    @JoinColumn(name="COD_RES_RADIOLOGIA", referencedColumnName = "CODIGO", nullable = true)
     @ForeignKey(name = "COD_RESRADIOLOGIA_FK")
     public ResultadoRadiologia getCodResRadiologia() { return codResRadiologia; }
 
@@ -412,16 +412,16 @@ public class DaIrag implements Serializable {
         this.fechaEgreso = fechaEgreso;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_COND_EGRESO", referencedColumnName = "CODIGO")
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class, optional = true)
+    @JoinColumn(name="COD_COND_EGRESO", referencedColumnName = "CODIGO", nullable = true)
     @ForeignKey(name = "COD_CONDEGRESO_FK")
     public CondicionEgreso getCodCondEgreso() { return codCondEgreso; }
 
     public void setCodCondEgreso(CondicionEgreso codCondEgreso) { this.codCondEgreso = codCondEgreso; }
 
 
-    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_CLASF_CASO", referencedColumnName = "CODIGO")
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class, optional = true)
+    @JoinColumn(name="COD_CLASF_CASO", referencedColumnName = "CODIGO", nullable = true)
     @ForeignKey(name = "COD_CLASFCASO_FK")
     public ClasificacionFinal getCodClasFCaso() { return codClasFCaso; }
 

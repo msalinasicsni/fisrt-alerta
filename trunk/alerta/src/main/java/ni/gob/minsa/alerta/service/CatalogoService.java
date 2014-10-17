@@ -206,6 +206,46 @@ public class CatalogoService {
 
     }
 
+    public List<TipoVacuna> getTipoVacunaHib(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoVacuna tvac where tvac.pasivo = false and tvac.codigo like :codigo order by orden");
+        query.setString("codigo","TVAC|HIB1");
+        //retrieve all
+        return query.list();
+    }
+
+    public List<TipoVacuna> getTipoVacunaMeningococica(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoVacuna tvac where tvac.pasivo = false and tvac.codigo like :codigo order by orden");
+        query.setString("codigo","%"+"TVAC|MENING"+"%");
+        //retrieve all
+        return query.list();
+    }
+
+    public List<TipoVacuna> getTipoVacunaNeumococica(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoVacuna tvac where tvac.pasivo = false and tvac.codigo like :codigo order by orden");
+        query.setString("codigo","%"+"TVAC|NEUMO"+"%");
+        //retrieve all
+        return query.list();
+    }
+
+    public List<TipoVacuna> getTipoVacunaFlu(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoVacuna tvac where tvac.pasivo = false and tvac.codigo like :codigo order by orden");
+        query.setString("codigo","%"+"TVAC|FLU"+"%");
+        //retrieve all
+        return query.list();
+    }
+
     @SuppressWarnings("unchecked")
     public List<CondicionPrevia> getCondicionPrevia(){
         //Retrieve session Hibernate

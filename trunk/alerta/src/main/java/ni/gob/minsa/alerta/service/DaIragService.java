@@ -45,7 +45,7 @@ public class DaIragService {
 
         Session session = sessionFactory.getCurrentSession();
 
-        Query query = session.createQuery("FROM DaIrag vi where vi.idFichaVigilancia = '" + id + "'");
+        Query query = session.createQuery("FROM DaIrag vi where vi.idIrag = '" + id + "'");
         DaIrag fichaVI = (DaIrag) query.uniqueResult();
         return  fichaVI;
 
