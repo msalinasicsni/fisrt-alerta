@@ -1,5 +1,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <meta charset="ISO-8859-1">
+		<!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
 <title><spring:message code="title" /> | <spring:message code="heading" /></title>
 <meta name="description" content="">
 <meta name="author" content="">

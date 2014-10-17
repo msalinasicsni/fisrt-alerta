@@ -24,7 +24,7 @@
 			</span>
 			<!-- breadcrumb -->
 			<ol class="breadcrumb">
-				<li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/personas/search" htmlEscape="true "/>"><spring:message code="menu.persons" /></a></li>
+				<li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/febriles/create" htmlEscape="true "/>"><spring:message code="menu.sindfeb" /></a></li>
 			</ol>
 			<!-- end breadcrumb -->
 			<jsp:include page="../fragments/layoutOptions.jsp" />
@@ -38,8 +38,8 @@
 				<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
 					<h1 class="page-title txt-color-blueDark">
 						<!-- PAGE HEADER -->
-						<i class="fa-fw fa fa-group"></i> 
-							<spring:message code="persons" />
+						<i class="fa-fw fa fa-fire"></i> 
+							<spring:message code="sindfeb.create" />
 						<span> <i class="fa fa-angle-right"></i>  
 							<spring:message code="person.search" />
 						</span>
@@ -204,15 +204,17 @@
 	<script src="${personSearch}"></script>
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<spring:url value="/personas/persons" var="sPersonUrl"/>
+	<spring:url value="/febriles/search" var="sActionUrl"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
-			var parametros = {sPersonUrl: "${sPersonUrl}"};
+			var parametros = {sPersonUrl: "${sPersonUrl}",
+					sActionUrl: "${sActionUrl}"};
 			SearchPerson.init(parametros);
-	    	$("li.mantenimiento").addClass("open");
-	    	$("li.personas").addClass("active");
+	    	$("li.notificacion").addClass("open");
+	    	$("li.sindfeb").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
-	    		$("li.personas").parents("ul").slideDown(200);
+	    		$("li.sindfeb").parents("ul").slideDown(200);
 	    	}
 		});
 	</script>

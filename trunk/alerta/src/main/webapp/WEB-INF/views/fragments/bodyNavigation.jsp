@@ -41,38 +41,38 @@ traditional href="" links. See documentation for details.
             </ul>
         </li>
         <li class="notificacion">
-            <a href="#" title="<spring:message code="menu.notif" />"><i class="fa fa-lg fa-fw fa-pencil"></i> <span class="menu-item-parent"><spring:message code="menu.notif" /></span></a>
+            <a href="#" title="<spring:message code="menu.notif" />"><i class="fa fa-lg fa-fw fa-rss"></i> <span class="menu-item-parent"><spring:message code="menu.notif" /></span></a>
             <ul>
                 <li class="sindfeb">
-                	<a href="<spring:url value="/febriles/create" htmlEscape="true "/>" title="<spring:message code="menu.sindfeb" />"><i class="fa fa-lg fa-fw fa-"></i> <spring:message code="menu.sindfeb" /></a>
+                	<a href="<spring:url value="/febriles/create" htmlEscape="true "/>" title="<spring:message code="menu.sindfeb" />"><i class="fa fa-lg fa-fw fa-fire"></i> <spring:message code="menu.sindfeb" /></a>
                 </li>
                 <li class="irageti">
-                	<a href="<spring:url value="/irag/create" htmlEscape="true "/>" title="<spring:message code="menu.irageti" />"><i class="fa fa-lg fa-fw fa-"></i> <spring:message code="menu.irageti" /></a>
+                	<a href="<spring:url value="/irag/create" htmlEscape="true "/>" title="<spring:message code="menu.irageti" />"><i class="fa fa-lg fa-fw fa-stethoscope"></i> <spring:message code="menu.irageti" /></a>
                 </li>
                 <li class="vih">
-                	<a href="<spring:url value="/vih/search" htmlEscape="true "/>" title="<spring:message code="menu.vih" />"><i class="fa fa-lg fa-fw fa-"></i> <spring:message code="menu.vih" /></a>
+                	<a href="<spring:url value="/vih/search" htmlEscape="true "/>" title="<spring:message code="menu.vih" />"><i class="fa fa-lg fa-fw fa-flask"></i> <spring:message code="menu.vih" /></a>
                 </li>
             </ul>
         </li>
         <li class="entomologia">
-            <a href="#" title="<spring:message code="menu.ento" />"><i class="fa fa-lg fa-fw fa-pencil"></i> <span class="menu-item-parent"><spring:message code="menu.ento" /></span></a>
+            <a href="#" title="<spring:message code="menu.ento" />"><i class="fa fa-lg fa-fw fa-bug"></i> <span class="menu-item-parent"><spring:message code="menu.ento" /></span></a>
             <ul>
                 <li class="entoadd">
-                	<a href="#" title="<spring:message code="menu.ento.add" />"><i class="fa fa-lg fa-fw fa-pencil"></i> <span class="menu-item-parent"><spring:message code="menu.ento.add" /></span></a>
+                	<a href="#" title="<spring:message code="menu.ento.add" />"><i class="fa fa-lg fa-fw fa-pencil"></i> <spring:message code="menu.ento.add" /></a>
                 	<ul>
                 		<li class="entoaddaedes">
-		                	<a href="<spring:url value="/encuesta/create/aedes" htmlEscape="true "/>" title="<spring:message code="menu.ento.add.aedes" />"><i class="fa fa-lg fa-fw fa-"></i> <spring:message code="menu.ento.add.aedes" /></a>
+		                	<a href="<spring:url value="/encuesta/create/aedes" htmlEscape="true "/>" title="<spring:message code="menu.ento.add.aedes" />"><i class="fa fa-lg fa-fw fa-bug"></i> <spring:message code="menu.ento.add.aedes" /></a>
 		                </li>
 		                <li class="entoaddlarvae">
-		                	<a href="<spring:url value="/encuesta/create/larvae" htmlEscape="true "/>" title="<spring:message code="menu.ento.add.larvae" />"><i class="fa fa-lg fa-fw fa-"></i> <spring:message code="menu.ento.add.larvae" /></a>
+		                	<a href="<spring:url value="/encuesta/create/larvae" htmlEscape="true "/>" title="<spring:message code="menu.ento.add.larvae" />"><i class="fa fa-lg fa-fw fa-vine"></i> <spring:message code="menu.ento.add.larvae" /></a>
 		                </li>
 		                <li class="entoadddep">
-		                	<a href="<spring:url value="/encuesta/create/dep" htmlEscape="true "/>" title="<spring:message code="menu.ento.add.dep" />"><i class="fa fa-lg fa-fw fa-"></i> <spring:message code="menu.ento.add.dep" /></a>
+		                	<a href="<spring:url value="/encuesta/create/dep" htmlEscape="true "/>" title="<spring:message code="menu.ento.add.dep" />"><i class="fa fa-lg fa-fw fa-archive"></i> <spring:message code="menu.ento.add.dep" /></a>
 		                </li>
                 	</ul>
                 </li>
                 <li class="entosearch">
-                	<a href="<spring:url value="/encuesta/search" htmlEscape="true "/>" title="<spring:message code="menu.ento.search" />"><i class="fa fa-lg fa-fw fa-"></i> <spring:message code="menu.ento.search" /></a>
+                	<a href="<spring:url value="/encuesta/search" htmlEscape="true "/>" title="<spring:message code="menu.ento.search" />"><i class="fa fa-lg fa-fw fa-search"></i> <spring:message code="menu.ento.search" /></a>
                 </li>
             </ul>
         </li>
