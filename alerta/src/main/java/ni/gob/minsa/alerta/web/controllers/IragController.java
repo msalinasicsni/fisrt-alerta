@@ -208,7 +208,6 @@ public class IragController {
             ,@RequestParam(value = "agenteBacteriano", required=false) String agenteBacteriano
             ,@RequestParam(value = "serotipificacion", required=false) String serotipificacion
             ,@RequestParam(value = "agenteViral", required=false) String agenteViral
-            ,@RequestParam(value = "codigoConfDescartado", required=false) String codigoConfDescartado
             ,@RequestParam(value = "agenteEtiologico",required=false) String agenteEtiologico) throws Exception {
 
         logger.debug("Registrando nueva ficha de Vigilancia Integrada");
@@ -420,88 +419,100 @@ public class IragController {
     }
 
 
-/*
+
     @RequestMapping( value="newPreCondition", method= RequestMethod.GET)
-    @ResponseBody
-    public String processCreationPreCondition(@RequestParam(value = "codigoCondicion", required = true) String codigoCondicion,
-                                         @RequestParam(value = "codigoRespuesta", required = true) String codigoRespuesta,
-                                         @RequestParam(value = "semEmb", required = false) Integer semEmb,
-                                         @RequestParam(value = "nombreOtraCondicion", required = false) String nombreOtraCondicion) throws Exception {
+    public @ResponseBody List<DaCondicionesPreviasIrag> processCreationPreCondition(@RequestParam(value = "codCondicion", required = true) String codCondicion,
+                                         @RequestParam(value = "codRespuesta", required = true) String codRespuesta,
+                                         @RequestParam(value = "semanasEmbarazo", required = false) Integer semanasEmbarazo,
+                                         @RequestParam(value = "otraCondicion", required = false) String otraCondicion) throws Exception {
 
-        condicion.setIdFichaVigilancia(irag.getIdFichaVigilancia());
-        condicion.setUsuario(3);
-        condicion.setFechaRegistro(new Timestamp(new Date().getTime()));
-        condicion.setCodCondicion(codigoCondicion);
-        condicion.setCodRespuesta(codigoRespuesta);
-        condicion.setSemanasEmbarazo(semEmb);
-        condicion.setOtraCondicion(nombreOtraCondicion);
+        if(irag.getIdIrag() != null){
 
-        daCondPreVigilanciaService.addCondition(condicion);
+            //buscar si existe registro de condicion
+            DaCondicionesPreviasIrag cond = daCondicionesIragService.searchConditionRecord(codCondicion, irag.getIdIrag());
+
+
+            if(cond == null){
+                condicion.setIdIrag(daIragService.getFormById(irag.getIdIrag()));
+                condicion.setUsuario(usuarioService.getUsuarioById(1));
+                condicion.setFechaRegistro(new Timestamp(new Date().getTime()));
+                condicion.setCodCondicion(catalogoService.getCondicionPrevia(codCondicion));
+                condicion.setCodRespuesta(catalogoService.getRespuesta(codRespuesta));
+                condicion.setSemanasEmbarazo(semanasEmbarazo);
+                condicion.setOtraCondicion(otraCondicion);
+
+                daCondicionesIragService.addCondition(condicion);
+            }else{
+                throw new Exception("La condicion ya existe");
+            }
+        }else{
+            throw new Exception("Debe guardar primeramente el formulario irag antes de agregar una condicion.");
+
+        }
 
         return  loadConditions();
     }
 
+    @RequestMapping(value = "conditions", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<DaCondicionesPreviasIrag> loadConditions(){
+        logger.info("Obteniendo las condiciones agregadas");
+
+        List<DaCondicionesPreviasIrag> listaCondiciones = daCondicionesIragService.getAllConditionsByIdIrag(condicion.getIdIrag().getIdIrag());
+
+        if (listaCondiciones.isEmpty()){
+            logger.debug("Null");
+        }
+
+        return listaCondiciones;
+    }
 
 
     @RequestMapping( value="newCM", method= RequestMethod.GET)
-    @ResponseBody
-    public String processCreationClinicalMan(@RequestParam(value = "codigoManifestacionClinica", required = true) String codigoManifestacionClinica,
-                                              @RequestParam(value = "codigoRespMani", required = true) String codigoRespMani,
-                                              @RequestParam(value = "otraManifestacionCli", required = false) String otraManifestacionCli ) throws Exception {
+
+    public @ResponseBody List<DaManifestacionesIrag> processCreationClinicalMan(@RequestParam(value = "codManifestacion", required = true) String codManifestacion,
+                                              @RequestParam(value = "codRespuestaM", required = true) String codRespuestaM,
+                                              @RequestParam(value = "otraManifestacion", required = false) String otraManifestacion ) throws Exception {
+
+        if(irag.getIdIrag() != null){
+
+            //buscar si existe registro de condicion
+            DaManifestacionesIrag manif = daManifestacionesIragService.searchManifestationRecord(codManifestacion, irag.getIdIrag());
 
 
-        manifestacion.setUsuarioRegistroId(3);
-        manifestacion.setFechaRegistro(new Timestamp(new Date().getTime()));
-        manifestacion.setCodigoManifestacionClinica(codigoManifestacionClinica);
-        manifestacion.setIdFichaVigilancia(ficha.getIdFichaVigilancia());
-        manifestacion.setCodigoRespMani(codigoRespMani);
-        manifestacion.setOtraManifestacionCli(otraManifestacionCli);
+            if(manif == null){
+                manifestacion.setUsuario(usuarioService.getUsuarioById(1));
+                manifestacion.setFechaRegistro(new Timestamp(new Date().getTime()));
+                manifestacion.setCodManifestacion(catalogoService.getManifestacionClinica(codManifestacion));
+                manifestacion.setIdIrag(daIragService.getFormById(irag.getIdIrag()));
+                manifestacion.setCodRespuestaM(catalogoService.getRespuesta(codRespuestaM));
+                manifestacion.setOtraManifestacion(otraManifestacion);
 
-        daManifestacionesIragService.addManifestation(manifestacion);
+                daManifestacionesIragService.addManifestation(manifestacion);
+            }else{
+                throw new Exception("La manifestacion clinica ya existe");
+            }
 
+        }else{
+            throw new Exception("Debe guardar primeramente el formulario irag antes de agregar una manifestacion clinica.");
+
+        }
         return  loadManifestations();
     }
 
+    @RequestMapping(value = "manifestations", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<DaManifestacionesIrag> loadManifestations(){
+        logger.info("Obteniendo las Manifestaciones Clínicas agregadas");
 
+        List<DaManifestacionesIrag> listaMani = daManifestacionesIragService.getAllManifestationsByIdIrag(manifestacion.getIdIrag().getIdIrag());
 
-
-    public String loadConditions() throws AlertaException {
-
-        try {
-            final GsonBuilder gson = new GsonBuilder();
-            gson.registerTypeAdapter(DaCondPreVigilancia.class, new ConditionTypeAdapter(sessionFactory));
-            gson.setPrettyPrinting();
-
-            final Gson gson1 = gson.create();
-
-            List<DaCondPreVigilancia> response = daCondPreVigilanciaService.getAllConditionsByIdFicha(ficha.getIdFichaVigilancia());
-
-            String jsonResponse = gson1. toJson(response, ArrayList.class);
-            return  jsonResponse;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
+        if (listaMani.isEmpty()){
+            logger.debug("Null");
         }
+
+        return listaMani;
     }
 
-    public String loadManifestations() throws AlertaException {
 
-        try {
-            final GsonBuilder gson = new GsonBuilder();
-            gson.registerTypeAdapter(DaMClinVigilancia.class, new ManifestationTypeAdapter(sessionFactory));
-            gson.setPrettyPrinting();
-
-            final Gson gson1 = gson.create();
-
-            List<DaMClinVigilancia> response = daMClinVigilanciaService.getAllManifestationsByIdFicha(ficha.getIdFichaVigilancia());
-
-            String jsonResponse = gson1. toJson(response, ArrayList.class);
-            return  jsonResponse;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
-        }
-    }*/
 
   /*  @RequestMapping(value = "cancelVaccine/{idVacuna}" ,method = RequestMethod.GET )
     public String deleteVaccine(@PathVariable("idVacuna") Integer idVacuna) throws Exception {
