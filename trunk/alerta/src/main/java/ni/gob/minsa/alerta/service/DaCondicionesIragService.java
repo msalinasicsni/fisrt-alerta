@@ -24,18 +24,24 @@ public class DaCondicionesIragService {
     @Resource(name = "sessionFactory")
     public SessionFactory sessionFactory;
 
-
+    /*Busca registro de condicion existente
+    * @param condicion
+    */
+    public DaCondicionesPreviasIrag searchConditionRecord(String condicion, String id){
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("FROM DaCondicionesPreviasIrag con where con.codCondicion ='"+condicion+"' and  con.idIrag = '"+id+"'");
+        DaCondicionesPreviasIrag cond = (DaCondicionesPreviasIrag) query.uniqueResult();
+        return cond;
+    }
 
     /*Retorna las Condiciones preexistentes
      * @param id
      */
-    public List<DaCondicionesPreviasIrag> getAllConditionsByIdFicha(String id){
+    public List<DaCondicionesPreviasIrag> getAllConditionsByIdIrag(String id){
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM DaCondicionesPreviasIrag cond where cond.idCondicion = ' " + id + "' and cond.pasivo = false ");
+        Query query = session.createQuery("select cond FROM DaCondicionesPreviasIrag cond where cond.idIrag = '"+ id +"'");
         return query.list();
     }
-
-
 
 
     /**Retorna condicion preexistente

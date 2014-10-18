@@ -52,7 +52,7 @@
             <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
                 <h2 class="page-title txt-color-blueDark">
                     <!-- PAGE HEADER -->
-                    <i class="fa-fw fa fa-home"></i>
+                    <i class="fa-fw fa fa-stethoscope"></i>
                     <spring:message code="lbl.form.irag" />
 						<span> <i class="fa fa-angle-right"></i>
 							<spring:message code="lbl.register" />
@@ -101,7 +101,7 @@
                 <!-- NEW WIDGET START -->
                 <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <!-- Widget ID (each widget will need unique ID)-->
-                    <div class="jarviswidget" id="wid-id-0">
+                    <div class="jarviswidget jarviswidget-color-darken" id="wid-id-0">
                         <!-- widget options:
                             usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
                             data-widget-colorbutton="false"
@@ -114,7 +114,7 @@
                             data-widget-sortable="false"
                         -->
                         <header>
-                            <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
+                            <span class="widget-icon"> <i class="fa fa-stethoscope"></i> </span>
                             <h2><spring:message code="lbl.irag" /> </h2>
 
                         </header>
@@ -565,15 +565,14 @@
 
 
                                             <table  id="lista_condiciones"
-                                                    class="table table-striped table-bordered smart-form">
+                                                    class="table table-striped table-bordered table-hover" data-width="50%">
                                                 <thead>
                                                 <tr>
-                                                    <th data-class="expand"><i class="fa fa-fw fa-user-md text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.preexisting.condition"/></th>
-                                                    <th data-class="expand"><i class="fa fa-fw fa-question text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.answer"/></th>
+                                                    <th><i class="fa fa-fw fa-stethoscope text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.preexisting.condition"/></th>
+                                                    <th><i class="fa fa-fw fa-check text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.answer"/></th>
 
                                                 </tr>
                                                 </thead>
-
                                             </table>
                                         </div>
 
@@ -630,16 +629,15 @@
                                                 <div class="widget-body no-padding">
 
 
-                                                    <table  id="lista_CM"
-                                                            class="table table-striped table-bordered smart-form">
+                                                    <table  id="lista_manifestaciones"
+                                                            class="table table-striped table-bordered table-hover">
                                                         <thead>
                                                         <tr>
-                                                            <th data-class="expand"><i class="fa fa-fw fa-user-md text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.clinical.manifestation"/></th>
-                                                            <th data-class="expand"><i class="fa fa-fw fa-question text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.answer"/></th>
+                                                            <th><i class="fa fa-fw fa-stethoscope text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.clinical.manifestation"/></th>
+                                                            <th><i class="fa fa-fw fa-check text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.answer"/></th>
 
                                                         </tr>
                                                         </thead>
-
                                                     </table>
                                                 </div>
 
@@ -678,7 +676,7 @@
                                                     <br>
 
                                                     <label class="input"> <i
-                                                            class="icon-prepend fa fa-sort-numeric-asc fa-fw"></i> <form:input
+                                                            class="icon-prepend fa fa-sort-numeric-asc fa-fw"></i> <form:input size="2"
                                                             type="text" path="cantidadAntib" name="cantidadAntib"/> <b
                                                             class="tooltip tooltip-bottom-right"> <i
                                                             class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.antibiotics.amount" />
@@ -695,7 +693,7 @@
 
                                                     <label class="input"> <i
                                                             class="icon-prepend fa fa-pencil fa-fw"></i> <form:input
-                                                            type="text" name="nombreAntibiotico"
+                                                            type="text" size="6" name="nombreAntibiotico"
                                                             path="nombreAntibiotico"
                                                            />
                                                     </label>
@@ -899,7 +897,7 @@
 
                                             </section>
 
-                                            <section class="col col-3">
+                                            <section id="sOtroResRadiologia" hidden="hidden" class="col col-3">
                                                 <label class="text-left txt-color-blue font-md">
                                                     <spring:message code="lbl.description.other" />
                                                 </label>
@@ -1108,7 +1106,7 @@
 
 
                                         </div>
-                                        <div class="row">
+                                        <div class="row" hidden="hidden" id="dConfNB">
                                             <section class="col col-6">
                                                 <label class="text-left txt-color-blue font-md">
                                                     <spring:message code="lbl.bacterial.etiologic.agent" />
@@ -1140,7 +1138,7 @@
                                             </section>
                                         </div>
 
-                                        <div class="row">
+                                        <div class="row" hidden="hidden" id="dViralEti">
                                             <section class="col col-6">
                                                 <label class="text-left txt-color-blue font-md">
                                                     <spring:message code="lbl.viral.etiologic.agent" />
@@ -1157,7 +1155,7 @@
                                             </section>
                                         </div>
 
-                                        <div class="row">
+                                        <div hidden="hidden" id="dEtiAgents" class="row">
                                             <section class="col col-6">
                                                 <label class="text-left txt-color-blue font-md">
                                                     <spring:message code="lbl.etiologic.agents" />
@@ -1264,14 +1262,14 @@
 
                             </section>
 
-                            <section class="col col-sm-12 col-md-6 col-lg-4">
+                            <section id="sTipoVac" hidden="hidden" class="col col-sm-12 col-md-6 col-lg-4">
 
                                 <label class="text-left txt-color-blue font-md">
                                     <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
                                     <spring:message code="lbl.which" />
                                 </label>
 
-                                <div id="dVacHib">
+                                <div id="dVacHib" hidden="hidden">
 
                                     <select id="tVacHib" hidden="hidden"  class="select2" >
                                         <option value="">Seleccione...</option>
@@ -1362,6 +1360,170 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+    <!-- Modal -->
+    <div class="modal fade" id="modalCondPre" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"  style="background-color:#3276b1 ">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title txt-color-white"><spring:message code="lbl.new.preexisting.condition"/>  </h4>
+                </div>
+
+                <div class="modal-body">
+                    <form:form id="fCondPre" modelAttribute="fCondPre" class="smart-form" >
+
+                        <div class="row">
+                            <div class="col col-sm-12 col-md-6 col-lg-6">
+                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
+                                <label class="text-left txt-color-blue font-md">
+                                    <spring:message code="lbl.preexisting.condition" />
+                                </label>
+
+                                <div >
+                                    <form:select id="codCondicion" name="codCondicion" class="select2" path="codCondicion">
+                                        <option value="">Seleccione...</option>
+                                        <c:forEach items="${catCondPre}" var="cond">
+                                            <form:option value="${cond.codigo}">${cond.valor}</form:option>
+                                        </c:forEach>
+                                    </form:select>
+                                </div>
+                            </div>
+                            <div class="col col-sm-12 col-md-6 col-lg-6">
+                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
+                                <label class="text-left txt-color-blue font-md">
+                                    <spring:message code="lbl.answer" />
+                                </label>
+
+                                <div >
+                                    <form:select id="codRespuesta" name="codRespuesta" class="select2" path="codRespuesta">
+                                        <option value="">Seleccione...</option>
+                                        <c:forEach items="${catResp}" var="resp">
+                                            <form:option value="${resp.codigo}">${resp.valor}</form:option>
+                                        </c:forEach>
+                                    </form:select>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+
+                            <div id="dSemEmb" hidden="hidden" class="col col-sm-12 col-md-6 col-lg-6">
+                                <label class="text-left txt-color-blue font-md">
+                                    <spring:message code="lbl.weeks.pregnancy" />
+                                </label>
+
+                                <form:input id="semanasEmbarazo" size="8"
+                                            type="text" path="semanasEmbarazo" name="semanasEmbarazo"/>
+
+                            </div>
+
+                            <div id="dOtraCondicion" hidden="hidden" class="col col-sm-12 col-md-6 col-lg-6">
+                                <label class="text-left txt-color-blue font-md">
+                                    <spring:message code="lbl.other.preexisting.condition" />
+                                </label>
+
+                                <form:input size="30" id="otraCondicion"
+                                            type="text" path="otraCondicion" name="otraCondicion"/>
+
+                            </div>
+
+                        </div>
+                        <br>
+
+                    </form:form>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="btnCancelAddCP" type="button" class="btn btn-default" data-dismiss="modal">
+                        <spring:message code="act.cancel" />
+                    </button>
+                    <button id="btnSaveCondPre" type="submit" class="btn btn-primary">
+                        <spring:message code="act.save" />
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- Modal Manifestaciones clinicas -->
+    <div class="modal fade" id="modalCM" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"  style="background-color:#3276b1 ">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title txt-color-white"><spring:message code="lbl.new.clinical.manifestation"/>  </h4>
+                </div>
+
+                <div class="modal-body">
+                    <form:form id="fCM" modelAttribute="fCM" class="smart-form" >
+
+                        <div class="row">
+                            <div class="col col-sm-12 col-md-6 col-lg-6">
+                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
+                                <label class="text-left txt-color-blue font-md">
+                                    <spring:message code="lbl.clinical.manifestation" />
+                                </label>
+
+                                <div >
+                                    <form:select id="codManifestacion" name="codManifestacion" class="select2" path="codManifestacion">
+                                        <option value="">Seleccione...</option>
+                                        <c:forEach items="${catManCli}" var="mani">
+                                            <form:option value="${mani.codigo}">${mani.valor}</form:option>
+                                        </c:forEach>
+                                    </form:select>
+                                </div>
+                            </div>
+                            <div class="col col-sm-12 col-md-6 col-lg-6">
+                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
+                                <label class="text-left txt-color-blue font-md">
+                                    <spring:message code="lbl.answer" />
+                                </label>
+
+                                <div >
+                                    <form:select id="codRespuestaM" name="codRespuestaM" class="select2" path="codRespuestaM">
+                                        <option value="">Seleccione...</option>
+                                        <c:forEach items="${catResp}" var="resp">
+                                            <form:option value="${resp.codigo}">${resp.valor}</form:option>
+                                        </c:forEach>
+                                    </form:select>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+
+                            <div id="dMani" hidden="hidden" class="col col-sm-12 col-md-6 col-lg-6">
+                                <label class="text-left txt-color-blue font-md">
+                                    <spring:message code="lbl.other.clinical.manifestation" />
+                                </label>
+
+                                <form:input size="30" id="otraManifestacion"
+                                            type="text" path="otraManifestacion" name="otraManifestacion"/>
+
+                            </div>
+
+                        </div>
+
+
+                    </form:form>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="btnCancelCM" type="button" class="btn btn-default" data-dismiss="modal">
+                        <spring:message code="act.cancel" />
+                    </button>
+                    <button id="btnSaveCM" type="submit" class="btn btn-primary">
+                        <spring:message code="act.save" />
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 </div>
 
 
@@ -1419,6 +1581,10 @@
 <spring:url value="/api/v1/unidades" var="unidadesURL" />
 <spring:url value="/irag/newVaccine" var="sAddVaccineUrl" />
 <spring:url value="/irag/vaccines" var="sLoadVaccinesUrl" />
+<spring:url value="/irag/conditions" var="conditionsUrl" />
+<spring:url value="/irag/newPreCondition" var="addConditionUrl" />
+<spring:url value="/irag/manifestations" var="loadManifestationsUrl" />
+<spring:url value="/irag/newCM" var="addManifestationUrl" />
 <script type="text/javascript">
 
     $(document).ready(function() {
@@ -1428,7 +1594,11 @@
                           sUnidadesUrl: "${unidadesURL}",
                           dToday: "${today}",
                           sAddVaccineUrl: "${sAddVaccineUrl}",
-                          vaccines: "${sLoadVaccinesUrl}"
+                          vaccines: "${sLoadVaccinesUrl}",
+                          conditions: "${conditionsUrl}",
+                          addCondition: "${addConditionUrl}",
+                          manifestations: "${loadManifestationsUrl}",
+                          addManifestation: "${addManifestationUrl}"
         };
         <%--console.log( "${today}");--%>
         CreateIrag.init(parametros);

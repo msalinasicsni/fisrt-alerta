@@ -26,12 +26,22 @@ public class DaManifestacionesIragService {
 
     /*Retorna lista de Manifestaciones Clinicas
      * @param id
-     *
      */
-    public List<DaManifestacionesIrag> getAllManifestationsByIdFicha(String id) {
+    public List<DaManifestacionesIrag> getAllManifestationsByIdIrag(String id){
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM DaManifestacionesIrag mani where mani.idFichaVigilancia = ' " + id + "' and mani.pasivo = false ");
+        Query query = session.createQuery("select mani FROM DaManifestacionesIrag mani where mani.idIrag = '"+ id +"'");
         return query.list();
+    }
+
+    /*Busca registro de manifestaciones clinicas
+    * @param1 manifestacion
+    * @param2 id
+    */
+    public DaManifestacionesIrag searchManifestationRecord(String manifestacion, String id){
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("FROM DaManifestacionesIrag manif where manif.codManifestacion ='"+manifestacion+"' and  manif.idIrag = '"+id+"'");
+        DaManifestacionesIrag mani = (DaManifestacionesIrag) query.uniqueResult();
+        return mani;
     }
 
 
