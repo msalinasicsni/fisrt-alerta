@@ -70,12 +70,12 @@ public class UnidadesService {
         return  (Unidades)q.uniqueResult();
     }
 
-    public List<Unidades> getPrimaryUnitsBySilais(long idEntidad, String[] codTiposUnidades) throws Exception {
+    public List<Unidades> getPrimaryUnitsByMunicipio(String codMunicipio, String[] codTiposUnidades) throws Exception {
         List<Unidades> res = new ArrayList<Unidades>();
         try {
             Session session = sessionFactory.getCurrentSession();
             Criteria criteria = session.createCriteria(Unidades.class);
-            criteria.add(Restrictions.eq("entidadAdtva",idEntidad));
+            criteria.add(Restrictions.eq("municipio",codMunicipio));
             Long[] dataTipUnidades = new Long[codTiposUnidades.length];
             for(int i=0; i < codTiposUnidades.length; i++){
                 dataTipUnidades[i] = Long.parseLong(codTiposUnidades[i]);
