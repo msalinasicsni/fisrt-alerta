@@ -493,7 +493,7 @@
 
                                         </section>
 
-                                            <div id="sAddVaccine" hidden="hidden" >
+                                            <div id="sAddVaccine" >
                                             <button type="button" id="btnAddVaccine" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
                                                 <spring:message code="act.add.vaccine" />
                                             </button>
