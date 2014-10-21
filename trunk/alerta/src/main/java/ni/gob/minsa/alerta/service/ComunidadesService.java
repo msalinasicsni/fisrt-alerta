@@ -39,10 +39,11 @@ public class ComunidadesService {
      */
     public List<Comunidades> getComunidades(String idMunicipio) throws Exception {
             String query = "select a from Comunidades as a, Sectores as s " +
-                    "where a.sector = s.codigo and s.municipio = :municipio";
+                    "where a.pasivo = :pasivo and a.sector = s.codigo and s.municipio = :municipio";
             Session session = sessionFactory.getCurrentSession();
             Query q = session.createQuery(query);
             q.setString("municipio", idMunicipio);
+            q.setParameter("pasivo",'0');
             return q.list();
     }
 

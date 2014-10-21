@@ -39,29 +39,32 @@ public class DivisionPoliticaService {
      * @throws Exception
      */
     public List<Divisionpolitica> getAllDepartamentos() throws Exception {
-        String query = "from Divisionpolitica where dependencia is null order by nombre asc";
+        String query = "from Divisionpolitica where pasivo = :pasivo and dependencia is null order by nombre asc";
 
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
+        q.setParameter("pasivo",'0');
         return  q.list();
     }
 
     public List<Divisionpolitica> getAllMunicipios() throws Exception {
-        String query = "from Divisionpolitica where dependencia is not null order by nombre asc";
+        String query = "from Divisionpolitica where pasivo = :pasivo and dependencia is not null order by nombre asc";
 
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
+        q.setParameter("pasivo",'0');
         session.close();
         return q.list();
     }
 
     public List<Divisionpolitica> getMunicipiosFromDepartamento(String codigoNacional) throws Exception {
         String query = "select muni from Divisionpolitica as muni, Divisionpolitica as depa " +
-                "where muni.dependencia is not null and muni.dependencia=depa.divisionpoliticaId and depa.codigoNacional =:codigoNacional order by muni.nombre asc";
+                "where muni.pasivo = :pasivo and muni.dependencia is not null and muni.dependencia=depa.divisionpoliticaId and depa.codigoNacional =:codigoNacional order by muni.nombre asc";
 
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
         q.setString("codigoNacional", codigoNacional);
+        q.setParameter("pasivo",'0');
         return q.list();
     }
 
@@ -75,12 +78,14 @@ public class DivisionPoliticaService {
         return (Divisionpolitica)q.uniqueResult();
     }
 
-    public List<Divisionpolitica> getMunicipiosBySilais(long idSilas){
-        String query = "from Divisionpolitica where dependenciaSilais =:idSilas";
+    public List<Divisionpolitica> getMunicipiosBySilais(long idSilais){
+        String query = "select distinct muni from Divisionpolitica as muni, Unidades as uni " +
+                "where muni.pasivo = :pasivo and  uni.entidadAdtva = :idSilais and uni.municipio = muni.codigoNacional order by muni.nombre"; // muni.dependenciaSilais =:idSilas";
 
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
-        q.setLong("idSilas", idSilas);
+        q.setLong("idSilais", idSilais);
+        q.setParameter("pasivo",'0');
         return q.list();
     }
 
