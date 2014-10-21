@@ -34,10 +34,11 @@ public class EntidadAdmonService {
 
 
     public List<EntidadesAdtvas> getAllEntidadesAdtvas() throws Exception {
-        String query = "from EntidadesAdtvas as a order by nombre asc";
+        String query = "from EntidadesAdtvas as a where a.pasivo = :pasivo order by nombre asc";
 
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
+        q.setParameter("pasivo",'0');
         return q.list();
     }
 
@@ -47,11 +48,12 @@ public class EntidadAdmonService {
      * @throws Exception
      */
     public EntidadesAdtvas getSilaisFromMunicipio(String idMunicipio) throws Exception {
-        String query = "from EntidadesAdtvas as a where municipio=:idMunicipio order by nombre asc";
+        String query = "from EntidadesAdtvas as a where pasivo = :pasivo and municipio=:idMunicipio order by nombre asc";
 
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
         q.setString("idMunicipio",idMunicipio);
+        q.setParameter("pasivo",'0');
         return  (EntidadesAdtvas)q.uniqueResult();
      }
 

@@ -38,19 +38,19 @@ public class expose {
     @Autowired(required = true)
     @Qualifier(value = "unidadesService")
     private UnidadesService unidadesService;
-/*
-    @Autowired(required = true)
-    @Qualifier(value = "sispersonaService")
-    private SisPersonasService sisPersonasService;
+    /*
+        @Autowired(required = true)
+        @Qualifier(value = "sispersonaService")
+        private SisPersonasService sisPersonasService;
 
-    @Autowired
-    @Qualifier("fichaInfluenzaService")
-    FichaInfluenzaService fichaInfluenzaService;
+        @Autowired
+        @Qualifier("fichaInfluenzaService")
+        FichaInfluenzaService fichaInfluenzaService;
 
-    @Autowired
-    @Qualifier("fichaEpidemService")
-    FichaEpidemService fichaEpidemService;
-*/
+        @Autowired
+        @Qualifier("fichaEpidemService")
+        FichaEpidemService fichaEpidemService;
+    */
     @Autowired
     @Qualifier(value = "divisionPoliticaService")
     private DivisionPoliticaService divisionPoliticaService;
@@ -70,16 +70,16 @@ public class expose {
     @Autowired
     @Qualifier("sessionFactory")
     public SessionFactory sessionFactory;
-/*
-    @RequestMapping(value = "/personas", method = RequestMethod.GET, produces = "application/json")
-    public
-    @ResponseBody
-    List<SisPersonas> getAllPersonas() throws Exception {
-        logger.debug("Obteniendo todas las personas");
-        return
-                sisPersonasService.getAllSisPersonas();
-    }
-*/
+    /*
+        @RequestMapping(value = "/personas", method = RequestMethod.GET, produces = "application/json")
+        public
+        @ResponseBody
+        List<SisPersonas> getAllPersonas() throws Exception {
+            logger.debug("Obteniendo todas las personas");
+            return
+                    sisPersonasService.getAllSisPersonas();
+        }
+    */
     @RequestMapping(value = "unidades", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
@@ -90,9 +90,9 @@ public class expose {
     }
 
     @RequestMapping(value = "municipio", method = RequestMethod.GET, produces = "application/json")
-         public
-         @ResponseBody
-         List<Divisionpolitica> getmunicipio(@RequestParam(value = "departamentoId", required = true) String departamentoId) throws Exception {
+    public
+    @ResponseBody
+    List<Divisionpolitica> getmunicipio(@RequestParam(value = "departamentoId", required = true) String departamentoId) throws Exception {
         logger.info("Obteniendo los silais por Departamento en JSON");
         return
                 divisionPoliticaService.getMunicipiosFromDepartamento(departamentoId);
@@ -108,12 +108,12 @@ public class expose {
     }
 
     @RequestMapping(value = "unidadesPrimarias", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-      public
-      @ResponseBody
-      List<Unidades> getPrimaryUnitsBySilais(@RequestParam(value = "codMunicipio", required = true) String codMunicipio) throws Exception {
-        logger.info("Obteniendo las unidades por municipio en JSON");
+    public
+    @ResponseBody
+    List<Unidades> getPrimaryUnitsByMunicipioAndSilais(@RequestParam(value = "codMunicipio", required = true) String codMunicipio, @RequestParam(value = "codSilais", required = true) long codSilais) throws Exception {
+        logger.info("Obteniendo las unidades por municipio y SILAIS en JSON");
         return
-                unidadesService.getPrimaryUnitsByMunicipio(codMunicipio, HealthUnitType.UnidadesPrimarias.getDiscriminator().split(","));
+                unidadesService.getPrimaryUnitsByMunicipio_Silais(codMunicipio, codSilais,HealthUnitType.UnidadesPrimarias.getDiscriminator().split(","));
     }
 
     @RequestMapping(value = "unidadesPrimHosp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -125,55 +125,15 @@ public class expose {
                 unidadesService.getPUnitsHospByMunicipio(codMunicipio, HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","));
     }
 
-    /*
-    @RequestMapping(value = "patient/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "unidadesPrimariasSilais", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    String initSearchForm(@RequestParam("parameter") SearchParameters parameters, @RequestParam("value") String valuue) throws Exception {
-        logger.debug("Obteniendo y Serializando todas las personas que coincidan con los parametros de busqueda");
-        try {
-            final GsonBuilder gson = new GsonBuilder()
-                    .registerTypeAdapter(SisPersonas.class, new PersonTypeAdapter(sessionFactory))
-                    .setPrettyPrinting()
-                    .enableComplexMapKeySerialization()
-                    .serializeNulls()
-                    .setDateFormat(DateFormat.LONG)
-                    .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-                    .setVersion(1.0);
-            final Gson gson1 = gson.create();
-            List<SisPersonas> response = sisPersonasService.getAllSisPersonas(); //searchSisPersonas(parameters, valuue);
-            return
-                    gson1.toJson(response, ArrayList.class);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
-        }
+    List<Unidades> getPrimaryUnitsBySilais(@RequestParam(value = "codSilais", required = true) long codSilais) throws Exception {
+        logger.info("Obteniendo las unidades por SILAIS en JSON");
+        return
+                unidadesService.getPrimaryUnitsBySilais(codSilais, HealthUnitType.UnidadesPrimarias.getDiscriminator().split(","));
     }
 
-    @RequestMapping(value = "ficha/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    String initFichaSearch(@RequestParam("parameter") SearchParameters parameters, @RequestParam("value") String value, @RequestParam("type") String type){
-        logger.debug("Serializando los datos de ficha");
-        try{
-            final GsonBuilder gsonBuilder = new GsonBuilder()
-                    .registerTypeAdapter(DaFichaEpidem.class, new FichaTypeAdapter())
-                    .setPrettyPrinting()
-                    .enableComplexMapKeySerialization()
-                    .serializeNulls()
-                    .setDateFormat(DateFormat.LONG)
-                    .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-                    .setVersion(1.0);
-            final Gson gson = gsonBuilder.create();
-            List<DaFichaEpidem> response = fichaEpidemService.getAllFichaEpidemiologica();
-            return
-                    gson.toJson(response, ArrayList.class);
-        }catch (Exception ex){
-            ex.printStackTrace();
-            throw ex;
-        }
-    }
-*/
-    /* MSALINAS*/
     @RequestMapping(value = "comunidad", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
@@ -217,6 +177,5 @@ public class expose {
         semana = calendarioEpiService.getCalendarioEpiByFecha(fechaValidar);
         return semana;
     }
-   /* FIN MSALINAS*/
 
 }

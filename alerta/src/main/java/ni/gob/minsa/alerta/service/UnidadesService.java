@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
+import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -43,17 +44,19 @@ public class UnidadesService {
      * @throws Exception
      */
     public List<Unidades> getAllUnidades() throws Exception {
-        String query = "from Unidades order by nombre asc";
+        String query = "from Unidades where pasivo = :pasivo order by nombre asc";
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
+        q.setParameter("pasivo", '0');
         return q.list();
     }
 
     public List<Unidades> getUnidadesFromEntidades(int idEntidad) throws Exception {
         Session session = sessionFactory.getCurrentSession();
-        String query = "from Unidades where entidadAdtva =:idEntidad order by nombre asc";
+        String query = "from Unidades where pasivo = :pasivo and entidadAdtva =:idEntidad order by nombre asc";
         Query q = session.createQuery(query);
         q.setInteger("idEntidad",idEntidad);
+        q.setParameter("pasivo", '0');
         return q.list();
     }
 
@@ -70,12 +73,14 @@ public class UnidadesService {
         return  (Unidades)q.uniqueResult();
     }
 
-    public List<Unidades> getPrimaryUnitsByMunicipio(String codMunicipio, String[] codTiposUnidades) throws Exception {
+    public List<Unidades> getPrimaryUnitsByMunicipio_Silais(String codMunicipio, long codSilais, String[] codTiposUnidades) throws Exception {
         List<Unidades> res = new ArrayList<Unidades>();
         try {
             Session session = sessionFactory.getCurrentSession();
             Criteria criteria = session.createCriteria(Unidades.class);
             criteria.add(Restrictions.eq("municipio",codMunicipio));
+            criteria.add(Restrictions.eq("entidadAdtva",codSilais));
+            criteria.add(Restrictions.eq("pasivo",'0'));
             Long[] dataTipUnidades = new Long[codTiposUnidades.length];
             for(int i=0; i < codTiposUnidades.length; i++){
                 dataTipUnidades[i] = Long.parseLong(codTiposUnidades[i]);
@@ -87,7 +92,27 @@ public class UnidadesService {
         }catch (Exception ex){
             ex.printStackTrace();
         }
+        return res;
+    }
 
+    public List<Unidades> getPrimaryUnitsBySilais(long codSilais, String[] codTiposUnidades) throws Exception {
+        List<Unidades> res = new ArrayList<Unidades>();
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Criteria criteria = session.createCriteria(Unidades.class);
+            criteria.add(Restrictions.eq("entidadAdtva",codSilais));
+            criteria.add(Restrictions.eq("pasivo",'0'));
+            Long[] dataTipUnidades = new Long[codTiposUnidades.length];
+            for(int i=0; i < codTiposUnidades.length; i++){
+                dataTipUnidades[i] = Long.parseLong(codTiposUnidades[i]);
+            }
+            criteria.add(Restrictions.in("tipoUnidad", dataTipUnidades));
+            criteria.addOrder(Order.asc("nombre"));
+            res = criteria.list();
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         return res;
     }
 
