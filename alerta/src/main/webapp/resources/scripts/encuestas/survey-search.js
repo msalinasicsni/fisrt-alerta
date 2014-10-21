@@ -88,13 +88,13 @@ var SearchSurvey = function () {
                             //[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].municipioResidencia.nombre,'<a href='+ personUrl + ' class="btn btn-default btn-xs"><i class="fa fa-search"></i></a>']);
                         }
                     }else{
-                        var html = '<div class="alert alert-block alert-warning"> ' +
-                            '<a class="close" data-dismiss="alert" href="#">×</a> ' +
-                            '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
-                            '<p> ' + $("#msg_no_results_found").val() +
-                            '</p> ' +
-                            '</div>';
-                        mostrarMensaje(html);
+                        $.smallBox({
+                            title: $("#msg_no_results_found").val() ,
+                            content: $("#smallBox_content").val(),
+                            color: "#C46A69",
+                            iconSmall: "fa fa-warning",
+                            timeout: 4000
+                        });
                     }
     			})
     			.fail(function() {
@@ -118,7 +118,7 @@ var SearchSurvey = function () {
                 $('#codUnidadSalud').val('').change();
                 if ($(this).val().length > 0) {
                     $.getJSON(parametros.sUnidadesUrl, {
-                        silaisId: $(this).val(),
+                        codSilais: $(this).val(),
                         ajax: 'true'
                     }, function (data) {
                         var html = null;

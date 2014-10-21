@@ -85,9 +85,13 @@ public class DaDetalleDepositoPreferencialService {
      * @return List<DaDetaDepositopreferencial> : Detalles encontrados
      * @throws Exception
      */
-    public List<DaDetaDepositopreferencial> getDetalleEncuestaByIdMaestro(String idEncuestaMaestro) throws Exception {
+    public List<DaDetaDepositopreferencial> getDetalleEncuestaByIdMaestro(String idEncuestaMaestro, int editar) throws Exception {
         Session session = sessionFactory.getCurrentSession();
-        String query = "from DaDetaDepositopreferencial as a join a.maeEncuesta as b where b.encuestaId = :idMaestro order by a.feRegistro asc";
+        String query = "from DaDetaDepositopreferencial as a join a.maeEncuesta as b where b.encuestaId = :idMaestro ";
+        if (editar > 0)
+            query = query + " order by a.localidad.nombre asc";
+        else
+            query = query + " order by a.feRegistro asc";
         Query q = session.createQuery(query);
         q.setString("idMaestro",idEncuestaMaestro);
         return q.list();

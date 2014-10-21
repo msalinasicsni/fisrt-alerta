@@ -15,7 +15,7 @@
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
 <body class="">
-<c:url var="unidadesURL" value="/api/v1/unidadesPrimarias"/>
+<c:url var="unidadesURL" value="/api/v1/unidadesPrimariasSilais"/>
 <c:url var="consultaEncuestasURL" value="/encuesta/busquedaEncuesta"/>
 <c:url var="editarEncuestasURL" value="/encuesta/edit"/>
 <!-- #HEADER -->
@@ -128,10 +128,9 @@
                                 <div class="row">
                                     <div id="mensaje" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     </div>
-                                    <c:set var="valmsg1"><spring:message code="msg.ento.no.results.found"/></c:set>
-                                    <input id="msg_no_results_found" type="hidden" value="${valmsg1}"/>
-                                    <c:set var="valselect"><spring:message code="lbl.select"/></c:set>
-                                    <input id="text_opt_select" type="hidden" value="${valselect}"/>
+                                    <input id="msg_no_results_found" type="hidden" value="<spring:message code="msg.ento.no.results.found"/>"/>
+                                    <input id="text_opt_select" type="hidden" value="<spring:message code="lbl.select"/>"/>
+                                    <input id="smallBox_content" type="hidden" value="<spring:message code="smallBox.content.4s"/>"/>
                                 </div>
                                 <div class="row">
                                     <section class="col col-xs-12 col-sm-6 col-md-3 col-lg-3">

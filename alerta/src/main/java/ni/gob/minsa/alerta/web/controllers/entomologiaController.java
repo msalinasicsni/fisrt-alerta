@@ -11,6 +11,7 @@ import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.*;
 import ni.gob.minsa.alerta.service.*;
+import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import ni.gob.minsa.alerta.utilities.enumeration.surveyModelType;
 import ni.gob.minsa.alerta.utilities.typeAdapter.*;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -632,14 +633,14 @@ public class entomologiaController {
     @RequestMapping(value = "obtenerDepositoPrefeMae", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    String getDetalleDepositosPrefeMaestro(@RequestParam(value = "idMaestroEncuesta", required = true) String idMaestroEncuesta) throws Exception {
+    String getDetalleDepositosPrefeMaestro(@RequestParam(value = "idMaestroEncuesta", required = true) String idMaestroEncuesta, @RequestParam(value = "edicion", required = true) int edicion) throws Exception {
         logger.info("Obteniendo encuestas según filtros informados en JSON");
         //List<DaDatosDetDepositopreferencial> datosEncuestas = new ArrayList<DaDatosDetDepositopreferencial>();
         String result = "";
         List<DaDetaDepositopreferencial> detEncuestas = new ArrayList<DaDetaDepositopreferencial>();
         try {
             if (idMaestroEncuesta!=null) {
-                detEncuestas = detalleDepositoPreferencialService.getDetalleEncuestaByIdMaestro(idMaestroEncuesta);
+                detEncuestas = detalleDepositoPreferencialService.getDetalleEncuestaByIdMaestro(idMaestroEncuesta,edicion);
                 int num=1;
                 final GsonBuilder gson = new GsonBuilder()
                         .registerTypeAdapter(DaDetaDepositopreferencial.class, new DetalleDepositoPreferencialTypeAdapter())
@@ -809,7 +810,7 @@ public class entomologiaController {
         if (ordinales == null)
         ordinales = catalogosService.getOrdinalEncuesta();
 
-        unidadesSalud = unidadesService.getUnidadesFromEntidades((int)maestro.getEntidadesAdtva().getCodigo());
+        unidadesSalud = unidadesService.getPrimaryUnitsByMunicipio_Silais(maestro.getMunicipio().getCodigoNacional(), maestro.getEntidadesAdtva().getCodigo(), HealthUnitType.UnidadesPrimarias.getDiscriminator().split(","));
         comunidades = comunidadesService.getComunidades(maestro.getMunicipio().getCodigoNacional());
         if (maestro.getMunicipio().getCodigoNacional().equalsIgnoreCase(COD_NACIONAL_MUNI_MANAGUA)) {
             distritosMng = catalogosService.getDistritos();

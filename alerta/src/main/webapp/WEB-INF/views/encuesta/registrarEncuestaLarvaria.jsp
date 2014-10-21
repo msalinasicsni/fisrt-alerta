@@ -175,7 +175,19 @@
                 </select>
             </div>
         </section>
-        <section class="col col-sm-12 col-md-6 col-lg-3">
+        <section class="col col-sm-6 col-md-4 col-lg-3">
+            <label class="text-left txt-color-blue font-md">
+                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="muni" /> </label>
+            <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-location-arrow fa-fw"></i>
+                                                    </span>
+                <select  class="select2" name="codigoMunicipio" id="codigoMunicipio" path="codigoMunicipio">
+                    <option value=""><spring:message code="lbl.select" />...</option>
+                </select>
+            </div>
+        </section>
+        <section class="col col-sm-12 col-md-6 col-lg-6">
             <label class="text-left txt-color-blue font-md">
                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.health.unit" />
             </label>
@@ -188,34 +200,10 @@
                 </select>
             </div>
         </section>
-        <!--<section class="col col-2">
-                                            <label class="text-left txt-color-blue font-md">
-                                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.department" /> </label>
-                                            <div class="input-group">
-                                                        <span class="input-group-addon">
-                                                                       <i class="fa fa-location-arrow fa-fw"></i>
-                                                            </span>
-                                                <select name="codigoDepartamento" id="codigoDepartamento" class="select2">
-                                                    <option value=""><spring:message code="lbl.select" />...</option>
-                                                    <c:forEach items="${departamentos}" var="departamentos">
-                                                        <option value="${departamentos.codigoNacional}">${departamentos.nombre}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </div>
-                                        </section>-->
-        <section class="col col-sm-6 col-md-4 col-lg-2">
-            <label class="text-left txt-color-blue font-md">
-                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="muni" /> </label>
-            <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-location-arrow fa-fw"></i>
-                                                    </span>
-                <select  class="select2" name="codigoMunicipio" id="codigoMunicipio" path="codigoMunicipio">
-                    <option value=""><spring:message code="lbl.select" />...</option>
-                </select>
-            </div>
-        </section>
-        <section class="col col-sm-6 col-md-4 col-lg-2">
+    </div>
+    <!-- primera fila -->
+    <div class="row">
+        <section class="col col-sm-6 col-md-4 col-lg-3">
             <label class="text-left txt-color-blue font-md">
                 <spring:message code="lbl.district" />
             </label>
@@ -229,7 +217,7 @@
                 </select>
             </div>
         </section>
-        <section class="col col-sm-6 col-md-4 col-lg-2">
+        <section class="col col-sm-6 col-md-4 col-lg-3">
             <label class="text-left txt-color-blue font-md">
                 <spring:message code="lbl.area" />
             </label>
@@ -242,8 +230,39 @@
                 </select>
             </div>
         </section>
+        <section class="col col-sm-6 col-md-4 col-lg-3">
+            <label class="text-left txt-color-blue font-md">
+                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.ordinal" />
+            </label>
+            <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-location-arrow fa-fw"></i>
+                                                    </span>
+                <select class="select2" id="codOrdinal" name="codOrdinal"  path="codOrdinal">
+                    <option value=""><spring:message code="lbl.select" />...</option>
+                    <c:forEach items="${ordinales}" var="ordinales">
+                        <option value="${ordinales.codigo}">${ordinales.valor}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </section>
+        <section class="col col-sm-6 col-md-4 col-lg-3">
+            <label class="text-left txt-color-blue font-md">
+                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.provenance" />
+            </label>
+            <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-location-arrow fa-fw"></i>
+                                                    </span>
+                <select class="select2" id="codProcedencia" name="codProcedencia" path="codProcedencia">
+                    <option value=""><spring:message code="lbl.select" />...</option>
+                    <c:forEach items="${procedencias}" var="procedencias">
+                        <option value="${procedencias.codigo}">${procedencias.valor}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </section>
     </div>
-    <!-- primera fila -->
     <div class="row">
         <section class="col col-sm-6 col-md-4 col-lg-2">
             <label class="text-left txt-color-blue font-md">
@@ -299,54 +318,20 @@
             </section>
             <!--</div>-->
         </section>
-        <section class="col col-sm-6 col-md-4 col-lg-2">
-            <label class="text-left txt-color-blue font-md">
-                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.ordinal" />
-            </label>
-            <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-location-arrow fa-fw"></i>
-                                                    </span>
-                <select class="select2" id="codOrdinal" name="codOrdinal"  path="codOrdinal">
-                    <option value=""><spring:message code="lbl.select" />...</option>
-                    <c:forEach items="${ordinales}" var="ordinales">
-                        <option value="${ordinales.codigo}">${ordinales.valor}</option>
-                    </c:forEach>
-                </select>
-            </div>
-        </section>
-        <section class="col col-sm-6 col-md-4 col-lg-2">
-            <label class="text-left txt-color-blue font-md">
-                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.provenance" />
-            </label>
-            <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-location-arrow fa-fw"></i>
-                                                    </span>
-                <select class="select2" id="codProcedencia" name="codProcedencia" path="codProcedencia">
-                    <option value=""><spring:message code="lbl.select" />...</option>
-                    <c:forEach items="${procedencias}" var="procedencias">
-                        <option value="${procedencias.codigo}">${procedencias.valor}</option>
-                    </c:forEach>
-                </select>
-            </div>
-        </section>
     </div>
 </fieldset>
 <fieldset>
     <div class="row">
         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-            <a class="btn btn-primary btn-lg pull-right header-btn hidden-mobile" id="btnNuevoRegistro"><i class="fa fa-circle-arrow-up fa-lg"></i><spring:message code="act.ento.new.survey" /></a>
+            <a class="btn btn-primary btn-lg pull-left header-btn hidden-mobile" id="btnNuevoRegistro"><i class="fa fa-circle-arrow-up fa-lg"></i><spring:message code="act.ento.new.survey" /></a>
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-            <c:set var="valmsg1"><spring:message code="msg.ento.header.already.exist"/></c:set>
-            <input id="msg_header_exist" type="hidden" value="${valmsg1}"/>
-            <c:set var="valmsg2"><spring:message code="msg.ento.location.added.successfully"/></c:set>
-            <input id="msg_location_added" type="hidden" value="${valmsg2}"/>
-            <c:set var="valmsg3"><spring:message code="msg.ento.location.alreadey.exist"/></c:set>
-            <input id="msg_location_exist" type="hidden" value="${valmsg3}"/>
-            <c:set var="valselect"><spring:message code="lbl.select"/></c:set>
-            <input id="text_opt_select" type="hidden" value="${valselect}"/>
+            <input id="msg_header_exist" type="hidden" value="<spring:message code="msg.ento.header.already.exist"/>"/>
+            <input id="msg_location_added" type="hidden" value="<spring:message code="msg.ento.location.added.successfully"/>"/>
+            <input id="msg_location_exist" type="hidden" value="<spring:message code="msg.ento.location.alreadey.exist"/>"/>
+            <input id="text_opt_select" type="hidden" value="<spring:message code="lbl.select"/>"/>
+            <input id="txt_act_edit" type="hidden" value="<spring:message code="act.edit"/>"/>
+            <input id="smallBox_content" type="hidden" value="<spring:message code="smallBox.content.4s"/>"/>
 
             <input id="idMaestroAgregado" type="hidden"/>
             <!-- Button trigger modal -->
