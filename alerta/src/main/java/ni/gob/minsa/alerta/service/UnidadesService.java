@@ -90,4 +90,25 @@ public class UnidadesService {
 
         return res;
     }
+
+    public List<Unidades> getPUnitsHospByMunicipio(String codMunicipio, String[] codTiposUnidades) throws Exception {
+        List<Unidades> res = new ArrayList<Unidades>();
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Criteria criteria = session.createCriteria(Unidades.class);
+            criteria.add(Restrictions.eq("municipio",codMunicipio));
+            Long[] dataTipUnidades = new Long[codTiposUnidades.length];
+            for(int i=0; i < codTiposUnidades.length; i++){
+                dataTipUnidades[i] = Long.parseLong(codTiposUnidades[i]);
+            }
+            criteria.add(Restrictions.in("tipoUnidad", dataTipUnidades));
+            criteria.addOrder(Order.asc("nombre"));
+            res = criteria.list();
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        return res;
+    }
 }
