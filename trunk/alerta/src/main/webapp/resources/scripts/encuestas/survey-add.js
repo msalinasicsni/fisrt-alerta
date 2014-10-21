@@ -22,6 +22,38 @@ var AddAedesSurvey = function () {
                 }
             });
 
+            // Se agrega método de validación 'greaterOrEqualThan', para validar que las cantidad de depositos insepec sea mayor o igual a la
+            // cantidad de viviendas inspec, y que la cantidad de viviendas inspec sean mayor o igual a la cantidad de manzanas inspec
+            jQuery.validator.addMethod("greaterOrEqualThan",
+                function (value, element, param) {
+                    var $min = $(param[0]);
+                    if (this.settings.onfocusout) {
+                        $min.off(".validate-greaterOrEqualThan").on("blur.validate-greaterOrEqualThan", function () {
+                            $(element).valid();
+                        });
+                    }
+                    return parseInt(value) >= parseInt($min.val());
+                }, function (param){
+                    var msg = parametros.msg_greaterOrEqualThan.replace(/\{0\}/,param[1]).replace(/\{1\}/,param[2]);
+                    return msg;
+                });
+
+            //Se agrega método de validación 'lessOrEqualThan', para validar que las cantidades de viviendas, manzanas y depósitos positivos, sean menores
+            // o igual a las cantidades de viviendas, manzanas y depósitos inspeccionados respesctivamente
+            jQuery.validator.addMethod("lessOrEqualThan",
+                function (value, element, param) {
+                    var $min = $(param[0]);
+                    if (this.settings.onfocusout) {
+                        $min.off(".validate-lessOrEqualThan").on("blur.validate-lessOrEqualThan", function () {
+                            $(element).valid();
+                        });
+                    }
+                    return parseInt(value) <= parseInt($min.val());
+                }, function (param){
+                    var msg = parametros.msg_lessOrEqualThan.replace(/\{0\}/,param[1]).replace(/\{1\}/,param[2]);
+                    return msg;
+                });
+
             var responsiveHelper_dt_basic = undefined;
 			var breakpointDefinition = {
 				tablet : 1024,
@@ -32,6 +64,7 @@ var AddAedesSurvey = function () {
 					"t"+
 					"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
 				"autoWidth" : true,
+                "pInfo":false,
                 "aoColumns" : [
                     {sClass: "aw-center" },null,{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },null,null,{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" }
                 ],
@@ -90,7 +123,6 @@ var AddAedesSurvey = function () {
                 encuestaObj['mensaje'] = '';
                 encuestaObj['maestro'] = maestro;
                 encuestaObj['detalle'] = detalle;
-                var html = null;
                 $.ajax(
                     {
                         url: parametros.sAddSurvey,
@@ -101,28 +133,25 @@ var AddAedesSurvey = function () {
                         mimeType: 'application/json',
                         success: function (data) {
                             if (data.mensaje.length > 0){
-                                html = '<div class="alert alert-block alert-warning"> ' +
-                                    '<a class="close" data-dismiss="alert" href="#">×</a> ' +
-                                    '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
-                                    '<p> '+data.mensaje+
-                                    '</p> ' +
-                                    '</div>';
+                                $.smallBox({
+                                    title: data.mensaje ,
+                                    content: $("#smallBox_content").val(),
+                                    color: "#C46A69",
+                                    iconSmall: "fa fa-warning",
+                                    timeout: 4000
+                                });
                             }else{
                                 getSurveyDetails(data.idMaestro);
                                 $("#idMaestroAgregado").val(data.idMaestro);
                                 limpiarCamposDetalle();
-                                html = '<div class="alert alert-block alert-success"> ' +
-                                    '<a class="close" data-dismiss="alert" href="#">×</a> ' +
-                                    '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
-                                    '<p> ' + $("#msg_location_added").val() +
-                                    '</p> ' +
-                                    '</div>';
+                                $.smallBox({
+                                    title: $("#msg_location_added").val() ,
+                                    content: $("#smallBox_content").val(),
+                                    color: "#739E73",
+                                    iconSmall: "fa fa-success",
+                                    timeout: 4000
+                                });
                             }
-                            $('#mensaje').html(html).show().focus();
-                            //$("#mensaje").show("slow");
-                            //$("#mensaje").focus();
-                            //$("#mensaje").fadeOut(6000);
-                            setTimeout(function(){$("#mensaje").hide("slow");}, 4000);
                         },
                         error: function (data, status, er) {
                             alert("error: " + data + " status: " + status + " er:" + er);
@@ -157,7 +186,7 @@ var AddAedesSurvey = function () {
 
 						//var surveyUrl = parametros.sSurveyEditUrl + '?idMaestro='+dataToLoad[i][0].encuestaId;
 						table1.fnAddData(
-                                [i+1, data[i][0].localidad, data[i][0].viviendasInspec, data[i][0].viviendasPosit, data[i][0].indiceViviendas, data[i][0].manzanasInspec, data[i][0].manzanasPosit, data[i][0].indiceManzanas, data[i][0].depositosInspec, data[i][0].depositosPosit, data[i][0].indiceDepositos, data[i][0].indiceBrete, data[i][0].pupasPosit, data[i][0].indicePupas, data[i][0].fechaAbat, data[i][0].fechaVEnt, data[i][0].noAbati, data[i][0].noElimin,  data[i][0].noNeutr]);
+                                [i+1, data[i][0].localidad, data[i][0].manzanasInspec, data[i][0].manzanasPosit, data[i][0].indiceManzanas, data[i][0].viviendasInspec, data[i][0].viviendasPosit, data[i][0].indiceViviendas, data[i][0].depositosInspec, data[i][0].depositosPosit, data[i][0].indiceDepositos, data[i][0].indiceBrete, data[i][0].pupasPosit, data[i][0].indicePupas, data[i][0].fechaAbat, data[i][0].fechaVEnt, data[i][0].noAbati, data[i][0].noElimin,  data[i][0].noNeutr]);
     							//[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].municipioResidencia.nombre,'<a href='+ personUrl + ' class="btn btn-default btn-xs"><i class="fa fa-search"></i></a>']);
                         var nTotalViviendasIndice    = parseFloat((nTotalViviendasPosit / nTotalViviendasInspec)*100).toFixed(1);
                         var nTotalManzanasIndice     = parseFloat((nTotalManzanasPosit / nTotalManzanasInspec)*100).toFixed(1);
@@ -226,7 +255,7 @@ var AddAedesSurvey = function () {
                                     '<a class="close" data-dismiss="alert" href="#">×</a> ' +
                                     '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
                                     '<p> ' +$("#msg_header_exist").val()+
-                                    '<a class="" href="'+parametros.sEditSurveyUrl + '?idMaestro=' + data[0].encuestaId + '">Editar</a>' +
+                                    ' <a class="" href="'+parametros.sEditSurveyUrl + '?idMaestro=' + data[0].encuestaId + '">'+$("#txt_act_edit").val()+'</a>' +
                                     '</p> ' +
                                     '</div>';
                                 $('#msjMaestro').html(html).show().focus();
@@ -249,9 +278,27 @@ var AddAedesSurvey = function () {
 
             <!-- al seleccionar municipio -->
             $('#codigoMunicipio').change(function(){
+                $('#codUnidadSalud').val('').change();
                 $('#codigoDistrito').val('').change();
                 $('#codigoArea').val('').change();
+
                 if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sUnidadesUrl, {
+                        codMunicipio: $(this).val(),
+                        codSilais:$('#codSilais option:selected').val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            html += '</option>';
+                        }
+                        $('#codUnidadSalud').html(html);
+                    });
                     $.getJSON(parametros.sComunidadesUrl, {
                         municipioId: $(this).val(),
                         ajax: 'true'
@@ -303,7 +350,6 @@ var AddAedesSurvey = function () {
             <!-- al seleccionar SILAIS -->
             $('#codSilais').change(function(){
                 $('#codigoMunicipio').val('').change();
-                $('#codUnidadSalud').val('').change();
                 if ($(this).val().length > 0) {
                     $.getJSON(parametros.sMunicipiosUrl, {
                         idSilais: $(this).val(),
@@ -319,22 +365,6 @@ var AddAedesSurvey = function () {
                             html += '</option>';
                         }
                         $('#codigoMunicipio').html(html);
-                    });
-
-                    $.getJSON(parametros.sUnidadesUrl, {
-                        silaisId: $(this).val(),
-                        ajax: 'true'
-                    }, function (data) {
-                        var html = null;
-                        var len = data.length;
-                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
-                        for (var i = 0; i < len; i++) {
-                            html += '<option value="' + data[i].codigo + '">'
-                                + data[i].nombre
-                                + '</option>';
-                            html += '</option>';
-                        }
-                        $('#codUnidadSalud').html(html);
                     });
             }
             });
@@ -367,24 +397,19 @@ var AddAedesSurvey = function () {
                         datosEncuesta: JSON.stringify(encuestaObj),
                         ajax: 'true'
                     }, function (data) {
-                        var html = null;
                         var len = data.length;
                         if (len > 0) {
-                            html = '<div class="alert alert-block alert-warning"> ' +
-                                '<a class="close" data-dismiss="alert" href="#">×</a> ' +
-                                '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
-                                '<p> ' + $("#msg_location_exist").val() +
-                                '</p> ' +
-                                '</div>';
-                            $('#mensaje').html(html).show().focus();
-                            //$("#mensaje").show("slow");
-                            //$("#mensaje").focus();
-                            //$("#mensaje").fadeOut(5000);
-                            setTimeout(function(){$("#mensaje").hide("slow");}, 4000);
+                            $.smallBox({
+                                title: $("#msg_location_exist").val() ,
+                                content: $("#smallBox_content").val(),
+                                color: "#C46A69",
+                                iconSmall: "fa fa-warning",
+                                timeout: 4000
+                            });
                             $("#codigoLocalidad").val('').change();
-                        } else {
+                        } /*else {
                             $("#mensaje").hide("slow");
-                        }
+                        }*/
                     })
                 }
             });
@@ -444,11 +469,13 @@ var AddAedesSurvey = function () {
                     },
                     viviendasInspec:{
                         required: true,
-                        digits: true
+                        digits: true,
+                        greaterOrEqualThan: ['#manzanasInspec',parametros.sValHomes,parametros.sValBlock]
                     },
                     viviendasPositivas:{
                         required: true,
-                        digits: true
+                        digits: true,
+                        lessOrEqualThan: ['#viviendasInspec',parametros.sValPosit,parametros.sValInspec]
                     },
                     manzanasInspec:{
                         required: true,
@@ -456,15 +483,18 @@ var AddAedesSurvey = function () {
                     },
                     manzanasPositivas:{
                         required: true,
-                        digits: true
+                        digits: true,
+                        lessOrEqualThan: ['#manzanasInspec',parametros.sValPosit,parametros.sValInspec]
                     },
                     depositosInspec:{
                         required: true,
-                        digits: true
+                        digits: true,
+                        greaterOrEqualThan: ['#viviendasInspec',parametros.sValTanks,parametros.sValHomes]
                     },
                     depositosPositovos:{
                         required: true,
-                        digits: true
+                        digits: true,
+                        lessOrEqualThan: ['#depositosInspec',parametros.sValPosit,parametros.sValInspec]
                     },
                     pupasPositivas:{
                         required: true,
@@ -584,7 +614,7 @@ var AddAedesSurvey = function () {
 var AddLarvariaSurvey = function () {
 
     return {
-        //Se comenta todo lo referente a recipientes infestados
+        //Se comenta lo referente a recipientes infestados
         //main function to initiate the module
         init: function (parametros) {
             $(document).on('keypress','form input',function(event)
@@ -680,28 +710,25 @@ var AddLarvariaSurvey = function () {
                         mimeType: 'application/json',
                         success: function (data) {
                             if (data.mensaje.length > 0){
-                                html = '<div class="alert alert-block alert-warning"> ' +
-                                    '<a class="close" data-dismiss="alert" href="#">×</a> ' +
-                                    '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
-                                    '<p> '+data.mensaje+
-                                    '</p> ' +
-                                    '</div>';
+                                $.smallBox({
+                                    title: data.mensaje ,
+                                    content: $("#smallBox_content").val(),
+                                    color: "#C46A69",
+                                    iconSmall: "fa fa-warning",
+                                    timeout: 4000
+                                });
                             }else{
                                 getSurveyDetails(data.idMaestro);
                                 $("#idMaestroAgregado").val(data.idMaestro);
                                 limpiarCamposDetalle();
-                                html = '<div class="alert alert-block alert-success"> ' +
-                                    '<a class="close" data-dismiss="alert" href="#">×</a> ' +
-                                    '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
-                                    '<p> ' + $("#msg_location_added").val() +
-                                    '</p> ' +
-                                    '</div>';
+                                $.smallBox({
+                                    title: $("#msg_location_added").val() ,
+                                    content: $("#smallBox_content").val(),
+                                    color: "#739E73",
+                                    iconSmall: "fa fa-success",
+                                    timeout: 4000
+                                });
                             }
-                            $('#mensaje').html(html).show().focus();
-                            //$("#mensaje").show("slow");
-                            //$("#mensaje").focus();
-                            //$("#mensaje").fadeOut(6000);
-                            setTimeout(function(){$("#mensaje").hide("slow");}, 4000);
                         },
                         error: function (data, status, er) {
                             alert("error: " + data + " status: " + status + " er:" + er);
@@ -837,7 +864,7 @@ var AddLarvariaSurvey = function () {
                                     '<a class="close" data-dismiss="alert" href="#">×</a> ' +
                                     '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
                                     '<p> ' + $("#msg_header_exist").val() +
-                                    '<a class="" href="'+parametros.sEditSurveyUrl + '?idMaestro=' + data[0].encuestaId + '">Editar</a>' +
+                                    ' <a class="" href="'+parametros.sEditSurveyUrl + '?idMaestro=' + data[0].encuestaId + '">'+$("#txt_act_edit").val()+'</a>' +
                                     '</p> ' +
                                     '</div>';
                                 $('#msjMaestro').html(html).show().focus();
@@ -860,9 +887,26 @@ var AddLarvariaSurvey = function () {
 
             <!-- al seleccionar municipio -->
             $('#codigoMunicipio').change(function(){
+                $('#codUnidadSalud').val('').change();
                 $('#codigoDistrito').val('').change();
                 $('#codigoArea').val('').change();
                 if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sUnidadesUrl, {
+                        codMunicipio: $(this).val(),
+                        codSilais:$('#codSilais option:selected').val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            html += '</option>';
+                        }
+                        $('#codUnidadSalud').html(html);
+                    });
                     $.getJSON(parametros.sComunidadesUrl, {
                         municipioId: $(this).val(),
                         ajax: 'true'
@@ -914,7 +958,6 @@ var AddLarvariaSurvey = function () {
             <!-- al seleccionar SILAIS -->
             $('#codSilais').change(function(){
                 $('#codigoMunicipio').val('').change();
-                $('#codUnidadSalud').val('').change();
                 if ($(this).val().length > 0) {
                     $.getJSON(parametros.sMunicipiosUrl, {
                         idSilais: $(this).val(),
@@ -930,21 +973,6 @@ var AddLarvariaSurvey = function () {
                             html += '</option>';
                         }
                         $('#codigoMunicipio').html(html);
-                    });
-                    $.getJSON(parametros.sUnidadesUrl, {
-                        silaisId: $(this).val(),
-                        ajax: 'true'
-                    }, function (data) {
-                        var html = null;
-                        var len = data.length;
-                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
-                        for (var i = 0; i < len; i++) {
-                            html += '<option value="' + data[i].codigo + '">'
-                                + data[i].nombre
-                                + '</option>';
-                            html += '</option>';
-                        }
-                        $('#codUnidadSalud').html(html);
                     });
                 }
             });
@@ -980,17 +1008,13 @@ var AddLarvariaSurvey = function () {
                         var html = null;
                         var len = data.length;
                         if (len > 0) {
-                            html = '<div class="alert alert-block alert-warning"> ' +
-                                '<a class="close" data-dismiss="alert" href="#">×</a> ' +
-                                '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
-                                '<p> ' + $("#msg_location_exist").val() +
-                                '</p> ' +
-                                '</div>';
-                            $('#mensaje').html(html).show().focus();
-                            //$("#mensaje").show("slow");
-                            //$("#mensaje").focus();
-                            //$("#mensaje").fadeOut(5000);
-                            setTimeout(function(){$("#mensaje").hide("slow");}, 4000);
+                            $.smallBox({
+                                title: $("#msg_location_exist").val() ,
+                                content: $("#smallBox_content").val(),
+                                color: "#C46A69",
+                                iconSmall: "fa fa-warning",
+                                timeout: 4000
+                            });
                             $("#codigoLocalidad").val('').change();
                         } else {
                             $("#mensaje").hide("slow");
@@ -1294,28 +1318,25 @@ var AddDepositoSurvey = function(){
                         mimeType: 'application/json',
                         success: function (data) {
                             if (data.mensaje.length > 0){
-                                html = '<div class="alert alert-block alert-warning"> ' +
-                                    '<a class="close" data-dismiss="alert" href="#">×</a> ' +
-                                    '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
-                                    '<p> '+data.mensaje+
-                                    '</p> ' +
-                                    '</div>';
+                                $.smallBox({
+                                    title: data.mensaje ,
+                                    content: $("#smallBox_content").val(),
+                                    color: "#C46A69",
+                                    iconSmall: "fa fa-warning",
+                                    timeout: 4000
+                                });
                             }else {
                                 getSurveyDetails(data.idMaestro);
                                 $("#idMaestroAgregado").val(data.idMaestro);
                                 limpiarCamposDetalle();
-                                html = '<div class="alert alert-block alert-success"> ' +
-                                    '<a class="close" data-dismiss="alert" href="#">×</a> ' +
-                                    '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
-                                    '<p> ' + $("#msg_location_added").val() +
-                                '</p> ' +
-                                '</div>';
+                                $.smallBox({
+                                    title: $("#msg_location_added").val() ,
+                                    content: $("#smallBox_content").val(),
+                                    color: "#739E73",
+                                    iconSmall: "fa fa-success",
+                                    timeout: 4000
+                                });
                             }
-                            $('#mensaje').html(html).show().focus();
-                            //$("#mensaje").show("slow");
-                            //$("#mensaje").focus();
-                            //$("#mensaje").fadeOut(5000);
-                            setTimeout(function(){$("#mensaje").hide("slow");}, 4000);
                         },
                         error: function (data, status, er) {
                             alert("error: " + data + " status: " + status + " er:" + er);
@@ -1326,7 +1347,7 @@ var AddDepositoSurvey = function(){
 
             function getSurveyDetails(idMaestro){
                 $.getJSON(parametros.sSurveyDetailsUrl, {
-                    idMaestroEncuesta: idMaestro,
+                    idMaestroEncuesta: idMaestro, edicion:0,
                     ajax : 'true'
                 }, function(response) {
                     table1.fnClearTable();
@@ -1663,7 +1684,7 @@ var AddDepositoSurvey = function(){
                                     '<a class="close" data-dismiss="alert" href="#">×</a> ' +
                                     '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
                                     '<p> ' + $("#msg_header_exist").val() +
-                                    '<a class="" href="'+parametros.sEditSurveyUrl + '?idMaestro=' + data[0].encuestaId + '">Editar</a>' +
+                                    ' <a class="" href="'+parametros.sEditSurveyUrl + '?idMaestro=' + data[0].encuestaId + '">'+$("#txt_act_edit").val()+'</a>' +
                                     '</p> ' +
                                     '</div>';
                                 $('#msjMaestro').html(html).show().focus();
@@ -1686,9 +1707,27 @@ var AddDepositoSurvey = function(){
 
             <!-- al seleccionar municipio -->
             $('#codigoMunicipio').change(function(){
+                $('#codUnidadSalud').val('').change();
                 $('#codigoDistrito').val('').change();
                 $('#codigoArea').val('').change();
                 if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sUnidadesUrl, {
+                        codMunicipio: $(this).val(),
+                        codSilais:$('#codSilais option:selected').val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            html += '</option>';
+                        }
+                        $('#codUnidadSalud').html(html);
+                    });
+
                     $.getJSON(parametros.sComunidadesUrl, {
                         municipioId: $(this).val(),
                         ajax: 'true'
@@ -1740,7 +1779,6 @@ var AddDepositoSurvey = function(){
             <!-- al seleccionar SILAIS -->
             $('#codSilais').change(function(){
                 $('#codigoMunicipio').val('').change();
-                $('#codUnidadSalud').val('').change();
                 if ($(this).val().length > 0) {
                     $.getJSON(parametros.sMunicipiosUrl, {
                         idSilais: $(this).val(),
@@ -1756,21 +1794,6 @@ var AddDepositoSurvey = function(){
                             html += '</option>';
                         }
                         $('#codigoMunicipio').html(html);
-                    });
-                    $.getJSON(parametros.sUnidadesUrl, {
-                        silaisId: $(this).val(),
-                        ajax: 'true'
-                    }, function (data) {
-                        var html = null;
-                        var len = data.length;
-                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
-                        for (var i = 0; i < len; i++) {
-                            html += '<option value="' + data[i].codigo + '">'
-                                + data[i].nombre
-                                + '</option>';
-                            html += '</option>';
-                        }
-                        $('#codUnidadSalud').html(html);
                     });
                 }
             });
