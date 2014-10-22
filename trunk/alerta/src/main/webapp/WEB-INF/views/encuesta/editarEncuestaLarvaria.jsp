@@ -12,10 +12,7 @@
         .modal .modal-dialog {
             width: 60%;
         }
-        .select2-hidden-accessible {
-            display: none !important;
-            visibility: hidden !important;
-        }/* columns right and center aligned datatables */
+        /* columns right and center aligned datatables */
         .aw-right {
             padding-left: 0;
             padding-right: 10px;
@@ -76,7 +73,7 @@
     <div class="col-xs-12 col-sm-7 col-md-7 col-lg-5">
         <h1 class="page-title txt-color-blueDark">
             <!-- PAGE HEADER -->
-            <i class="fa-fw fa fa-home"></i>
+            <i class="fa-fw fa fa-bug"></i>
             <spring:message code="lbl.ento.edit" />
 						<span> <i class="fa fa-angle-right"></i>
 							<spring:message code="lbl.ento.sub.editlarvaria" />
