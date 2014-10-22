@@ -28,3 +28,9 @@
 <spring:url value="/resources/css/googlefonts.css" var="googleFontsCss" />
 <link href="${googleFontsCss}" rel="stylesheet" type="text/css"/>
 <!-- END GOOGLE FONT -->
+<style>
+    .select2-hidden-accessible {
+        display: none !important;
+        visibility: hidden !important;
+    }
+</style>
