@@ -34,7 +34,7 @@ var AddAedesSurvey = function () {
                     }
                     return parseInt(value) >= parseInt($min.val());
                 }, function (param){
-                    var msg = parametros.msg_greaterOrEqualThan.replace(/\{0\}/,param[1]).replace(/\{1\}/,param[2]);
+                    var msg = parametros.msg_greaterOrEqualThan.replace(/\{0\}/,param[1]); //.replace(/\{1\}/,param[2]);
                     return msg;
                 });
 
@@ -50,7 +50,7 @@ var AddAedesSurvey = function () {
                     }
                     return parseInt(value) <= parseInt($min.val());
                 }, function (param){
-                    var msg = parametros.msg_lessOrEqualThan.replace(/\{0\}/,param[1]).replace(/\{1\}/,param[2]);
+                    var msg = parametros.msg_lessOrEqualThan.replace(/\{0\}/,param[1]); //.replace(/\{1\}/,param[2]);
                     return msg;
                 });
 
@@ -81,7 +81,28 @@ var AddAedesSurvey = function () {
 					responsiveHelper_dt_basic.respond();
 				}
 			});
-            
+
+            function blockUI(){
+                var loc = window.location;
+                var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
+                var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                $.blockUI({ message: mess,
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    },
+                    baseZ: 1051});
+            }
+
+            function unBlockUI() {
+                setTimeout($.unblockUI, 500);
+            }
+
             function saveSurvey(){
                 var maestro = {
                     encuestaId: $("#idMaestroAgregado").val(), // se pasa el id del maestro que se esta trabajando, la primera vez es null
@@ -123,6 +144,7 @@ var AddAedesSurvey = function () {
                 encuestaObj['mensaje'] = '';
                 encuestaObj['maestro'] = maestro;
                 encuestaObj['detalle'] = detalle;
+                blockUI();
                 $.ajax(
                     {
                         url: parametros.sAddSurvey,
@@ -152,8 +174,10 @@ var AddAedesSurvey = function () {
                                     timeout: 4000
                                 });
                             }
+                            unBlockUI();
                         },
                         error: function (data, status, er) {
+                            unBlockUI();
                             alert("error: " + data + " status: " + status + " er:" + er);
                         }
                     }
@@ -426,15 +450,10 @@ var AddAedesSurvey = function () {
                         required: true
                     },
                     fecInicioEncuesta: {
-                        required: true,
-                        dpDate: true,
-                        dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechaHoy ]
+                        required: true
                     },
                     fecFinEncuesta: {
-                        required: true,
-                        dpDate: true,
-                        dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechaHoy}
-
+                        required: true
                     },
                     codOrdinal: {
                         required: true
@@ -470,12 +489,12 @@ var AddAedesSurvey = function () {
                     viviendasInspec:{
                         required: true,
                         digits: true,
-                        greaterOrEqualThan: ['#manzanasInspec',parametros.sValHomes,parametros.sValBlock]
+                        greaterOrEqualThan: ['#manzanasInspec',parametros.sValBlock+' '+parametros.sValInspec]
                     },
                     viviendasPositivas:{
                         required: true,
                         digits: true,
-                        lessOrEqualThan: ['#viviendasInspec',parametros.sValPosit,parametros.sValInspec]
+                        lessOrEqualThan: ['#viviendasInspec',parametros.sValHomes+' '+parametros.sValInspec]
                     },
                     manzanasInspec:{
                         required: true,
@@ -484,42 +503,37 @@ var AddAedesSurvey = function () {
                     manzanasPositivas:{
                         required: true,
                         digits: true,
-                        lessOrEqualThan: ['#manzanasInspec',parametros.sValPosit,parametros.sValInspec]
+                        lessOrEqualThan: ['#manzanasInspec',parametros.sValBlock+' '+parametros.sValInspec]
                     },
                     depositosInspec:{
                         required: true,
                         digits: true,
-                        greaterOrEqualThan: ['#viviendasInspec',parametros.sValTanks,parametros.sValHomes]
+                        greaterOrEqualThan: ['#viviendasInspec',parametros.sValHomes+' '+parametros.sValInspec]
                     },
                     depositosPositovos:{
                         required: true,
                         digits: true,
-                        lessOrEqualThan: ['#depositosInspec',parametros.sValPosit,parametros.sValInspec]
+                        lessOrEqualThan: ['#depositosInspec',parametros.sValTanks+' '+parametros.sValInspec]
                     },
                     pupasPositivas:{
                         required: true,
-                        digits: true
+                        digits: true,
+                        lessOrEqualThan: ['#depositosInspec',parametros.sValTanks+' '+parametros.sValInspec]
                     },
                     noAbati:{
                         required: true,
-                        digits: true
+                        digits: true,
+                        lessOrEqualThan: ['#depositosInspec',parametros.sValTanks+' '+parametros.sValInspec]
                     },
                     noElimni:{
                         required: true,
-                        digits: true
+                        digits: true,
+                        lessOrEqualThan: ['#depositosInspec',parametros.sValTanks+' '+parametros.sValInspec]
                     },
                     noNeutr: {
                         required: true,
-                        digits: true
-                    },
-                    fecAbat: {
-                        dpDate: true
-                    },/*
-                    fecReport: {
-                        dpDate: true
-                    },*/
-                    fecVent: {
-                        dpDate: true
+                        digits: true,
+                        lessOrEqualThan: ['#depositosInspec',parametros.sValTanks+' '+parametros.sValInspec]
                     }
                 },    // Do not change code below
                 errorPlacement: function (error, element) {
@@ -662,6 +676,28 @@ var AddLarvariaSurvey = function () {
                     responsiveHelper_dt_basic.respond();
                 }
             });
+
+            function blockUI(){
+                var loc = window.location;
+                var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
+                var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                $.blockUI({ message: mess,
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    },
+                    baseZ: 1051});
+            }
+
+            function unBlockUI() {
+                setTimeout($.unblockUI, 500);
+            }
+
             function saveSurvey(){
                 console.log("entra savesurvey");
                 var maestro = {
@@ -700,6 +736,7 @@ var AddLarvariaSurvey = function () {
                 encuestaObj['maestro'] = maestro;
                 encuestaObj['detalle'] = detalle;
                 var html = null;
+                blockUI();
                 $.ajax(
                     {
                         url: parametros.sAddSurvey,
@@ -729,8 +766,10 @@ var AddLarvariaSurvey = function () {
                                     timeout: 4000
                                 });
                             }
+                            unBlockUI();
                         },
                         error: function (data, status, er) {
+                            unBlockUI();
                             alert("error: " + data + " status: " + status + " er:" + er);
                         }
                     }
@@ -1035,14 +1074,14 @@ var AddLarvariaSurvey = function () {
                         required: true
                     },
                     fecInicioEncuesta: {
-                        required: true,
-                        dpDate: true,
-                        dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechahoy ]
+                        required: true
+                        //dpDate: true,
+                        //dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechahoy ]
                     },
                     fecFinEncuesta: {
-                        required: true,
-                        dpDate: true,
-                        dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechahoy}
+                        required: true
+                        //dpDate: true,
+                        //dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechahoy}
 
                     },
                     codOrdinal: {
@@ -1261,6 +1300,27 @@ var AddDepositoSurvey = function(){
                 }
             });
 
+            function blockUI(){
+                var loc = window.location;
+                var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
+                var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                $.blockUI({ message: mess,
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    },
+                    baseZ: 1051});
+            }
+
+            function unBlockUI() {
+                setTimeout($.unblockUI, 500);
+            }
+
             function saveSurvey(){
                 var maestro = {
                     encuestaId: $("#idMaestroAgregado").val(), // se pasa el id del maestro que se esta trabajando, la primera vez es null
@@ -1308,6 +1368,7 @@ var AddDepositoSurvey = function(){
                 encuestaObj['maestro'] = maestro;
                 encuestaObj['detalle'] = detalle;
                 var html = null;
+                blockUI();
                 $.ajax(
                     {
                         url: parametros.sAddSurvey,
@@ -1337,8 +1398,10 @@ var AddDepositoSurvey = function(){
                                     timeout: 4000
                                 });
                             }
+                            unBlockUI();
                         },
                         error: function (data, status, er) {
+                            unBlockUI();
                             alert("error: " + data + " status: " + status + " er:" + er);
                         }
                     }
@@ -1524,14 +1587,14 @@ var AddDepositoSurvey = function(){
                         required: true
                     },
                     fecInicioEncuesta: {
-                        required: true,
-                        dpDate: true,
-                        dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechaHoy ]
+                        required: true
+                        //dpDate: true,
+                        //dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechaHoy ]
                     },
                     fecFinEncuesta: {
-                        required: true,
-                        dpDate: true,
-                        dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechaHoy}
+                        required: true
+                        //dpDate: true,
+                        //dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechaHoy}
 
                     },
                     codOrdinal: {

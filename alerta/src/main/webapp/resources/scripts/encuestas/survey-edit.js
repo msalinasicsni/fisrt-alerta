@@ -34,9 +34,9 @@ var EditAedesSurvey = function () {
                     }
                     return parseInt(value) >= parseInt($min.val());
                 }, function (param){
-                    var msg = parametros.msg_greaterOrEqualThan.replace(/\{0\}/,param[1]).replace(/\{1\}/,param[2]);
-                    return msg; //"The value "+param[1]+" must be less than "+param[2];
-                }); //parametros.msg_greaterOrEqualThan);
+                    var msg = parametros.msg_greaterOrEqualThan.replace(/\{0\}/,param[1]); //.replace(/\{1\}/,param[2]);
+                    return msg;
+                });
 
             //Se agrega método de validación 'lessOrEqualThan', para validar que las cantidades de viviendas, manzanas y depósitos positivos, sean menores
             // o igual a las cantidades de viviendas, manzanas y depósitos inspeccionados respesctivamente
@@ -50,7 +50,7 @@ var EditAedesSurvey = function () {
                     }
                     return parseInt(value) <= parseInt($min.val());
                 }, function (param){
-                    var msg = parametros.msg_lessOrEqualThan.replace(/\{0\}/,param[1]).replace(/\{1\}/,param[2]);
+                    var msg = parametros.msg_lessOrEqualThan.replace(/\{0\}/,param[1]); //.replace(/\{1\}/,param[2]);
                     return msg;
                 });
 
@@ -113,6 +113,27 @@ var EditAedesSurvey = function () {
                 $("#msjMaestro").hide("slow");
             }
 
+            function blockUI(){
+                var loc = window.location;
+                var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
+                var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                $.blockUI({ message: mess,
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    },
+                    baseZ: 1051});
+            }
+
+            function unBlockUI() {
+                setTimeout($.unblockUI, 500);
+            }
+
             function saveSurvey(){
                 var maestro = {
                     encuestaId: $("#idMaestroEditado").val(), // se pasa el id del maestro que se esta editando,
@@ -156,6 +177,7 @@ var EditAedesSurvey = function () {
                 encuestaObj['maestro'] = maestro;
                 encuestaObj['detalle'] = detalle;
                 var msg = null;
+                blockUI();
                 $.ajax(
                     {
                         url: parametros.sEditAedesUrl,
@@ -180,7 +202,7 @@ var EditAedesSurvey = function () {
                                     msg = $("#msg_location_updated").val();
                                     setTimeout(function () {
                                         ocultarModalDetalle()
-                                    }, 4000);
+                                    }, 600);
                                 } else {
                                     msg = $("#msg_location_added").val();
                                 }
@@ -192,8 +214,10 @@ var EditAedesSurvey = function () {
                                     timeout: 4000
                                 });
                             }
+                            unBlockUI();
                         },
                         error: function (data, status, er) {
+                            unBlockUI();
                             alert("error: " + data + " status: " + status + " er:" + er);
                         }
                     }
@@ -220,6 +244,7 @@ var EditAedesSurvey = function () {
                 var encuestaObj = {};
                 encuestaObj['mensaje'] = '';
                 encuestaObj['maestro'] = maestro;
+                blockUI();
                 $.ajax(
                     {
                         url: parametros.sEditMaestroUrl,
@@ -246,8 +271,10 @@ var EditAedesSurvey = function () {
                                     timeout: 4000
                                 });
                             }
+                            unBlockUI();
                         },
                         error: function (data, status, er) {
+                            unBlockUI();
                             alert("error: " + data + " status: " + status + " er:" + er);
                         }
                     }
@@ -523,14 +550,14 @@ var EditAedesSurvey = function () {
                         required: true
                     },
                     fecInicioEncuesta: {
-                        required: true,
+                        required: true/*,
                         dpDate: true,
-                        dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechaHoy ]
+                        dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechaHoy ]*/
                     },
                     fecFinEncuesta: {
-                        required: true,
+                        required: true/*,
                         dpDate: true,
-                        dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechaHoy}
+                        dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechaHoy}*/
 
                     },
                     codOrdinal: {
@@ -567,12 +594,12 @@ var EditAedesSurvey = function () {
                     viviendasInspec:{
                         required: true,
                         digits: true,
-                        greaterOrEqualThan: ['#manzanasInspec',parametros.sValHomes,parametros.sValBlock]
+                        greaterOrEqualThan: ['#manzanasInspec',parametros.sValBlock+' '+parametros.sValInspec]
                     },
                     viviendasPositivas:{
                         required: true,
                         digits: true,
-                        lessOrEqualThan: ['#viviendasInspec',parametros.sValPosit,parametros.sValInspec]
+                        lessOrEqualThan: ['#viviendasInspec',parametros.sValHomes+' '+parametros.sValInspec]
                     },
                     manzanasInspec:{
                         required: true,
@@ -581,42 +608,37 @@ var EditAedesSurvey = function () {
                     manzanasPositivas:{
                         required: true,
                         digits: true,
-                        lessOrEqualThan: ['#manzanasInspec',parametros.sValPosit,parametros.sValInspec]
+                        lessOrEqualThan: ['#manzanasInspec',parametros.sValBlock+' '+parametros.sValInspec]
                     },
                     depositosInspec:{
                         required: true,
                         digits: true,
-                        greaterOrEqualThan: ['#viviendasInspec',parametros.sValTanks,parametros.sValHomes]
+                        greaterOrEqualThan: ['#viviendasInspec',parametros.sValHomes+' '+parametros.sValInspec]
                     },
                     depositosPositovos:{
                         required: true,
                         digits: true,
-                        lessOrEqualThan: ['#depositosInspec',parametros.sValPosit,parametros.sValInspec]
+                        lessOrEqualThan: ['#depositosInspec',parametros.sValTanks+' '+parametros.sValInspec]
                     },
                     pupasPositivas:{
                         required: true,
-                        digits: true
+                        digits: true,
+                        lessOrEqualThan: ['#depositosInspec',parametros.sValTanks+' '+parametros.sValInspec]
                     },
                     noAbati:{
                         required: true,
-                        digits: true
+                        digits: true,
+                        lessOrEqualThan: ['#depositosInspec',parametros.sValTanks+' '+parametros.sValInspec]
                     },
                     noElimni:{
                         required: true,
-                        digits: true
+                        digits: true,
+                        lessOrEqualThan: ['#depositosInspec',parametros.sValTanks+' '+parametros.sValInspec]
                     },
                     noNeutr: {
                         required: true,
-                        digits: true
-                    },
-                    fecAbat: {
-                        dpDate: true
-                    },/*
-                    fecReport: {
-                        dpDate: true
-                    },*/
-                    fecVent: {
-                        dpDate: true
+                        digits: true,
+                        lessOrEqualThan: ['#depositosInspec',parametros.sValTanks+' '+parametros.sValInspec]
                     }
                 },    // Do not change code below
                 errorPlacement: function (error, element) {
@@ -780,6 +802,27 @@ var EditLarvariaSurvey = function () {
                 }
             });
 
+            function blockUI(){
+                var loc = window.location;
+                var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
+                var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                $.blockUI({ message: mess,
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    },
+                    baseZ: 1051});
+            }
+
+            function unBlockUI() {
+                setTimeout($.unblockUI, 500);
+            }
+
             function saveSurvey(){
                 var maestro = {
                     encuestaId: $("#idMaestroEditado").val(), // se pasa el id del maestro que se esta editando,
@@ -833,7 +876,7 @@ var EditLarvariaSurvey = function () {
                 encuestaObj['maestro'] = maestro;
                 encuestaObj['detalle'] = detalle;
                 var msg = null;
-
+                blockUI();
                 $.ajax(
                     {
                         url: parametros.sEditLarvariaUrl,
@@ -858,7 +901,7 @@ var EditLarvariaSurvey = function () {
                                     msg = $("#msg_location_updated").val();
                                     setTimeout(function () {
                                         ocultarModalDetalle()
-                                    }, 4000);
+                                    }, 600);
                                 } else {
                                     msg = $("#msg_location_added").val();
                                 }
@@ -870,9 +913,10 @@ var EditLarvariaSurvey = function () {
                                     timeout: 4000
                                 });
                             }
-                            mostrarMensajePop(html);
+                            unBlockUI();
                         },
                         error: function (data, status, er) {
+                            unBlockUI();
                             alert("error: " + data + " status: " + status + " er:" + er);
                         }
                     }
@@ -900,6 +944,7 @@ var EditLarvariaSurvey = function () {
                 encuestaObj['mensaje'] = '';
                 encuestaObj['maestro'] = maestro;
                 var html = null;
+                blockUI();
                 $.ajax(
                     {
                         url: parametros.sEditMaestroUrl,
@@ -926,8 +971,10 @@ var EditLarvariaSurvey = function () {
                                     timeout: 4000
                                 });
                             }
+                            unBlockUI();
                         },
                         error: function (data, status, er) {
+                            unBlockUI();
                             alert("error: " + data + " status: " + status + " er:" + er);
                         }
                     }
@@ -1311,15 +1358,14 @@ var EditLarvariaSurvey = function () {
                         required: true
                     },
                     fecInicioEncuesta: {
-                        required: true,
+                        required: true/*,
                         dpDate: true,
-                        dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechahoy ]
+                        dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechahoy ]*/
                     },
                     fecFinEncuesta: {
-                        required: true,
+                        required: true/*,
                         dpDate: true,
-                        dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechahoy}
-
+                        dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechahoy}*/
                     },
                     codOrdinal: {
                         required: true
@@ -1611,6 +1657,27 @@ var EditDepositoSurvey = function(){
                 }
             });
 
+            function blockUI(){
+                var loc = window.location;
+                var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
+                var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                $.blockUI({ message: mess,
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    },
+                    baseZ: 1051});
+            }
+
+            function unBlockUI() {
+                setTimeout($.unblockUI, 500);
+            }
+
             function saveSurvey(){
                 var maestro = {
                     encuestaId: $("#idMaestroEditado").val(), // se pasa el id del maestro que se esta trabajando, la primera vez es null
@@ -1659,6 +1726,7 @@ var EditDepositoSurvey = function(){
                 encuestaObj['mensaje'] = '';
                 encuestaObj['maestro'] = maestro;
                 encuestaObj['detalle'] = detalle;
+                blockUI();
                 $.ajax(
                     {
                         url: parametros.sEditDeposUrl,
@@ -1684,7 +1752,7 @@ var EditDepositoSurvey = function(){
                                     msg = $("#msg_location_updated").val();
                                     setTimeout(function () {
                                         ocultarModalDetalle()
-                                    }, 4000);
+                                    }, 600);
                                 }else{
                                     msg = $("#msg_location_added").val();
                                 }
@@ -1696,8 +1764,10 @@ var EditDepositoSurvey = function(){
                                     timeout: 4000
                                 });
                             }
+                            unBlockUI();
                         },
                         error: function (data, status, er) {
+                            unBlockUI();
                             alert("error: " + data + " status: " + status + " er:" + er);
                         }
                     }
@@ -1724,6 +1794,7 @@ var EditDepositoSurvey = function(){
                 var encuestaObj = {};
                 encuestaObj['mensaje'] = '';
                 encuestaObj['maestro'] = maestro;
+                blockUI();
                 $.ajax(
                     {
                         url: parametros.sEditMaestroUrl,
@@ -1750,8 +1821,10 @@ var EditDepositoSurvey = function(){
                                     timeout: 4000
                                 });
                             }
+                            unBlockUI();
                         },
                         error: function (data, status, er) {
+                            unBlockUI();
                             alert("error: " + data + " status: " + status + " er:" + er);
                         }
                     }
@@ -2033,15 +2106,14 @@ var EditDepositoSurvey = function(){
                         required: true
                     },
                     fecInicioEncuesta: {
-                        required: true,
+                        required: true/*,
                         dpDate: true,
-                        dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechaHoy ]
+                        dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechaHoy ]*/
                     },
                     fecFinEncuesta: {
-                        required: true,
+                        required: true/*,
                         dpDate: true,
-                        dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechaHoy}
-
+                        dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechaHoy}*/
                     },
                     codOrdinal: {
                         required: true

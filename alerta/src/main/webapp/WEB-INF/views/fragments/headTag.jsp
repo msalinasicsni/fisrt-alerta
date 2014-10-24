@@ -28,6 +28,10 @@
 <spring:url value="/resources/css/googlefonts.css" var="googleFontsCss" />
 <link href="${googleFontsCss}" rel="stylesheet" type="text/css"/>
 <!-- END GOOGLE FONT -->
+<!-- DATE PICKER -->
+<spring:url value="/resources/css/datepicker.css" var="datepickerCss" />
+<link href="${datepickerCss}" rel="stylesheet" type="text/css"/>
+<!-- END DATE PICKER -->
 <style>
     .select2-hidden-accessible {
         display: none !important;
