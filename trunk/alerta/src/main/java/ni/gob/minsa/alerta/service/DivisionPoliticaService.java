@@ -53,7 +53,6 @@ public class DivisionPoliticaService {
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
         q.setParameter("pasivo",'0');
-        session.close();
         return q.list();
     }
 

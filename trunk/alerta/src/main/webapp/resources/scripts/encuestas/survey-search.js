@@ -62,7 +62,26 @@ var SearchSurvey = function () {
                     }
             });
 
-            
+            function blockUI(){
+                var loc = window.location;
+                var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
+                var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                $.blockUI({ message: mess,
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    }});
+            }
+
+            function unBlockUI() {
+                setTimeout($.unblockUI, 500);
+            }
+
             function getSurveys() {
                 var encuestaFiltros = {};
                 encuestaFiltros['codModeloEncu'] = $('#codModeloEncu option:selected').val();
@@ -70,7 +89,7 @@ var SearchSurvey = function () {
                 encuestaFiltros['codUnidadSalud'] = $('#codUnidadSalud option:selected').val();
                 encuestaFiltros['anioEpi'] = $('#anioEpi').val();
                 encuestaFiltros['mesEpi'] = $('#mesEpi').val();
-
+                blockUI();
     			$.getJSON(parametros.sSurveyUrl, {
                     filtrosEncuesta: JSON.stringify(encuestaFiltros),
     				ajax : 'true'
@@ -96,10 +115,11 @@ var SearchSurvey = function () {
                             timeout: 4000
                         });
                     }
+                    unBlockUI();
     			})
     			.fail(function() {
+                    unBlockUI();
 				    alert( "error" );
-				    
 				});
             }
 

@@ -125,6 +125,7 @@
                                     <input id="msg_no_results_found" type="hidden" value="<spring:message code="msg.ento.no.results.found"/>"/>
                                     <input id="text_opt_select" type="hidden" value="<spring:message code="lbl.select"/>"/>
                                     <input id="smallBox_content" type="hidden" value="<spring:message code="smallBox.content.4s"/>"/>
+                                    <input id="blockUI_message" type="hidden" value="<spring:message code="blockUI.message"/>"/>
                                 </div>
                                 <div class="row">
                                     <section class="col col-xs-12 col-sm-6 col-md-3 col-lg-3">
@@ -293,6 +294,9 @@
 <!-- Selecte2Input -->
 <spring:url value="/resources/js/plugin/select2/select2.min.js" var="selectPlugin"/>
 <script src="${selectPlugin}"></script>
+<!-- JQUERY BLOCK UI -->
+<spring:url value="/resources/js/plugin/jquery-blockui/jquery.blockUI.js" var="jqueryBlockUi" />
+<script src="${jqueryBlockUi}"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 
 <!-- BEGIN PAGE LEVEL SCRIPTS -->

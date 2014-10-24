@@ -6,9 +6,6 @@
 <head>
     <jsp:include page="../fragments/headTag.jsp" />
     <style>
-        .midatepicker {
-            z-index: 1051 !important;
-        }
         .modal .modal-dialog {
             width: 60%;
         }
@@ -267,7 +264,7 @@
             <div class="input-group">
                 <input type="text" name="fecInicioEncuesta" id="fecInicioEncuesta"
                        placeholder="<spring:message code="lbl.date.format"/>"
-                       class="form-control datepicker"
+                       class="form-control from_date" data-date-end-date="+0d"
                        data-dateformat="dd/mm/yy"/>
                                                 <span class="input-group-addon"> <i    class="fa fa-calendar fa-fw"></i>
                                                 </span>
@@ -280,7 +277,7 @@
             <div class="input-group">
                 <input type="text" name="fecFinEncuesta" id="fecFinEncuesta"
                        placeholder="<spring:message code="lbl.date.format"/>"
-                       class="form-control datepicker"
+                       class="form-control to_date" data-date-end-date="+0d"
                        data-dateformat="dd/mm/yy"/>
                                                     <span class="input-group-addon"> <i class="fa fa-calendar fa-fw"></i>
                                                     </span>
@@ -328,6 +325,7 @@
             <input id="text_opt_select" type="hidden" value="<spring:message code="lbl.select"/>"/>
             <input id="txt_act_edit" type="hidden" value="<spring:message code="act.edit"/>"/>
             <input id="smallBox_content" type="hidden" value="<spring:message code="smallBox.content.4s"/>"/>
+            <input id="blockUI_message" type="hidden" value="<spring:message code="blockUI.message"/>"/>
 
             <input id="idMaestroAgregado" type="hidden"/>
             <!-- Button trigger modal -->
@@ -645,17 +643,23 @@
     <spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>
 <script src="${jQValidationLoc}"/></script>
 
-<!-- jQuery Validate datepicker -->
-<spring:url value="/resources/js/plugin/jquery-validate-datepicker/jquery.ui.datepicker.validation.min.js" var="jQueryValidateDatepicker"/>
-<script src="${jQueryValidateDatepicker}"></script>
+<!-- bootstrap datepicker -->
+<spring:url value="/resources/js/plugin/bootstrap-datepicker/bootstrap-datepicker.js" var="datepickerPlugin" />
+<script src="${datepickerPlugin}"></script>
 
 <!-- jQuery Selecte2 Input -->
 <spring:url value="/resources/js/plugin/select2/select2.min.js" var="selectPlugin"/>
 <script src="${selectPlugin}"></script>
+
+<!-- JQUERY BLOCK UI -->
+<spring:url value="/resources/js/plugin/jquery-blockui/jquery.blockUI.js" var="jqueryBlockUi" />
+<script src="${jqueryBlockUi}"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <spring:url value="/resources/scripts/encuestas/survey-add.js" var="surveyAddLarva" />
 <script src="${surveyAddLarva}"></script>
+<spring:url value="/resources/scripts/encuestas/handleDatePickers.js" var="handleDatePickers" />
+<script src="${handleDatePickers}"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 
@@ -682,6 +686,7 @@
             sEditSurveyUrl : "${editarEncuestaURL}"
         };
         AddLarvariaSurvey.init(parametros);
+        handleDatePickers("${pageContext.request.locale.language}");
     });
 </script>
 <!-- END JAVASCRIPTS -->
