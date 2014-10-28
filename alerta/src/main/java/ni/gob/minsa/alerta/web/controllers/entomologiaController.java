@@ -14,6 +14,8 @@ import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import ni.gob.minsa.alerta.utilities.enumeration.surveyModelType;
 import ni.gob.minsa.alerta.utilities.typeAdapter.*;
+import ni.gob.minsa.ciportal.dto.InfoResultado;
+import ni.gob.minsa.ciportal.servicios.PortalService;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -130,7 +133,15 @@ public class entomologiaController {
     @RequestMapping(value = "create/aedes", method = RequestMethod.GET)
     public ModelAndView initCreationForm() throws Exception {
         logger.debug("Getting data from encuesta Entomologica");
-
+        try {
+            InitialContext ctx = new InitialContext();
+            ni.gob.minsa.ciportal.servicios.PortalService portalService = (PortalService) ctx.lookup("ejb/Portal");
+            //String urlPortal = portalService.obtenerUrlLogin();
+            InfoResultado infoResultado = (InfoResultado) portalService.obtenerInfoSesion("12346652");
+            ctx.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         ModelAndView mav = new ModelAndView("encuesta/registrarEncuestaAedes");
         departamentos = divisionPoliticaService.getAllDepartamentos();
         silais = silaisServce.getAllEntidadesAdtvas();
