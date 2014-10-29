@@ -4,6 +4,7 @@ import ni.gob.minsa.alerta.domain.irag.DaIrag;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -75,6 +76,14 @@ public class DaIragService {
     public void updateIrag(DaIrag vigIntegrada){
         Session session = sessionFactory.getCurrentSession();
         session.update(vigIntegrada);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<DaIrag> getDaIragPersona(long idPerson){
+        Session session = sessionFactory.getCurrentSession();
+        return session.createCriteria(DaIrag.class)
+                .add(Restrictions.eq("persona.personaId", idPerson))
+                .list();
     }
 
 

@@ -18,7 +18,6 @@ public class DaCondicionesPreviasIrag implements Serializable {
     private Integer idCondicion;
     private DaIrag idIrag;
     private CondicionPrevia codCondicion;
-    private Respuesta codRespuesta;
     private Integer semanasEmbarazo;
     private String otraCondicion;
     private Timestamp fechaRegistro;
@@ -48,18 +47,6 @@ public class DaCondicionesPreviasIrag implements Serializable {
     public CondicionPrevia getCodCondicion() { return codCondicion; }
 
     public void setCodCondicion(CondicionPrevia codCondicion) { this.codCondicion = codCondicion; }
-
-
-    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_RESPUESTA", referencedColumnName = "CODIGO")
-    @ForeignKey(name = "COD_CONDRESPUESTA_FK")
-    public Respuesta getCodRespuesta() {
-        return codRespuesta;
-    }
-
-    public void setCodRespuesta(Respuesta codRespuesta) {
-        this.codRespuesta = codRespuesta;
-    }
 
     @Basic
     @Column(name = "SEMANAS_EMBARAZO", nullable = true, updatable = true, insertable = true, precision = 0)
@@ -96,37 +83,5 @@ public class DaCondicionesPreviasIrag implements Serializable {
 
     public void setPasivo(boolean pasivo) { this.pasivo = pasivo; }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
-        DaCondicionesPreviasIrag that = (DaCondicionesPreviasIrag) o;
-
-        if (pasivo != that.pasivo) return false;
-        if (!codCondicion.equals(that.codCondicion)) return false;
-        if (!codRespuesta.equals(that.codRespuesta)) return false;
-        if (!fechaRegistro.equals(that.fechaRegistro)) return false;
-        if (!idCondicion.equals(that.idCondicion)) return false;
-        if (!idIrag.equals(that.idIrag)) return false;
-        if (!otraCondicion.equals(that.otraCondicion)) return false;
-        if (!semanasEmbarazo.equals(that.semanasEmbarazo)) return false;
-        if (!usuario.equals(that.usuario)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = idCondicion.hashCode();
-        result = 31 * result + idIrag.hashCode();
-        result = 31 * result + codCondicion.hashCode();
-        result = 31 * result + codRespuesta.hashCode();
-        result = 31 * result + semanasEmbarazo.hashCode();
-        result = 31 * result + otraCondicion.hashCode();
-        result = 31 * result + fechaRegistro.hashCode();
-        result = 31 * result + usuario.hashCode();
-        result = 31 * result + (pasivo ? 1 : 0);
-        return result;
-    }
 }

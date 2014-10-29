@@ -119,10 +119,10 @@ public class expose {
     @RequestMapping(value = "unidadesPrimHosp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    List<Unidades> getPUnitsHospBySilais(@RequestParam(value = "codMunicipio", required = true) String codMunicipio) throws Exception {
-        logger.info("Obteniendo las unidades primarias y Hospitales por municipio en JSON");
+    List<Unidades> getPUnitsHospByMuniAndSilais(@RequestParam(value = "codMunicipio", required = true) String codMunicipio,@RequestParam(value = "codSilais", required = true) long codSilais ) throws Exception {
+        logger.info("Obteniendo las unidades primarias y Hospitales por municipio y Silais en JSON");
         return
-                unidadesService.getPUnitsHospByMunicipio(codMunicipio, HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","));
+                unidadesService.getPUnitsHospByMuniAndSilais(codMunicipio, HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), codSilais);
     }
 
     @RequestMapping(value = "unidadesPrimariasSilais", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

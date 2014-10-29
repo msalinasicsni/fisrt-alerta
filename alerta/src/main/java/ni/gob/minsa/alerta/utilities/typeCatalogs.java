@@ -21,7 +21,18 @@ public enum typeCatalogs {
     Ordinal("ORDINAL"), //MSalinas
     DistritosMng("DISTRIT"), //MSalinas
     AreasMng("AREAMNG"), //MSalinas
-    ModeloEncuesta("TIPOMODENCU"); //MSalinas
+    ModeloEncuesta("TIPOMODENCU"), //MSalinas
+    Clasificacion(""),//irag
+    Captacion(""),//irag
+    Respuesta(""),//irag
+    Via(""), //irag
+    ResRadiologia(""), //irag
+    CondicionEgreso(""),//irag
+    ClasifFinal(""), //irag
+    Vacuna(""),//irag
+    NombreVacuna(""), //irag
+    CondicionPreexistente(""), //irag
+    ManifestacionClinica(""); //irag
 
     String discriminator;
 

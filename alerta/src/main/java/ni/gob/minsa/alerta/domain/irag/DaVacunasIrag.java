@@ -22,7 +22,6 @@ public class DaVacunasIrag implements Serializable {
     private Integer idVacuna;
     private DaIrag idIrag;
     private Vacuna codVacuna;
-    private Respuesta codAplicada;
     private TipoVacuna codTipoVacuna;
     private Integer dosis;
     private Date fechaUltimaDosis;
@@ -58,13 +57,6 @@ public class DaVacunasIrag implements Serializable {
     public Vacuna getCodVacuna() { return codVacuna; }
 
     public void setCodVacuna(Vacuna codVacuna) { this.codVacuna = codVacuna; }
-
-    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_APLICADA", referencedColumnName = "CODIGO", nullable = false)
-    @ForeignKey(name = "COD_APLICADA_FK")
-    public Respuesta getCodAplicada() { return codAplicada; }
-
-    public void setCodAplicada(Respuesta codAplicada) { this.codAplicada = codAplicada; }
 
 
     @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
@@ -119,40 +111,4 @@ public class DaVacunasIrag implements Serializable {
 
     public void setUsuario(Usuarios usuario) { this.usuario = usuario; }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DaVacunasIrag that = (DaVacunasIrag) o;
-
-        if (pasivo != that.pasivo) return false;
-        if (!codAplicada.equals(that.codAplicada)) return false;
-        if (!codTipoVacuna.equals(that.codTipoVacuna)) return false;
-        if (!codVacuna.equals(that.codVacuna)) return false;
-        if (!dosis.equals(that.dosis)) return false;
-        if (!fechaRegistro.equals(that.fechaRegistro)) return false;
-        if (!fechaUltimaDosis.equals(that.fechaUltimaDosis)) return false;
-        if (!idIrag.equals(that.idIrag)) return false;
-        if (!idVacuna.equals(that.idVacuna)) return false;
-        if (!usuario.equals(that.usuario)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = idVacuna.hashCode();
-        result = 31 * result + idIrag.hashCode();
-        result = 31 * result + codVacuna.hashCode();
-        result = 31 * result + codAplicada.hashCode();
-        result = 31 * result + codTipoVacuna.hashCode();
-        result = 31 * result + dosis.hashCode();
-        result = 31 * result + fechaUltimaDosis.hashCode();
-        result = 31 * result + fechaRegistro.hashCode();
-        result = 31 * result + (pasivo ? 1 : 0);
-        result = 31 * result + usuario.hashCode();
-        return result;
-    }
 }
