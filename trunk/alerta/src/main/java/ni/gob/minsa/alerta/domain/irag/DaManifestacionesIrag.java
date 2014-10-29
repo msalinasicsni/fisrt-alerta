@@ -18,7 +18,6 @@ public class DaManifestacionesIrag implements Serializable {
     private Integer idManifestacion;
     private DaIrag idIrag;
     private ManifestacionClinica codManifestacion;
-    private Respuesta codRespuestaM;
     private String otraManifestacion;
     private Timestamp fechaRegistro;
     private Usuarios usuario;
@@ -48,15 +47,6 @@ public class DaManifestacionesIrag implements Serializable {
     public ManifestacionClinica getCodManifestacion() { return codManifestacion; }
 
     public void setCodManifestacion(ManifestacionClinica codManifestacion) { this.codManifestacion = codManifestacion; }
-
-
-    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_RESPUESTAM", referencedColumnName = "CODIGO")
-    @ForeignKey(name = "COD_RESPMANI_FK")
-    public Respuesta getCodRespuestaM() { return codRespuestaM; }
-
-    public void setCodRespuestaM(Respuesta codRespuestaM) { this.codRespuestaM = codRespuestaM; }
-
 
     @Basic
     @Column(name = "FECHA_REGISTRO", nullable = false, insertable = true, updatable = true)
@@ -89,35 +79,4 @@ public class DaManifestacionesIrag implements Serializable {
     public void setUsuario(Usuarios usuario) { this.usuario = usuario; }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DaManifestacionesIrag that = (DaManifestacionesIrag) o;
-
-        if (pasivo != that.pasivo) return false;
-        if (!codManifestacion.equals(that.codManifestacion)) return false;
-        if (!codRespuestaM.equals(that.codRespuestaM)) return false;
-        if (!fechaRegistro.equals(that.fechaRegistro)) return false;
-        if (!idIrag.equals(that.idIrag)) return false;
-        if (!idManifestacion.equals(that.idManifestacion)) return false;
-        if (!otraManifestacion.equals(that.otraManifestacion)) return false;
-        if (!usuario.equals(that.usuario)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = idManifestacion.hashCode();
-        result = 31 * result + idIrag.hashCode();
-        result = 31 * result + codManifestacion.hashCode();
-        result = 31 * result + codRespuestaM.hashCode();
-        result = 31 * result + otraManifestacion.hashCode();
-        result = 31 * result + fechaRegistro.hashCode();
-        result = 31 * result + usuario.hashCode();
-        result = 31 * result + (pasivo ? 1 : 0);
-        return result;
-    }
 }

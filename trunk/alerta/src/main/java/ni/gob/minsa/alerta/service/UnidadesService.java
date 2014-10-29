@@ -116,12 +116,13 @@ public class UnidadesService {
         return res;
     }
 
-    public List<Unidades> getPUnitsHospByMunicipio(String codMunicipio, String[] codTiposUnidades) throws Exception {
+    public List<Unidades> getPUnitsHospByMuniAndSilais(String codMunicipio, String[] codTiposUnidades, long codSilais) throws Exception {
         List<Unidades> res = new ArrayList<Unidades>();
         try {
             Session session = sessionFactory.getCurrentSession();
             Criteria criteria = session.createCriteria(Unidades.class);
             criteria.add(Restrictions.eq("municipio",codMunicipio));
+            criteria.add(Restrictions.eq("entidadAdtva",codSilais));
             Long[] dataTipUnidades = new Long[codTiposUnidades.length];
             for(int i=0; i < codTiposUnidades.length; i++){
                 dataTipUnidades[i] = Long.parseLong(codTiposUnidades[i]);

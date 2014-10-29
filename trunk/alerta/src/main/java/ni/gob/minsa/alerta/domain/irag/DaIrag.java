@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
+
 /**
  * Created by souyen-ics
  */
@@ -44,7 +45,7 @@ public class DaIrag implements Serializable {
     private Date fechaUltDosisAntib;
     private Integer noDosisAntib;
     private ViaAntibiotico codViaAntb;
-    private boolean usoAntivirales;
+    private Respuesta usoAntivirales;
     private String nombreAntiviral;
     private Date fechaPrimDosisAntiviral;
     private Date fechaUltDosisAntiviral;
@@ -278,16 +279,13 @@ public class DaIrag implements Serializable {
 
     public void setCodViaAntb(ViaAntibiotico codViaAntb) { this.codViaAntb = codViaAntb; }
 
-    @Basic
-    @Column(name = "USO_ANTIVIRALES", nullable = true, insertable = true, updatable = true)
-    public boolean isUsoAntivirales() {
-        return usoAntivirales;
-    }
 
-    public void setUsoAntivirales(boolean usoAntivirales) {
-        this.usoAntivirales = usoAntivirales;
-    }
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class, optional = true)
+    @JoinColumn(name="USO_ANTIVIRALES", referencedColumnName = "CODIGO", nullable = true)
+    @ForeignKey(name = "USO_ANTIV_FK")
+    public Respuesta getUsoAntivirales() { return usoAntivirales; }
 
+    public void setUsoAntivirales(Respuesta usoAntivirales) { this.usoAntivirales = usoAntivirales; }
 
     @Basic
     @Column(name = "NOMBRE_ANTIVIRAL", nullable = true, insertable = true, updatable = true, length = 100)

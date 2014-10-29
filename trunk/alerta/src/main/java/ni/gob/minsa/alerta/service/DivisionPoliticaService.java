@@ -67,6 +67,7 @@ public class DivisionPoliticaService {
         return q.list();
     }
 
+
     public Divisionpolitica getDepartamentoByMunicipi(String codNac){
         String query = "select depa from Divisionpolitica as muni, Divisionpolitica as depa " +
                 "where muni.dependencia is not null and muni.dependencia=depa.divisionpoliticaId and muni.codigoNacional =:codigoNacional";
@@ -86,6 +87,17 @@ public class DivisionPoliticaService {
         q.setLong("idSilais", idSilais);
         q.setParameter("pasivo",'0');
         return q.list();
+    }
+
+    public Divisionpolitica getMunicipiosByUnidadSalud(String municipio){
+        String query = "select muni from Divisionpolitica as muni, Unidades as uni " +
+                "where muni.pasivo = :pasivo and  uni.municipio = :municipio and uni.municipio = muni.codigoNacional";
+
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("municipio", municipio);
+        q.setParameter("pasivo",'0');
+        return (Divisionpolitica)q.uniqueResult();
     }
 
     public Divisionpolitica getDivisionPolitiacaByCodNacional(String codNac){
