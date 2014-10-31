@@ -7,9 +7,6 @@
 <head>
     <jsp:include page="../fragments/headTag.jsp" />
     <style>
-        .midatepicker {
-            z-index: 1051 !important;
-        }
         .modal .modal-dialog {
             width: 60%;
         }
@@ -291,8 +288,7 @@
             <div class="input-group">
                 <input type="text" name="fecInicioEncuesta" id="fecInicioEncuesta"
                        placeholder="<spring:message code="lbl.date.format"/>"
-                       class="form-control from_date" data-date-end-date="+0d"
-                       data-dateformat="dd/mm/yy"/>
+                       class="form-control from_date" data-date-end-date="+0d" value="${fechaInicioEncuesta}"/>
                                                 <span class="input-group-addon"> <i    class="fa fa-calendar fa-fw"></i>
                                                 </span>
             </div>
@@ -304,8 +300,7 @@
             <div class="input-group">
                 <input type="text" name="fecFinEncuesta" id="fecFinEncuesta"
                        placeholder="<spring:message code="lbl.date.format"/>"
-                       class="form-control to_date" data-date-end-date="+0d"
-                       data-dateformat="dd/mm/yy"/>
+                       class="form-control to_date" data-date-end-date="+0d" value="${fechaFinEncuesta}"/>
                                                     <span class="input-group-addon"> <i class="fa fa-calendar fa-fw"></i>
                                                     </span>
             </div>
@@ -755,7 +750,7 @@
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <spring:url value="/resources/scripts/encuestas/survey-edit.js" var="surveyEdiDep" />
 <script src="${surveyEdiDep}"></script>
-<spring:url value="/resources/scripts/encuestas/handleDatePickers.js" var="handleDatePickers" />
+<spring:url value="/resources/scripts/utilidades/handleDatePickers.js" var="handleDatePickers" />
 <script src="${handleDatePickers}"></script>
 
 <!-- END PAGE LEVEL SCRIPTS -->
@@ -775,8 +770,8 @@
         $("#codProcedencia > option[value='"+ "${maestro.procedencia.codigo}" +"']").attr("selected",true).change();
         $("#codigoArea").val("${maestro.codArea}").change();
         $("#codigoDistrito").val("${maestro.codDistrito}").change();
-        $("#fecInicioEncuesta").val("${fechaInicioEncuesta}");
-        $("#fecFinEncuesta").val("${fechaFinEncuesta}");
+        //$("#fecInicioEncuesta").val("${fechaInicioEncuesta}");
+        //$("#fecFinEncuesta").val("${fechaFinEncuesta}");
         $("#mesEpi").val("${maestro.mesEpi}");
         $("#anioEpi").val("${maestro.anioEpi}");
         $("#semanaEpi").val("${maestro.semanaEpi}");
