@@ -273,8 +273,7 @@
             <div class="input-group">
                 <input type="text" name="fecInicioEncuesta" id="fecInicioEncuesta"
                        placeholder="<spring:message code="lbl.date.format"/>"
-                       class="form-control from_date" data-date-end-date="+0d"
-                       data-dateformat="dd/mm/yy"/>
+                       class="form-control from_date" data-date-end-date="+0d"/>
                                                 <span class="input-group-addon"> <i    class="fa fa-calendar fa-fw"></i>
                                                 </span>
             </div>
@@ -286,8 +285,7 @@
             <div class="input-group">
                 <input type="text" name="fecFinEncuesta" id="fecFinEncuesta"
                        placeholder="<spring:message code="lbl.date.format"/>"
-                       class="form-control to_date" data-date-end-date="+0d"
-                       data-dateformat="dd/mm/yy"/>
+                       class="form-control to_date" data-date-end-date="+0d"/>
                             <span class="input-group-addon"> <i class="fa fa-calendar fa-fw"></i>
                             </span>
             </div>
@@ -710,7 +708,7 @@
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <spring:url value="/resources/scripts/encuestas/survey-add.js" var="surveyAddAedes" />
 <script src="${surveyAddAedes}"></script>
-<spring:url value="/resources/scripts/encuestas/handleDatePickers.js" var="handleDatePickers" />
+<spring:url value="/resources/scripts/utilidades/handleDatePickers.js" var="handleDatePickers" />
 <script src="${handleDatePickers}"></script>
 
 <!-- END PAGE LEVEL SCRIPTS -->
