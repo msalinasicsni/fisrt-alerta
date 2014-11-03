@@ -77,7 +77,7 @@ traditional href="" links. See documentation for details.
             </ul>
         </li>
         <li>
-        	<a href="#"> <i class="fa fa-lg fa-fw fa-sign-out"></i> <span class="menu-item-parent">Salir</span></a>
+        	<a href="<spring:url value="/logout" htmlEscape="true "/>"> <i class="fa fa-lg fa-fw fa-sign-out"></i> <span class="menu-item-parent"><spring:message code="menu.logout" /></span></a>
         </li>
 	</ul>
 </nav>

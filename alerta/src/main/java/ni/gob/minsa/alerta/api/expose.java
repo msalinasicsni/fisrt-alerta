@@ -7,8 +7,8 @@ import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Distritos;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Areas;
 import ni.gob.minsa.alerta.service.*;
+import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,19 +39,7 @@ public class expose {
     @Autowired(required = true)
     @Qualifier(value = "unidadesService")
     private UnidadesService unidadesService;
-    /*
-        @Autowired(required = true)
-        @Qualifier(value = "sispersonaService")
-        private SisPersonasService sisPersonasService;
 
-        @Autowired
-        @Qualifier("fichaInfluenzaService")
-        FichaInfluenzaService fichaInfluenzaService;
-
-        @Autowired
-        @Qualifier("fichaEpidemService")
-        FichaEpidemService fichaEpidemService;
-    */
     @Autowired
     @Qualifier(value = "divisionPoliticaService")
     private DivisionPoliticaService divisionPoliticaService;
@@ -68,25 +57,21 @@ public class expose {
     private CalendarioEpiService calendarioEpiService;
 
     @Autowired
-    @Qualifier("sessionFactory")
-    public SessionFactory sessionFactory;
-    /*
-        @RequestMapping(value = "/personas", method = RequestMethod.GET, produces = "application/json")
-        public
-        @ResponseBody
-        List<SisPersonas> getAllPersonas() throws Exception {
-            logger.debug("Obteniendo todas las personas");
-            return
-                    sisPersonasService.getAllSisPersonas();
-        }
-    */
+    @Qualifier(value = "seguridadService")
+    private SeguridadService seguridadService;
+
     @RequestMapping(value = "unidades", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    List<Unidades> getUnidadesBySilais(@RequestParam(value = "silaisId", required = true) int silaisId) throws Exception {
+    List<Unidades> getUnidadesBySilais(@RequestParam(value = "silaisId", required = true) int silaisId, HttpServletRequest request) throws Exception {
         logger.info("Obteniendo las unidades por municipio en JSON");
-        return
-                unidadesService.getUnidadesFromEntidades(silaisId);
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        //Si es usuario a nivel central se cargan todas las unidades del SILAIS
+        if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+            return unidadesService.getUnidadesFromEntidades(silaisId);
+        }else{//Sino se cargan las unidades a las que esta autorizado el usuario
+            return seguridadService.obtenerUnidadesPorUsuarioEntidad((int)idUsuario,(long)silaisId, ConstantsSecurity.SYSTEM_CODE);
+        }
     }
 
     @RequestMapping(value = "municipio", method = RequestMethod.GET, produces = "application/json")
@@ -101,37 +86,58 @@ public class expose {
     @RequestMapping(value = "municipiosbysilais", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    List<Divisionpolitica> getMunicipiosBySilas(@RequestParam(value = "idSilais", required = true) long idSilais) throws Exception {
+    List<Divisionpolitica> getMunicipiosBySilas(@RequestParam(value = "idSilais", required = true) long idSilais, HttpServletRequest request) throws Exception {
         logger.info("Obteniendo los municipios por silais en JSON");
-        return
-                divisionPoliticaService.getMunicipiosBySilais(idSilais);
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        //Si es usuario a nivel central se cargan todos los municipios asociados al SILAIS
+        if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+            return  divisionPoliticaService.getMunicipiosBySilais(idSilais);
+        }
+        else{//sino sólo se cargan los municipios a los que esta autorizado el usuario
+          return seguridadService.obtenerMunicipiosPorUsuarioEntidad((int)idUsuario,idSilais, ConstantsSecurity.SYSTEM_CODE);
+        }
     }
 
     @RequestMapping(value = "unidadesPrimarias", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    List<Unidades> getPrimaryUnitsByMunicipioAndSilais(@RequestParam(value = "codMunicipio", required = true) String codMunicipio, @RequestParam(value = "codSilais", required = true) long codSilais) throws Exception {
+    List<Unidades> getPrimaryUnitsByMunicipioAndSilais(@RequestParam(value = "codMunicipio", required = true) String codMunicipio, @RequestParam(value = "codSilais", required = true) long codSilais, HttpServletRequest request) throws Exception {
         logger.info("Obteniendo las unidades por municipio y SILAIS en JSON");
-        return
-                unidadesService.getPrimaryUnitsByMunicipio_Silais(codMunicipio, codSilais,HealthUnitType.UnidadesPrimarias.getDiscriminator().split(","));
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        //Si es usuario a nivel central se cargan todas las unidades asociados al SILAIS y municipio
+        if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+            return unidadesService.getPrimaryUnitsByMunicipio_Silais(codMunicipio, codSilais, HealthUnitType.UnidadesPrimarias.getDiscriminator().split(","));
+        }else{ //sino sólo se cargarn las unidades autorizadas para el usuario según SILAIS y municipio
+            return seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int)idUsuario ,codSilais,codMunicipio, ConstantsSecurity.SYSTEM_CODE,HealthUnitType.UnidadesPrimarias.getDiscriminator());
+        }
     }
 
     @RequestMapping(value = "unidadesPrimHosp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    List<Unidades> getPUnitsHospByMuniAndSilais(@RequestParam(value = "codMunicipio", required = true) String codMunicipio,@RequestParam(value = "codSilais", required = true) long codSilais ) throws Exception {
+    List<Unidades> getPUnitsHospByMuniAndSilais(@RequestParam(value = "codMunicipio", required = true) String codMunicipio,@RequestParam(value = "codSilais", required = true) long codSilais, HttpServletRequest request) throws Exception {
         logger.info("Obteniendo las unidades primarias y Hospitales por municipio y Silais en JSON");
-        return
-                unidadesService.getPUnitsHospByMuniAndSilais(codMunicipio, HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), codSilais);
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        //Si es usuario a nivel central se cargan todas las unidades asociados al SILAIS y municipio
+        if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+            return  unidadesService.getPUnitsHospByMuniAndSilais(codMunicipio, HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), codSilais);
+        }else{ //sino sólo se cargarn las unidades autorizadas para el usuario según SILAIS y municipio
+            return seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int) idUsuario, codSilais, codMunicipio, ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+        }
     }
 
     @RequestMapping(value = "unidadesPrimariasSilais", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    List<Unidades> getPrimaryUnitsBySilais(@RequestParam(value = "codSilais", required = true) long codSilais) throws Exception {
+    List<Unidades> getPrimaryUnitsBySilais(@RequestParam(value = "codSilais", required = true) long codSilais, HttpServletRequest request) throws Exception {
         logger.info("Obteniendo las unidades por SILAIS en JSON");
-        return
-                unidadesService.getPrimaryUnitsBySilais(codSilais, HealthUnitType.UnidadesPrimarias.getDiscriminator().split(","));
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        //Si es usuario a nivel central se cargan todas las unidades asociados al SILAIS
+        if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+            return unidadesService.getPrimaryUnitsBySilais(codSilais, HealthUnitType.UnidadesPrimarias.getDiscriminator().split(","));
+        }else{//sino sólo se cargarn las unidades autorizadas para el usuario según SILAIS
+            return seguridadService.obtenerUnidadesPorUsuarioEntidad((int)idUsuario,codSilais, ConstantsSecurity.SYSTEM_CODE,HealthUnitType.UnidadesPrimarias.getDiscriminator());
+        }
     }
 
     @RequestMapping(value = "comunidad", method = RequestMethod.GET, produces = "application/json")
