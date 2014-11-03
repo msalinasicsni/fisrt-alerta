@@ -3,6 +3,17 @@ package ni.gob.minsa.alerta.service;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.irag.*;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.*;
+import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.Animales;
+import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.EnfAgudas;
+import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.EnfCronicas;
+import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.FuenteAgua;
+import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.SintomasCHIK;
+import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.SintomasDCSA;
+import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.SintomasDGRA;
+import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.SintomasDSSA;
+import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.SintomasHANT;
+import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.SintomasLEPT;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -411,5 +422,197 @@ public class CatalogoService {
         //Retrieve all
         return (ManifestacionClinica) query.uniqueResult();
     }
+    
+    @SuppressWarnings("unchecked")
+    public List<Animales> getAnimales(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Animales where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+    
+    public Animales getAnimal(String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getAnimalesByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (Animales) query.uniqueResult();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<EnfAgudas> getEnfAgudas(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM EnfAgudas where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+    
+    public EnfAgudas getEnfAgudas(String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getEnfAgudasByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (EnfAgudas) query.uniqueResult();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<EnfCronicas> getEnfCronicas(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM EnfCronicas where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+    
+    public EnfCronicas getEnfCronicas(String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getEnfCronicasByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (EnfCronicas) query.uniqueResult();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<FuenteAgua> getFuenteAgua(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM FuenteAgua where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+    
+    public FuenteAgua getFuenteAgua(String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getFuenteAguaByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (FuenteAgua) query.uniqueResult();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<SintomasCHIK> getSintomasCHIK(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM SintomasCHIK where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+    
+    public SintomasCHIK getSintomasCHIK(String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getSintomasCHIKByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (SintomasCHIK) query.uniqueResult();
+    }
 
+    @SuppressWarnings("unchecked")
+    public List<SintomasDCSA> getSintomasDCSA(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM SintomasDCSA where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+    
+    public SintomasDCSA getSintomasDCSA(String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getSintomasDCSAByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (SintomasDCSA) query.uniqueResult();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<SintomasDGRA> getSintomasDGRA(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM SintomasDGRA where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+    
+    public SintomasDGRA getSintomasDGRA(String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getSintomasDGRAByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (SintomasDGRA) query.uniqueResult();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<SintomasDSSA> getSintomasDSSA(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM SintomasDSSA where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+    
+    public SintomasDSSA getSintomasDSSA(String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getSintomasDSSAByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (SintomasDSSA) query.uniqueResult();
+    }
+    
+    
+    @SuppressWarnings("unchecked")
+    public List<SintomasHANT> getSintomasHANT(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM SintomasHANT where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+    
+    public SintomasHANT getSintomasHANT(String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getSintomasHANTByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (SintomasHANT) query.uniqueResult();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<SintomasLEPT> getSintomasLEPT(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM SintomasLEPT where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+    
+    public SintomasLEPT getSintomasLEPT(String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getSintomasLEPTByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (SintomasLEPT) query.uniqueResult();
+    }
+    
+    
 }
