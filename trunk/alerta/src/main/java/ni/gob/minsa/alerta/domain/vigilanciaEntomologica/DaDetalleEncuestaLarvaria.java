@@ -1,7 +1,7 @@
 package ni.gob.minsa.alerta.domain.vigilanciaEntomologica;
 
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
-import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
+import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
 

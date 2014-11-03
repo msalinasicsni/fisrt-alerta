@@ -47,6 +47,7 @@ public class EntidadAdmonService {
      * @return Retorna una lista de Entidades Administrativas obtenidas a partir del parametro ID Municipio
      * @throws Exception
      */
+    @Deprecated
     public EntidadesAdtvas getSilaisFromMunicipio(String idMunicipio) throws Exception {
         String query = "from EntidadesAdtvas as a where pasivo = :pasivo and municipio=:idMunicipio order by nombre asc";
 

@@ -8,14 +8,13 @@ import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
-import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
+import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.*;
 import ni.gob.minsa.alerta.service.*;
+import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import ni.gob.minsa.alerta.utilities.enumeration.surveyModelType;
 import ni.gob.minsa.alerta.utilities.typeAdapter.*;
-import ni.gob.minsa.ciportal.dto.InfoResultado;
-import ni.gob.minsa.ciportal.servicios.PortalService;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -25,14 +24,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,6 +60,10 @@ public class entomologiaController {
 
     @Autowired
     MessageSource messageSource;
+
+    @Autowired
+    @Qualifier(value = "seguridadService")
+    private SeguridadService seguridadService;
 
     @Autowired
     @Qualifier(value = "divisionPoliticaService")
@@ -131,27 +130,41 @@ public class entomologiaController {
      * @throws Exception
      */
     @RequestMapping(value = "create/aedes", method = RequestMethod.GET)
-    public ModelAndView initCreationForm() throws Exception {
+    public ModelAndView initCreationForm(HttpServletRequest request) throws Exception {
         logger.debug("Getting data from encuesta Entomologica");
+        String urlValidacion="";
         try {
-            InitialContext ctx = new InitialContext();
-            ni.gob.minsa.ciportal.servicios.PortalService portalService = (PortalService) ctx.lookup("ejb/Portal");
-            //String urlPortal = portalService.obtenerUrlLogin();
-            InfoResultado infoResultado = (InfoResultado) portalService.obtenerInfoSesion("12346652");
-            ctx.close();
+            urlValidacion = seguridadService.ValidarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE);
+            seguridadService.obtenerUnidadesPorUsuario(1,"","");
         }catch (Exception e){
             e.printStackTrace();
+            urlValidacion = "404";
         }
-        ModelAndView mav = new ModelAndView("encuesta/registrarEncuestaAedes");
-        departamentos = divisionPoliticaService.getAllDepartamentos();
-        silais = silaisServce.getAllEntidadesAdtvas();
-        procedencias = catalogosService.getProcedencia();
-        ordinales = catalogosService.getOrdinalEncuesta();
-        mav.addObject("entidades", silais);
-        mav.addObject("departamentos", departamentos);
-        mav.addObject("procedencias",procedencias);
-        mav.addObject("ordinales",ordinales);
-        mav.addObject("fechaHoy", DateToString(new Date()));
+        ModelAndView mav = new ModelAndView("");
+        if (urlValidacion.isEmpty()) {
+            mav.setViewName("encuesta/registrarEncuestaAedes");
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            //Si es usuario a nivel central se cargan todas las unidades asociados al SILAIS y municipio
+            if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+             silais = silaisServce.getAllEntidadesAdtvas();
+            }else {
+                silais = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
+            procedencias = catalogosService.getProcedencia();
+            ordinales = catalogosService.getOrdinalEncuesta();
+            //List<Divisionpolitica> muni = seguridadService.obtenerMunicipiosPorUsuarioEntidad((int)infoSesion.getUsuarioId(),10,UtilitySecurity.SYSTEM_CODE);
+            //List<Unidades> prueba = seguridadService.obtenerUnidadesPorUsuario((int)infoSesion.getUsuarioId(), UtilitySecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimarias.getDiscriminator());
+            mav.addObject("entidades", silais);
+            mav.addObject("procedencias", procedencias);
+            mav.addObject("ordinales", ordinales);
+            mav.addObject("fechaHoy", DateToString(new Date()));
+        }else
+        {
+            mav.setViewName(urlValidacion);
+        }
         return  mav;
     }
 
@@ -335,19 +348,40 @@ public class entomologiaController {
      * @throws Exception
      */
     @RequestMapping(value = "create/larvae", method = RequestMethod.GET)
-    public ModelAndView initCreationFormLarvaria() throws Exception {
+    public ModelAndView initCreationFormLarvaria(HttpServletRequest request) throws Exception {
         logger.debug("Getting data from encuesta Entomologica");
-
-        ModelAndView mav = new ModelAndView("encuesta/registrarEncuestaLarvaria");
-        departamentos = divisionPoliticaService.getAllDepartamentos();
-        silais = silaisServce.getAllEntidadesAdtvas();
-        procedencias = catalogosService.getProcedencia();
-        ordinales = catalogosService.getOrdinalEncuesta();
-        mav.addObject("entidades", silais);
-        mav.addObject("departamentos", departamentos);
-        mav.addObject("procedencias",procedencias);
-        mav.addObject("ordinales",ordinales);
-        mav.addObject("fechaHoy", DateToString(new Date()));
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.ValidarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE);
+            seguridadService.obtenerUnidadesPorUsuario(1,"","");
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        ModelAndView mav = new ModelAndView("");
+        if (urlValidacion.isEmpty()) {
+            mav.setViewName("encuesta/registrarEncuestaLarvaria");
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            //Si es usuario a nivel central se cargan todos los SILAIS
+            if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+                silais = silaisServce.getAllEntidadesAdtvas();
+            }else{//sino sólo se cargan los SILAIS autorizados al usuario
+                silais = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
+            procedencias = catalogosService.getProcedencia();
+            ordinales = catalogosService.getOrdinalEncuesta();
+            mav.addObject("entidades", silais);
+            //mav.addObject("departamentos", departamentos);
+            mav.addObject("procedencias",procedencias);
+            mav.addObject("ordinales",ordinales);
+            mav.addObject("fechaHoy", DateToString(new Date()));
+        }else
+        {
+            mav.setViewName(urlValidacion);
+        }
         return  mav;
     }
 
@@ -520,19 +554,39 @@ public class entomologiaController {
      * @throws Exception
      */
     @RequestMapping(value = "create/dep", method = RequestMethod.GET)
-    public ModelAndView initCreationFormDepositoPrefe() throws Exception {
+    public ModelAndView initCreationFormDepositoPrefe(HttpServletRequest request) throws Exception {
         logger.debug("Getting data from encuesta Entomologica");
-
-        ModelAndView mav = new ModelAndView("/encuesta/registrarDepositoPreferencial");
-        departamentos = divisionPoliticaService.getAllDepartamentos();
-        silais = silaisServce.getAllEntidadesAdtvas();
-        procedencias = catalogosService.getProcedencia();
-        ordinales = catalogosService.getOrdinalEncuesta();
-        mav.addObject("entidades", silais);
-        mav.addObject("departamentos", departamentos);
-        mav.addObject("procedencias",procedencias);
-        mav.addObject("ordinales",ordinales);
-        mav.addObject("fechaHoy", DateToString(new Date()));
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.ValidarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE);
+            seguridadService.obtenerUnidadesPorUsuario(1,"","");
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        ModelAndView mav = new ModelAndView("");
+        if (urlValidacion.isEmpty()) {
+            mav.setViewName("/encuesta/registrarDepositoPreferencial");
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            //Si es usuario a nivel central se cargan todos los SILAIS
+            if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+                silais = silaisServce.getAllEntidadesAdtvas();
+            }else{//sino sólo se cargan los SILAIS autorizados al usuario
+                silais = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
+            procedencias = catalogosService.getProcedencia();
+            ordinales = catalogosService.getOrdinalEncuesta();
+            mav.addObject("entidades", silais);
+            mav.addObject("procedencias",procedencias);
+            mav.addObject("ordinales",ordinales);
+            mav.addObject("fechaHoy", DateToString(new Date()));
+        }else
+        {
+            mav.setViewName(urlValidacion);
+        }
         return  mav;
     }
 
@@ -717,14 +771,37 @@ public class entomologiaController {
      * @throws Exception
      */
     @RequestMapping(value = "search", method = RequestMethod.GET)
-    public ModelAndView initSearchForm() throws Exception {
+    public ModelAndView initSearchForm(HttpServletRequest request) throws Exception {
         logger.debug("Getting data to search encuesta Entomologica");
-        List<ModeloEncuesta> modelosEncuesta = new ArrayList<ModeloEncuesta>();
-        ModelAndView mav = new ModelAndView("/encuesta/search");
-        silais = silaisServce.getAllEntidadesAdtvas();
-        modelosEncuesta = catalogosService.getModeloEncuesta(); //.ElementosCatalogos(typeCatalogs.ModeloEncuesta.getDiscriminator());
-        mav.addObject("entidades", silais);
-        mav.addObject("modelos", modelosEncuesta);
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.ValidarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE);
+            seguridadService.obtenerUnidadesPorUsuario(1,"","");
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        ModelAndView mav = new ModelAndView("");
+        if (urlValidacion.isEmpty()) {
+            List<ModeloEncuesta> modelosEncuesta = new ArrayList<ModeloEncuesta>();
+            mav.setViewName("/encuesta/search");
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            //Si es usuario a nivel central se cargan todos los SILAIS
+            if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+                silais = silaisServce.getAllEntidadesAdtvas();
+            }else{//sino sólo se cargan los SILAIS autorizados al usuario
+                silais = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
+            modelosEncuesta = catalogosService.getModeloEncuesta(); //.ElementosCatalogos(typeCatalogs.ModeloEncuesta.getDiscriminator());
+            mav.addObject("entidades", silais);
+            mav.addObject("modelos", modelosEncuesta);
+        }else
+        {
+            mav.setViewName(urlValidacion);
+        }
         return  mav;
     }
 
@@ -797,53 +874,81 @@ public class entomologiaController {
      * @throws Exception
      */
     @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public ModelAndView initEditForm(@RequestParam(value = "idMaestro", required = true) String idMaestro) throws Exception {
+    public ModelAndView initEditForm(@RequestParam(value = "idMaestro", required = true) String idMaestro, HttpServletRequest request) throws Exception {
         logger.debug("Inicializando para editar encuesta Entomologica");
-        //ModelAndView mav = new ModelAndView("/vigilanciaEntomologica/editarEncuesta");
-        ModelAndView mav = new ModelAndView();
-        DaMaeEncuesta maestro = daMaeEncuestaService.getMaestroEncuestaById(idMaestro);
-        if (maestro.getModeloEncuesta().getCodigo().equalsIgnoreCase(surveyModelType.AedesAegypti.getDiscriminator()))
-            mav.setViewName("encuesta/editarEncuestaAedes");
-        else if (maestro.getModeloEncuesta().getCodigo().equalsIgnoreCase(surveyModelType.LarvariaAedes.getDiscriminator()))
-            mav.setViewName("encuesta/editarEncuestaLarvaria");
-        else
-            mav.setViewName("encuesta/editarDepositoPreferencial");
-        if (departamentos == null)
-            departamentos = divisionPoliticaService.getAllDepartamentos();
-        municipios = divisionPoliticaService.getMunicipiosBySilais(maestro.getEntidadesAdtva().getEntidadAdtvaId());
-
-        if (silais == null)
-        silais = silaisServce.getAllEntidadesAdtvas();
-
-        if (procedencias == null)
-        procedencias = catalogosService.getProcedencia();
-
-        if (ordinales == null)
-        ordinales = catalogosService.getOrdinalEncuesta();
-
-        unidadesSalud = unidadesService.getPrimaryUnitsByMunicipio_Silais(maestro.getMunicipio().getCodigoNacional(), maestro.getEntidadesAdtva().getCodigo(), HealthUnitType.UnidadesPrimarias.getDiscriminator().split(","));
-        comunidades = comunidadesService.getComunidades(maestro.getMunicipio().getCodigoNacional());
-        if (maestro.getMunicipio().getCodigoNacional().equalsIgnoreCase(COD_NACIONAL_MUNI_MANAGUA)) {
-            distritosMng = catalogosService.getDistritos();
-            areasMng = catalogosService.getAreas();
-        }else{
-            distritosMng = null;
-            areasMng = null;
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.ValidarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            //if (urlValidacion.isEmpty())
+                //urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, UtilitySecurity.SYSTEM_CODE);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
         }
-        mav.addObject("maestro",maestro);
-        mav.addObject("entidades", silais);
-        mav.addObject("unidadesSalud",unidadesSalud);
-        mav.addObject("departamentos",departamentos);
-        mav.addObject("municipios",municipios);
-        mav.addObject("localidades",comunidades);
-        mav.addObject("procedencias",procedencias);
-        mav.addObject("ordinales",ordinales);
-        mav.addObject("fechaInicioEncuesta", DateToString(maestro.getFeInicioEncuesta()));
-        mav.addObject("fechaFinEncuesta", DateToString(maestro.getFeFinEncuesta()));
-        mav.addObject("fechaHoy", DateToString(new Date()));
-        mav.addObject("distritos",distritosMng);
-        mav.addObject("mae",new DaMaeEncuesta());
-        mav.addObject("areas",areasMng);
+        ModelAndView mav = new ModelAndView("");
+        if (urlValidacion.isEmpty()) {
+            DaMaeEncuesta maestro = daMaeEncuestaService.getMaestroEncuestaById(idMaestro);
+            if (maestro.getModeloEncuesta().getCodigo().equalsIgnoreCase(surveyModelType.AedesAegypti.getDiscriminator()))
+                mav.setViewName("encuesta/editarEncuestaAedes");
+            else if (maestro.getModeloEncuesta().getCodigo().equalsIgnoreCase(surveyModelType.LarvariaAedes.getDiscriminator()))
+                mav.setViewName("encuesta/editarEncuestaLarvaria");
+            else
+                mav.setViewName("encuesta/editarDepositoPreferencial");
+            //se obtiene id del usuario autenticado
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+
+            //Si es usuario a nivel central se cargan todos los municipios asociados al SILAIS
+            if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+                municipios = divisionPoliticaService.getMunicipiosBySilais(maestro.getEntidadesAdtva().getEntidadAdtvaId());
+            }else{
+                municipios = seguridadService.obtenerMunicipiosPorUsuarioEntidad((int)idUsuario,maestro.getEntidadesAdtva().getEntidadAdtvaId(), ConstantsSecurity.SYSTEM_CODE);
+            }
+
+            //Si es usuario a nivel central se cargan todos los SILAIS
+            if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+                silais = silaisServce.getAllEntidadesAdtvas();
+            }else{//sino sólo se cargan los SILAIS autorizados al usuario
+                silais = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
+
+            if (procedencias == null)
+            procedencias = catalogosService.getProcedencia();
+
+            if (ordinales == null)
+            ordinales = catalogosService.getOrdinalEncuesta();
+            //Si es usuario a nivel central se cargan todas las unidades asociados al SILAIS y municipio
+            if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+                unidadesSalud = unidadesService.getPrimaryUnitsByMunicipio_Silais(maestro.getMunicipio().getCodigoNacional(), maestro.getEntidadesAdtva().getCodigo(), HealthUnitType.UnidadesPrimarias.getDiscriminator().split(","));
+            }else{ //sino sólo se cargarn las unidades autorizadas para el usuario según SILAIS y municipio
+                unidadesSalud = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int)idUsuario ,maestro.getEntidadesAdtva().getCodigo(),maestro.getMunicipio().getCodigoNacional(), ConstantsSecurity.SYSTEM_CODE,HealthUnitType.UnidadesPrimarias.getDiscriminator());
+            }
+                comunidades = comunidadesService.getComunidades(maestro.getMunicipio().getCodigoNacional());
+            if (maestro.getMunicipio().getCodigoNacional().equalsIgnoreCase(COD_NACIONAL_MUNI_MANAGUA)) {
+                distritosMng = catalogosService.getDistritos();
+                areasMng = catalogosService.getAreas();
+            }else{
+                distritosMng = null;
+                areasMng = null;
+            }
+            mav.addObject("maestro",maestro);
+            mav.addObject("entidades", silais);
+            mav.addObject("unidadesSalud",unidadesSalud);
+            //mav.addObject("departamentos",departamentos);
+            mav.addObject("municipios",municipios);
+            mav.addObject("localidades",comunidades);
+            mav.addObject("procedencias",procedencias);
+            mav.addObject("ordinales",ordinales);
+            mav.addObject("fechaInicioEncuesta", DateToString(maestro.getFeInicioEncuesta()));
+            mav.addObject("fechaFinEncuesta", DateToString(maestro.getFeFinEncuesta()));
+            mav.addObject("fechaHoy", DateToString(new Date()));
+            mav.addObject("distritos",distritosMng);
+            mav.addObject("mae",new DaMaeEncuesta());
+            mav.addObject("areas",areasMng);
+        }else
+        {
+            mav.setViewName(urlValidacion);
+        }
         return  mav;
     }
 

@@ -181,7 +181,8 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>3.6.4.Final</version>
+			<!--<version>3.6.4.Final</version>-->
+            <version>4.1.6.Final</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
@@ -207,14 +208,25 @@
 		</dependency>
 
 		<!-- JBoss -->
-		<dependency>
+		<!--<dependency>
 			<groupId>jboss</groupId>
 			<artifactId>javassist</artifactId>
 			<version>3.7.ga</version>
 			<type>jar</type>
 			<scope>compile</scope>
-		</dependency>
-
+		</dependency>-->
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.15.0-GA</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.transaction</groupId>
+            <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+            <version>1.0.0.Final</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 		<!-- cglib -->
 		<dependency>
 			<groupId>cglib</groupId>

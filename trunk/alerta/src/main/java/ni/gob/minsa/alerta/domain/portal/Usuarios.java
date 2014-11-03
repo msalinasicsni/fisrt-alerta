@@ -1,4 +1,4 @@
-package ni.gob.minsa.alerta.domain.seguridad;
+package ni.gob.minsa.alerta.domain.portal;
 
 import org.springframework.context.annotation.Lazy;
 
@@ -9,7 +9,7 @@ import java.sql.Timestamp;
  * Created by Herrold on 27/05/14 12:39
  */
 @Entity
-@Table(name = "USUARIOS", schema = "ALERTA", catalog = "")
+@Table(name = "USUARIOS", schema = "ALERTA")
 @Lazy(value = false)
 public class Usuarios {
 

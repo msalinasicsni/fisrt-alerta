@@ -47,6 +47,7 @@ public class DivisionPoliticaService {
         return  q.list();
     }
 
+    @Deprecated
     public List<Divisionpolitica> getAllMunicipios() throws Exception {
         String query = "from Divisionpolitica where pasivo = :pasivo and dependencia is not null order by nombre asc";
 

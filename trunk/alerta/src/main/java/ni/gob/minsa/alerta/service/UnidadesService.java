@@ -43,6 +43,7 @@ public class UnidadesService {
      * @return una lista de  Unidades
      * @throws Exception
      */
+    @Deprecated
     public List<Unidades> getAllUnidades() throws Exception {
         String query = "from Unidades where pasivo = :pasivo order by nombre asc";
         Session session = sessionFactory.getCurrentSession();
