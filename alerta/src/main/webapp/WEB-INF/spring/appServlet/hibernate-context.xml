@@ -21,8 +21,8 @@
     <!-- Declare the Hibernate SessionFactory for retrieving Hibernate sessions -->
     <!-- See http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/orm/hibernate3/annotation/AnnotationSessionFactoryBean.html --> 							
 	<!-- See http://docs.jboss.org/hibernate/stable/core/api/index.html?org/hibernate/SessionFactory.html -->
-	<!-- See http://docs.jboss.org/hibernate/stable/core/api/index.html?org/hibernate/Session.html -->
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
+	<!-- See http://docs.jboss.org/hibernate/stable/core/api/index.html?org/hibernate/Session.html class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" -->
+	<bean id="sessionFactory"  class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
 				 p:dataSource-ref="dataSource"
 				 p:configLocation="${hibernate.config}"
 				 p:packagesToScan="ni.gob.minsa.alerta"/>
@@ -41,8 +41,8 @@
 				p:minPoolSize="10"
 				p:maxStatementsPerConnection="100" />
 
-	<!-- Declare a transaction manager-->
-	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" 
+	<!-- Declare a transaction manager org.springframework.orm.hibernate3.HibernateTransactionManager-->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager"
        			p:sessionFactory-ref="sessionFactory" />
   
 </beans>
