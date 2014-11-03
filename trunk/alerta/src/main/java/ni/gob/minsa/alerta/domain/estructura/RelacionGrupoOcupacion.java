@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 import ni.gob.minsa.alerta.domain.persona.GrupoOcupacion;
 import ni.gob.minsa.alerta.domain.persona.Ocupacion;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 
 @Entity
@@ -47,7 +49,8 @@ public class RelacionGrupoOcupacion  implements java.io.Serializable {
     public void setGrupoocupacionId(long grupoocupacionId) {
         this.grupoocupacionId = grupoocupacionId;
     }
-    
+
+    @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToOne(targetEntity=Ocupacion.class,fetch= FetchType.LAZY)
     @JoinColumn(name="CODIGO_OCUPACION",referencedColumnName="CODIGO",nullable=false)
     public Ocupacion getOcupacion() {

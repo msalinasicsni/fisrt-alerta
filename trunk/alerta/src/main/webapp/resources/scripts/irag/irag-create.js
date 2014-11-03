@@ -8,92 +8,99 @@ var CreateIrag = function () {
 
             var responsiveHelper_dt_basic = undefined;
             var breakpointDefinition = {
-                tablet : 1024,
-                phone : 480
+                tablet: 1024,
+                phone: 480
             };
             var tableVac = $('#lista_vacunas').dataTable({
-                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
-                    "t"+
-                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden'i><'col-xs-12 col-sm-6'p>>",
-                "autoWidth" : true,
+                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>" +
+                    "t" +
+                    "<'dt-toolbar-footer'<'col-sm-5 col-xs-12 hidden'i><'col-xs-12 col-sm-6'p>>",
+                "autoWidth": true,
                 "filter": false,
                 "bPaginate": false,
 
 
-                "preDrawCallback" : function() {
+                "preDrawCallback": function () {
                     // Initialize the responsive datatables helper once.
                     if (!responsiveHelper_dt_basic) {
                         responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#lista_vacunas'), breakpointDefinition);
                     }
                 },
-                "rowCallback" : function(nRow) {
+                "rowCallback": function (nRow) {
                     responsiveHelper_dt_basic.createExpandIcon(nRow);
                 },
-                "drawCallback" : function(oSettings) {
+                "drawCallback": function (oSettings) {
                     responsiveHelper_dt_basic.respond();
                 }
 
             });
 
-            getVaccines();
-
             var tableCond = $('#lista_condiciones').dataTable({
-                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
-                    "t"+
-                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
-                "autoWidth" : true,
+                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>" +
+                    "t" +
+                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-10 hidden-xs'i><'col-xs-6 col-sm-6'p>>",
+                "autoWidth": true,
                 "filter": false,
                 "bLengthChange": false,
 
 
-                "preDrawCallback" : function() {
+                "preDrawCallback": function () {
                     // Initialize the responsive datatables helper once.
                     if (!responsiveHelper_dt_basic) {
                         responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#lista_condiciones'), breakpointDefinition);
                     }
                 },
-                "rowCallback" : function(nRow) {
+                "rowCallback": function (nRow) {
                     responsiveHelper_dt_basic.createExpandIcon(nRow);
                 },
-                "drawCallback" : function(oSettings) {
+                "drawCallback": function (oSettings) {
                     responsiveHelper_dt_basic.respond();
                 }
+
             });
 
-            getConditions();
 
             var tableMani = $('#lista_manifestaciones').dataTable({
-                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
-                    "t"+
+                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>" +
+                    "t" +
                     "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
-                "autoWidth" : true,
+                "autoWidth": true,
                 "filter": false,
                 "bLengthChange": false,
-                "preDrawCallback" : function() {
+                "preDrawCallback": function () {
                     // Initialize the responsive datatables helper once.
                     if (!responsiveHelper_dt_basic) {
                         responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#lista_manifestaciones'), breakpointDefinition);
                     }
                 },
-                "rowCallback" : function(nRow) {
+                "rowCallback": function (nRow) {
                     responsiveHelper_dt_basic.createExpandIcon(nRow);
                 },
-                "drawCallback" : function(oSettings) {
+                "drawCallback": function (oSettings) {
                     responsiveHelper_dt_basic.respond();
                 }
             });
-            getManifestations();
 
+
+
+            var idIrag = $('#idIrag').val();
+            if (idIrag != null) {
+                $('#inVacIdIrag').val(idIrag).change();
+                $('#inCondIdIrag').val(idIrag).change();
+                $('#inManifIdIrag').val(idIrag).change();
+
+                getVaccines(idIrag);
+                getConditions(idIrag);
+                getManifestations(idIrag);
+            }
+
+            //rango de fecha segun fecha de consulta
             $('#fechaConsulta').change(function() {
                 var fecha = $('#fechaConsulta').datepicker("getDate");
                 $('#fechaPrimeraConsulta').datepicker('setEndDate', fecha);
                 $('#fechaInicioSintomas').datepicker('setEndDate', fecha);
 
             });
-
-
-
-
 
 
             //Filtro Unidad de Salud segun Silais seleccionado
@@ -106,7 +113,7 @@ var CreateIrag = function () {
                 }, function (data) {
                     var html = null;
                     var len = data.length;
-                    html += '<option value="">Seleccione...</option>';
+                    html += '<option value=""><spring:message code="lbl.select" /></option>';
                     for (var i = 0; i < len; i++) {
                         html += '<option value="' + data[i].codigo + '">'
                             + data[i].nombre
@@ -116,8 +123,6 @@ var CreateIrag = function () {
                     $('#codUnidadAtencion').html(html);
 
                 })
-
-
 
             });
 
@@ -131,7 +136,7 @@ var CreateIrag = function () {
                         ajax: 'true'
                     }, function (data) {
                         var html = null;
-                         html += '<option value="">Seleccione...</option>';
+                         html += '<option value=""><spring:message code="lbl.select" /></option>';
                         var len = data.length;
                         for (var i = 0; i < len; i++) {
                             html += '<option value="' + data[i].codigoNacional + '">'
@@ -146,15 +151,16 @@ var CreateIrag = function () {
 
 
 
-
             //filtro de Municipio segun departamento
-            $('#departamento').change(function(){
-
+            $('#departamento').click(function(){
+                $('#municipioResidencia option:first').prop("selected", true).change();
+                $('#comunidadResidencia option:first').prop("selected", true).change();
                 $.getJSON(parametros.municipioByDepaUrl, {
                     departamentoId: $(this).val(),
                     ajax: 'true'
                 }, function (data) {
-                    var html = '<option value="">Seleccione...</option>';
+                    var html = null;
+                    html += '<option value=""><spring:message code="lbl.select" /></option>';
                     var len = data.length;
                     for (var i = 0; i < len; i++) {
                         html += '<option value="' + data[i].codigoNacional + '">'
@@ -164,18 +170,18 @@ var CreateIrag = function () {
                     html += '</option>';
                     $('#municipioResidencia').html(html);
                 });
-                $("#municipioResidencia").val("${muniResidencia.codigoNacional}").change();
 
             });
 
             //filtro de comunidad segun municipio
-            $('#municipioResidencia').change(function(){
-
+            $('#municipioResidencia').click(function(){
+                $('#comunidadResidencia option:first').prop("selected", true).change();
                 $.getJSON(parametros.comunidadUrl, {
                     municipioId: $(this).val(),
                     ajax: 'true'
                 }, function (data) {
-                    var html = '<option value="">Seleccione...</option>';
+                    var html = null;
+                     html += '<option value=""><spring:message code="lbl.select" /></option>';
                     var len = data.length;
                     for (var i = 0; i < len; i++) {
                         html += '<option value="' + data[i].codigo + '">'
@@ -207,33 +213,77 @@ var CreateIrag = function () {
                     $validator.focusInvalid();
                     return false;
                 } else {
-                    fnGuardarFicha(6);
+                   completeIrag();
                 }
 
             });
 
+
+
             function fnGuardarFicha(step) {
 
-                if (step != 4) {
+                if(step == 2){
+                    fnguardarPersona();
                     fnguardar();
-                } else {
-
                 }
+
+                if (step != 4 && step!= 2) {
+                    fnguardar();
+                }
+
+
+            }
+
+            function completeIrag(){
+                var datos_form = $('#wizard-1').serialize();
+                $.ajax({
+                    type: "GET",
+                    url: parametros.completeIragUrl,
+                    data: datos_form,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+
+                            $.smallBox({
+                            title: "Exito! Se ha completado el Formulario IRAG/ETI!",
+                            content:  $('#disappear').val(),
+                            color: "#739E73",
+                            iconSmall: "fa fa-check-circle",
+                            timeout: 2000
+                        });
+
+                        window.location.href = parametros.searchIragUrl + '/'+ data.persona.personaId;
+
+                    },
+                    error: function () {
+
+                        $.smallBox({
+                            title: $('#msjError').val(),
+                            content:  $('#disappear').val(),
+                            color: "#C46A69",
+                            iconSmall: "fa fa-warning",
+                            timeout: 2000
+                        });
+                    }
+                });
             }
 
             function fnguardar() {
                 var datos_form = $('#wizard-1').serialize();
-
                 $.ajax({
                     type: "GET",
                     url: parametros.sAddIragUrl,
                     data: datos_form,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
-                    success: function () {
+                    success: function (data) {
+                        $('#idIrag').val(data.idIrag).change();
+                        $('#inVacIdIrag').val(data.idIrag).change();
+                        $('#inCondIdIrag').val(data.idIrag).change();
+                        $('#inManifIdIrag').val(data.idIrag).change();
                         $.smallBox({
-                            title: "Exito! Los datos se han guardado correctamente!",
-                            content: "Este mensaje desaparecerá en 2 segundos!",
+                            title: $('#msjSuccessful').val() ,
+                            content:  $('#disappear').val(),
                             color: "#739E73",
                             iconSmall: "fa fa-check-circle",
                             timeout: 2000
@@ -243,8 +293,31 @@ var CreateIrag = function () {
                     error: function () {
 //                alert("Error " + result.status + '' + result.statusText);
                         $.smallBox({
-                            title: "Error! Los datos no se han guardado correctamente!",
-                            content: "Este mensaje desaparecerá en 2 segundos!",
+                            title: $('#msjErrorSaving').val(),
+                            content:  $('#disappear').val(),
+                            color: "#C46A69",
+                            iconSmall: "fa fa-warning",
+                            timeout: 2000
+                        });
+                    }
+                });
+
+            }
+
+            function fnguardarPersona() {
+                var datos_form = $('#wizard-1').serialize();
+
+                $.ajax({
+                    type: "GET",
+                    url: parametros.updatePersonUrl,
+                    data: datos_form,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    error: function () {
+
+                        $.smallBox({
+                            title: $('#msjErrorSaving').val(),
+                            content:  $('#disappear').val(),
                             color: "#C46A69",
                             iconSmall: "fa fa-warning",
                             timeout: 2000
@@ -371,8 +444,6 @@ var CreateIrag = function () {
                         required: true
 
                     }
-
-
                 },
 
 
@@ -383,11 +454,9 @@ var CreateIrag = function () {
             });
 
             //funcion guardar vacuna
-            function saveVaccine()
+            function saveVaccine(idIrag)
             {
                 var datos_vac = $('#fVaccine').serialize();
-
-
                 $.ajax({
                     type: "GET",
                     url: parametros.sAddVaccineUrl,
@@ -396,8 +465,7 @@ var CreateIrag = function () {
                     dataType: "json",
                     success: function (data) {
                         tableVac.fnClearTable();
-
-                        getVaccines();
+                        getVaccines(data.idIrag.idIrag);
 
                         $('#codVacuna option:first').prop("selected", true).change();
                         $('#tVacHib option:first').prop("selected", true).change();
@@ -413,9 +481,11 @@ var CreateIrag = function () {
                         $("#btnCancel").click();
                     },
                     error: function (result) {
+                        console.log(result);
+                        alert("Error " + result.status + '' + result.statusText + result.s);
                       $.smallBox({
-                            title : "Error! Los datos no se han guardado correctamente!",
-                            content : "Este mensaje desaparecerá en 2 segundos!",
+                            title : $('#msjErrorSaving').val() ,
+                            content :  $('#disappear').val(),
                             color : "#C46A69",
                             iconSmall : "fa fa-warning",
                             timeout : 2000
@@ -424,23 +494,21 @@ var CreateIrag = function () {
                 });
             }
 
-            function getVaccines() {
+            function getVaccines(idIrag) {
 
                 $.getJSON(parametros.vaccines, {
+                    idIrag: idIrag,
                     ajax : 'true'
                 }, function(data) {
                     var len = data.length;
-                    console.log(data);
                     for ( var i = 0; i < len; i++) {
+                        var overrideUrl = parametros.overrideVaccineUrl + '/'+data[i].idVacuna;
                         tableVac.fnAddData(
-                            [data[i].codVacuna.valor, data[i].codTipoVacuna.valor, data[i].dosis, data[i].fechaUltimaDosis]);
+                            [data[i].codVacuna.valor, data[i].codTipoVacuna.valor, data[i].dosis, data[i].fechaUltimaDosis, '<a href='+ overrideUrl+ ' class="btn btn-default btn-xs btn-danger"><i class="fa fa-times"></i></a>']);
 
                     }
                 })
-                    .fail(function() {
-                        alert( "error" );
 
-                    });
             }
 
             //accion guardar condicion preexistente
@@ -505,7 +573,7 @@ var CreateIrag = function () {
                     dataType: "json",
                     success: function  (data) {
                         tableCond.fnClearTable();
-                         getConditions();
+                         getConditions(data.idIrag.idIrag);
 
                         $('#codCondicion option:first').prop("selected", true).change();
                         $("#semanasEmbarazo").val('').change();
@@ -513,10 +581,10 @@ var CreateIrag = function () {
                         $("#btnCancelAddCP").click();
                         },
 
-                    error: function (result) {
+                    error: function () {
                         $.smallBox({
-                            title : "Error! Los datos no se han guardado correctamente!",
-                            content : "Este mensaje desaparecerá en 2 segundos!",
+                            title : $('#msjErrorSaving').val(),
+                            content :  $('#disappear').val(),
                             color : "#C46A69",
                             iconSmall : "fa fa-warning",
                             timeout : 2000
@@ -525,17 +593,20 @@ var CreateIrag = function () {
                 });
             }
 
-            function getConditions() {
+            function getConditions(idIrag) {
 
+                var datos_form = $('#wizard-1').serialize();
                 $.getJSON(parametros.conditions, {
-                    ajax : 'true'
+                    idIrag: idIrag,
+                    ajax : 'true',
+                    data:datos_form
                 }, function(data) {
 
                     var len = data.length;
-                    console.log(data);
                     for ( var i = 0; i < len; i++) {
                         var sem = "";
                         var otraC = "";
+                        var overrideUrl = parametros.overrideConditionUrl + '/'+ data[i].idCondicion;
 
                         if (data[i].semanasEmbarazo != null){
                             sem = data[i].semanasEmbarazo + " " + $('#inPregnancy').val();
@@ -545,14 +616,11 @@ var CreateIrag = function () {
                             otraC = data[i].otraCondicion;
                         }
                             tableCond.fnAddData(
-                                [data[i].codCondicion.valor + " " + sem + " " + otraC]);
+                                [data[i].codCondicion.valor + " " + sem + " " + otraC, '<a href='+ overrideUrl+ ' class="btn btn-default btn-xs btn-danger"><i class="fa fa-times"></i></a>']);
                         }
 
                 })
-                    .fail(function() {
-                        alert( "error" );
 
-                    });
             }
 
             $('#btnSaveCM').click(function() {
@@ -602,19 +670,19 @@ var CreateIrag = function () {
                     data: datos_manif,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
-                    success: function (response) {
+                    success: function (data) {
 
                         tableMani.fnClearTable();
-                        getManifestations();
+                        getManifestations(data.idIrag.idIrag);
 
                         $('#codManifestacion option:first').prop("selected", true).change();
 
                         $("#btnCancelCM").click();
                     },
-                    error: function (result) {
+                    error: function () {
                         $.smallBox({
-                            title : "Error! Los datos no se han guardado correctamente!",
-                            content : "Este mensaje desaparecerá en 2 segundos!",
+                            title : $('#msjErrorSaving').val(),
+                            content :  $('#disappear').val(),
                             color : "#C46A69",
                             iconSmall : "fa fa-warning",
                             timeout : 2000
@@ -623,16 +691,16 @@ var CreateIrag = function () {
                 });
             }
 
-
-
-            function getManifestations() {
-
+            function getManifestations(idIrag) {
+                var datos_form = $('#wizard-1').serialize();
                 $.getJSON(parametros.manifestations, {
-                    ajax : 'true'
+                    idIrag: idIrag,
+                    ajax : 'true',
+                    data: datos_form
                 }, function(data) {
                     var len = data.length;
-                    console.log(data);
                     for ( var i = 0; i < len; i++) {
+                        var overrideUrl = parametros.overrideManifestationUrl + '/'+ data[i].idManifestacion;
                         var otraMani = "";
 
                         if(data[i].otraManifestacion != null){
@@ -640,14 +708,10 @@ var CreateIrag = function () {
                         }
 
                         tableMani.fnAddData(
-                            [data[i].codManifestacion.valor + " " + otraMani]);
+                            [data[i].codManifestacion.valor + " " + otraMani, '<a href='+ overrideUrl+ ' class="btn btn-default btn-xs btn-danger"><i class="fa fa-times"></i></a>']);
 
                     }
                 })
-                    .fail(function() {
-                        alert( "error" );
-
-                    });
             }
 
 
@@ -661,11 +725,11 @@ var CreateIrag = function () {
             });
 
             $('#codClasFCaso').change(function(){
-                if($('#codClasFCaso option:selected').val() != ""){
-                    $('#fichaCompleta').val('1').change();
-                }else{
-                    $('#fichaCompleta').val('0').change();
-                }
+                $('#dConfNB').fadeOut('slow');
+                $('#dViralEti').fadeOut('slow');
+                $('#dEtiAgents').fadeOut('slow');
+
+                //limpiar inputs
 
                 if($('#codClasFCaso option:selected').text() === "Confirmado NB"){
                     $('#dConfNB').fadeIn('slow');
@@ -673,10 +737,6 @@ var CreateIrag = function () {
                     $('#dViralEti').fadeIn('slow');
                 }else if($('#codClasFCaso option:selected').text() === "Coinfección Bacteriana y Viral"){
                     $('#dEtiAgents').fadeIn('slow');
-                }else{
-                    $('#dConfNB').fadeOut('slow');
-                    $('#dViralEti').fadeOut('slow');
-                    $('#dEtiAgents').fadeOut('slow');
                 }
 
             });

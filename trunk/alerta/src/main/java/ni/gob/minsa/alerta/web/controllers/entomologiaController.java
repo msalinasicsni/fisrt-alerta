@@ -832,10 +832,10 @@ public class entomologiaController {
                 Divisionpolitica departamento;
                 Distritos distrito;
                 Areas area;
-                Map<String, Object> data  = new HashMap<>();
+                Map<String, Object> data  = new HashMap<String, Object>();
 
                 for(int i=0;i < encuestas.size();i++){
-                    Map<String, String> map = new HashMap<>();
+                    Map<String, String> map = new HashMap<String, String>();
                     departamento =divisionPoliticaService.getDepartamentoByMunicipi(encuestas.get(i).getMunicipio().getCodigoNacional());
                     distrito = catalogosService.getDistritos(encuestas.get(i).getCodDistrito());
                     area = catalogosService.getAreas(encuestas.get(i).getCodArea());

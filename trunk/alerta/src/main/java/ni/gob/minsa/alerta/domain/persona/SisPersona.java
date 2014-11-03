@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import javax.persistence.*;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 
@@ -12,6 +14,7 @@ import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.poblacion.Paises;
+
 
 @NamedQueries({
 	@NamedQuery(
@@ -34,6 +37,7 @@ import ni.gob.minsa.alerta.domain.poblacion.Paises;
 
 @Entity  @Indexed
 @Table(name="SIS_PERSONAS",schema="alerta")
+
 public class SisPersona  implements java.io.Serializable {
 
 
@@ -312,7 +316,8 @@ public class SisPersona  implements java.io.Serializable {
     public void setMunicipioResidencia(Divisionpolitica municipioResidencia) {
         this.municipioResidencia = municipioResidencia;
     }
-    
+
+    @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToOne(fetch=FetchType.LAZY,targetEntity=Ocupacion.class)
     @JoinColumn(name="CODIGO_OCUPACION",referencedColumnName="CODIGO", nullable=true)
     public Ocupacion getOcupacion() {
@@ -322,7 +327,8 @@ public class SisPersona  implements java.io.Serializable {
     public void setOcupacion(Ocupacion ocupacion) {
         this.ocupacion = ocupacion;
     }
-    
+
+
     @ManyToOne(fetch=FetchType.LAZY,targetEntity=Comunidades.class)
     @JoinColumn(name="CODIGO_COMUNIDAD_RESIDENCIA", referencedColumnName="CODIGO", nullable=true)
     public Comunidades getComunidadResidencia() {

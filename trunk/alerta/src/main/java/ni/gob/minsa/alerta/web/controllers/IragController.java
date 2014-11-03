@@ -12,6 +12,7 @@ import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
+import org.springframework.context.MessageSource;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -29,7 +31,10 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by souyen-ics
@@ -69,13 +74,15 @@ public class IragController {
     @Autowired(required = true)
     @Qualifier(value = "usuarioService")
     public UsuarioService usuarioService;
-    @Resource(name="personaService")
+    @Resource(name = "personaService")
     private PersonaService personaService;
-    @Resource(name="comunidadesService")
+    @Resource(name = "comunidadesService")
     private ComunidadesService comunidadesService;
+    @Autowired
+    MessageSource messageSource;
 
     List<EntidadesAdtvas> entidades;
-    List<Divisionpolitica>departamentos;
+    List<Divisionpolitica> departamentos;
     List<Procedencia> catProcedencia;
     List<Clasificacion> catClasif;
     List<Captacion> catCaptac;
@@ -92,13 +99,6 @@ public class IragController {
     List<CondicionPrevia> catCondPre;
     List<ManifestacionClinica> catManCli;
     Map<String, Object> mapModel;
-
-
-    DaIrag irag = new DaIrag();
-    DaVacunasIrag vacunas = new DaVacunasIrag();
-    DaCondicionesPreviasIrag condicion = new DaCondicionesPreviasIrag();
-    DaManifestacionesIrag manifestacion = new DaManifestacionesIrag();
-
 
 
     void Initialize() throws Exception {
@@ -122,7 +122,7 @@ public class IragController {
             catTVacNeumo = catalogoService.getTipoVacunaNeumococica();
             catTVacFlu = catalogoService.getTipoVacunaFlu();
 
-            mapModel = new HashMap<String,Object>();
+            mapModel = new HashMap<String, Object>();
 
             mapModel.put("entidades", entidades);
             mapModel.put("catProcedencia", catProcedencia);
@@ -147,13 +147,6 @@ public class IragController {
         }
     }
 
-/*
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public String buscarFicha(Model model) throws Exception {
-        List<DaIrag> vi = daIragService.getAllFormActivos();
-        model.addAttribute("fichas", vi);
-        return "search";
-    }*/
 
     @RequestMapping(value = "create", method = RequestMethod.GET)
     public String initSearchForm(Model model) throws ParseException {
@@ -169,33 +162,33 @@ public class IragController {
      */
     @RequestMapping("search/{idPerson}")
     public ModelAndView showPersonReport(@PathVariable("idPerson") long idPerson) throws Exception {
-        List<DaIrag> results =  daIragService.getDaIragPersona(idPerson);
+        List<DaIrag> results = daIragService.getDaIragPersona(idPerson);
         ModelAndView mav = new ModelAndView();
 
-        if (results.size()==0){
+        if (results.size() == 0) {
+            DaIrag irag = new DaIrag();
             Initialize();
             SisPersona persona = personaService.getPersona(idPerson);
-            if (persona!=null){
+
+            if (persona != null) {
                 irag.setPersona(persona);
-
-               Divisionpolitica departamentoProce = divisionPoliticaService.getDepartamentoByMunicipi(persona.getMunicipioResidencia().getCodigoNacional());
-
-                Divisionpolitica muniResidencia = persona.getMunicipioResidencia();
+                Divisionpolitica departamentoProce = divisionPoliticaService.getDepartamentoByMunicipi(irag.getPersona().getMunicipioResidencia().getCodigoNacional());
+                List<Divisionpolitica> municipiosResi = divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional());
+                List<Comunidades> comunidades = comunidadesService.getComunidades(irag.getPersona().getMunicipioResidencia().getCodigoNacional());
 
                 mav.addObject("departamentoProce", departamentoProce);
-                mav.addObject("muniResidencia", muniResidencia);
+                mav.addObject("municipiosResi", municipiosResi);
+                mav.addObject("comunidades", comunidades);
                 mav.addObject("formVI", irag);
                 mav.addObject("fVacuna", new DaVacunasIrag());
                 mav.addObject("fCondPre", new DaCondicionesPreviasIrag());
                 mav.addObject("fCM", new DaManifestacionesIrag());
                 mav.addAllObjects(mapModel);
                 mav.setViewName("irag/create");
-            }
-            else{
+            } else {
                 mav.setViewName("404");
             }
-        }
-        else{
+        } else {
             mav.addObject("records", results);
             mav.setViewName("irag/results");
         }
@@ -211,15 +204,24 @@ public class IragController {
     @RequestMapping("edit/{idIrag}")
     public ModelAndView editIrag(@PathVariable("idIrag") String idIrag) throws Exception {
         ModelAndView mav = new ModelAndView();
-        irag = daIragService.getFormById(idIrag);
-        if (irag !=null){
+        DaIrag irag = daIragService.getFormById(idIrag);
+        if (irag != null) {
             Initialize();
+
             Divisionpolitica municipio = divisionPoliticaService.getMunicipiosByUnidadSalud(irag.getCodUnidadAtencion().getMunicipio());
             List<Divisionpolitica> munic = divisionPoliticaService.getMunicipiosBySilais(irag.getCodSilaisAtencion().getCodigo());
             List<Unidades> uni = unidadesService.getPUnitsHospByMuniAndSilais(municipio.getCodigoNacional(), HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), irag.getCodSilaisAtencion().getCodigo());
 
+            //datos persona
+            Divisionpolitica departamentoProce = divisionPoliticaService.getDepartamentoByMunicipi(irag.getPersona().getMunicipioResidencia().getCodigoNacional());
+            List<Divisionpolitica> municipiosResi = divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional());
+            List<Comunidades> comunidades = comunidadesService.getComunidades(irag.getPersona().getMunicipioResidencia().getCodigoNacional());
+
             mav.addObject("formVI", irag);
             mav.addObject("munic", munic);
+            mav.addObject("departamentoProce", departamentoProce);
+            mav.addObject("municipiosResi", municipiosResi);
+            mav.addObject("comunidades", comunidades);
             mav.addObject("uni", uni);
             mav.addObject("fVacuna", new DaVacunasIrag());
             mav.addObject("fCondPre", new DaCondicionesPreviasIrag());
@@ -228,8 +230,7 @@ public class IragController {
             mav.addAllObjects(mapModel);
 
             mav.setViewName("irag/create");
-        }
-        else{
+        } else {
             mav.setViewName("404");
         }
         return mav;
@@ -237,263 +238,331 @@ public class IragController {
 
     @RequestMapping(value = "saveIrag", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getProcessCreationFicha(
-            @RequestParam(value="codSilaisAtencion", required=true ) Integer codSilaisAtencion
-            ,@RequestParam(value="codUnidadAtencion", required=true ) Integer codUnidadAtencion
-            ,@RequestParam(value="fechaConsulta", required=true ) String fechaConsulta
-            ,@RequestParam(value="fechaPrimeraConsulta", required=false) String fechaPrimeraConsulta
-            ,@RequestParam(value="codExpediente", required=false ) String codExpediente
-            ,@RequestParam(value = "codClasificacion", required=false) String codClasificacion
-            ,@RequestParam(value = "nombreMadreTutor",required=false) String nombreMadreTutor
-            ,@RequestParam(value = "codProcedencia", required=true) String codProcedencia
-            ,@RequestParam(value = "codCaptacion", required=false ) String codCaptacion
-            ,@RequestParam(value = "diagnostico", required=false) String diagnostico
-            ,@RequestParam(value = "tarjetaVacuna", required=false) Integer tarjetaVacuna
-            ,@RequestParam(value = "fechaInicioSintomas", required=false) String fechaInicioSintomas
-            ,@RequestParam(value = "codAntbUlSem", required=false) String codAntbUlSem
-            ,@RequestParam(value = "cantidadAntib", required=false) Integer cantidadAntib
-            ,@RequestParam(value = "nombreAntibiotico", required=false) String nombreAntibiotico
-            ,@RequestParam(value = "fechaPrimDosisAntib", required=false) String fechaPrimDosisAntib
-            ,@RequestParam(value = "fechaUltDosisAntib", required=false) String fechaUltDosisAntib
-            ,@RequestParam(value = "codViaAntb", required=false) String codViaAntb
-            ,@RequestParam(value = "noDosisAntib", required=false) Integer noDosisAntib
-            ,@RequestParam(value = "usoAntivirales", required=false) String usoAntivirales
-            ,@RequestParam(value = "nombreAntiviral", required=false) String nombreAntiviral
-            ,@RequestParam(value = "fechaPrimDosisAntiviral", required=false) String fechaPrimDosisAntiviral
-            ,@RequestParam(value = "fechaUltDosisAntiviral", required=false) String fechaUltDosisAntiviral
-            ,@RequestParam(value = "noDosisAntiviral", required=false) Integer noDosisAntiviral
-            ,@RequestParam(value = "codResRadiologia", required=false) String codResRadiologia
-            ,@RequestParam(value = "otroResultadoRadiologia", required=false) String otroResultadoRadiologia
-            ,@RequestParam(value = "uci", required=false) Integer uci
-            ,@RequestParam(value = "noDiasHospitalizado", required=false) Integer noDiasHospitalizado
-            ,@RequestParam(value = "ventilacionAsistida", required=false) Integer ventilacionAsistida
-            ,@RequestParam(value = "diagnostico1Egreso", required=false) String diagnostico1Egreso
-            ,@RequestParam(value = "diagnostico2Egreso", required=false) String diagnostico2Egreso
-            ,@RequestParam(value = "fechaEgreso", required=false) String fechaEgreso
-            ,@RequestParam(value = "codCondEgreso", required=false) String codCondEgreso
-            ,@RequestParam(value = "codClasFCaso", required=false) String codClasFCaso
-            ,@RequestParam(value = "agenteBacteriano", required=false) String agenteBacteriano
-            ,@RequestParam(value = "serotipificacion", required=false) String serotipificacion
-            ,@RequestParam(value = "agenteViral", required=false) String agenteViral
-            ,@RequestParam(value = "agenteEtiologico",required=false) String agenteEtiologico
-            ,@RequestParam(value = "fichaCompleta",required=false) Integer fichaCompleta) throws Exception {
+            @RequestParam(value = "codSilaisAtencion", required = true) Integer codSilaisAtencion
+            , @RequestParam(value = "codUnidadAtencion", required = true) Integer codUnidadAtencion
+            , @RequestParam(value = "fechaConsulta", required = true) String fechaConsulta
+            , @RequestParam(value = "fechaPrimeraConsulta", required = false) String fechaPrimeraConsulta
+            , @RequestParam(value = "codExpediente", required = false) String codExpediente
+            , @RequestParam(value = "codClasificacion", required = false) String codClasificacion
+            , @RequestParam(value = "nombreMadreTutor", required = false) String nombreMadreTutor
+            , @RequestParam(value = "codProcedencia", required = true) String codProcedencia
+            , @RequestParam(value = "codCaptacion", required = false) String codCaptacion
+            , @RequestParam(value = "diagnostico", required = false) String diagnostico
+            , @RequestParam(value = "tarjetaVacuna", required = false) Integer tarjetaVacuna
+            , @RequestParam(value = "fechaInicioSintomas", required = false) String fechaInicioSintomas
+            , @RequestParam(value = "codAntbUlSem", required = false) String codAntbUlSem
+            , @RequestParam(value = "cantidadAntib", required = false) Integer cantidadAntib
+            , @RequestParam(value = "nombreAntibiotico", required = false) String nombreAntibiotico
+            , @RequestParam(value = "fechaPrimDosisAntib", required = false) String fechaPrimDosisAntib
+            , @RequestParam(value = "fechaUltDosisAntib", required = false) String fechaUltDosisAntib
+            , @RequestParam(value = "codViaAntb", required = false) String codViaAntb
+            , @RequestParam(value = "noDosisAntib", required = false) Integer noDosisAntib
+            , @RequestParam(value = "usoAntivirales", required = false) String usoAntivirales
+            , @RequestParam(value = "nombreAntiviral", required = false) String nombreAntiviral
+            , @RequestParam(value = "fechaPrimDosisAntiviral", required = false) String fechaPrimDosisAntiviral
+            , @RequestParam(value = "fechaUltDosisAntiviral", required = false) String fechaUltDosisAntiviral
+            , @RequestParam(value = "noDosisAntiviral", required = false) Integer noDosisAntiviral
+            , @RequestParam(value = "codResRadiologia", required = false) String codResRadiologia
+            , @RequestParam(value = "otroResultadoRadiologia", required = false) String otroResultadoRadiologia
+            , @RequestParam(value = "uci", required = false) Integer uci
+            , @RequestParam(value = "noDiasHospitalizado", required = false) Integer noDiasHospitalizado
+            , @RequestParam(value = "ventilacionAsistida", required = false) Integer ventilacionAsistida
+            , @RequestParam(value = "diagnostico1Egreso", required = false) String diagnostico1Egreso
+            , @RequestParam(value = "diagnostico2Egreso", required = false) String diagnostico2Egreso
+            , @RequestParam(value = "fechaEgreso", required = false) String fechaEgreso
+            , @RequestParam(value = "codCondEgreso", required = false) String codCondEgreso
+            , @RequestParam(value = "persona.personaId", required = false) Integer personaId
+            , @RequestParam(value = "idIrag", required = false) String idIrag
 
-        logger.debug("Registrando nueva ficha de Vigilancia Integrada");
+
+    ) throws Exception {
+
+        logger.debug("Agregando o actualizando formulario Irag");
+
+        DaIrag irag;
+        if (!idIrag.equals("")) {
+            irag = daIragService.getFormById(idIrag);
+        } else {
+            irag = new DaIrag();
+        }
+
+
+        irag.setPersona(personaService.getPersona(personaId));
 
         irag.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
         irag.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
-        if (!codClasificacion.isEmpty()){
+        if (!codClasificacion.isEmpty()) {
             irag.setCodClasificacion(catalogoService.getClasificacion(codClasificacion));
         }
 
         irag.setCodExpediente(codExpediente);
         irag.setUsuario(usuarioService.getUsuarioById(3));
-        if(!fechaConsulta.equals("")){
+        if (!fechaConsulta.equals("")) {
             irag.setFechaConsulta(StringToDate(fechaConsulta));
         }
-        if(!fechaPrimeraConsulta.equals("")){
+        if (!fechaPrimeraConsulta.equals("")) {
             irag.setFechaPrimeraConsulta(StringToDate(fechaPrimeraConsulta));
         }
+
         irag.setNombreMadreTutor(nombreMadreTutor);
 
-        if(!codCaptacion.isEmpty()){
+        if (!codCaptacion.isEmpty()) {
             irag.setCodCaptacion(catalogoService.getCaptacion(codCaptacion));
         }
 
         irag.setDiagnostico(diagnostico);
 
-        if(tarjetaVacuna != null){
-            if(tarjetaVacuna.equals(1)){
-                irag.setTarjetaVacuna(true);
-            }else{
-                irag.setTarjetaVacuna(false);
-            }
+        if (tarjetaVacuna != null) {
+            irag.setTarjetaVacuna(tarjetaVacuna);
         }
 
-        if(!fechaInicioSintomas.equals("")){
-            irag.setFechaInicioSintomas(StringToDate (fechaInicioSintomas));
+        if (!fechaInicioSintomas.equals("")) {
+            irag.setFechaInicioSintomas(StringToDate(fechaInicioSintomas));
         }
 
-        if(!codAntbUlSem.equals("")){
+        if (!codAntbUlSem.isEmpty()) {
             irag.setCodAntbUlSem(catalogoService.getRespuesta(codAntbUlSem));
         }
 
         irag.setCantidadAntib(cantidadAntib);
         irag.setNombreAntibiotico(nombreAntibiotico);
 
-        if(!fechaPrimDosisAntib.equals("")){
+        if (!fechaPrimDosisAntib.equals("")) {
             irag.setFechaPrimDosisAntib(StringToDate(fechaPrimDosisAntib));
         }
 
-        if(!fechaUltDosisAntib.equals("")){
+        if (!fechaUltDosisAntib.equals("")) {
             irag.setFechaUltDosisAntib(StringToDate(fechaUltDosisAntib));
         }
 
         irag.setNoDosisAntib(noDosisAntib);
 
-        if (!codViaAntb.equals("")){
+        if (!codViaAntb.equals("")) {
             irag.setCodViaAntb(catalogoService.getViaAntibiotico(codViaAntb));
         }
 
-        if(!usoAntivirales.equals("")){
-           irag.setUsoAntivirales(catalogoService.getRespuesta(usoAntivirales));
+        if (!usoAntivirales.equals("")) {
+            irag.setUsoAntivirales(catalogoService.getRespuesta(usoAntivirales));
         }
 
         irag.setNombreAntiviral(nombreAntiviral);
 
-        if(!fechaPrimDosisAntiviral.equals("")){
-            irag.setFechaPrimDosisAntiviral(StringToDate (fechaPrimDosisAntiviral));
+        if (!fechaPrimDosisAntiviral.equals("")) {
+            irag.setFechaPrimDosisAntiviral(StringToDate(fechaPrimDosisAntiviral));
         }
 
-        if(!fechaUltDosisAntiviral.equals("")){
-            irag.setFechaUltDosisAntiviral(StringToDate (fechaUltDosisAntiviral));
+        if (!fechaUltDosisAntiviral.equals("")) {
+            irag.setFechaUltDosisAntiviral(StringToDate(fechaUltDosisAntiviral));
         }
 
         irag.setNoDosisAntiviral(noDosisAntiviral);
         irag.setCodResRadiologia(catalogoService.getResultadoRadiologia(codResRadiologia));
         irag.setOtroResultadoRadiologia(otroResultadoRadiologia);
 
-        if(uci != null){
-            if(uci.equals(1)){
-                irag.setUci(true);
-            }else{
-                irag.setUci(false);
-            }
+        if (uci != null) {
+            irag.setUci(uci);
         }
 
         irag.setNoDiasHospitalizado(noDiasHospitalizado);
 
-        if(ventilacionAsistida != null){
-            if(ventilacionAsistida.equals(1)){
-                irag.setVentilacionAsistida(true);
-            }else{
-                irag.setVentilacionAsistida(false);
-            }
+        if (ventilacionAsistida != null) {
+            irag.setVentilacionAsistida(ventilacionAsistida);
         }
 
         irag.setDiagnostico1Egreso(diagnostico1Egreso);
         irag.setDiagnostico2Egreso(diagnostico2Egreso);
 
-        if(!fechaEgreso.equals("")){
-            irag.setFechaEgreso( StringToDate(fechaEgreso));
+        if (!fechaEgreso.equals("")) {
+            irag.setFechaEgreso(StringToDate(fechaEgreso));
         }
 
         irag.setCodCondEgreso(catalogoService.getCondicionEgreso(codCondEgreso));
-        irag.setCodClasFCaso(catalogoService.getClasificacionFinal(codClasFCaso));
-        irag.setAgenteBacteriano(agenteBacteriano);
-        irag.setSerotipificacion(serotipificacion);
-        irag.setAgenteViral(agenteViral);
-        irag.setAgenteEtiologico(agenteEtiologico);
+
         irag.setCodProcedencia(catalogoService.getProcedencia(codProcedencia));
 
         irag.setFechaRegistro(new Timestamp(new Date().getTime()));
         irag.setUsuario(usuarioService.getUsuarioById(1));
 
-
-            if(!fichaCompleta.equals("")){
-                if(fichaCompleta == 1){
-                    irag.setFichaCompleta(true);
-                }else{
-                    irag.setFichaCompleta(false);
-                }
-            }
-
-
-        if(irag.getIdIrag() == null)
-        {
+        if (irag.getIdIrag() == null) {
             String dto = daIragService.addIrag(irag);
             irag.setIdIrag(dto);
-        }
-        else
-        {
+        } else {
             daIragService.updateIrag(irag);
         }
         return createJsonResponse(irag);
     }
 
-    private ResponseEntity<String> createJsonResponse( Object o )
-    {
+
+    @RequestMapping(value = "completeIrag", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<String> getProcessCreationFicha (
+              @RequestParam(value = "codClasFCaso", required = false) String codClasFCaso
+            , @RequestParam(value = "agenteBacteriano", required = false) String agenteBacteriano
+            , @RequestParam(value = "serotipificacion", required = false) String serotipificacion
+            , @RequestParam(value = "agenteViral", required = false) String agenteViral
+            , @RequestParam(value = "agenteEtiologico", required = false) String agenteEtiologico
+            , @RequestParam(value = "idIrag", required = false) String idIrag
+            , @RequestParam(value = "persona.personaId", required = false) Integer personaId
+
+
+    ) throws Exception {
+
+        logger.debug("Completando Formulario Irag");
+
+        DaIrag irag;
+        if (!idIrag.equals("")) {
+            irag = daIragService.getFormById(idIrag);
+        } else {
+            irag = new DaIrag();
+        }
+        irag.setCodClasFCaso(catalogoService.getClasificacionFinal(codClasFCaso));
+        irag.setAgenteBacteriano(agenteBacteriano);
+        irag.setSerotipificacion(serotipificacion);
+        irag.setAgenteViral(agenteViral);
+        irag.setAgenteEtiologico(agenteEtiologico);
+        irag.setPersona(personaService.getPersona(personaId));
+        irag.setFichaCompleta(true);
+        irag.setFechaRegistro(new Timestamp(new Date().getTime()));
+        irag.setUsuario(usuarioService.getUsuarioById(1));
+        daIragService.updateIrag(irag);
+
+        return createJsonResponse(irag);
+    }
+
+    @RequestMapping(value = "updatePerson", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updatePerson(
+            @RequestParam(value = "persona.municipioResidencia.codigoNacional", required = false) String personaMuniResi
+            , @RequestParam(value = "persona.comunidadResidencia", required = false) String personaComuResi
+            , @RequestParam(value = "persona.direccionResidencia", required = false) String personaDireccion
+            , @RequestParam(value = "persona.telefonoResidencia", required = false) String personaTelefonoResi
+            , @RequestParam(value = "persona.personaId", required = false) Integer personaId
+
+    ) throws Exception {
+
+        logger.debug("Actualizando datos persona");
+        SisPersona pers = new SisPersona();
+
+        if (personaId != null) {
+            pers = personaService.getPersona(personaId);
+            pers.setMunicipioResidencia(divisionPoliticaService.getDivisionPolitiacaByCodNacional(personaMuniResi));
+            pers.setComunidadResidencia(comunidadesService.getComunidad(personaComuResi));
+            pers.setDireccionResidencia(personaDireccion);
+            pers.setTelefonoResidencia(personaTelefonoResi);
+            personaService.saveOrUpdatePerson(pers);
+
+        }
+        return createJsonResponse(pers);
+    }
+
+
+    private ResponseEntity<String> createJsonResponse(Object o) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         Gson gson = new Gson();
-        String json = gson.toJson( o );
-        return new ResponseEntity<String>( json, headers, HttpStatus.CREATED );
+        String json = gson.toJson(o);
+        return new ResponseEntity<String>(json, headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "cancel/{idIrag}" ,method = RequestMethod.GET )
-    public String anularForm(@PathVariable("idIrag") String idIrag) throws Exception {
-        irag = daIragService.getFormById(idIrag);
-        irag.setAnulada(true);
-        irag.setFechaAnulacion(new Timestamp(new Date().getTime()));
-        daIragService.updateIrag(irag);
-        return "redirect:/ficha/VigilanciaIntegrada/searchFormVI";
+    /**
+     * Override form
+     *
+     * @param idIrag the ID of the form
+     *
+     */
+    @RequestMapping(value = "override/{idIrag}")
+    public ModelAndView overrideForm(@PathVariable("idIrag") String idIrag) throws Exception {
+        DaIrag irag = null;
+      Long personaId = null;
+        if (idIrag != null) {
+            irag = daIragService.getFormById(idIrag);
+            irag.setAnulada(true);
+            irag.setFechaAnulacion(new Timestamp(new Date().getTime()));
+            daIragService.updateIrag(irag);
+            personaId = irag.getPersona().getPersonaId();
+        }
+        return showPersonReport(personaId);
     }
 
+    @RequestMapping(value = "newVaccine", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<String> processCreationVaccine(@RequestParam(value = "codVacuna", required = true) String codVacuna,
+                                                         @RequestParam(value = "codTipoVacuna", required = true) String codTipoVacuna,
+                                                         @RequestParam(value = "dosis", required = false) Integer dosis,
+                                                         @RequestParam(value = "fechaUltimaDosis", required = false) String fechaUltimaDosis,
+                                                         @RequestParam(value = "idIrag", required = false) String idIrag,
+                                                         ModelMap model) throws Exception {
 
-    @RequestMapping( value="newVaccine", method= RequestMethod.GET, produces = "application/json" )
-    public @ResponseBody List<DaVacunasIrag> processCreationVaccine(@RequestParam(value = "codVacuna", required = true) String codVacuna,
-                                         @RequestParam(value = "codTipoVacuna", required = true) String codTipoVacuna,
-                                         @RequestParam(value = "dosis", required = true) Integer dosis,
-                                         @RequestParam(value = "fechaUltimaDosis", required = true) String fechaUltimaDosis) throws Exception {
+        String error = null;
+        DaVacunasIrag vacunas = new DaVacunasIrag();
 
-
-        if(irag.getIdIrag() != null){
+        if (idIrag != null) {
             //buscar si existe registrada la vacuna y el tipo de vacuna
-            DaVacunasIrag vac = daVacunasIragService.searchVaccineRecord(irag.getIdIrag(), codVacuna, codTipoVacuna);
+            DaVacunasIrag vac = daVacunasIragService.searchVaccineRecord(idIrag, codVacuna, codTipoVacuna);
 
-            if(vac == null){
-                vacunas.setIdIrag(daIragService.getFormById(irag.getIdIrag()));
+            if (vac == null) {
+                vacunas.setIdIrag(daIragService.getFormById(idIrag));
                 vacunas.setUsuario(usuarioService.getUsuarioById(1));
                 vacunas.setFechaRegistro(new Timestamp(new Date().getTime()));
                 vacunas.setCodVacuna(catalogoService.getVacuna(codVacuna));
                 vacunas.setCodTipoVacuna(catalogoService.getTipoVacuna(codTipoVacuna));
                 vacunas.setDosis(dosis);
-                if(!fechaUltimaDosis.equals("")){
+                if (!fechaUltimaDosis.equals("")) {
                     vacunas.setFechaUltimaDosis(StringToDate(fechaUltimaDosis));
                 }
 
                 daVacunasIragService.addVaccine(vacunas);
 
 
-            }else{
-            throw new Exception("La vacuna ya existe");
+            } else {
+                error = messageSource.getMessage("msg.error.existing.record", null, null);
+                model.addAttribute("error", error);
+                throw new Exception(error);
+
             }
-        }else{
-            throw new Exception("Debe guardar primeramente el formulario irag antes de agregar una vacuna.");
+        } else {
+                error = messageSource.getMessage("msg.error.save.form", null, null);
+                model.addAttribute("error", error);
+                throw new Exception(error);
+
+
         }
-
-
-        return loadVaccines();
+        return createJsonResponse(vacunas);
 
     }
 
     @RequestMapping(value = "vaccines", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody List<DaVacunasIrag> loadVaccines(){
+    public
+    @ResponseBody
+    List<DaVacunasIrag> loadVaccines(@RequestParam(value = "idIrag", required = false) String idIrag) {
         logger.info("Obteniendo las vacunas agregadas");
 
-        List<DaVacunasIrag> listaVacunas = daVacunasIragService.getAllVaccinesByIdIrag(irag.getIdIrag());
+        List<DaVacunasIrag> listaVacunas = null;
 
-        if (listaVacunas.isEmpty()){
-            logger.debug("Null");
+        if (idIrag != null) {
+            listaVacunas = daVacunasIragService.getAllVaccinesByIdIrag(idIrag);
+
+            if (listaVacunas.isEmpty()) {
+                logger.debug("Null");
+            }
         }
-
         return listaVacunas;
     }
 
 
+    @RequestMapping(value = "newPreCondition", method = RequestMethod.GET)
+    public ResponseEntity<String> processCreationPreCondition(@RequestParam(value = "codCondicion", required = true) String codCondicion,
+                                                              @RequestParam(value = "semanasEmbarazo", required = false) Integer semanasEmbarazo,
+                                                              @RequestParam(value = "otraCondicion", required = false) String otraCondicion,
+                                                              @RequestParam(value = "idIrag", required = false) String idIrag) throws Exception {
 
-    @RequestMapping( value="newPreCondition", method= RequestMethod.GET)
-    public @ResponseBody List<DaCondicionesPreviasIrag> processCreationPreCondition(@RequestParam(value = "codCondicion", required = true) String codCondicion,
-                                         @RequestParam(value = "semanasEmbarazo", required = false) Integer semanasEmbarazo,
-                                         @RequestParam(value = "otraCondicion", required = false) String otraCondicion) throws Exception {
+        DaCondicionesPreviasIrag condicion = new DaCondicionesPreviasIrag();
 
-        if(irag.getIdIrag() != null){
+        if (idIrag != null) {
 
             //buscar si existe registro de condicion
-            DaCondicionesPreviasIrag cond = daCondicionesIragService.searchConditionRecord(codCondicion, irag.getIdIrag());
+            DaCondicionesPreviasIrag cond = daCondicionesIragService.searchConditionRecord(codCondicion, idIrag);
 
 
-            if(cond == null){
-                condicion.setIdIrag(daIragService.getFormById(irag.getIdIrag()));
+            if (cond == null) {
+                condicion.setIdIrag(daIragService.getFormById(idIrag));
                 condicion.setUsuario(usuarioService.getUsuarioById(1));
                 condicion.setFechaRegistro(new Timestamp(new Date().getTime()));
                 condicion.setCodCondicion(catalogoService.getCondicionPrevia(codCondicion));
@@ -501,111 +570,160 @@ public class IragController {
                 condicion.setOtraCondicion(otraCondicion);
 
                 daCondicionesIragService.addCondition(condicion);
-            }else{
+            } else {
                 throw new Exception("La condicion ya existe");
             }
-        }else{
+        } else {
             throw new Exception("Debe guardar primeramente el formulario irag antes de agregar una condicion.");
-
         }
 
-        return  loadConditions();
+        return createJsonResponse(condicion);
     }
 
     @RequestMapping(value = "conditions", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody List<DaCondicionesPreviasIrag> loadConditions(){
+    public
+    @ResponseBody
+    List<DaCondicionesPreviasIrag> loadConditions(@RequestParam(value = "idIrag", required = false) String idIrag) {
         logger.info("Obteniendo las condiciones agregadas");
 
-        List<DaCondicionesPreviasIrag> listaCondiciones = daCondicionesIragService.getAllConditionsByIdIrag(irag.getIdIrag());
+        List<DaCondicionesPreviasIrag> listaCondiciones = null;
 
-        if (listaCondiciones.isEmpty()){
-            logger.debug("Null");
+        if (idIrag != null) {
+            listaCondiciones = daCondicionesIragService.getAllConditionsByIdIrag(idIrag);
+
+            if (listaCondiciones.isEmpty()) {
+                logger.debug("Null");
+            }
         }
+
 
         return listaCondiciones;
     }
 
 
-    @RequestMapping( value="newCM", method= RequestMethod.GET)
+    @RequestMapping(value = "newCM", method = RequestMethod.GET)
 
-    public @ResponseBody List<DaManifestacionesIrag> processCreationClinicalMan(@RequestParam(value = "codManifestacion", required = true) String codManifestacion,
-                                                                                @RequestParam(value = "otraManifestacion", required = false) String otraManifestacion ) throws Exception {
+    public ResponseEntity<String> processCreationClinicalMan(@RequestParam(value = "codManifestacion", required = true) String codManifestacion,
+                                                             @RequestParam(value = "otraManifestacion", required = false) String otraManifestacion,
+                                                             @RequestParam(value = "idIrag", required = false) String idIrag) throws Exception {
 
-        if(irag.getIdIrag() != null){
+        DaManifestacionesIrag manifestacion = new DaManifestacionesIrag();
 
+        if (idIrag != null) {
             //buscar si existe registro de condicion
-            DaManifestacionesIrag manif = daManifestacionesIragService.searchManifestationRecord(codManifestacion, irag.getIdIrag());
+            DaManifestacionesIrag manif = daManifestacionesIragService.searchManifestationRecord(codManifestacion, idIrag);
 
 
-            if(manif == null){
+            if (manif == null) {
                 manifestacion.setUsuario(usuarioService.getUsuarioById(1));
                 manifestacion.setFechaRegistro(new Timestamp(new Date().getTime()));
                 manifestacion.setCodManifestacion(catalogoService.getManifestacionClinica(codManifestacion));
-                manifestacion.setIdIrag(daIragService.getFormById(irag.getIdIrag()));
+                manifestacion.setIdIrag(daIragService.getFormById(idIrag));
                 manifestacion.setOtraManifestacion(otraManifestacion);
 
                 daManifestacionesIragService.addManifestation(manifestacion);
-            }else{
+            } else {
                 throw new Exception("La manifestacion clinica ya existe");
             }
 
-        }else{
+        } else {
             throw new Exception("Debe guardar primeramente el formulario irag antes de agregar una manifestacion clinica.");
 
         }
-        return  loadManifestations();
+        return createJsonResponse(manifestacion);
     }
 
     @RequestMapping(value = "manifestations", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody List<DaManifestacionesIrag> loadManifestations(){
+    public
+    @ResponseBody
+    List<DaManifestacionesIrag> loadManifestations(@RequestParam(value = "idIrag", required = false) String idIrag) {
         logger.info("Obteniendo las Manifestaciones Clínicas agregadas");
 
-        List<DaManifestacionesIrag> listaMani = daManifestacionesIragService.getAllManifestationsByIdIrag(irag.getIdIrag());
+        List<DaManifestacionesIrag> listaMani = null;
 
-        if (listaMani.isEmpty()){
-            logger.debug("Null");
+        if (idIrag != null) {
+            listaMani = daManifestacionesIragService.getAllManifestationsByIdIrag(idIrag);
+
+            if (listaMani.isEmpty()) {
+                logger.debug("Null");
+            }
         }
+
 
         return listaMani;
     }
 
 
-
-  /*  @RequestMapping(value = "cancelVaccine/{idVacuna}" ,method = RequestMethod.GET )
-    public String deleteVaccine(@PathVariable("idVacuna") Integer idVacuna) throws Exception {
-        DaVacVigilancia  va = daVacVigilanciaService.getVaccineById(idVacuna);
+    /**
+     * Override Vaccine
+     *
+     * @param idVacuna the ID of the form
+     *
+     */
+    @RequestMapping(value = "overrideVaccine/{idVacuna}" ,method = RequestMethod.GET )
+    public ModelAndView overrideVaccine(@PathVariable("idVacuna") Integer idVacuna) throws Exception {
+        DaVacunasIrag  va = daVacunasIragService.getVaccineById(idVacuna);
         va.setPasivo(true);
-        daVacVigilanciaService.updateVaccine(va);
-        String idFicha = ficha.getIdFichaVigilancia();
+        daVacunasIragService.updateVaccine(va);
+        String idIrag = va.getIdIrag().getIdIrag();
 
-       return ""
-    }*/
+       return editIrag(idIrag);
+    }
 
+    /**
+     * Override Condition
+     *
+     * @param idCondicion the ID of the form
+     *
+     */
+    @RequestMapping(value = "overrideCondition/{idCondicion}" ,method = RequestMethod.GET )
+    public ModelAndView overrideCondition(@PathVariable("idCondicion") Integer idCondicion) throws Exception {
+        DaCondicionesPreviasIrag  cond = daCondicionesIragService.getConditionById(idCondicion);
+        cond.setPasivo(true);
+        daCondicionesIragService.updateCondition(cond);
+        String idIrag = cond.getIdIrag().getIdIrag();
 
+        return editIrag(idIrag);
+    }
 
+    /**
+     * Override Manifestation
+     *
+     * @param idManifestacion the ID of the form
+     *
+     */
+    @RequestMapping(value = "overrideManifestation/{idManifestacion}" ,method = RequestMethod.GET )
+    public ModelAndView overrideManifestation(@PathVariable("idManifestacion") Integer idManifestacion) throws Exception {
+        DaManifestacionesIrag mani = daManifestacionesIragService.getManifestationById(idManifestacion);
+        mani.setPasivo(true);
+        daManifestacionesIragService.updateManifestation(mani);
+        String idIrag = mani.getIdIrag().getIdIrag();
+
+        return editIrag(idIrag);
+    }
 
 
     /**
      * Convierte un Date a string con formato dd/MM/yyyy
+     *
      * @param dtFecha fecha a convertir
      * @return String
      * @throws java.text.ParseException
      */
     private String DateToString(Date dtFecha) throws ParseException {
         String date;
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-         date = DATE_FORMAT.format(dtFecha);
-         return date;
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+        date = DATE_FORMAT.format(dtFecha);
+        return date;
     }
 
     private Date StringToDate(String strFecha) throws ParseException {
         DateFormat formatter;
         Date date;
-        formatter = new SimpleDateFormat("dd-MM-yyyy");
+        formatter = new SimpleDateFormat("dd/MM/yyyy");
         date = formatter.parse(strFecha);
         return date;
     }
-
 
 
 }

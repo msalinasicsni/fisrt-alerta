@@ -5,6 +5,8 @@ import java.util.Set;
 import javax.persistence.*;
 
 import ni.gob.minsa.alerta.domain.estructura.RelacionGrupoOcupacion;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 @NamedQueries({
         @NamedQuery(
@@ -137,6 +139,7 @@ public class Ocupacion  implements java.io.Serializable {
     }
     
     //bi-directional many-to-one association to RelacionGruposOcupaciones
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy="ocupacion",targetEntity=RelacionGrupoOcupacion.class, fetch=FetchType.LAZY)
     public Set<RelacionGrupoOcupacion> getRelacionGrupoOcupacion() {
         return relacionGrupoOcupacion;

@@ -4,14 +4,13 @@ import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
-import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
+import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -36,7 +35,7 @@ public class DaIrag implements Serializable {
     private Procedencia codProcedencia;
     private Captacion codCaptacion;
     private String diagnostico;
-    private boolean tarjetaVacuna;
+    private Integer tarjetaVacuna;
     private Date fechaInicioSintomas;
     private Respuesta codAntbUlSem;
     private Integer cantidadAntib;
@@ -52,9 +51,9 @@ public class DaIrag implements Serializable {
     private Integer noDosisAntiviral;
     private ResultadoRadiologia codResRadiologia;
     private String otroResultadoRadiologia;
-    private boolean uci;
+    private Integer uci;
     private Integer noDiasHospitalizado;
-    private boolean ventilacionAsistida;
+    private Integer ventilacionAsistida;
     private String diagnostico1Egreso;
     private String diagnostico2Egreso;
     private Date fechaEgreso;
@@ -106,8 +105,7 @@ public class DaIrag implements Serializable {
     }
 
     @Basic
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "FECHA_CONSULTA", nullable = false, insertable = true, updatable = true)
     public Date getFechaConsulta() {
         return fechaConsulta;
@@ -118,8 +116,7 @@ public class DaIrag implements Serializable {
     }
 
     @Basic
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "FECHA_PRIMERA_CONSULTA", nullable = true, insertable = true, updatable = true)
     public Date getFechaPrimeraConsulta() {
         return fechaPrimeraConsulta;
@@ -185,19 +182,15 @@ public class DaIrag implements Serializable {
         this.diagnostico = diagnostico;
     }
 
-    @Basic
-    @Column(name = "TARJETA_VACUNA", nullable = true, insertable = true, updatable = true)
-    public boolean isTarjetaVacuna() {
-        return tarjetaVacuna;
-    }
-
-    public void setTarjetaVacuna(boolean tarjetaVacuna) {
-        this.tarjetaVacuna = tarjetaVacuna;
-    }
 
     @Basic
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Column(name = "TARJETA_VACUNA", nullable = true, insertable = true, updatable = true, length = 4)
+    public Integer getTarjetaVacuna() { return tarjetaVacuna; }
+
+    public void setTarjetaVacuna(Integer tarjetaVacuna) { this.tarjetaVacuna = tarjetaVacuna; }
+
+    @Basic
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "FECHA_INICIO_SINTOMAS", nullable = true, insertable = true, updatable = true)
     public Date getFechaInicioSintomas() {
         return fechaInicioSintomas;
@@ -238,8 +231,7 @@ public class DaIrag implements Serializable {
     }
 
     @Basic
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "FECHA_PRIM_DOSIS_ANTIB", nullable = true, insertable = true, updatable = true)
     public Date getFechaPrimDosisAntib() {
         return fechaPrimDosisAntib;
@@ -250,8 +242,7 @@ public class DaIrag implements Serializable {
     }
 
     @Basic
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "FECHA_ULT_DOSIS_ANTIB", nullable = true, insertable = true, updatable = true)
     public Date getFechaUltDosisAntib() {
         return fechaUltDosisAntib;
@@ -298,8 +289,7 @@ public class DaIrag implements Serializable {
     }
 
     @Basic
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "FECHA_PRIM_DOSIS_ANTIV", nullable = true, insertable = true, updatable = true)
     public Date getFechaPrimDosisAntiviral() {
         return fechaPrimDosisAntiviral;
@@ -310,8 +300,7 @@ public class DaIrag implements Serializable {
     }
 
     @Basic
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "FECHA_ULT_DOSIS_ANTIV", nullable = true, insertable = true, updatable = true)
     public Date getFechaUltDosisAntiviral() {
         return fechaUltDosisAntiviral;
@@ -349,14 +338,9 @@ public class DaIrag implements Serializable {
     }
 
     @Basic
-    @Column(name = "UCI", nullable = true, insertable = true, updatable = true)
-    public boolean isUci() {
-        return uci;
-    }
-
-    public void setUci(boolean uci) {
-        this.uci = uci;
-    }
+    @Column(name = "UCI", nullable = true, insertable = true, updatable = true, length = 4)
+    public Integer getUci() {  return uci;  }
+    public void setUci(Integer uci) {  this.uci = uci; }
 
     @Basic
     @Column(name = "NO_DIAS_HOSP", nullable = true, insertable = true, updatable = true, precision = 0)
@@ -368,15 +352,13 @@ public class DaIrag implements Serializable {
         this.noDiasHospitalizado = noDiasHospitalizado;
     }
 
-    @Basic
-    @Column(name = "VENTILACION_ASISTIDA", nullable = true, insertable = true, updatable = true)
-    public boolean isVentilacionAsistida() {
-        return ventilacionAsistida;
-    }
 
-    public void setVentilacionAsistida(boolean ventilacionAsistida) {
-        this.ventilacionAsistida = ventilacionAsistida;
-    }
+    @Basic
+    @Column(name = "VENTILACION_ASISTIDA", nullable = true, insertable = true, updatable = true, length = 4)
+    public Integer getVentilacionAsistida() { return ventilacionAsistida; }
+
+    public void setVentilacionAsistida(Integer ventilacionAsistida) { this.ventilacionAsistida = ventilacionAsistida; }
+
 
     @Basic
     @Column(name = "DIAG1_EGRESO", nullable = true, insertable = true, updatable = true, length = 100)
@@ -399,8 +381,7 @@ public class DaIrag implements Serializable {
     }
 
     @Basic
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "FECHA_EGRESO", nullable = true, insertable = true, updatable = true)
     public Date getFechaEgreso() {
         return fechaEgreso;

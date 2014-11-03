@@ -3,7 +3,7 @@ package ni.gob.minsa.alerta.service;
 import ni.gob.minsa.alerta.domain.irag.DaVacunasIrag;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,12 +31,13 @@ public class DaVacunasIragService {
        */
       @SuppressWarnings("unchecked")
       public List<DaVacunasIrag> getAllVaccinesByIdIrag(String id){
-          //Retrieve session from Hibernate
-          Session session = sessionFactory.getCurrentSession();
-          //Create a hibernate query (HQL)
-          Query query = session.createQuery("select vacu FROM DaVacunasIrag vacu where vacu.idIrag = '"+ id +"'");
-          //retrieve all
-          return query.list();
+
+          String query = "select vacu FROM DaVacunasIrag vacu where vacu.idIrag = :id and vacu.pasivo = :pasivo";
+          org.hibernate.Session session = sessionFactory.getCurrentSession();
+          Query q = session.createQuery(query);
+          q.setParameter("pasivo", false);
+          q.setString("id",id);
+          return q.list();
       }
 
 
@@ -55,7 +56,7 @@ public class DaVacunasIragService {
 
     public DaVacunasIrag searchVaccineRecord(String id, String vac, String tipo){
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM DaVacunasIrag vac where vac.idIrag ='"+id+"'and vac.codVacuna = '"+vac+"' and vac.codTipoVacuna = '"+tipo+"' ");
+        Query query = session.createQuery("FROM DaVacunasIrag vac where vac.idIrag ='"+id+"'and vac.codVacuna = '"+vac+"' and vac.codTipoVacuna = '"+tipo+"' and vac.pasivo = false ");
         DaVacunasIrag vacu = (DaVacunasIrag) query.uniqueResult();
         return vacu;
     }

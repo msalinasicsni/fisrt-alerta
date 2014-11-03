@@ -1,7 +1,7 @@
 package ni.gob.minsa.alerta.domain.irag;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
-import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
+import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -78,8 +78,7 @@ public class DaVacunasIrag implements Serializable {
     }
 
     @Basic
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "FECHA_ULTIMA_DOSIS", nullable = true, insertable = true, updatable = true)
     public Date getFechaUltimaDosis() {
         return fechaUltimaDosis;
