@@ -110,7 +110,8 @@
 												<th data-class="expand"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
 												<th data-class="expand"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
 												<th data-class="expand"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
-												<th></th>
+                                                <th></th>
+                                                <th></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -126,8 +127,13 @@
 												<spring:url value="/irag/edit/{idIrag}" var="editUrl">
 													<spring:param name="idIrag" value="${record.idIrag}" />
 												</spring:url>
+                                                <spring:url value="/irag/override/{idIrag}" var="overrideUrl">
+                                                    <spring:param name="idIrag" value="${record.idIrag}" />
+                                                </spring:url>
 												<td><a href="${fn:escapeXml(editUrl)}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a></td>
-											</tr>
+                                                <td><a href="${fn:escapeXml(overrideUrl)}" class="btn btn-default btn-xs  btn-danger"><i class="fa fa-times"></i></a></td>
+
+                                            </tr>
 										</c:forEach>
 										</tbody>
 									</table>

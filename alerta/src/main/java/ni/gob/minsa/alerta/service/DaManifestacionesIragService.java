@@ -3,7 +3,7 @@ package ni.gob.minsa.alerta.service;
 import ni.gob.minsa.alerta.domain.irag.DaManifestacionesIrag;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class DaManifestacionesIragService {
      */
     public List<DaManifestacionesIrag> getAllManifestationsByIdIrag(String id){
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("select mani FROM DaManifestacionesIrag mani where mani.idIrag = '"+ id +"'");
+        Query query = session.createQuery("select mani FROM DaManifestacionesIrag mani where mani.idIrag = '"+ id +"' and mani.pasivo = false");
         return query.list();
     }
 
@@ -39,7 +39,7 @@ public class DaManifestacionesIragService {
     */
     public DaManifestacionesIrag searchManifestationRecord(String manifestacion, String id){
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM DaManifestacionesIrag manif where manif.codManifestacion ='"+manifestacion+"' and  manif.idIrag = '"+id+"'");
+        Query query = session.createQuery("FROM DaManifestacionesIrag manif where manif.codManifestacion ='"+manifestacion+"' and  manif.idIrag = '"+id+"' and manif.pasivo = false");
         DaManifestacionesIrag mani = (DaManifestacionesIrag) query.uniqueResult();
         return mani;
     }

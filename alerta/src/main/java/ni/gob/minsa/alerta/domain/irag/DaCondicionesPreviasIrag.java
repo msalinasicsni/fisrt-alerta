@@ -1,7 +1,7 @@
 package ni.gob.minsa.alerta.domain.irag;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
-import ni.gob.minsa.alerta.domain.seguridad.Usuarios;
+import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 
 import javax.persistence.*;

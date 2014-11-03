@@ -83,4 +83,23 @@ public class PersonaService {
 		return persona;
 		
 	}
+
+    /**
+     * @param dto
+     * @throws Exception
+     */
+    public void saveOrUpdatePerson(SisPersona dto) throws Exception {
+        try {
+            if (dto != null) {
+                Session session = sessionFactory.getCurrentSession();
+                session.saveOrUpdate(dto);
+            }
+            else
+                throw new Exception("");
+        }catch (Exception ex){
+            throw ex;
+        }
+    }
+
+
 }
