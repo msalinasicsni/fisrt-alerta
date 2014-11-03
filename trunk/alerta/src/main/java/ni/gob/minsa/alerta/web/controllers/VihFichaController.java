@@ -12,7 +12,7 @@ import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.DaMaeEncuesta;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.ModeloEncuesta;
 import ni.gob.minsa.alerta.domain.vih.VihFicha;
 import ni.gob.minsa.alerta.service.*;
-import ni.gob.minsa.alerta.utilities.typeAdapter.MaestroEncuestaTypeAdapter;
+//import ni.gob.minsa.alerta.utilities.typeAdapter.MaestroEncuestaTypeAdapter;
 import ni.gob.minsa.alerta.utilities.typeAdapter.VihFichaTypeAdapter;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;

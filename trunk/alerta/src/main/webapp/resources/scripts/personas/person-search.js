@@ -1,4 +1,21 @@
 var SearchPerson = function () {
+	
+	var bloquearUI = function(mensaje){
+		var loc = window.location;
+	    var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
+	    var mess = '<img src=' + pathName + 'resources/img/ajax-loading.gif>' + mensaje;
+	    $.blockUI({ message: mess,
+	    	css: { 
+	            border: 'none', 
+	            padding: '15px', 
+	            backgroundColor: '#000', 
+	            '-webkit-border-radius': '10px', 
+	            '-moz-border-radius': '10px', 
+	            opacity: .5, 
+	            color: '#fff' 
+	            	}
+	    }); 
+	};
 
     return {
         //main function to initiate the module
@@ -48,19 +65,7 @@ var SearchPerson = function () {
 
             
             function getPersons() {
-            	var loc = window.location;
-                var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
-                var mess = 'Favor espere <img src=' + pathName + 'resources/img/loading.gif>';
-                $.blockUI({ message: mess,
-                	css: { 
-                        border: 'none', 
-                        padding: '15px', 
-                        backgroundColor: '#000', 
-                        '-webkit-border-radius': '10px', 
-                        '-moz-border-radius': '10px', 
-                        opacity: .5, 
-                        color: '#fff' 
-                    }}); 
+            	bloquearUI(parametros.blockMess); 
     			$.getJSON(parametros.sPersonUrl, {
     				strFilter : encodeURI($('#filtro').val()),
     				ajax : 'true'
@@ -75,7 +80,7 @@ var SearchPerson = function () {
     			})
     			.fail(function() {
 				    alert( "error" );
-				    setTimeout($.unblockUI, 500); 
+				    setTimeout($.unblockUI, 5); 
 				});
             };
         }
