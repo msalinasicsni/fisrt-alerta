@@ -137,7 +137,7 @@ public class EntomologiaController {
             urlValidacion = seguridadService.ValidarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE);
+                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE,false);
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
@@ -361,7 +361,7 @@ public class EntomologiaController {
             urlValidacion = seguridadService.ValidarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE);
+                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE,false);
             seguridadService.obtenerUnidadesPorUsuario(1,"","");
         }catch (Exception e){
             e.printStackTrace();
@@ -567,7 +567,7 @@ public class EntomologiaController {
             urlValidacion = seguridadService.ValidarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE);
+                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE,false);
             seguridadService.obtenerUnidadesPorUsuario(1,"","");
         }catch (Exception e){
             e.printStackTrace();
@@ -784,7 +784,7 @@ public class EntomologiaController {
             urlValidacion = seguridadService.ValidarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE);
+                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
             seguridadService.obtenerUnidadesPorUsuario(1,"","");
         }catch (Exception e){
             e.printStackTrace();

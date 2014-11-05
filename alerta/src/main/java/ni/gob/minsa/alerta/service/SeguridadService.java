@@ -12,7 +12,10 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,10 @@ import java.util.List;
 public class SeguridadService {
     @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
+
+    @Autowired
+    @Resource(name = "messageSource")
+    private MessageSource messageSource;
 
     public InfoSesion obtenerInfoSesion(String pBdSessionId) {
         InfoSesion infoSesion = null;
@@ -111,13 +118,22 @@ public class SeguridadService {
         return urlRetorno;
     }
 
-    public String ValidarAutorizacionUsuario(HttpServletRequest request, String codSistema){
+    /**
+     * Método que valida si el usuario logueado tiene acceso a la vista solicitada
+     * @param request reques actual
+     * @param codSistema código de sistema actual
+     * @param hayParametro TRUE indica que en el contextPath el último elemento es un párametro de spring, FALSE no hay parámetro
+     * @return String vacio "" si tiene autorización, si no tiene retorna url de acceso denegado
+     */
+    public String ValidarAutorizacionUsuario(HttpServletRequest request, String codSistema, boolean hayParametro){
         String urlRetorno="";
         boolean autorizado;
         InfoSesion infoSesion = (InfoSesion) request.getSession().getAttribute("infoSesionActual");
 
         if (infoSesion != null) {
             String pViewId = request.getServletPath();
+            if (hayParametro) // indica que el último componente de la url es un parámetro de spring, por lo tanto no se debe tomar en cuenta al validar autorización
+                pViewId = pViewId.substring(0,pViewId.lastIndexOf("/"));
             autorizado = esUsuarioAutorizado(infoSesion.getUsuarioId(), codSistema, pViewId);
             if (!autorizado){
                 urlRetorno = "403";
@@ -177,7 +193,7 @@ public class SeguridadService {
         return nivelCentral;
     }
 
-    public String ObtenerMenu(){
+    public String ObtenerMenu(HttpServletRequest request){
         String menu = "";
         try{
         InitialContext ctx = new InitialContext();
@@ -186,7 +202,8 @@ public class SeguridadService {
           //InfoResultado infoResultado =  portalService.verificarCredenciales("sis","123");
             //boolean valido = false;
             //valido = ValidarOpcionMenu("Búsqueda Encuesta",menu);
-           menu = ArmarOpcionMenu(menuSistema);
+            String contextPath = request.getContextPath();
+           menu = ArmarOpcionMenu(menuSistema, contextPath);
             menu = menu+"";
             ctx.close();
 
@@ -230,7 +247,7 @@ public class SeguridadService {
         return  valido;
     }
 
-    public String ArmarOpcionMenu(NodoArbol nodoArbol){
+    public String ArmarOpcionMenu(NodoArbol nodoArbol, String contextPath){
         //boolean valido=false;
         String menu="";
         for(NodoArbol hijo: nodoArbol.hijos()){
@@ -251,14 +268,16 @@ public class SeguridadService {
                 urlOpcionMenu = data.getUrl();
                 esItem = true;
             }
-
             String[] dataOpcionMenu = nombreOpcionMenu.split(",");
-            menu = menu + "<li class=\""+dataOpcionMenu[0]+"\">\n";
-            menu = menu + "            <a href=\"/alerta"+(urlOpcionMenu!=null?urlOpcionMenu:"/#")+"\" title=\"<spring:message code=\""+dataOpcionMenu[1]+"\"/><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i> <span class=\"menu-item-parent\"><spring:message code=\""+dataOpcionMenu[1]+"\" /></span></a>\n";
+
+            //String desCodeMessage = messageSource.getMessage(dataOpcionMenu[0],null,null);
+            menu = menu + "<li class=\""+dataOpcionMenu[1]+"\">\n";
+            //menu = menu + "            <a href=\"/alerta"+(urlOpcionMenu!=null?urlOpcionMenu:"/#")+"\" title=<spring:message code=\""+dataOpcionMenu[1]+"/><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i> <span class=\"menu-item-parent\"><spring:message code=\""+dataOpcionMenu[1]+"\" /></span></a>\n";
             //menu = menu + "              <a href=\""+(urlOpcionMenu!=null?"<spring:url value=\""+urlOpcionMenu+"\" htmlEscape=\"true \"/>":"#")+"\" title=\"<spring:message code=\""+dataOpcionMenu[1]+"\" />\"><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i> <span class=\"menu-item-parent\"><spring:message code=\""+dataOpcionMenu[1]+"\" /></span></a>\n";
             //menu = menu + "              <a href=\""+urlOpcionMenu+"\" title=\"<spring:message code=\""+dataOpcionMenu[1]+"\" />\"><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i> <span class=\"menu-item-parent\"><spring:message code=\""+dataOpcionMenu[1]+"\" /></span></a>\n";
-            //menu = menu + "              <a href='"+(urlOpcionMenu!=null?"<spring:url value='"+urlOpcionMenu+"' htmlEscape='true'/>":"#")+"' title='<spring:message code='"+dataOpcionMenu[1]+"' />'><i class='fa fa-lg fa-fw "+dataOpcionMenu[2]+"'></i> <span class='menu-item-parent'><spring:message code='"+dataOpcionMenu[1]+"' /></span></a>\n";
+            //menu = menu + "              <a href='"+(urlOpcionMenu!=null?"<spring:url value='"+urlOpcionMenu+"' htmlEscape='true'/>":"#")+"' title='<spring:message code='"+dataOpcionMenu[1]+"' />'><i class='fa fa-lg fa-fw "+dataOpcionMenu[2]+"'></i> <span class='menu-item-parent'><spring:message code='"+dataOpcionMenu[1]+"'/></span></a>";
             //menu = menu + "            <a href=\""+(urlOpcionMenu!=null?urlOpcionMenu:"#")+"\" title=\""+nombreOpcionMenu+"\"><i class=\"fa fa-lg fa-fw fa-cogs\"></i> <span class=\"menu-item-parent\">"+nombreOpcionMenu+"</span></a>\n";
+            menu = menu + " <a href=\""+contextPath+(urlOpcionMenu!=null?urlOpcionMenu:"/#")+"\" title=\""+dataOpcionMenu[0]+"\"><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i> <span class=\"menu-item-parent\">"+dataOpcionMenu[1]+"</span></a>\n";
 
             /*if (opcionMenu.equalsIgnoreCase(nombreOpcionMenu) && !esItem){
                 valido = true;
@@ -272,13 +291,13 @@ public class SeguridadService {
                 }
             }*/
             if (hijo.tieneHijos()){
-                menu = menu + "<ul>";
-                menu = menu + ArmarOpcionMenu(hijo);
-                menu = menu + "</ul>";
+                menu = menu + "<ul>\n";
+                menu = menu + ArmarOpcionMenu(hijo, contextPath);
+                menu = menu + "</ul>\n";
             }
-            menu = menu + "</li>";
+            menu = menu + "</li>\n";
         }
-        menu = StringEscapeUtils.escapeHtml(menu);
+        //menu = StringEscapeUtils.escapeHtml(menu);
         return  menu;
     }
 

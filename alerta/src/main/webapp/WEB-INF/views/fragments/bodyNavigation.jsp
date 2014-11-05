@@ -1,5 +1,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!-- Left panel : Navigation area -->
 <!-- Note: This width of the aside area can be adjusted through LESS variables -->
 <aside id="left-panel">
@@ -24,11 +25,19 @@ To make this navigation dynamic please make sure to link the node
 will not initialize.
 -->
 <nav>
-	<!-- NOTE: Notice the gaps after each icon usage <i></i>..
+<!-- NOTE: Notice the gaps after each icon usage <i></i>..
 Please note that these links work a bit different than
 traditional href="" links. See documentation for details.
 -->
-	<ul>
+    <%@ page import="ni.gob.minsa.alerta.service.SeguridadService" %>
+    <%
+        SeguridadService seguridadService = new SeguridadService();
+        String menu = seguridadService.ObtenerMenu(request);
+    %>
+    <ul>
+        <%=menu%>
+    </ul>
+	<!--<ul>
 		<li class="home">
 			<a href="<spring:url value="/" htmlEscape="true "/>" title="<spring:message code="menu.home" />"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent"><spring:message code="menu.home" /></span></a>
 		</li>
@@ -79,7 +88,7 @@ traditional href="" links. See documentation for details.
         <li>
         	<a href="<spring:url value="/logout" htmlEscape="true "/>"> <i class="fa fa-lg fa-fw fa-sign-out"></i> <span class="menu-item-parent"><spring:message code="menu.logout" /></span></a>
         </li>
-	</ul>
+	</ul>-->
 </nav>
 <span class="minifyme" data-action="minifyMenu"> 
 	<i class="fa fa-arrow-circle-left hit"></i> 
