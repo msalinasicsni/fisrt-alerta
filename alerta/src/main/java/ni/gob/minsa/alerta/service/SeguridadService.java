@@ -4,12 +4,15 @@ import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
-import ni.gob.minsa.ciportal.dto.InfoResultado;
-import ni.gob.minsa.ciportal.dto.InfoSesion;
+import ni.gob.minsa.aplicacion.Seguridad;
+import ni.gob.minsa.ciportal.dto.*;
 import ni.gob.minsa.ciportal.servicios.PortalService;
+import ni.gob.minsa.componente.MenuModelo;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -174,6 +177,111 @@ public class SeguridadService {
         return nivelCentral;
     }
 
+    public String ObtenerMenu(){
+        String menu = "";
+        try{
+        InitialContext ctx = new InitialContext();
+        PortalService portalService = (PortalService) ctx.lookup(ConstantsSecurity.EJB_BIN);
+           NodoArbol menuSistema = portalService.obtenerArbolMenu(25,"ALERTA");
+          //InfoResultado infoResultado =  portalService.verificarCredenciales("sis","123");
+            //boolean valido = false;
+            //valido = ValidarOpcionMenu("Búsqueda Encuesta",menu);
+           menu = ArmarOpcionMenu(menuSistema);
+            menu = menu+"";
+            ctx.close();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return menu;
+    }
+
+    public boolean ValidarOpcionMenu(String opcionMenu, NodoArbol nodoArbol){
+        boolean valido=false;
+        for(NodoArbol hijo: nodoArbol.hijos()){
+            String nombreOpcionMenu;
+            String urlOpcionMenu;
+            boolean esItem = false;
+            if (hijo.getDatoNodo() instanceof NodoSubmenu){
+                NodoSubmenu data = (NodoSubmenu)hijo.getDatoNodo();
+                nombreOpcionMenu = data.getNombre();
+                urlOpcionMenu = null;
+                esItem = false;
+            }
+            else{
+                NodoItem data = (NodoItem)hijo.getDatoNodo();
+                nombreOpcionMenu = data.getNombre();
+                urlOpcionMenu = data.getUrl();
+                esItem = true;
+            }
+
+            if (opcionMenu.equalsIgnoreCase(nombreOpcionMenu) && !esItem){
+                valido = true;
+                break;
+            } else if (opcionMenu.equalsIgnoreCase(nombreOpcionMenu) && esItem && urlOpcionMenu!=null) {
+                valido = true;
+                break;
+            }else{
+                if (hijo.tieneHijos()){
+                    valido = ValidarOpcionMenu(opcionMenu,hijo);
+                }
+            }
+        }
+        return  valido;
+    }
+
+    public String ArmarOpcionMenu(NodoArbol nodoArbol){
+        //boolean valido=false;
+        String menu="";
+        for(NodoArbol hijo: nodoArbol.hijos()){
+            String nombreOpcionMenu;
+            String urlOpcionMenu;
+            boolean esItem = false;
+
+            if (hijo.getDatoNodo() instanceof NodoSubmenu){
+                NodoSubmenu data = (NodoSubmenu)hijo.getDatoNodo();
+                nombreOpcionMenu = data.getNombre();
+                data.getEstilo();
+                urlOpcionMenu = null; //"#";
+                esItem = false;
+            }
+            else{
+                NodoItem data = (NodoItem)hijo.getDatoNodo();
+                nombreOpcionMenu = data.getNombre();
+                urlOpcionMenu = data.getUrl();
+                esItem = true;
+            }
+
+            String[] dataOpcionMenu = nombreOpcionMenu.split(",");
+            menu = menu + "<li class=\""+dataOpcionMenu[0]+"\">\n";
+            menu = menu + "            <a href=\"/alerta"+(urlOpcionMenu!=null?urlOpcionMenu:"/#")+"\" title=\"<spring:message code=\""+dataOpcionMenu[1]+"\"/><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i> <span class=\"menu-item-parent\"><spring:message code=\""+dataOpcionMenu[1]+"\" /></span></a>\n";
+            //menu = menu + "              <a href=\""+(urlOpcionMenu!=null?"<spring:url value=\""+urlOpcionMenu+"\" htmlEscape=\"true \"/>":"#")+"\" title=\"<spring:message code=\""+dataOpcionMenu[1]+"\" />\"><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i> <span class=\"menu-item-parent\"><spring:message code=\""+dataOpcionMenu[1]+"\" /></span></a>\n";
+            //menu = menu + "              <a href=\""+urlOpcionMenu+"\" title=\"<spring:message code=\""+dataOpcionMenu[1]+"\" />\"><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i> <span class=\"menu-item-parent\"><spring:message code=\""+dataOpcionMenu[1]+"\" /></span></a>\n";
+            //menu = menu + "              <a href='"+(urlOpcionMenu!=null?"<spring:url value='"+urlOpcionMenu+"' htmlEscape='true'/>":"#")+"' title='<spring:message code='"+dataOpcionMenu[1]+"' />'><i class='fa fa-lg fa-fw "+dataOpcionMenu[2]+"'></i> <span class='menu-item-parent'><spring:message code='"+dataOpcionMenu[1]+"' /></span></a>\n";
+            //menu = menu + "            <a href=\""+(urlOpcionMenu!=null?urlOpcionMenu:"#")+"\" title=\""+nombreOpcionMenu+"\"><i class=\"fa fa-lg fa-fw fa-cogs\"></i> <span class=\"menu-item-parent\">"+nombreOpcionMenu+"</span></a>\n";
+
+            /*if (opcionMenu.equalsIgnoreCase(nombreOpcionMenu) && !esItem){
+                valido = true;
+                break;
+            } else if (opcionMenu.equalsIgnoreCase(nombreOpcionMenu) && esItem && urlOpcionMenu!=null) {
+                valido = true;
+                break;
+            }else{
+                if (hijo.tieneHijos()){
+                    valido = ValidarOpcionMenu(opcionMenu,hijo);
+                }
+            }*/
+            if (hijo.tieneHijos()){
+                menu = menu + "<ul>";
+                menu = menu + ArmarOpcionMenu(hijo);
+                menu = menu + "</ul>";
+            }
+            menu = menu + "</li>";
+        }
+        menu = StringEscapeUtils.escapeHtml(menu);
+        return  menu;
+    }
+
     public void logOut(HttpSession session) {
         session.removeAttribute("infoSesionActual");
         session.invalidate();
@@ -202,6 +310,24 @@ public class SeguridadService {
         return entidadesAdtvasList;
     }
 
+    public boolean esUsuarioAutorizadoEntidad(Integer pUsuarioId, String pCodigoSis, String pCodUnidad){
+        List<EntidadesAdtvas> entidadesAdtvasList = new ArrayList<EntidadesAdtvas>();
+        try {
+            String query = "select ent from EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
+                    "where ent.id = usuent.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuent.usuario.usuarioId and usuent.sistema.id = sis.id " +
+                    "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.codigo = :pCodUnidad and ent.pasivo = :pasivo order by ent.nombre";
+            Query qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
+            qrUsuarioEntidad.setParameter("pUsuarioId", pUsuarioId);
+            qrUsuarioEntidad.setParameter("pCodigoSis", pCodigoSis);
+            qrUsuarioEntidad.setParameter("pCodUnidad",pCodUnidad);
+            qrUsuarioEntidad.setParameter("pasivo", '0');
+            entidadesAdtvasList = qrUsuarioEntidad.list();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return entidadesAdtvasList.size()>0;
+    }
+
     /**
      * Método que obtiene todas las unidades de salud a las que tiene autorización el usuario en el sistema
      * @param pUsuarioId id del usuario autenticado
@@ -225,6 +351,25 @@ public class SeguridadService {
             e.printStackTrace();
         }
         return unidadesList;
+    }
+
+    public boolean esUsuarioAutorizadoUnidad(Integer pUsuarioId, String pCodigoSis, String pCodUnidad){
+        List<Unidades> unidadesList = new ArrayList<Unidades>();
+        try {
+            String query = "select uni from Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
+                    "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                    "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.codigo = :pCodUnidad and uni.pasivo = :pasivo " +
+                    "order by uni.nombre";
+            Query qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
+            qrUsuarioUnidad.setParameter("pUsuarioId",pUsuarioId);
+            qrUsuarioUnidad.setParameter("pCodigoSis",pCodigoSis);
+            qrUsuarioUnidad.setParameter("pCodUnidad",pCodUnidad);
+            qrUsuarioUnidad.setParameter("pasivo", '0');
+            unidadesList = qrUsuarioUnidad.list();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return unidadesList.size()>0;
     }
 
     /**

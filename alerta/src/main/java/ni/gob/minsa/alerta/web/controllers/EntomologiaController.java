@@ -48,10 +48,10 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/encuesta")
-public class entomologiaController {
+public class EntomologiaController {
 
     //region DECLARACIONES
-    private static final Logger logger = LoggerFactory.getLogger(entomologiaController.class);
+    private static final Logger logger = LoggerFactory.getLogger(EntomologiaController.class);
 
     private static final String COD_NACIONAL_MUNI_MANAGUA = "5525";
 
@@ -138,7 +138,6 @@ public class entomologiaController {
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE);
-            seguridadService.obtenerUnidadesPorUsuario(1,"","");
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
@@ -195,47 +194,54 @@ public class entomologiaController {
             Timestamp fechaRegistro = new Timestamp(new Date().getTime());
             //Obteniendo maestro encuesta
             //List<DaMaeEncuesta> daMaeEncuestaList;
-            DaMaeEncuesta daMaeEncuesta = JsonToMaestroEncuesta(strMaestro,surveyModelType.AedesAegypti.getDiscriminator());
-            if (daMaeEncuesta.getCodDistrito()!=null && daMaeEncuesta.getCodDistrito().isEmpty())
+            DaMaeEncuesta daMaeEncuesta = JsonToMaestroEncuesta(strMaestro, surveyModelType.AedesAegypti.getDiscriminator());
+            if (daMaeEncuesta.getCodDistrito() != null && daMaeEncuesta.getCodDistrito().isEmpty())
                 daMaeEncuesta.setCodDistrito(null);
-            if (daMaeEncuesta.getCodArea()!=null && daMaeEncuesta.getCodArea().isEmpty())
+            if (daMaeEncuesta.getCodArea() != null && daMaeEncuesta.getCodArea().isEmpty())
                 daMaeEncuesta.setCodArea(null);
 
             //daMaeEncuestaList = daMaeEncuestaService.searchMaestroEncuestaByDaMaeEncuesta(daMaeEncuesta);
             //if (daMaeEncuestaList!=null && daMaeEncuestaList.size() > 0){
             //  idMaestro = daMaeEncuestaList.get(0).getEncuestaId();
-            if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty()){
-                idMaestro = daMaeEncuesta.getEncuestaId();
-            }else {
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, String.valueOf(daMaeEncuesta.getEntidadesAdtva().getCodigo()))
+                    && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, String.valueOf(daMaeEncuesta.getUnidadSalud().getCodigo()))) {
 
-                daMaeEncuesta.setFechaRegistro(fechaRegistro);
-                //Se guarda el maestro y se recupera id generado para el maestro de encuesta
-                idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
-            }
-            //final Gson gson2 = gsonDetalleEncuestaAedes.create();
-            if (idMaestro!= null) {
-                try {
+                if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
+                    idMaestro = daMaeEncuesta.getEncuestaId();
+                } else {
 
-                    daMaeEncuesta.setEncuestaId(idMaestro);
-                    //json = json.replace("00-00-00",idMaestro);
-                    //Obteniedo detalle encuesta
-                    DaDetalleEncuestaAedes daDetalleEncuestaAedes = JsonToDetalleEncuestaAedes(strDetalle);
+                    daMaeEncuesta.setFechaRegistro(fechaRegistro);
+                    //Se guarda el maestro y se recupera id generado para el maestro de encuesta
+                    idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
+                }
+                //final Gson gson2 = gsonDetalleEncuestaAedes.create();
+                if (idMaestro != null) {
+                    try {
 
-                    //Se guada el detalle y se setea el id del maestro recien guardado
-                    daDetalleEncuestaAedes.setMaeEncuesta(daMaeEncuesta);
-                    daDetalleEncuestaAedes.setFeRegistro(fechaRegistro);
-                    detalleEncuestaAedesService.addDaDetalleEncuestaAedes(daDetalleEncuestaAedes);
-                }catch (Exception ex){
-                    //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
-                    if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty())
-                        daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
-                    resultado=messageSource.getMessage("msg.ento.error.adding.detail",null,null);
-                    logger.error(ExceptionUtils.getStackTrace(ex));
+                        daMaeEncuesta.setEncuestaId(idMaestro);
+                        //json = json.replace("00-00-00",idMaestro);
+                        //Obteniedo detalle encuesta
+                        DaDetalleEncuestaAedes daDetalleEncuestaAedes = JsonToDetalleEncuestaAedes(strDetalle);
+
+                        //Se guada el detalle y se setea el id del maestro recien guardado
+                        daDetalleEncuestaAedes.setMaeEncuesta(daMaeEncuesta);
+                        daDetalleEncuestaAedes.setFeRegistro(fechaRegistro);
+                        detalleEncuestaAedesService.addDaDetalleEncuestaAedes(daDetalleEncuestaAedes);
+                    } catch (Exception ex) {
+                        //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
+                        if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty())
+                            daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
+                        resultado = messageSource.getMessage("msg.ento.error.adding.detail", null, null);
+                        logger.error(ExceptionUtils.getStackTrace(ex));
+                        throw new Exception(resultado);
+                    }
+                } else {
+                    resultado = messageSource.getMessage("msg.ento.error.get.id", null, null);
                     throw new Exception(resultado);
                 }
-            }else
-            {
-                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+            }else{
+                resultado = messageSource.getMessage("msg.not.authorized.save.entity.or.unit", null, null);
                 throw new Exception(resultado);
             }
         } catch (Exception ex) {

@@ -24,6 +24,7 @@ public class HomeController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String home(HttpServletRequest request) {
         logger.info("Starting project...");
+        //seguridadService.ObtenerMenu();
         /*String urlValidacion="";
         try {
             urlValidacion = seguridadService.ValidarLogin(request);
