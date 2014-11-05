@@ -251,26 +251,26 @@ public class SeguridadService {
         for(NodoArbol hijo: nodoArbol.hijos()){
             String nombreOpcionMenu;
             String urlOpcionMenu;
-            boolean esItem = false;
+            boolean esItem = hijo.tieneHijos();
 
             if (hijo.getDatoNodo() instanceof NodoSubmenu){
                 NodoSubmenu data = (NodoSubmenu)hijo.getDatoNodo();
                 nombreOpcionMenu = data.getNombre();
                 data.getEstilo();
                 urlOpcionMenu = null;
-                esItem = false;
+                //esItem = false;
             }
             else{
                 NodoItem data = (NodoItem)hijo.getDatoNodo();
                 nombreOpcionMenu = data.getNombre();
                 urlOpcionMenu = data.getUrl();
-                esItem = true;
+                //esItem = true;
             }
             String[] dataOpcionMenu = nombreOpcionMenu.split(",");
 
             String desCodeMessage = utilityProperties.getPropertie(dataOpcionMenu[1]);
             menu = menu + "<li class=\""+dataOpcionMenu[0]+"\">\n";
-            menu = menu + " <a href=\""+contextPath+(urlOpcionMenu!=null?urlOpcionMenu:"/#")+"\" title=\""+desCodeMessage+"\"><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i>"+(esItem?"":"<span class=\"menu-item-parent\">")+desCodeMessage+(esItem?"":"</span>")+"</a>\n";
+            menu = menu + " <a href=\""+(urlOpcionMenu!=null?contextPath+urlOpcionMenu:"#")+"\" title=\""+desCodeMessage+"\"><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i>"+(!esItem?"":"<span class=\"menu-item-parent\">")+desCodeMessage+(!esItem?"":"</span>")+"</a>\n";
 
             if (hijo.tieneHijos()){
                 menu = menu + "<ul>\n";
