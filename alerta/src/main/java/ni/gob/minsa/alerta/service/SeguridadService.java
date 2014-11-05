@@ -4,18 +4,12 @@ import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
-import ni.gob.minsa.aplicacion.Seguridad;
+import ni.gob.minsa.alerta.utilities.UtilityProperties;
 import ni.gob.minsa.ciportal.dto.*;
 import ni.gob.minsa.ciportal.servicios.PortalService;
-import ni.gob.minsa.componente.MenuModelo;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,9 +31,7 @@ public class SeguridadService {
     @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
 
-    @Autowired
-    @Resource(name = "messageSource")
-    private MessageSource messageSource;
+    UtilityProperties utilityProperties = new UtilityProperties();
 
     public InfoSesion obtenerInfoSesion(String pBdSessionId) {
         InfoSesion infoSesion = null;
@@ -194,23 +186,30 @@ public class SeguridadService {
     }
 
     public String ObtenerMenu(HttpServletRequest request){
-        String menu = "";
+        String menuSistema = "";
         try{
-        InitialContext ctx = new InitialContext();
-        PortalService portalService = (PortalService) ctx.lookup(ConstantsSecurity.EJB_BIN);
-           NodoArbol menuSistema = portalService.obtenerArbolMenu(25,"ALERTA");
-          //InfoResultado infoResultado =  portalService.verificarCredenciales("sis","123");
-            //boolean valido = false;
-            //valido = ValidarOpcionMenu("Búsqueda Encuesta",menu);
-            String contextPath = request.getContextPath();
-           menu = ArmarOpcionMenu(menuSistema, contextPath);
-            menu = menu+"";
-            ctx.close();
+            String urlValidacion = ValidarLogin(request);
+            if (urlValidacion.isEmpty()){
+                if (request.getSession().getAttribute("menuSistema")==null) {
+                    InitialContext ctx = new InitialContext();
+                    PortalService portalService = (PortalService) ctx.lookup(ConstantsSecurity.EJB_BIN);
+                    long idUsuario=obtenerIdUsuario(request);
+                    NodoArbol arbolMenuSistema = portalService.obtenerArbolMenu(idUsuario,ConstantsSecurity.SYSTEM_CODE);
+                    String contextPath = request.getContextPath();
 
+                    menuSistema = ArmarOpcionesMenu(arbolMenuSistema, contextPath);
+                    request.getSession().setAttribute("menuSistema", menuSistema);
+                    ctx.close();
+                }else {
+                    menuSistema = request.getSession().getAttribute("menuSistema").toString();
+                }
+            }else{
+                menuSistema = "";
+            }
         }catch(Exception e){
             e.printStackTrace();
         }
-        return menu;
+        return menuSistema;
     }
 
     public boolean ValidarOpcionMenu(String opcionMenu, NodoArbol nodoArbol){
@@ -247,8 +246,7 @@ public class SeguridadService {
         return  valido;
     }
 
-    public String ArmarOpcionMenu(NodoArbol nodoArbol, String contextPath){
-        //boolean valido=false;
+    public String ArmarOpcionesMenu(NodoArbol nodoArbol, String contextPath){
         String menu="";
         for(NodoArbol hijo: nodoArbol.hijos()){
             String nombreOpcionMenu;
@@ -259,7 +257,7 @@ public class SeguridadService {
                 NodoSubmenu data = (NodoSubmenu)hijo.getDatoNodo();
                 nombreOpcionMenu = data.getNombre();
                 data.getEstilo();
-                urlOpcionMenu = null; //"#";
+                urlOpcionMenu = null;
                 esItem = false;
             }
             else{
@@ -270,39 +268,23 @@ public class SeguridadService {
             }
             String[] dataOpcionMenu = nombreOpcionMenu.split(",");
 
-            //String desCodeMessage = messageSource.getMessage(dataOpcionMenu[0],null,null);
-            menu = menu + "<li class=\""+dataOpcionMenu[1]+"\">\n";
-            //menu = menu + "            <a href=\"/alerta"+(urlOpcionMenu!=null?urlOpcionMenu:"/#")+"\" title=<spring:message code=\""+dataOpcionMenu[1]+"/><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i> <span class=\"menu-item-parent\"><spring:message code=\""+dataOpcionMenu[1]+"\" /></span></a>\n";
-            //menu = menu + "              <a href=\""+(urlOpcionMenu!=null?"<spring:url value=\""+urlOpcionMenu+"\" htmlEscape=\"true \"/>":"#")+"\" title=\"<spring:message code=\""+dataOpcionMenu[1]+"\" />\"><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i> <span class=\"menu-item-parent\"><spring:message code=\""+dataOpcionMenu[1]+"\" /></span></a>\n";
-            //menu = menu + "              <a href=\""+urlOpcionMenu+"\" title=\"<spring:message code=\""+dataOpcionMenu[1]+"\" />\"><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i> <span class=\"menu-item-parent\"><spring:message code=\""+dataOpcionMenu[1]+"\" /></span></a>\n";
-            //menu = menu + "              <a href='"+(urlOpcionMenu!=null?"<spring:url value='"+urlOpcionMenu+"' htmlEscape='true'/>":"#")+"' title='<spring:message code='"+dataOpcionMenu[1]+"' />'><i class='fa fa-lg fa-fw "+dataOpcionMenu[2]+"'></i> <span class='menu-item-parent'><spring:message code='"+dataOpcionMenu[1]+"'/></span></a>";
-            //menu = menu + "            <a href=\""+(urlOpcionMenu!=null?urlOpcionMenu:"#")+"\" title=\""+nombreOpcionMenu+"\"><i class=\"fa fa-lg fa-fw fa-cogs\"></i> <span class=\"menu-item-parent\">"+nombreOpcionMenu+"</span></a>\n";
-            menu = menu + " <a href=\""+contextPath+(urlOpcionMenu!=null?urlOpcionMenu:"/#")+"\" title=\""+dataOpcionMenu[0]+"\"><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i> <span class=\"menu-item-parent\">"+dataOpcionMenu[1]+"</span></a>\n";
+            String desCodeMessage = utilityProperties.getPropertie(dataOpcionMenu[1]);
+            menu = menu + "<li class=\""+dataOpcionMenu[0]+"\">\n";
+            menu = menu + " <a href=\""+contextPath+(urlOpcionMenu!=null?urlOpcionMenu:"/#")+"\" title=\""+desCodeMessage+"\"><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i>"+(esItem?"":"<span class=\"menu-item-parent\">")+desCodeMessage+(esItem?"":"</span>")+"</a>\n";
 
-            /*if (opcionMenu.equalsIgnoreCase(nombreOpcionMenu) && !esItem){
-                valido = true;
-                break;
-            } else if (opcionMenu.equalsIgnoreCase(nombreOpcionMenu) && esItem && urlOpcionMenu!=null) {
-                valido = true;
-                break;
-            }else{
-                if (hijo.tieneHijos()){
-                    valido = ValidarOpcionMenu(opcionMenu,hijo);
-                }
-            }*/
             if (hijo.tieneHijos()){
                 menu = menu + "<ul>\n";
-                menu = menu + ArmarOpcionMenu(hijo, contextPath);
+                menu = menu + ArmarOpcionesMenu(hijo, contextPath);
                 menu = menu + "</ul>\n";
             }
             menu = menu + "</li>\n";
         }
-        //menu = StringEscapeUtils.escapeHtml(menu);
         return  menu;
     }
 
     public void logOut(HttpSession session) {
         session.removeAttribute("infoSesionActual");
+        session.removeAttribute("menuSistema");
         session.invalidate();
     }
 
@@ -329,16 +311,16 @@ public class SeguridadService {
         return entidadesAdtvasList;
     }
 
-    public boolean esUsuarioAutorizadoEntidad(Integer pUsuarioId, String pCodigoSis, String pCodUnidad){
+    public boolean esUsuarioAutorizadoEntidad(Integer pUsuarioId, String pCodigoSis, String pCodEntidad){
         List<EntidadesAdtvas> entidadesAdtvasList = new ArrayList<EntidadesAdtvas>();
         try {
             String query = "select ent from EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
                     "where ent.id = usuent.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuent.usuario.usuarioId and usuent.sistema.id = sis.id " +
-                    "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.codigo = :pCodUnidad and ent.pasivo = :pasivo order by ent.nombre";
+                    "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.codigo = :pCodEntidad and ent.pasivo = :pasivo order by ent.nombre";
             Query qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
             qrUsuarioEntidad.setParameter("pUsuarioId", pUsuarioId);
             qrUsuarioEntidad.setParameter("pCodigoSis", pCodigoSis);
-            qrUsuarioEntidad.setParameter("pCodUnidad",pCodUnidad);
+            qrUsuarioEntidad.setParameter("pCodEntidad",pCodEntidad);
             qrUsuarioEntidad.setParameter("pasivo", '0');
             entidadesAdtvasList = qrUsuarioEntidad.list();
         }catch (Exception e){
