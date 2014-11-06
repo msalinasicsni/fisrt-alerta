@@ -134,10 +134,10 @@ public class EntomologiaController {
         logger.debug("Getting data from encuesta Entomologica");
         String urlValidacion="";
         try {
-            urlValidacion = seguridadService.ValidarLogin(request);
+            urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE,false);
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
@@ -358,10 +358,10 @@ public class EntomologiaController {
         logger.debug("Getting data from encuesta Entomologica");
         String urlValidacion="";
         try {
-            urlValidacion = seguridadService.ValidarLogin(request);
+            urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE,false);
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
             seguridadService.obtenerUnidadesPorUsuario(1,"","");
         }catch (Exception e){
             e.printStackTrace();
@@ -564,10 +564,10 @@ public class EntomologiaController {
         logger.debug("Getting data from encuesta Entomologica");
         String urlValidacion="";
         try {
-            urlValidacion = seguridadService.ValidarLogin(request);
+            urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE,false);
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
             seguridadService.obtenerUnidadesPorUsuario(1,"","");
         }catch (Exception e){
             e.printStackTrace();
@@ -781,10 +781,10 @@ public class EntomologiaController {
         logger.debug("Getting data to search encuesta Entomologica");
         String urlValidacion="";
         try {
-            urlValidacion = seguridadService.ValidarLogin(request);
+            urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
             seguridadService.obtenerUnidadesPorUsuario(1,"","");
         }catch (Exception e){
             e.printStackTrace();
@@ -884,10 +884,10 @@ public class EntomologiaController {
         logger.debug("Inicializando para editar encuesta Entomologica");
         String urlValidacion="";
         try {
-            urlValidacion = seguridadService.ValidarLogin(request);
+            urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
             //if (urlValidacion.isEmpty())
-                //urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, UtilitySecurity.SYSTEM_CODE);
+                //urlValidacion = seguridadService.validarAutorizacionUsuario(request, UtilitySecurity.SYSTEM_CODE);
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";

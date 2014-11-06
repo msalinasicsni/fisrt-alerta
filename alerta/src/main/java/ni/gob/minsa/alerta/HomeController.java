@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta;
 
 import ni.gob.minsa.alerta.service.SeguridadService;
+import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,23 +25,18 @@ public class HomeController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String home(HttpServletRequest request) {
         logger.info("Starting project...");
-        //seguridadService.ObtenerMenu();
-        /*String urlValidacion="";
+        String urlValidacion="";
         try {
-            urlValidacion = seguridadService.ValidarLogin(request);
-            //si la url esta vacia significa que la validación del login fue exitosa
-            if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.ValidarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE);
-
+            urlValidacion = seguridadService.validarLogin(request);
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
         }
-        if (urlValidacion.isEmpty()) {*/
+        if (urlValidacion.isEmpty()) {
             return "home";
-        /*}else{
+        }else{
             return urlValidacion;
-        }*/
+        }
 
     }
     
