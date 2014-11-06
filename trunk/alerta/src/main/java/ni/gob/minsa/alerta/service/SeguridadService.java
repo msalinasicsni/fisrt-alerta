@@ -311,7 +311,7 @@ public class SeguridadService {
         return entidadesAdtvasList;
     }
 
-    public boolean esUsuarioAutorizadoEntidad(Integer pUsuarioId, String pCodigoSis, String pCodEntidad){
+    public boolean esUsuarioAutorizadoEntidad(Integer pUsuarioId, String pCodigoSis, long pCodEntidad){
         List<EntidadesAdtvas> entidadesAdtvasList = new ArrayList<EntidadesAdtvas>();
         try {
             String query = "select ent from EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
@@ -354,7 +354,7 @@ public class SeguridadService {
         return unidadesList;
     }
 
-    public boolean esUsuarioAutorizadoUnidad(Integer pUsuarioId, String pCodigoSis, String pCodUnidad){
+    public boolean esUsuarioAutorizadoUnidad(Integer pUsuarioId, String pCodigoSis, long pCodUnidad){
         List<Unidades> unidadesList = new ArrayList<Unidades>();
         try {
             String query = "select uni from Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +

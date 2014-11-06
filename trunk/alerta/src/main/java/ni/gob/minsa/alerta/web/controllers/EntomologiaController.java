@@ -204,8 +204,8 @@ public class EntomologiaController {
             //if (daMaeEncuestaList!=null && daMaeEncuestaList.size() > 0){
             //  idMaestro = daMaeEncuestaList.get(0).getEncuestaId();
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, String.valueOf(daMaeEncuesta.getEntidadesAdtva().getCodigo()))
-                    && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, String.valueOf(daMaeEncuesta.getUnidadSalud().getCodigo()))) {
+            if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daMaeEncuesta.getEntidadesAdtva().getCodigo())
+                    && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daMaeEncuesta.getUnidadSalud().getCodigo())) {
 
                 if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
                     idMaestro = daMaeEncuesta.getEncuestaId();
