@@ -4,6 +4,7 @@ import ni.gob.minsa.alerta.domain.estructura.CalendarioEpi;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
+import ni.gob.minsa.alerta.domain.poblacion.Sectores;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Distritos;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Areas;
 import ni.gob.minsa.alerta.service.*;
@@ -59,6 +60,10 @@ public class expose {
     @Autowired
     @Qualifier(value = "seguridadService")
     private SeguridadService seguridadService;
+
+    @Autowired
+    @Qualifier(value = "sectoresService")
+    private SectoresService sectoresService;
 
     @RequestMapping(value = "unidades", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
@@ -150,6 +155,16 @@ public class expose {
         return comunidades;
     }
 
+    @RequestMapping(value = "comunidadesSector", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    List<Comunidades> getComunidadesBySector(@RequestParam(value = "codSector", required = true) String codSector) throws Exception {
+        logger.info("Obteniendo las comunidaes por municipio en JSON");
+
+        List<Comunidades> comunidades = comunidadesService.getComunidadesBySector(codSector);
+        return comunidades;
+    }
+
     @RequestMapping(value = "distritosMng", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
@@ -182,6 +197,16 @@ public class expose {
         CalendarioEpi semana;
         semana = calendarioEpiService.getCalendarioEpiByFecha(fechaValidar);
         return semana;
+    }
+
+    @RequestMapping(value = "sectoresMunicipio", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    List<Sectores> getSectoresByMunicipio(@RequestParam(value = "codMunicipio", required = true) String codMunicipio) throws Exception {
+        logger.info("Obteniendo los sectores por municipio en JSON");
+        List<Sectores> sectoresList = new ArrayList<Sectores>();
+        sectoresList = sectoresService.getSectoresByMunicipio(codMunicipio);
+        return sectoresList;
     }
 
 }

@@ -55,37 +55,38 @@ var AddAedesSurvey = function () {
                 });
 
             var responsiveHelper_dt_basic = undefined;
-			var breakpointDefinition = {
-				tablet : 1024,
-				phone : 480
-			};
-			var table1 = $('#dtDetalle').dataTable({
-				"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
-					"t"+
-					"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
-				"autoWidth" : true,
+            var breakpointDefinition = {
+                tablet : 1024,
+                phone : 480
+            };
+            var table1 = $('#dtDetalle').dataTable({
+                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
+                    "t"+
+                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+                "autoWidth" : true,
                 "pInfo":false,
                 "aoColumns" : [
                     {sClass: "aw-center" },null,{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },null,null,{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" }
                 ],
-				"preDrawCallback" : function() {
-					// Initialize the responsive datatables helper once.
-					if (!responsiveHelper_dt_basic) {
-						responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dtDetalle'), breakpointDefinition);
-					}
-				},
-				"rowCallback" : function(nRow) {
-					responsiveHelper_dt_basic.createExpandIcon(nRow);
-				},
-				"drawCallback" : function(oSettings) {
-					responsiveHelper_dt_basic.respond();
-				}
-			});
+                "preDrawCallback" : function() {
+                    // Initialize the responsive datatables helper once.
+                    if (!responsiveHelper_dt_basic) {
+                        responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dtDetalle'), breakpointDefinition);
+                    }
+                },
+                "rowCallback" : function(nRow) {
+                    responsiveHelper_dt_basic.createExpandIcon(nRow);
+                },
+                "drawCallback" : function(oSettings) {
+                    responsiveHelper_dt_basic.respond();
+                }
+            });
 
             function blockUI(){
                 var loc = window.location;
                 var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
-                var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                //var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                var mess = '<img src=' + pathName + 'resources/img/ajax-loading.gif> ' + $("#blockUI_message").val();
                 $.blockUI({ message: mess,
                     css: {
                         border: 'none',
@@ -107,7 +108,7 @@ var AddAedesSurvey = function () {
                 var maestro = {
                     encuestaId: $("#idMaestroAgregado").val(), // se pasa el id del maestro que se esta trabajando, la primera vez es null
                     codSilais: $('#codSilais option:selected').val(),
-                    codMunicipio: $('#codigoMunicipio option:selected').val(),
+                    codMunicipio: $('#codMunicipioEncu option:selected').val(),
                     codDistrito: $('#codigoDistrito option:selected').val(),
                     codArea: $('#codigoArea option:selected').val(),
                     codUnidadSalud: $('#codUnidadSalud option:selected').val(),
@@ -183,7 +184,7 @@ var AddAedesSurvey = function () {
                     }
                 )
             }
-            
+
             function getSurveyDetails(idMaestro) {
                 var nTotalViviendasInspec    = 0;
                 var nTotalViviendasPosit     = 0;
@@ -192,14 +193,14 @@ var AddAedesSurvey = function () {
                 var nTotalDepositosInspec    = 0;
                 var nTotalDepositosPosit     = 0;
                 var nTotalPupas              = 0;
-    			$.getJSON(parametros.sSurveyDetailsUrl, {
+                $.getJSON(parametros.sSurveyDetailsUrl, {
                     idMaestroEncuesta: idMaestro,
-    				ajax : 'true'
-    			}, function(data) {
+                    ajax : 'true'
+                }, function(data) {
                     table1.fnClearTable();
 
                     var len = data.length;
-    				for ( var i = 0; i < len; i++) {
+                    for ( var i = 0; i < len; i++) {
                         nTotalViviendasInspec = nTotalViviendasInspec + data[i][0].viviendasInspec;
                         nTotalViviendasPosit     = nTotalViviendasPosit + data[i][0].viviendasPosit;
                         nTotalManzanasInspec     = nTotalManzanasInspec + data[i][0].manzanasInspec;
@@ -208,10 +209,10 @@ var AddAedesSurvey = function () {
                         nTotalDepositosPosit     = nTotalDepositosPosit + data[i][0].depositosPosit;
                         nTotalPupas              = nTotalPupas + data[i][0].pupasPosit;
 
-						//var surveyUrl = parametros.sSurveyEditUrl + '?idMaestro='+dataToLoad[i][0].encuestaId;
-						table1.fnAddData(
-                                [i+1, data[i][0].localidad, data[i][0].manzanasInspec, data[i][0].manzanasPosit, data[i][0].indiceManzanas, data[i][0].viviendasInspec, data[i][0].viviendasPosit, data[i][0].indiceViviendas, data[i][0].depositosInspec, data[i][0].depositosPosit, data[i][0].indiceDepositos, data[i][0].indiceBrete, data[i][0].pupasPosit, data[i][0].indicePupas, data[i][0].fechaAbat, data[i][0].fechaVEnt, data[i][0].noAbati, data[i][0].noElimin,  data[i][0].noNeutr]);
-    							//[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].municipioResidencia.nombre,'<a href='+ personUrl + ' class="btn btn-default btn-xs"><i class="fa fa-search"></i></a>']);
+                        //var surveyUrl = parametros.sSurveyEditUrl + '?idMaestro='+dataToLoad[i][0].encuestaId;
+                        table1.fnAddData(
+                            [i+1, data[i][0].localidad, data[i][0].manzanasInspec, data[i][0].manzanasPosit, data[i][0].indiceManzanas, data[i][0].viviendasInspec, data[i][0].viviendasPosit, data[i][0].indiceViviendas, data[i][0].depositosInspec, data[i][0].depositosPosit, data[i][0].indiceDepositos, data[i][0].indiceBrete, data[i][0].pupasPosit, data[i][0].indicePupas, data[i][0].fechaAbat, data[i][0].fechaVEnt, data[i][0].noAbati, data[i][0].noElimin,  data[i][0].noNeutr]);
+                        //[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].municipioResidencia.nombre,'<a href='+ personUrl + ' class="btn btn-default btn-xs"><i class="fa fa-search"></i></a>']);
                         var nTotalViviendasIndice    = parseFloat((nTotalViviendasPosit / nTotalViviendasInspec)*100).toFixed(1);
                         var nTotalManzanasIndice     = parseFloat((nTotalManzanasPosit / nTotalManzanasInspec)*100).toFixed(1);
                         var nTotalDepositosIndice    = parseFloat((nTotalDepositosPosit/nTotalDepositosInspec)*100).toFixed(1);
@@ -231,11 +232,11 @@ var AddAedesSurvey = function () {
                     $("#totalPupas").text(nTotalPupas);
                     $("#totalIndiceBrete").text(nTotalIndiceBrete);
                     $("#totalIndiceIPupa").text(nTotalIndiceIPupa);
-    			})
-    			.fail(function() {
-				    alert( "error" );
-				    
-				});
+                })
+                    .fail(function() {
+                        alert( "error" );
+
+                    });
             }
 
             $("#mensaje").hide();
@@ -252,7 +253,7 @@ var AddAedesSurvey = function () {
                         var maestro = {
                             encuestaId: '' ,
                             codSilais: $('#codSilais option:selected').val(),
-                            codMunicipio: $('#codigoMunicipio option:selected').val(),
+                            codMunicipio: $('#codMunicipioEncu option:selected').val(),
                             codDistrito: $('#codigoDistrito option:selected').val(),
                             codArea: $('#codigoArea option:selected').val(),
                             codUnidadSalud: $('#codUnidadSalud option:selected').val(),
@@ -299,10 +300,11 @@ var AddAedesSurvey = function () {
                     }
                 }
             });
-
+/*
             <!-- al seleccionar municipio -->
-            $('#codigoMunicipio').change(function(){
+            $('#codMunicipioEncu').change(function(){
                 $('#codUnidadSalud').val('').change();
+                $('#codigoSector').val('').change();
                 $('#codigoDistrito').val('').change();
                 $('#codigoArea').val('').change();
 
@@ -323,8 +325,8 @@ var AddAedesSurvey = function () {
                         }
                         $('#codUnidadSalud').html(html);
                     });
-                    $.getJSON(parametros.sComunidadesUrl, {
-                        municipioId: $(this).val(),
+                    $.getJSON(parametros.sSectoresUrl, {
+                        codMunicipio: $(this).val(),
                         ajax: 'true'
                     }, function (data) {
                         var html = null;
@@ -334,9 +336,9 @@ var AddAedesSurvey = function () {
                             html += '<option value="' + data[i].codigo + '">'
                                 + data[i].nombre
                                 + '</option>';
-                            //html += '</option>';
+                            html += '</option>';
                         }
-                        $('#codigoLocalidad').html(html);
+                        $('#codigoSector').html(html);
                     });
                     $.getJSON(parametros.sDistritosUrl, {
                         codMunicipio: $(this).val(),
@@ -371,9 +373,31 @@ var AddAedesSurvey = function () {
                 }
             });
 
+            <!-- al seleccionar sector-->
+            $('#codigoSector').change(function(){
+                $('#codigoLocalidad').val('').change();
+                if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sComunidadesUrl, {
+                        codSector: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            //html += '</option>';
+                        }
+                        $('#codigoLocalidad').html(html);
+                    });
+                }
+            });
+
             <!-- al seleccionar SILAIS -->
             $('#codSilais').change(function(){
-                $('#codigoMunicipio').val('').change();
+                $('#codMunicipioEncu').val('').change();
                 if ($(this).val().length > 0) {
                     $.getJSON(parametros.sMunicipiosUrl, {
                         idSilais: $(this).val(),
@@ -388,18 +412,18 @@ var AddAedesSurvey = function () {
                                 + '</option>';
                             html += '</option>';
                         }
-                        $('#codigoMunicipio').html(html);
+                        $('#codMunicipioEncu').html(html);
                     });
-            }
+                }
             });
-
+*/
             <!-- al seleccionar localidad -->
             $('#codigoLocalidad').change(function() {
                 if ($("#idMaestroAgregado").val().length > 0 && $(this).val().length > 0){
                     var maestro = {
                         encuestaId:'' ,
                         codSilais: $('#codSilais option:selected').val(),
-                        codMunicipio: $('#codigoMunicipio option:selected').val(),
+                        codMunicipio: $('#codMunicipioEncu option:selected').val(),
                         codDistrito: $('#codigoDistrito option:selected').val(),
                         codArea: $('#codigoArea option:selected').val(),
                         codUnidadSalud: $('#codUnidadSalud option:selected').val(),
@@ -432,8 +456,8 @@ var AddAedesSurvey = function () {
                             });
                             $("#codigoLocalidad").val('').change();
                         } /*else {
-                            $("#mensaje").hide("slow");
-                        }*/
+                         $("#mensaje").hide("slow");
+                         }*/
                     })
                 }
             });
@@ -443,7 +467,7 @@ var AddAedesSurvey = function () {
                     codSilais: {
                         required: true
                     },
-                    codigoMunicipio: {
+                    codMunicipioEncu: {
                         required: true
                     },
                     codUnidadSalud: {
@@ -483,6 +507,9 @@ var AddAedesSurvey = function () {
 
             var $formDetalleEncuesta = $("#frmDetalleEncuesta").validate({
                 rules: {
+                    codigoSector:{
+                        required: true
+                    },
                     codigoLocalidad:{
                         required: true
                     },
@@ -546,8 +573,8 @@ var AddAedesSurvey = function () {
                 }
             });
 
-            $('#fecInicioEncuesta').change(function () {
-                var fecha = $('#fecInicioEncuesta').val();
+            $('#fecFinEncuesta').change(function () {
+                var fecha = $('#fecFinEncuesta').val();
                 var arr = fecha.split('/');
                 $('#mesEpi').val(arr[1]);
                 $('#anioEpi').val(arr[2]);
@@ -569,7 +596,7 @@ var AddAedesSurvey = function () {
             function limpiarCamposMaestro(){
                 $('#codSilais').val('').change();
                 $('#codUnidadSalud').val('').change();
-                $('#codigoMunicipio').val('').change();
+                $('#codMunicipioEncu').val('').change();
                 $('#codigoDistrito').val('').change();
                 $('#codigoArea').val('').change();
                 $('#codProcedencia').val('').change();
@@ -601,18 +628,18 @@ var AddAedesSurvey = function () {
 
             function limpiarTablaDetalle(){
                 table1.fnClearTable();
-                    $("#totalViviendasInspec").text('0');
-                    $("#totalViviendasPosit").text('0');
-                    $("#totalViviendasIndice").text('0');
-                    $("#totalManzanasInspec").text('0');
-                    $("#totalManzanasPosit").text('0');
-                    $("#totalManzanasIndice").text('0');
-                    $("#totalDepositosInspec").text('0');
-                    $("#totalDepositosPosit").text('0');
-                    $("#totalDepositosIndice").text('0');
-                    $("#totalPupas").text('0');
-                    $("#totalIndiceBrete").text('0');
-                    $("#totalIndiceIPupa").text('0');
+                $("#totalViviendasInspec").text('0');
+                $("#totalViviendasPosit").text('0');
+                $("#totalViviendasIndice").text('0');
+                $("#totalManzanasInspec").text('0');
+                $("#totalManzanasPosit").text('0');
+                $("#totalManzanasIndice").text('0');
+                $("#totalDepositosInspec").text('0');
+                $("#totalDepositosPosit").text('0');
+                $("#totalDepositosIndice").text('0');
+                $("#totalPupas").text('0');
+                $("#totalIndiceBrete").text('0');
+                $("#totalIndiceIPupa").text('0');
             }
 
             $("#btnNuevoRegistro").click(function(){
@@ -680,7 +707,8 @@ var AddLarvariaSurvey = function () {
             function blockUI(){
                 var loc = window.location;
                 var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
-                var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                //var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                var mess = '<img src=' + pathName + 'resources/img/ajax-loading.gif> ' + $("#blockUI_message").val();
                 $.blockUI({ message: mess,
                     css: {
                         border: 'none',
@@ -703,7 +731,7 @@ var AddLarvariaSurvey = function () {
                 var maestro = {
                     encuestaId: $("#idMaestroAgregado").val(), // se pasa el id del maestro que se esta trabajando, la primera vez es null
                     codSilais: $('#codSilais option:selected').val(),
-                    codMunicipio: $('#codigoMunicipio option:selected').val(),
+                    codMunicipio: $('#codMunicipioEncu option:selected').val(),
                     codDistrito: $('#codigoDistrito option:selected').val(),
                     codArea: $('#codigoArea option:selected').val(),
                     codUnidadSalud: $('#codUnidadSalud option:selected').val(),
@@ -876,7 +904,7 @@ var AddLarvariaSurvey = function () {
                         var maestro = {
                             encuestaId: '' ,
                             codSilais: $('#codSilais option:selected').val(),
-                            codMunicipio: $('#codigoMunicipio option:selected').val(),
+                            codMunicipio: $('#codMunicipioEncu option:selected').val(),
                             codDistrito: $('#codigoDistrito option:selected').val(),
                             codArea: $('#codigoArea option:selected').val(),
                             codUnidadSalud: $('#codUnidadSalud option:selected').val(),
@@ -923,9 +951,9 @@ var AddLarvariaSurvey = function () {
                     }
                 }
             });
-
+/*
             <!-- al seleccionar municipio -->
-            $('#codigoMunicipio').change(function(){
+            $('#codMunicipioEncu').change(function(){
                 $('#codUnidadSalud').val('').change();
                 $('#codigoDistrito').val('').change();
                 $('#codigoArea').val('').change();
@@ -946,8 +974,8 @@ var AddLarvariaSurvey = function () {
                         }
                         $('#codUnidadSalud').html(html);
                     });
-                    $.getJSON(parametros.sComunidadesUrl, {
-                        municipioId: $(this).val(),
+                    $.getJSON(parametros.sSectoresUrl, {
+                        codMunicipio: $(this).val(),
                         ajax: 'true'
                     }, function (data) {
                         var html = null;
@@ -957,9 +985,9 @@ var AddLarvariaSurvey = function () {
                             html += '<option value="' + data[i].codigo + '">'
                                 + data[i].nombre
                                 + '</option>';
-                            //html += '</option>';
+                            html += '</option>';
                         }
-                        $('#codigoLocalidad').html(html);
+                        $('#codigoSector').html(html);
                     });
                     $.getJSON(parametros.sDistritosUrl, {
                         codMunicipio: $(this).val(),
@@ -994,9 +1022,31 @@ var AddLarvariaSurvey = function () {
                 }
             });
 
+            <!-- al seleccionar sector-->
+            $('#codigoSector').change(function(){
+                $('#codigoLocalidad').val('').change();
+                if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sComunidadesUrl, {
+                        codSector: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            //html += '</option>';
+                        }
+                        $('#codigoLocalidad').html(html);
+                    });
+                }
+            });
+
             <!-- al seleccionar SILAIS -->
             $('#codSilais').change(function(){
-                $('#codigoMunicipio').val('').change();
+                $('#codMunicipioEncu').val('').change();
                 if ($(this).val().length > 0) {
                     $.getJSON(parametros.sMunicipiosUrl, {
                         idSilais: $(this).val(),
@@ -1011,18 +1061,18 @@ var AddLarvariaSurvey = function () {
                                 + '</option>';
                             html += '</option>';
                         }
-                        $('#codigoMunicipio').html(html);
+                        $('#codMunicipioEncu').html(html);
                     });
                 }
             });
-
+*/
             <!-- al seleccionar localidad -->
             $('#codigoLocalidad').change(function() {
                 if ($("#idMaestroAgregado").val().length > 0 && $(this).val().length > 0){
                     var maestro = {
                         encuestaId:'' ,
                         codSilais: $('#codSilais option:selected').val(),
-                        codMunicipio: $('#codigoMunicipio option:selected').val(),
+                        codMunicipio: $('#codMunicipioEncu option:selected').val(),
                         codDistrito: $('#codigoDistrito option:selected').val(),
                         codArea: $('#codigoArea option:selected').val(),
                         codUnidadSalud: $('#codUnidadSalud option:selected').val(),
@@ -1067,7 +1117,7 @@ var AddLarvariaSurvey = function () {
                     codSilais: {
                         required: true
                     },
-                    codigoMunicipio: {
+                    codMunicipioEncu: {
                         required: true
                     },
                     codUnidadSalud: {
@@ -1112,6 +1162,9 @@ var AddLarvariaSurvey = function () {
 
             var $formDetalleEncuesta = $("#frmDetalleEncuesta").validate({
                 rules: {
+                    codigoSector:{
+                        required: true
+                    },
                     codigoLocalidad:{
                         required: true
                     },
@@ -1164,8 +1217,8 @@ var AddLarvariaSurvey = function () {
                 }
             });
 
-            $('#fecInicioEncuesta').change(function () {
-                var fecha = $('#fecInicioEncuesta').val();
+            $('#fecFinEncuesta').change(function () {
+                var fecha = $('#fecFinEncuesta').val();
                 var arr = fecha.split('/');
                 $('#mesEpi').val(arr[1]);
                 $('#anioEpi').val(arr[2]);
@@ -1187,7 +1240,7 @@ var AddLarvariaSurvey = function () {
             function limpiarCamposMaestro(){
                 $('#codSilais').val('').change();
                 $('#codUnidadSalud').val('').change();
-                $('#codigoMunicipio').val('').change();
+                $('#codMunicipioEncu').val('').change();
                 $('#codigoDistrito').val('').change();
                 $('#codigoArea').val('').change();
                 $('#codProcedencia').val('').change();
@@ -1303,7 +1356,8 @@ var AddDepositoSurvey = function(){
             function blockUI(){
                 var loc = window.location;
                 var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
-                var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                //var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                var mess = '<img src=' + pathName + 'resources/img/ajax-loading.gif> ' + $("#blockUI_message").val();
                 $.blockUI({ message: mess,
                     css: {
                         border: 'none',
@@ -1325,7 +1379,7 @@ var AddDepositoSurvey = function(){
                 var maestro = {
                     encuestaId: $("#idMaestroAgregado").val(), // se pasa el id del maestro que se esta trabajando, la primera vez es null
                     codSilais: $('#codSilais option:selected').val(),
-                    codMunicipio: $('#codigoMunicipio option:selected').val(),
+                    codMunicipio: $('#codMunicipioEncu option:selected').val(),
                     codDistrito: $('#codigoDistrito option:selected').val(),
                     codArea: $('#codigoArea option:selected').val(),
                     codUnidadSalud: $('#codUnidadSalud option:selected').val(),
@@ -1528,7 +1582,7 @@ var AddDepositoSurvey = function(){
             function limpiarCamposMaestro(){
                 $('#codSilais').val('').change();
                 $('#codUnidadSalud').val('').change();
-                $('#codigoMunicipio').val('').change();
+                $('#codMunicipioEncu').val('').change();
                 $('#codigoDistrito').val('').change();
                 $('#codigoArea').val('').change();
                 $('#codProcedencia').val('').change();
@@ -1580,7 +1634,7 @@ var AddDepositoSurvey = function(){
                     codSilais: {
                         required: true
                     },
-                    codigoMunicipio: {
+                    codMunicipioEncu: {
                         required: true
                     },
                     codUnidadSalud: {
@@ -1625,6 +1679,9 @@ var AddDepositoSurvey = function(){
 
             var $formDetalleEncuesta = $("#frmDetalleEncuesta").validate({
                 rules: {
+                    codigoSector:{
+                        required: true
+                    },
                     codigoLocalidad:{
                         required: true
                     },
@@ -1720,7 +1777,7 @@ var AddDepositoSurvey = function(){
                         var maestro = {
                             encuestaId: '' ,
                             codSilais: $('#codSilais option:selected').val(),
-                            codMunicipio: $('#codigoMunicipio option:selected').val(),
+                            codMunicipio: $('#codMunicipioEncu option:selected').val(),
                             codDistrito: $('#codigoDistrito option:selected').val(),
                             codArea: $('#codigoArea option:selected').val(),
                             codUnidadSalud: $('#codUnidadSalud option:selected').val(),
@@ -1767,9 +1824,9 @@ var AddDepositoSurvey = function(){
                     }
                 }
             });
-
+/*
             <!-- al seleccionar municipio -->
-            $('#codigoMunicipio').change(function(){
+            $('#codMunicipioEncu').change(function(){
                 $('#codUnidadSalud').val('').change();
                 $('#codigoDistrito').val('').change();
                 $('#codigoArea').val('').change();
@@ -1790,9 +1847,8 @@ var AddDepositoSurvey = function(){
                         }
                         $('#codUnidadSalud').html(html);
                     });
-
-                    $.getJSON(parametros.sComunidadesUrl, {
-                        municipioId: $(this).val(),
+                    $.getJSON(parametros.sSectoresUrl, {
+                        codMunicipio: $(this).val(),
                         ajax: 'true'
                     }, function (data) {
                         var html = null;
@@ -1802,9 +1858,9 @@ var AddDepositoSurvey = function(){
                             html += '<option value="' + data[i].codigo + '">'
                                 + data[i].nombre
                                 + '</option>';
-                            //html += '</option>';
+                            html += '</option>';
                         }
-                        $('#codigoLocalidad').html(html);
+                        $('#codigoSector').html(html);
                     });
                     $.getJSON(parametros.sDistritosUrl, {
                         codMunicipio: $(this).val(),
@@ -1839,9 +1895,31 @@ var AddDepositoSurvey = function(){
                 }
             });
 
+            <!-- al seleccionar sector-->
+            $('#codigoSector').change(function(){
+                $('#codigoLocalidad').val('').change();
+                if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sComunidadesUrl, {
+                        codSector: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            //html += '</option>';
+                        }
+                        $('#codigoLocalidad').html(html);
+                    });
+                }
+            });
+
             <!-- al seleccionar SILAIS -->
             $('#codSilais').change(function(){
-                $('#codigoMunicipio').val('').change();
+                $('#codMunicipioEncu').val('').change();
                 if ($(this).val().length > 0) {
                     $.getJSON(parametros.sMunicipiosUrl, {
                         idSilais: $(this).val(),
@@ -1856,65 +1934,65 @@ var AddDepositoSurvey = function(){
                                 + '</option>';
                             html += '</option>';
                         }
-                        $('#codigoMunicipio').html(html);
+                        $('#codMunicipioEncu').html(html);
                     });
                 }
             });
-
+*/
             <!-- al seleccionar localidad -->
             $('#codigoLocalidad').change(function() {
                 /*if ($("#idMaestroAgregado").val().length > 0 && $(this).val().length > 0){
-                    var maestro = {
-                        encuestaId:'' ,
-                        codSilais: $('#codSilais option:selected').val(),
-                        codMunicipio: $('#codigoMunicipio option:selected').val(),
-                        codDistrito: $('#codigoDistrito option:selected').val(),
-                        codArea: $('#codigoArea option:selected').val(),
-                        codUnidadSalud: $('#codUnidadSalud option:selected').val(),
-                        codProcedencia: $('#codProcedencia option:selected').val(),
-                        feInicioEncuesta: $('#fecInicioEncuesta').val(),
-                        feFinEncuesta: $('#fecFinEncuesta').val(),
-                        codOrdinalEncu: $('#codOrdinal option:selected').val(),
-                        codModeloEncu: 1,
-                        semanaEpi: $('#semanaEpi').val(),
-                        mesEpi: $('#mesEpi').val(),
-                        anioEpi: $('#anioEpi').val(),
-                        usuarioRegistroId: 1
-                    };
-                    var encuestaObj = {};
-                    encuestaObj['idLocalidad'] = $(this).val();
-                    encuestaObj['idMaestroEncuesta'] = $("#idMaestroAgregado").val();
-                    //encuestaObj['maestroEncuesta'] = maestro;
-                    $.getJSON(parametros.sValidarLocalidadUrl, {
-                        datosEncuesta: JSON.stringify(encuestaObj),
-                        ajax: 'true'
-                    }, function (data) {
-                        var html = null;
-                        var len = data.length;
-                        if (len > 0) {
-                            html = '<div class="alert alert-block alert-warning"> ' +
-                                '<a class="close" data-dismiss="alert" href="#">×</a> ' +
-                                '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
-                                '<p> ' + $("#msg_location_exist").val() +
-                                '</p> ' +
-                                '</div>';
-                            $('#mensaje').html(html).show().focus();
-                            //$("#mensaje").show("slow");
-                            //$("#mensaje").focus();
-                            //$("#mensaje").fadeOut(5000);
-                            setTimeout(function(){$("#mensaje").hide("slow");}, 4000);
-                            $("#codigoLocalidad").val('').change();
-                        } else {
-                            $("#mensaje").hide("slow");
-                        }
-                    })
-                }
-                */
+                 var maestro = {
+                 encuestaId:'' ,
+                 codSilais: $('#codSilais option:selected').val(),
+                 codMunicipio: $('#codMunicipioEncu option:selected').val(),
+                 codDistrito: $('#codigoDistrito option:selected').val(),
+                 codArea: $('#codigoArea option:selected').val(),
+                 codUnidadSalud: $('#codUnidadSalud option:selected').val(),
+                 codProcedencia: $('#codProcedencia option:selected').val(),
+                 feInicioEncuesta: $('#fecInicioEncuesta').val(),
+                 feFinEncuesta: $('#fecFinEncuesta').val(),
+                 codOrdinalEncu: $('#codOrdinal option:selected').val(),
+                 codModeloEncu: 1,
+                 semanaEpi: $('#semanaEpi').val(),
+                 mesEpi: $('#mesEpi').val(),
+                 anioEpi: $('#anioEpi').val(),
+                 usuarioRegistroId: 1
+                 };
+                 var encuestaObj = {};
+                 encuestaObj['idLocalidad'] = $(this).val();
+                 encuestaObj['idMaestroEncuesta'] = $("#idMaestroAgregado").val();
+                 //encuestaObj['maestroEncuesta'] = maestro;
+                 $.getJSON(parametros.sValidarLocalidadUrl, {
+                 datosEncuesta: JSON.stringify(encuestaObj),
+                 ajax: 'true'
+                 }, function (data) {
+                 var html = null;
+                 var len = data.length;
+                 if (len > 0) {
+                 html = '<div class="alert alert-block alert-warning"> ' +
+                 '<a class="close" data-dismiss="alert" href="#">×</a> ' +
+                 '<h4 class="alert-heading"><i class="fa fa-check-square-o"></i> Aviso!</h4>' +
+                 '<p> ' + $("#msg_location_exist").val() +
+                 '</p> ' +
+                 '</div>';
+                 $('#mensaje').html(html).show().focus();
+                 //$("#mensaje").show("slow");
+                 //$("#mensaje").focus();
+                 //$("#mensaje").fadeOut(5000);
+                 setTimeout(function(){$("#mensaje").hide("slow");}, 4000);
+                 $("#codigoLocalidad").val('').change();
+                 } else {
+                 $("#mensaje").hide("slow");
+                 }
+                 })
+                 }
+                 */
             });
 
             <!-- al ingresar fecha de inicio de encuesta-->
-            $('#fecInicioEncuesta').change(function () {
-                var fecha = $('#fecInicioEncuesta').val();
+            $('#fecFinEncuesta').change(function () {
+                var fecha = $('#fecFinEncuesta').val();
                 var arr = fecha.split('/');
                 $('#mesEpi').val(arr[1]);
                 $('#anioEpi').val(arr[2]);

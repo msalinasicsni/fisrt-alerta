@@ -290,7 +290,7 @@
 <script src="${validate}"></script>
 <spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
     <spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>
-<script src="${jQValidationLoc}"/></script>
+<script src="${jQValidationLoc}"></script>
 <!-- Selecte2Input -->
 <spring:url value="/resources/js/plugin/select2/select2.min.js" var="selectPlugin"/>
 <script src="${selectPlugin}"></script>
@@ -305,7 +305,7 @@
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
     $(function () {
-        $("li.home").addClass("active");
+        $("li.entosearch").addClass("active");
     });
 </script>
 <script type="text/javascript">
@@ -313,6 +313,11 @@
         pageSetUp();
         var parametros = {sSurveyUrl: "${consultaEncuestasURL}", sSurveyEditUrl : "${editarEncuestasURL}", sUnidadesUrl: "${unidadesURL}"};
         SearchSurvey.init(parametros);
+        $("li.entomologia").addClass("open");
+        $("li.entosearch").addClass("active");
+        if("top"!=localStorage.getItem("sm-setmenu")){
+            $("li.entosearch").parents("ul").slideDown(200);
+        }
     });
 </script>
 <!-- END JAVASCRIPTS -->

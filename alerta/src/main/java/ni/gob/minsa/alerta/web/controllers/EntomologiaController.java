@@ -8,6 +8,7 @@ import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
+import ni.gob.minsa.alerta.domain.poblacion.Sectores;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.*;
 import ni.gob.minsa.alerta.service.*;
@@ -102,19 +103,18 @@ public class EntomologiaController {
     private DaMaeEncuestaService daMaeEncuestaService;
 
     @Autowired
-    @Qualifier(value = "calendarioEpiService")
-    private CalendarioEpiService calendarioEpiService;
-
-    @Autowired
     @Qualifier(value = "usuarioService")
     private UsuarioService usuarioService;
 
-    Map<String, Object> mapModel;
+    @Autowired
+    @Qualifier(value = "sectoresService")
+    private SectoresService sectoresService;
+
     List<Divisionpolitica> municipios;
     List<EntidadesAdtvas> silais;
-    List<Divisionpolitica> departamentos;
     List<Unidades> unidadesSalud;
     List<Comunidades> comunidades;
+    List<Sectores> sectores;
     List<Procedencia> procedencias;
     List<Ordinal> ordinales;
     List<Distritos> distritosMng;
@@ -200,12 +200,9 @@ public class EntomologiaController {
             if (daMaeEncuesta.getCodArea() != null && daMaeEncuesta.getCodArea().isEmpty())
                 daMaeEncuesta.setCodArea(null);
 
-            //daMaeEncuestaList = daMaeEncuestaService.searchMaestroEncuestaByDaMaeEncuesta(daMaeEncuesta);
-            //if (daMaeEncuestaList!=null && daMaeEncuestaList.size() > 0){
-            //  idMaestro = daMaeEncuestaList.get(0).getEncuestaId();
+            //se obtiene el id del usuario logueado
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daMaeEncuesta.getEntidadesAdtva().getCodigo())
-                    && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daMaeEncuesta.getUnidadSalud().getCodigo())) {
+            if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
 
                 if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
                     idMaestro = daMaeEncuesta.getEncuestaId();
@@ -215,12 +212,10 @@ public class EntomologiaController {
                     //Se guarda el maestro y se recupera id generado para el maestro de encuesta
                     idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
                 }
-                //final Gson gson2 = gsonDetalleEncuestaAedes.create();
                 if (idMaestro != null) {
                     try {
 
                         daMaeEncuesta.setEncuestaId(idMaestro);
-                        //json = json.replace("00-00-00",idMaestro);
                         //Obteniedo detalle encuesta
                         DaDetalleEncuestaAedes daDetalleEncuestaAedes = JsonToDetalleEncuestaAedes(strDetalle);
 
@@ -437,41 +432,44 @@ public class EntomologiaController {
             if (daMaeEncuesta.getCodArea()!=null && daMaeEncuesta.getCodArea().isEmpty())
                 daMaeEncuesta.setCodArea(null);
 
-            //daMaeEncuestaList = daMaeEncuestaService.searchMaestroEncuestaByDaMaeEncuesta(daMaeEncuesta);
-            //if (daMaeEncuestaList!=null && daMaeEncuestaList.size() > 0){
-            //  idMaestro = daMaeEncuestaList.get(0).getEncuestaId();
-            if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty()){
-                idMaestro = daMaeEncuesta.getEncuestaId();
-            }else {
+            //se obtiene el id del usuario logueado
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
+                if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
+                    idMaestro = daMaeEncuesta.getEncuestaId();
+                } else {
 
-                daMaeEncuesta.setFechaRegistro(fechaRegistro);
-                //Se guarda el maestro y se recupera id generado para el maestro de encuesta
-                idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
-            }
+                    daMaeEncuesta.setFechaRegistro(fechaRegistro);
+                    //Se guarda el maestro y se recupera id generado para el maestro de encuesta
+                    idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
+                }
 
-            if (idMaestro!= null) {
-                try {
+                if (idMaestro != null) {
+                    try {
 
-                    daMaeEncuesta.setEncuestaId(idMaestro);
-                    //json = json.replace("00-00-00",idMaestro);
-                    //Obteniedo detalle encuesta
-                    DaDetalleEncuestaLarvaria daDetalleEncuestaLarvaria = JsonToDetalleEncuestaLarvaria(strDetalle);
+                        daMaeEncuesta.setEncuestaId(idMaestro);
+                        //json = json.replace("00-00-00",idMaestro);
+                        //Obteniedo detalle encuesta
+                        DaDetalleEncuestaLarvaria daDetalleEncuestaLarvaria = JsonToDetalleEncuestaLarvaria(strDetalle);
 
-                    //Se guada el detalle y se setea el id del maestro recien guardado
-                    daDetalleEncuestaLarvaria.setMaeEncuesta(daMaeEncuesta);
-                    daDetalleEncuestaLarvaria.setFeRegistro(fechaRegistro);
-                    detalleEncuestaLarvariaService.addDaDetalleEncuestaLarvaria(daDetalleEncuestaLarvaria);
-                }catch (Exception ex){
-                    //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
-                    if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty())
-                        daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
-                    resultado=messageSource.getMessage("msg.ento.error.adding.detail",null,null);
-                    logger.error(ExceptionUtils.getStackTrace(ex));
+                        //Se guada el detalle y se setea el id del maestro recien guardado
+                        daDetalleEncuestaLarvaria.setMaeEncuesta(daMaeEncuesta);
+                        daDetalleEncuestaLarvaria.setFeRegistro(fechaRegistro);
+                        detalleEncuestaLarvariaService.addDaDetalleEncuestaLarvaria(daDetalleEncuestaLarvaria);
+                    } catch (Exception ex) {
+                        //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
+                        if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty())
+                            daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
+                        resultado = messageSource.getMessage("msg.ento.error.adding.detail", null, null);
+                        logger.error(ExceptionUtils.getStackTrace(ex));
+                        throw new Exception(resultado);
+                    }
+                } else {
+                    resultado = messageSource.getMessage("msg.ento.error.get.id", null, null);
                     throw new Exception(resultado);
                 }
-            }else
-            {
-                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+            }else{
+                resultado = messageSource.getMessage("msg.not.authorized.save.entity.or.unit", null, null);
                 throw new Exception(resultado);
             }
         } catch (Exception ex) {
@@ -642,41 +640,44 @@ public class EntomologiaController {
             if (daMaeEncuesta.getCodArea()!=null && daMaeEncuesta.getCodArea().isEmpty())
                 daMaeEncuesta.setCodArea(null);
 
-            //daMaeEncuestaList = daMaeEncuestaService.searchMaestroEncuestaByDaMaeEncuesta(daMaeEncuesta);
-            //if (daMaeEncuestaList!=null && daMaeEncuestaList.size() > 0){
-            //  idMaestro = daMaeEncuestaList.get(0).getEncuestaId();
-            if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty()){
-                idMaestro = daMaeEncuesta.getEncuestaId();
-            }else {
+//se obtiene el id del usuario logueado
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
+                if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
+                    idMaestro = daMaeEncuesta.getEncuestaId();
+                } else {
 
-                daMaeEncuesta.setFechaRegistro(fechaRegistro);
-                //Se guarda el maestro y se recupera id generado para el maestro de encuesta
-                idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
-            }
+                    daMaeEncuesta.setFechaRegistro(fechaRegistro);
+                    //Se guarda el maestro y se recupera id generado para el maestro de encuesta
+                    idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
+                }
 
-            if (idMaestro!= null) {
-                try {
+                if (idMaestro != null) {
+                    try {
 
-                    daMaeEncuesta.setEncuestaId(idMaestro);
-                    //json = json.replace("00-00-00",idMaestro);
-                    //Obteniedo detalle encuesta
-                    DaDetaDepositopreferencial detaDepositopreferencial = JsonToDetalleDepositoPreferencial(strDetalle);
+                        daMaeEncuesta.setEncuestaId(idMaestro);
+                        //json = json.replace("00-00-00",idMaestro);
+                        //Obteniedo detalle encuesta
+                        DaDetaDepositopreferencial detaDepositopreferencial = JsonToDetalleDepositoPreferencial(strDetalle);
 
-                    //Se guada el detalle y se setea el maestro recien guardado
-                    detaDepositopreferencial.setMaeEncuesta(daMaeEncuesta);
-                    detaDepositopreferencial.setFeRegistro(fechaRegistro);
-                    detalleDepositoPreferencialService.addDaDetaDepositopreferencial(detaDepositopreferencial);
-                }catch (Exception ex){
-                    //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
-                    if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty())
-                        daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
-                    resultado=messageSource.getMessage("msg.ento.error.adding.detail",null,null);
-                    logger.error(ExceptionUtils.getStackTrace(ex));
+                        //Se guada el detalle y se setea el maestro recien guardado
+                        detaDepositopreferencial.setMaeEncuesta(daMaeEncuesta);
+                        detaDepositopreferencial.setFeRegistro(fechaRegistro);
+                        detalleDepositoPreferencialService.addDaDetaDepositopreferencial(detaDepositopreferencial);
+                    } catch (Exception ex) {
+                        //Si hay error se elimina el maestro, sólo si no existe, es decir es un maestro nuevo
+                        if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty())
+                            daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
+                        resultado = messageSource.getMessage("msg.ento.error.adding.detail", null, null);
+                        logger.error(ExceptionUtils.getStackTrace(ex));
+                        throw new Exception(resultado);
+                    }
+                } else {
+                    resultado = messageSource.getMessage("msg.ento.error.get.id", null, null);
                     throw new Exception(resultado);
                 }
-            }else
-            {
-                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+            }else{
+                resultado = messageSource.getMessage("msg.not.authorized.save.entity.or.unit", null, null);
                 throw new Exception(resultado);
             }
         } catch (Exception ex) {
@@ -929,7 +930,9 @@ public class EntomologiaController {
             }else{ //sino sólo se cargarn las unidades autorizadas para el usuario según SILAIS y municipio
                 unidadesSalud = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int)idUsuario ,maestro.getEntidadesAdtva().getCodigo(),maestro.getMunicipio().getCodigoNacional(), ConstantsSecurity.SYSTEM_CODE,HealthUnitType.UnidadesPrimarias.getDiscriminator());
             }
-                comunidades = comunidadesService.getComunidades(maestro.getMunicipio().getCodigoNacional());
+
+            sectores = sectoresService.getSectoresByMunicipio(maestro.getMunicipio().getCodigoNacional());
+            //comunidades = comunidadesService.getComunidades(maestro.getMunicipio().getCodigoNacional());
             if (maestro.getMunicipio().getCodigoNacional().equalsIgnoreCase(COD_NACIONAL_MUNI_MANAGUA)) {
                 distritosMng = catalogosService.getDistritos();
                 areasMng = catalogosService.getAreas();
@@ -942,7 +945,7 @@ public class EntomologiaController {
             mav.addObject("unidadesSalud",unidadesSalud);
             //mav.addObject("departamentos",departamentos);
             mav.addObject("municipios",municipios);
-            mav.addObject("localidades",comunidades);
+            mav.addObject("sectores",sectores);
             mav.addObject("procedencias",procedencias);
             mav.addObject("ordinales",ordinales);
             mav.addObject("fechaInicioEncuesta", DateToString(maestro.getFeInicioEncuesta()));
@@ -986,11 +989,17 @@ public class EntomologiaController {
             if (daMaeEncuesta.getCodArea()!=null && daMaeEncuesta.getCodArea().isEmpty())
                 daMaeEncuesta.setCodArea(null);
 
-            if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty()){
-                daMaeEncuestaService.updateDaMaeEncuesta(daMaeEncuesta);
-            }else
-            {
-                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+            //se obtiene el id del usuario logueado
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
+                if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
+                    daMaeEncuestaService.updateDaMaeEncuesta(daMaeEncuesta);
+                } else {
+                    resultado = messageSource.getMessage("msg.ento.error.get.id", null, null);
+                    throw new Exception(resultado);
+                }
+            }else{
+                resultado = messageSource.getMessage("msg.not.authorized.save.entity.or.unit", null, null);
                 throw new Exception(resultado);
             }
         } catch (Exception ex) {
@@ -1072,43 +1081,48 @@ public class EntomologiaController {
                 daMaeEncuesta.setCodDistrito(null);
             if (daMaeEncuesta.getCodArea()!=null && daMaeEncuesta.getCodArea().isEmpty())
                 daMaeEncuesta.setCodArea(null);
+            //se obtiene el id del usuario logueado
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
+                if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
+                    idMaestro = daMaeEncuesta.getEncuestaId();
+                    daMaeEncuestaService.updateDaMaeEncuesta(daMaeEncuesta);
+                } else { //Al editar no debería entrar aca, pero se conserva la funcionalidad de guardar si no existe
+                    daMaeEncuesta.setFechaRegistro(fechaRegistro);
+                    //Se guarda el maestro y se recupera id generado para el maestro de encuesta
+                    idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
+                    existeMaestro = false;
+                }
+                if (idMaestro != null) {
+                    try {
 
-            if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty()){
-                idMaestro = daMaeEncuesta.getEncuestaId();
-                daMaeEncuestaService.updateDaMaeEncuesta(daMaeEncuesta);
-            }else { //Al editar no debería entrar aca, pero se conserva la funcionalidad de guardar si no existe
-                daMaeEncuesta.setFechaRegistro(fechaRegistro);
-                //Se guarda el maestro y se recupera id generado para el maestro de encuesta
-                idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
-                existeMaestro = false;
-            }
-            if (idMaestro!= null) {
-                try {
+                        daMaeEncuesta.setEncuestaId(idMaestro);// se setea por si hay error y será necesario eliminarlo
+                        //Obteniedo detalle encuesta
+                        DaDetalleEncuestaAedes daDetalleEncuestaAedes = JsonToDetalleEncuestaAedes(strDetalle);
 
-                    daMaeEncuesta.setEncuestaId(idMaestro);// se setea por si hay error y será necesario eliminarlo
-                    //Obteniedo detalle encuesta
-                    DaDetalleEncuestaAedes daDetalleEncuestaAedes = JsonToDetalleEncuestaAedes(strDetalle);
-
-                    //Se actualiza el detalle y se setea el id del maestro
-                    daDetalleEncuestaAedes.setMaeEncuesta(daMaeEncuesta);
-                    if (daDetalleEncuestaAedes.getDetaEncuestaId()!=null && !daDetalleEncuestaAedes.getDetaEncuestaId().isEmpty()) {
-                        detalleEncuestaAedesService.updateDaDetalleEncuestaAedes(daDetalleEncuestaAedes);
-                    }else{
-                        daDetalleEncuestaAedes.setDetaEncuestaId(null);
-                        daDetalleEncuestaAedes.setFeRegistro(fechaRegistro);
-                        detalleEncuestaAedesService.addDaDetalleEncuestaAedes(daDetalleEncuestaAedes);
+                        //Se actualiza el detalle y se setea el id del maestro
+                        daDetalleEncuestaAedes.setMaeEncuesta(daMaeEncuesta);
+                        if (daDetalleEncuestaAedes.getDetaEncuestaId() != null && !daDetalleEncuestaAedes.getDetaEncuestaId().isEmpty()) {
+                            detalleEncuestaAedesService.updateDaDetalleEncuestaAedes(daDetalleEncuestaAedes);
+                        } else {
+                            daDetalleEncuestaAedes.setDetaEncuestaId(null);
+                            daDetalleEncuestaAedes.setFeRegistro(fechaRegistro);
+                            detalleEncuestaAedesService.addDaDetalleEncuestaAedes(daDetalleEncuestaAedes);
+                        }
+                    } catch (Exception ex) {
+                        //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
+                        if (!existeMaestro)
+                            daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
+                        logger.error(ex.getMessage(), ex);
+                        resultado = messageSource.getMessage("msg.ento.error.saveorupdate.detail", null, null);
+                        throw new Exception(resultado);
                     }
-                }catch (Exception ex){
-                    //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
-                    if (!existeMaestro)
-                        daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
-                    logger.error(ex.getMessage(),ex);
-                    resultado=messageSource.getMessage("msg.ento.error.saveorupdate.detail",null,null);
+                } else {
+                    resultado = messageSource.getMessage("msg.ento.error.get.id", null, null);
                     throw new Exception(resultado);
                 }
-            }else
-            {
-                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+            }else{
+                resultado = messageSource.getMessage("msg.not.authorized.save.entity.or.unit", null, null);
                 throw new Exception(resultado);
             }
         } catch (Exception ex) {
@@ -1163,46 +1177,49 @@ public class EntomologiaController {
             if (daMaeEncuesta.getCodArea()!=null && daMaeEncuesta.getCodArea().isEmpty())
                 daMaeEncuesta.setCodArea(null);
 
-            //daMaeEncuestaList = daMaeEncuestaService.searchMaestroEncuestaByDaMaeEncuesta(daMaeEncuesta);
-            //if (daMaeEncuestaList!=null && daMaeEncuestaList.size() > 0){
-            //  idMaestro = daMaeEncuestaList.get(0).getEncuestaId();
-            if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty()){
-                idMaestro = daMaeEncuesta.getEncuestaId();
-            }else {
+            //se obtiene el id del usuario logueado
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
+                if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
+                    idMaestro = daMaeEncuesta.getEncuestaId();
+                } else {
 
-                daMaeEncuesta.setFechaRegistro(fechaRegistro);
-                //Se guarda el maestro y se recupera id generado para el maestro de encuesta
-                idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
-                existeMaestro = false;
-            }
-            if (idMaestro!= null) {
-                try {
+                    daMaeEncuesta.setFechaRegistro(fechaRegistro);
+                    //Se guarda el maestro y se recupera id generado para el maestro de encuesta
+                    idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
+                    existeMaestro = false;
+                }
+                if (idMaestro != null) {
+                    try {
 
-                    daMaeEncuesta.setEncuestaId(idMaestro);
-                    //Obteniedo detalle encuesta
-                    DaDetalleEncuestaLarvaria daDetalleEncuestaLarvaria = JsonToDetalleEncuestaLarvaria(strDetalle);
+                        daMaeEncuesta.setEncuestaId(idMaestro);
+                        //Obteniedo detalle encuesta
+                        DaDetalleEncuestaLarvaria daDetalleEncuestaLarvaria = JsonToDetalleEncuestaLarvaria(strDetalle);
 
-                    //Se actualiza el detalle y se setea el id del maestro
-                    daDetalleEncuestaLarvaria.setMaeEncuesta(daMaeEncuesta);
+                        //Se actualiza el detalle y se setea el id del maestro
+                        daDetalleEncuestaLarvaria.setMaeEncuesta(daMaeEncuesta);
 
-                    if (daDetalleEncuestaLarvaria.getDetaEncuestaId()!=null && !daDetalleEncuestaLarvaria.getDetaEncuestaId().isEmpty()) {
-                        detalleEncuestaLarvariaService.updateDaDetalleEncuestaLarvaria(daDetalleEncuestaLarvaria);
-                    }else {
-                        daDetalleEncuestaLarvaria.setDetaEncuestaId(null);
-                        daDetalleEncuestaLarvaria.setFeRegistro(fechaRegistro);
-                        detalleEncuestaLarvariaService.addDaDetalleEncuestaLarvaria(daDetalleEncuestaLarvaria);
+                        if (daDetalleEncuestaLarvaria.getDetaEncuestaId() != null && !daDetalleEncuestaLarvaria.getDetaEncuestaId().isEmpty()) {
+                            detalleEncuestaLarvariaService.updateDaDetalleEncuestaLarvaria(daDetalleEncuestaLarvaria);
+                        } else {
+                            daDetalleEncuestaLarvaria.setDetaEncuestaId(null);
+                            daDetalleEncuestaLarvaria.setFeRegistro(fechaRegistro);
+                            detalleEncuestaLarvariaService.addDaDetalleEncuestaLarvaria(daDetalleEncuestaLarvaria);
+                        }
+                    } catch (Exception ex) {
+                        //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
+                        if (!existeMaestro)
+                            daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
+                        logger.error(ex.getMessage(), ex);
+                        resultado = messageSource.getMessage("msg.ento.error.saveorupdate.detail", null, null);
+                        throw new Exception(resultado);
                     }
-                }catch (Exception ex){
-                    //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
-                    if (!existeMaestro)
-                        daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
-                    logger.error(ex.getMessage(),ex);
-                    resultado=messageSource.getMessage("msg.ento.error.saveorupdate.detail",null,null);
+                } else {
+                    resultado = messageSource.getMessage("msg.ento.error.get.id", null, null);
                     throw new Exception(resultado);
                 }
-            }else
-            {
-                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+            }else{
+                resultado = messageSource.getMessage("msg.not.authorized.save.entity.or.unit", null, null);
                 throw new Exception(resultado);
             }
         } catch (Exception ex) {
@@ -1285,46 +1302,49 @@ public class EntomologiaController {
             if (daMaeEncuesta.getCodArea()!=null && daMaeEncuesta.getCodArea().isEmpty())
                 daMaeEncuesta.setCodArea(null);
 
-            //daMaeEncuestaList = daMaeEncuestaService.searchMaestroEncuestaByDaMaeEncuesta(daMaeEncuesta);
-            //if (daMaeEncuestaList!=null && daMaeEncuestaList.size() > 0){
-            //  idMaestro = daMaeEncuestaList.get(0).getEncuestaId();
-            if (daMaeEncuesta.getEncuestaId()!=null && !daMaeEncuesta.getEncuestaId().isEmpty()){
-                idMaestro = daMaeEncuesta.getEncuestaId();
-            }else {
+            //se obtiene el id del usuario logueado
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
+                if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
+                    idMaestro = daMaeEncuesta.getEncuestaId();
+                } else {
 
-                daMaeEncuesta.setFechaRegistro(fechaRegistro);
-                //Se guarda el maestro y se recupera id generado para el maestro de encuesta
-                idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
-                existeMaestro = false;
-            }
-            if (idMaestro!= null) {
-                try {
+                    daMaeEncuesta.setFechaRegistro(fechaRegistro);
+                    //Se guarda el maestro y se recupera id generado para el maestro de encuesta
+                    idMaestro = daMaeEncuestaService.addDaMaeEncuesta(daMaeEncuesta);
+                    existeMaestro = false;
+                }
+                if (idMaestro != null) {
+                    try {
 
-                    daMaeEncuesta.setEncuestaId(idMaestro);
-                    //Obteniedo detalle encuesta
-                    DaDetaDepositopreferencial detaDepositopreferencial = JsonToDetalleDepositoPreferencial(strDetalle);
+                        daMaeEncuesta.setEncuestaId(idMaestro);
+                        //Obteniedo detalle encuesta
+                        DaDetaDepositopreferencial detaDepositopreferencial = JsonToDetalleDepositoPreferencial(strDetalle);
 
-                    //Se actualiza el detalle y se setea el id del maestro
-                    detaDepositopreferencial.setMaeEncuesta(daMaeEncuesta);
+                        //Se actualiza el detalle y se setea el id del maestro
+                        detaDepositopreferencial.setMaeEncuesta(daMaeEncuesta);
 
-                    if (detaDepositopreferencial.getDetaEncuestaId()!=null && !detaDepositopreferencial.getDetaEncuestaId().isEmpty()) {
-                        detalleDepositoPreferencialService.updateDaDetaDepositopreferencial(detaDepositopreferencial);
-                    }else {
-                        detaDepositopreferencial.setDetaEncuestaId(null);
-                        detaDepositopreferencial.setFeRegistro(fechaRegistro);
-                        detalleDepositoPreferencialService.addDaDetaDepositopreferencial(detaDepositopreferencial);
+                        if (detaDepositopreferencial.getDetaEncuestaId() != null && !detaDepositopreferencial.getDetaEncuestaId().isEmpty()) {
+                            detalleDepositoPreferencialService.updateDaDetaDepositopreferencial(detaDepositopreferencial);
+                        } else {
+                            detaDepositopreferencial.setDetaEncuestaId(null);
+                            detaDepositopreferencial.setFeRegistro(fechaRegistro);
+                            detalleDepositoPreferencialService.addDaDetaDepositopreferencial(detaDepositopreferencial);
+                        }
+                    } catch (Exception ex) {
+                        //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
+                        if (!existeMaestro)
+                            daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
+                        logger.error(ex.getMessage(), ex);
+                        resultado = messageSource.getMessage("msg.ento.error.saveorupdate.detail", null, null);
+                        throw new Exception(resultado);
                     }
-                }catch (Exception ex){
-                    //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
-                    if (!existeMaestro)
-                        daMaeEncuestaService.deleteDaMaeEncuesta(daMaeEncuesta);
-                    logger.error(ex.getMessage(),ex);
-                    resultado=messageSource.getMessage("msg.ento.error.saveorupdate.detail",null,null);
+                } else {
+                    resultado = messageSource.getMessage("msg.ento.error.get.id", null, null);
                     throw new Exception(resultado);
                 }
-            }else
-            {
-                resultado=messageSource.getMessage("msg.ento.error.get.id",null,null);
+            }else{
+                resultado = messageSource.getMessage("msg.not.authorized.save.entity.or.unit", null, null);
                 throw new Exception(resultado);
             }
         } catch (Exception ex) {
@@ -1667,5 +1687,16 @@ public class EntomologiaController {
         return simpleDateFormat.format(dtFecha);
     }
 
+    /**
+     * Método para validar si el usuario autenticado tiene autorización a guardar o actualizar registro con entidad o unidad determinada
+     * @param idUsuario
+     * @param codigoEntidad
+     * @param codigoUnidad
+     * @return
+     */
+    private boolean usuarioAutorizadoEntidadUnidad(int idUsuario, long codigoEntidad, long codigoUnidad){
+        return  (seguridadService.esUsuarioAutorizadoEntidad(idUsuario, ConstantsSecurity.SYSTEM_CODE, codigoEntidad)
+                && seguridadService.esUsuarioAutorizadoUnidad(idUsuario, ConstantsSecurity.SYSTEM_CODE, codigoUnidad));
+    }
     //endregion
 }

@@ -38,6 +38,7 @@ public class DetalleEncuestaLarvariaTypeAdapter extends TypeAdapter<DaDetalleEnc
         out.beginObject();
         out.name("detaEncuestaId").value(value.getDetaEncuestaId());
         out.name("encuestaId").value(value.getMaeEncuesta().getEncuestaId());
+        out.name("codSector").value(value.getLocalidad().getSector());
         out.name("codLocalidad").value(value.getLocalidad().getCodigo());
         out.name("localidad").value(value.getLocalidad().getNombre());
         /*out.name("pilaInfestado").value(value.getPilaInfestado());
