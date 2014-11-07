@@ -39,7 +39,7 @@ public class ComunidadesService {
      */
     public List<Comunidades> getComunidades(String idMunicipio) throws Exception {
             String query = "select a from Comunidades as a, Sectores as s " +
-                    "where a.pasivo = :pasivo and a.sector = s.codigo and s.municipio = :municipio";
+                    "where a.pasivo = :pasivo and a.sector = s.codigo and s.municipio = :municipio  order by a.nombre";
             Session session = sessionFactory.getCurrentSession();
             Query q = session.createQuery(query);
             q.setString("municipio", idMunicipio);
@@ -53,5 +53,15 @@ public class ComunidadesService {
         Query q = session.createQuery(query);
         q.setString("codigo", codigo);
         return (Comunidades) q.uniqueResult();
+    }
+
+    public List<Comunidades> getComunidadesBySector(String codSector) throws Exception {
+        String query = "select a from Comunidades as a, Sectores as s " +
+                "where a.pasivo = :pasivo and a.sector = s.codigo and s.codigo = :codSector order by a.nombre";
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("codSector", codSector);
+        q.setParameter("pasivo",'0');
+        return q.list();
     }
 }

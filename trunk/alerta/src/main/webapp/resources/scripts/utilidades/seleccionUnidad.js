@@ -13,7 +13,8 @@ var SeleccionUnidad = function () {
 	            '-moz-border-radius': '10px', 
 	            opacity: .5, 
 	            color: '#fff' 
-	            	}
+	            	},
+            baseZ: 1051 // para que se muestre bien en los modales
 	    }); 
 	};
 	
@@ -100,6 +101,140 @@ var SeleccionUnidad = function () {
                     $('#comunidadResidencia').html(html);
                 });
                 
+            });
+
+            //ENTOMOLOGIA
+            <!-- al seleccionar municipio -->
+            $('#codMunicipioEncu').change(function(){
+                bloquearUI(parametros.blockMess);
+                if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sUnidadesUrl, {
+                        codMunicipio: $(this).val(),
+                        codSilais:$('#codSilais option:selected').val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            html += '</option>';
+                        }
+                        $('#codUnidadSalud').html(html);
+                    });
+                    $.getJSON(parametros.sSectoresUrl, {
+                        codMunicipio: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            html += '</option>';
+                        }
+                        $('#codigoSector').html(html);
+                    });
+                    $.getJSON(parametros.sDistritosUrl, {
+                        codMunicipio: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].valor
+                                + '</option>';
+                            html += '</option>';
+                        }
+                        $('#codigoDistrito').html(html);
+                    });
+                    $.getJSON(parametros.sAreasUrl, {
+                        codMunicipio: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].valor
+                                + '</option>';
+                            html += '</option>';
+                        }
+                        $('#codigoArea').html(html);
+                    })
+                }else{
+                    var html = '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                    $('#codUnidadSalud').html(html);
+                    $('#codigoSector').html(html);
+                    $('#codigoDistrito').html(html);
+                    $('#codigoArea').html(html);
+                }
+                $('#codUnidadSalud').val('').change();
+                $('#codigoArea').val('').change();
+                $('#codigoDistrito').val('').change();
+                $('#codigoSector').val('').change();
+                setTimeout($.unblockUI, 500);
+            });
+
+            <!-- al seleccionar sector-->
+            $('#codigoSector').change(function(){
+                bloquearUI(parametros.blockMess);
+                if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sComunidadesUrl, {
+                        codSector: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            //html += '</option>';
+                        }
+                        $('#codigoLocalidad').html(html);
+                    });
+                }else{
+                    var html = '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                    $('#codigoLocalidad').html(html);
+                }
+                $('#codigoLocalidad').val('').change();
+                setTimeout($.unblockUI, 500);
+            });
+
+            <!-- al seleccionar SILAIS -->
+            $('#codSilais').change(function(){
+                bloquearUI(parametros.blockMess);
+                if ($(this).val().length > 0) {
+                    $.getJSON(parametros.sMunicipiosUrl, {
+                        idSilais: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigoNacional + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            html += '</option>';
+                        }
+                        $('#codMunicipioEncu').html(html);
+                    });
+                }else{
+                    var html = '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                    $('#codMunicipioEncu').html(html);
+                }
+                $('#codMunicipioEncu').val('').change();
+                setTimeout($.unblockUI, 500);
             });
         }
 	};

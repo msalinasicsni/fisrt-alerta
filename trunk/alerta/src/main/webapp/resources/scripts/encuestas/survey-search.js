@@ -65,7 +65,8 @@ var SearchSurvey = function () {
             function blockUI(){
                 var loc = window.location;
                 var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
-                var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                //var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                var mess = '<img src=' + pathName + 'resources/img/ajax-loading.gif> ' + $("#blockUI_message").val();
                 $.blockUI({ message: mess,
                     css: {
                         border: 'none',
@@ -135,7 +136,7 @@ var SearchSurvey = function () {
 
             <!-- al seleccionar SILAIS -->
             $('#codSilais').change(function(){
-                $('#codUnidadSalud').val('').change();
+                blockUI();
                 if ($(this).val().length > 0) {
                     $.getJSON(parametros.sUnidadesUrl, {
                         codSilais: $(this).val(),
@@ -152,7 +153,12 @@ var SearchSurvey = function () {
                         }
                         $('#codUnidadSalud').html(html);
                     })
+                }else{
+                    var html = '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                    $('#codUnidadSalud').html(html);
                 }
+                $('#codUnidadSalud').val('').change();
+                unBlockUI();
             });
         }
     };

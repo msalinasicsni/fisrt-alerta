@@ -35,7 +35,7 @@
 <body class="">
 <c:url var="unidadesURL" value="/api/v1/unidadesPrimarias"/>
 <c:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
-<c:url var="comunidadesURL" value="/api/v1/comunidad"/>
+<c:url var="comunidadesURL" value="/api/v1/comunidadesSector"/>
 <c:url var="distritosURL" value="/api/v1/distritosMng"/>
 <c:url var="areasURL" value="/api/v1/areasMng"/>
 <c:url value="/encuesta/guardarDepositoPreferencial" var="encuesta" />
@@ -47,6 +47,7 @@
 <c:url var="editarDepositoURL" value="/encuesta/actualizarDeposito"/>
 <c:url var="recuperarDetalleDeposito" value="/encuesta/recuperarDetalleDeposito"/>
 <c:url var="editarMaestroURL" value="/encuesta/actualizarMaestro"/>
+<c:url var="sectoresURL" value="/api/v1/sectoresMunicipio"/>
 
 <!-- #HEADER -->
 <jsp:include page="../fragments/bodyHeader.jsp" />
@@ -186,7 +187,7 @@
                                                     <span class="input-group-addon">
                                                         <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
-                <select name="codigoMunicipio" id="codigoMunicipio" path="codigoMunicipio" class="select2">
+                <select name="codMunicipioEncu" id="codMunicipioEncu" class="select2">
                     <option value=""><spring:message code="lbl.select" />...</option>
                     <c:forEach items="${municipios}" var="municipios">
                         <option value="${municipios.codigoNacional}">${municipios.nombre}</option>
@@ -480,9 +481,25 @@
 <div id="mensaje">
 </div>
 <!-- NOTIFICACIÓN -->
-<!-- LOCALIDAD -->
+<!-- SECTOR Y LOCALIDAD -->
 <div class="row">
-    <section class="col col-sm-12 col-md-12 col-lg-12">
+    <section class="col col-sm-12 col-md-5 col-lg-5">
+        <label class="text-left txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.sector" />
+        </label>
+        <div class="input-group">
+	    					        <span class="input-group-addon">
+                                        <i class="fa fa-location-arrow fa-fw"></i>
+		    				        </span>
+            <select class="select2" id="codigoSector" name="codigoSector" path="codigoSector">
+                <option value=""><spring:message code="lbl.select" />...</option>
+                <c:forEach items="${sectores}" var="sectores">
+                    <option value="${sectores.codigo}">${sectores.nombre}</option>
+                </c:forEach>
+            </select>
+        </div>
+    </section>
+    <section class="col col-sm-12 col-md-7 col-lg-7">
         <label class="text-left txt-color-blue font-md">
             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.locality" />
         </label>
@@ -492,9 +509,9 @@
 		    				        </span>
             <select class="select2" id="codigoLocalidad" name="codigoLocalidad" path="codigoLocalidad">
                 <option value=""><spring:message code="lbl.select" />...</option>
-                <c:forEach items="${localidades}" var="localidades">
-                    <option value="${localidades.codigo}">${localidades.nombre}</option>
-                </c:forEach>
+                <!--<c:forEach items="${localidades}" var="localidades">
+                        <option value="${localidades.codigo}">${localidades.nombre}</option>
+                    </c:forEach>-->
             </select>
         </div>
     </section>
@@ -733,7 +750,7 @@
 <script src="${validate}"></script>
 <spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
     <spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>
-<script src="${jQValidationLoc}"/></script>
+<script src="${jQValidationLoc}"></script>
 
 <!-- bootstrap datepicker -->
 <spring:url value="/resources/js/plugin/bootstrap-datepicker/bootstrap-datepicker.js" var="datepickerPlugin" />
@@ -748,6 +765,8 @@
 <script src="${jqueryBlockUi}"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
+<spring:url value="/resources/scripts/utilidades/seleccionUnidad.js" var="selecUnidad" />
+<script src="${selecUnidad}"></script>
 <spring:url value="/resources/scripts/encuestas/survey-edit.js" var="surveyEdiDep" />
 <script src="${surveyEdiDep}"></script>
 <spring:url value="/resources/scripts/utilidades/handleDatePickers.js" var="handleDatePickers" />
@@ -765,7 +784,7 @@
 
         $("#codSilais").val("${maestro.entidadesAdtva.codigo}").change();
         $("#codUnidadSalud > option[value="+ ${maestro.unidadSalud.codigo} +"]").prop("selected",true).change();
-        $("#codigoMunicipio > option[value="+ ${maestro.municipio.codigoNacional} +"]").attr("selected",true).change();
+        $("#codMunicipioEncu > option[value="+ ${maestro.municipio.codigoNacional} +"]").attr("selected",true).change();
         $("#codOrdinal > option[value='"+ "${maestro.ordinalEncuesta.codigo}"+"']").attr("selected",true).change();
         $("#codProcedencia > option[value='"+ "${maestro.procedencia.codigo}" +"']").attr("selected",true).change();
         $("#codigoArea").val("${maestro.codArea}").change();
@@ -790,10 +809,18 @@
             sFechaInicioEncuesta: "${fechaInicioEncuesta}",
             sFechaFinEncuesta: "${fechaFinEncuesta}",
             sEditDeposUrl : "${editarDepositoURL}",
-            sEditMaestroUrl : "${editarMaestroURL}"
+            sEditMaestroUrl : "${editarMaestroURL}",
+            sSectoresUrl : "${sectoresURL}",
+            blockMess : $("#blockUI_message").val()
         };
         EditDepositoSurvey.init(parametros);
+        SeleccionUnidad.init(parametros);
         handleDatePickers("${pageContext.request.locale.language}");
+        $("li.entomologia").addClass("open");
+        $("li.entosearch").addClass("active");
+        if("top"!=localStorage.getItem("sm-setmenu")){
+            $("li.entosearch").parents("ul").slideDown(200);
+        }
     });
 </script>
 </body>
