@@ -2,7 +2,9 @@ package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.irag.*;
+import ni.gob.minsa.alerta.domain.persona.*;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.*;
+import ni.gob.minsa.alerta.domain.vih.*;
 import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.Animales;
 import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.EnfAgudas;
 import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.EnfCronicas;
@@ -421,6 +423,177 @@ public class CatalogoService {
         Query query = session.getNamedQuery("getManifestacionClinicaByCodigo").setString("pCodigo", mani);
         //Retrieve all
         return (ManifestacionClinica) query.uniqueResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<TipoAseguradovih> getTiposAsegurados(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoAseguradovih tipoas where tipoas.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public TipoAseguradovih getTipoAsegurado(String tipoas){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("getTipoAseguradoByCodigo").setString("pCodigo", tipoas);
+        //Retrieve all
+        return (TipoAseguradovih) query.uniqueResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<TipoEdadVih> getTiposEdad(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoEdadVih tedad where tedad.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public TipoEdadVih getTipoEdad(String tipoedad){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("getTipoEdadVihByCodigo").setString("pCodigo", tipoedad);
+        //Retrieve all
+        return (TipoEdadVih) query.uniqueResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Sexo> getListaSexo(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Sexo catsexo where catsexo.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public Sexo getSexo(String sex){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerSexoPorCodigo").setString("pCodigo", sex);
+        //Retrieve all
+        return (Sexo) query.uniqueResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Etnia> getListaEtnia(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Etnia catetnia where catetnia.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public Etnia getEtnia(String etnia){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerEtniaPorCodigo").setString("pCodigo", etnia);
+        //Retrieve all
+        return (Etnia) query.uniqueResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<EstadoCivil> getListaEstadoCivil(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM EstadoCivil catestadocivil where catestadocivil.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public EstadoCivil getEstadoCivil(String estado){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerEstadoCivilPorCodigo").setString("pCodigo", estado);
+        //Retrieve all
+        return (EstadoCivil) query.uniqueResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Escolaridad> getListaEscolaridad(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Escolaridad esc where esc.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public Escolaridad getEscolaridad(String esc){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerEscolaridadPorCodigo").setString("pCodigo", esc);
+        //Retrieve all
+        return (Escolaridad) query.uniqueResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Ocupacion> getListaOcupacion(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Ocupacion ocup where ocup.pasivo = false order by nombre");
+        //retrieve all
+        return query.list();
+    }
+
+    public Ocupacion getOcupacion(String ocup){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerOcupacionPorCodigo").setString("pCodigo", ocup);
+        //Retrieve all
+        return (Ocupacion) query.uniqueResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<MetodosCalculoSemanasEmbarazo> getListaMetodosCalcSeEmb(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM MetodosCalculoSemanasEmbarazo metodos where metodos.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public MetodosCalculoSemanasEmbarazo getMetodoCalcSeEmb(String metodo){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerMetodCalcSeEmbPorCodigo").setString("pCodigo", metodo);
+        //Retrieve all
+        return (MetodosCalculoSemanasEmbarazo) query.uniqueResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<PeriodoPruebaVihEmb> getListaPeriodoPruebaVihEmb(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM PeriodoPruebaVihEmb periodo where periodo.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public PeriodoPruebaVihEmb getPeriodoPruebaVihEmb(String periodo){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerPeriodoPruebaVihEmbPorCodigo").setString("pCodigo", periodo);
+        //Retrieve all
+        return (PeriodoPruebaVihEmb) query.uniqueResult();
     }
     
     @SuppressWarnings("unchecked")
