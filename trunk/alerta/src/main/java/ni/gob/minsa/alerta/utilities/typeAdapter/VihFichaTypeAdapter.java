@@ -49,7 +49,7 @@ public class VihFichaTypeAdapter extends TypeAdapter<VihFicha> {
     @Override
     public void write(final JsonWriter out, final VihFicha value) throws IOException {
         out.beginObject();
-        out.name("id_ficha_vih").value(value.getId_categoria_afiliacion());
+        out.name("id_ficha_vih").value(value.getId_ficha_vih());
         out.name("silais").value(value.getEntidadesAdtva().getNombre());
         out.name("unidadSalud").value(value.getUnidadSalud().getNombre());
         out.name("cod_usuario").value(value.getCodigo_usuario_vih());

@@ -7,7 +7,7 @@ import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 @NamedQueries({
 @NamedQuery(
 	name = "obtenerTipoAseguradoPorCodigo",
-	query = "select cat from TipoAsegurado cat where cat.codigo = :pCodigo"
+	query = "select cat from TipoAseguradovih cat where cat.codigo = :pCodigo"
 	)
 })
 @Entity
@@ -15,7 +15,7 @@ import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 @DiscriminatorValue(value="TPOAS")
 public class TipoAsegurado  extends Catalogo {
    
-	private static final long serialVersionUID = 1828160882930676722L;
+	private static final long serialVersionUID = 182816082930676722L;
 	    
     public TipoAsegurado() {
     

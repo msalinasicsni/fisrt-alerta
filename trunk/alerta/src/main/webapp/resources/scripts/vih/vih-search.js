@@ -107,6 +107,10 @@ var SearchVih = function () {
                     $('#codUnidadSalud').html(html);
                 })
             });
+
+            /*$("#btnNuevoRegistro").click(function(){
+                alert("nuevo");
+            });*/
         }
     };
 
