@@ -426,7 +426,26 @@ public class CatalogoService {
     }
 
     @SuppressWarnings("unchecked")
-    public List<TipoAseguradovih> getTiposAsegurados(){
+    public List<TipoAsegurado> getTiposAsegurados(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoAsegurado tipoas where tipoas.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public TipoAsegurado getTipoAsegurado(String tipoas){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a Hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerTipoAseguradoPorCodigo").setString("pCodigo", tipoas);
+        //Retrieve all
+        return (TipoAsegurado) query.uniqueResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<TipoAseguradovih> getListaTiposAseguradosVih(){
         //Retrieve session from Hibernate
         Session session = sessionFactory.getCurrentSession();
         //Create a hibernate query (HQL)
@@ -435,7 +454,7 @@ public class CatalogoService {
         return query.list();
     }
 
-    public TipoAseguradovih getTipoAsegurado(String tipoas){
+    public TipoAseguradovih getTipoAseguradoVih(String tipoas){
         //Retrieve session from Hibernate
         Session session = sessionFactory.getCurrentSession();
         //Create a Hibernate query (HQL)
@@ -786,6 +805,14 @@ public class CatalogoService {
         //Retrieve all
         return (SintomasLEPT) query.uniqueResult();
     }
-    
-    
+
+    public List<Identificacion> getListaTipoIdentificacion(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Identificacion where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
 }
