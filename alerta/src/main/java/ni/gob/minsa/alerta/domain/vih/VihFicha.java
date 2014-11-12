@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.domain.vih;
 
+import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import org.hibernate.annotations.ForeignKey;
@@ -20,7 +21,7 @@ public class VihFicha {
     private EntidadesAdtvas entidadesAdtva;
     private Unidades unidadSalud;
     private Integer id_municipio;
-    private Integer id_categoria_afiliacion;
+    private TipoAseguradovih id_categoria_afiliacion;
     private String responsable_ficha;
     private Timestamp fechaAlta;
     private String usuarioAlta;
@@ -29,7 +30,7 @@ public class VihFicha {
     private Integer id_metodo_captacion;
 
     @Id
-    @Column(name = "ID_FICHA_VIH", nullable = false, insertable = true, updatable = true, precision = 0)
+    @Column(name = "id_ficha_vih", nullable = false, insertable = true, updatable = true, precision = 0)
     public Integer getId_ficha_vih() {
         return id_ficha_vih;
     }
@@ -84,11 +85,14 @@ public class VihFicha {
         this.unidadSalud = unidadSalud;
     }
 
-    public Integer getId_categoria_afiliacion() {
-        return id_categoria_afiliacion;
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
+    @JoinColumn(name="id_categoria_afiliacion", referencedColumnName = "CODIGO")
+    @ForeignKey(name = "COD_TIPOAS_FK")
+    public TipoAseguradovih getId_categoria_afiliacion() {
+        return this.id_categoria_afiliacion;
     }
 
-    public void setId_categoria_afiliacion(Integer id_categoria_afiliacion) {
+    public void setId_categoria_afiliacion(TipoAseguradovih id_categoria_afiliacion) {
         this.id_categoria_afiliacion = id_categoria_afiliacion;
     }
 

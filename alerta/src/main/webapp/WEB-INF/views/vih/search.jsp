@@ -20,6 +20,7 @@
 <c:url var="unidadesURL" value="/api/v1/unidades"/>
 <c:url var="consultaFichasVihURL" value="/vih/busquedaFichas"/>
 <c:url var="editarFichasVihURL" value="/vih/editFicha"/>
+<c:url var="createVIH" value="/vih/create"/>
 <!-- #HEADER -->
 <jsp:include page="../fragments/bodyHeader.jsp" />
 <!-- #NAVIGATION -->
@@ -35,7 +36,7 @@
 			</span>
     <!-- breadcrumb -->
     <ol class="breadcrumb">
-        <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.vih" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="#" htmlEscape="true "/>"><spring:message code="lbl.breadcrumb.vih.search" /></a></li>
+        <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="#" htmlEscape="true "/>"><spring:message code="lbl.breadcrumb.vih.search" /></a></li>
     </ol>
     <!-- end breadcrumb -->
     <jsp:include page="../fragments/layoutOptions.jsp" />
@@ -119,14 +120,14 @@
                                 <div class="row">
                                     <section class="col col-3">
                                         <label class="text-left txt-color-blue font-md">
-                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>SILAIS </label>
+                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.silais" /></label>
                                         <div class="input-group">
                                                     <span class="input-group-addon">
                                                          <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
                                             <select path="codSilais" id="codSilais" name="codSilais"
                                                     class="select2">
-                                                <option value="">Seleccione...</option>
+                                                <option value=""><spring:message code="act.select" /></option>
                                                 <c:forEach items="${entidades}" var="entidad">
                                                     <option value="${entidad.entidadAdtvaId}">${entidad.nombre}</option>
                                                 </c:forEach>
@@ -135,35 +136,38 @@
                                     </section>
                                     <section class="col col-5">
                                         <label class="text-left txt-color-blue font-md">
-                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>Unidad de Salud
+                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.health.unit" />
                                         </label>
                                         <div class="input-group">
                                                     <span class="input-group-addon">
                                                         <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
                                             <select class="select2" id="codUnidadSalud" name="codUnidadSalud">
-                                                <option value="">Seleccione...</option>
+                                                <option value=""><spring:message code="act.select" /></option>
                                             </select>
                                         </div>
                                     </section>
                                     <section class="col col-3">
                                         <label class="text-left txt-color-blue font-md">
-                                            Codigo Usuario
+                                            <spring:message code="lbl.vih.user" />
                                         </label>
                                         <label class="input">
-                                            <input type="text" id="codUsuario" name="codUsuario" path="codUsuario" placeholder="Codigo Usuario" class="input-sm">
+                                            <input type="text" id="codUsuario" name="codUsuario" path="codUsuario" placeholder="<spring:message code="lbl.vih.user" />" class="input-sm">
                                         </label>
                                     </section>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                        <a href="${createVIH}" <a class="btn btn-primary btn-lg pull-right header-btn hidden-mobile" id="btnNuevoRegistro"><i class="fa fa-circle-arrow-up fa-lg"></i><spring:message code="act.add" /></a></a>
+                                    </div>
+                                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                         <!--<a href="#" id="buscarEncuesta" data-toggle="modal" class="btn btn-primary btn-lg pull-right header-btn hidden-mobile">
                                             <i class="fa fa-circle-arrow-up fa-lg"></i>
                                             Consultar
                                         </a>-->
                                         <button id="buscarEncuesta" type="submit"
                                                 class="btn btn-primary btn-lg pull-right header-btn hidden-mobile">
-                                            Consultar
+                                            <spring:message code="act.search" />
                                         </button>
                                     </div>
                                 </div>
@@ -265,7 +269,7 @@
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
     $(function () {
-        $("li.home").addClass("active");
+        $("li.vih").addClass("active");
     });
 </script>
 <script type="text/javascript">
@@ -274,6 +278,10 @@
         var parametros = {sSurveyUrl: "${consultaFichasVihURL}", sSurveyEditUrl : "${editarFichasVihURL}", sUnidadesUrl: "${unidadesURL}"};
         SearchVih.init(parametros);
     });
+    function Nuevo(){
+        alert("Nuevo");
+
+    }
 </script>
 <!-- END JAVASCRIPTS -->
 </body>
