@@ -37,4 +37,11 @@
         display: none !important;
         visibility: hidden !important;
     }
+    .input-group-addon{
+        color: #A2A2A2 !important;
+        background-color: #ffffff !important;
+    }
+    .select2-arrow {
+        background: none repeat scroll 0 0 #ffffff !important;
+    }
 </style>
