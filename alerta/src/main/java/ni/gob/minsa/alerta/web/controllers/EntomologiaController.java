@@ -183,7 +183,7 @@ public class EntomologiaController {
         String idMaestro = null;
 
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
             json = br.readLine();
 
             //Recuperando Json enviado desde el cliente
@@ -415,7 +415,7 @@ public class EntomologiaController {
         String idMaestro = null;
         try {
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
             if (br != null) {
                 json = br.readLine();
             }
@@ -623,7 +623,7 @@ public class EntomologiaController {
         String strDetalle = "";
 
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
             if (br != null) {
                 json = br.readLine();
             }
@@ -887,8 +887,8 @@ public class EntomologiaController {
         try {
             urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
-            //if (urlValidacion.isEmpty())
-                //urlValidacion = seguridadService.validarAutorizacionUsuario(request, UtilitySecurity.SYSTEM_CODE);
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE,false);
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
@@ -976,7 +976,7 @@ public class EntomologiaController {
         String strMaestro = "";
         try {
             boolean existeMaestro=true;
-            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
             json = br.readLine();
             //Recuperando Json enviado desde el cliente
             JsonObject jsonpObject = new Gson().fromJson(json, JsonObject.class);
@@ -1063,7 +1063,7 @@ public class EntomologiaController {
         String strDetalle = "";
         try {
            boolean existeMaestro=true;
-            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
             if (br != null) {
                 json = br.readLine();
             }
@@ -1160,7 +1160,7 @@ public class EntomologiaController {
         String strDetalle = "";
         try {
             boolean existeMaestro = true;
-            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
             if (br != null) {
                 json = br.readLine();
             }
@@ -1285,7 +1285,7 @@ public class EntomologiaController {
         String strDetalle = "";
         try {
             boolean existeMaestro = true;
-            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
             if (br != null) {
                 json = br.readLine();
             }

@@ -245,6 +245,9 @@ public class SeguridadService {
 
         if (infoSesion != null) {
             nombreUsuario = infoSesion.getNombre();
+        }else {
+            if (!seguridadHabilitada())
+                nombreUsuario = "usuariosis1";
         }
 
         return nombreUsuario;

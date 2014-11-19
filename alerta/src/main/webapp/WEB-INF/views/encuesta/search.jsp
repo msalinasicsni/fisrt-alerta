@@ -128,7 +128,7 @@
                                     <input id="blockUI_message" type="hidden" value="<spring:message code="blockUI.message"/>"/>
                                 </div>
                                 <div class="row">
-                                    <section class="col col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                    <section class="col col-xs-12 col-sm-6 col-md-2 col-lg-2">
                                         <label class="text-left txt-color-blue font-md">
                                             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.survey.model" />
                                         </label>
@@ -151,7 +151,7 @@
                                                     <span class="input-group-addon">
                                                          <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
-                                            <select path="codSilais" id="codSilais" name="codSilais"
+                                            <select id="codSilais" name="codSilais"
                                                     class="select2">
                                                 <option value=""><spring:message code="lbl.select" />...</option>
                                                 <c:forEach items="${entidades}" var="entidad">
@@ -160,7 +160,7 @@
                                             </select>
                                         </div>
                                     </section>
-                                    <section class="col col-xs-12 col-sm-8 col-md-4 col-lg-4">
+                                    <section class="col col-xs-12 col-sm-12 col-md-4 col-lg-4">
                                         <label class="text-left txt-color-blue font-md">
                                             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.health.unit" />
                                         </label>
@@ -173,21 +173,31 @@
                                             </select>
                                         </div>
                                     </section>
-                                    <section class="col col-xs-6 col-sm-2 col-md-1 col-lg-1">
-                                        <label class="text-left txt-color-blue font-md">
-                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.month" />
-                                        </label>
-                                        <label class="input">
-                                            <input type="number" id="mesEpi" name="mesEpi" path="mesEpi" placeholder="<spring:message code="lbl.month"/>" class="input-sm">
-                                        </label>
-                                    </section>
-                                    <section class="col col-xs-6 col-sm-2 col-md-1 col-lg-1">
-                                        <label class="text-left txt-color-blue font-md">
-                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.year" />
-                                        </label>
-                                        <label class="input">
-                                            <input type="number" id="anioEpi" name="anioEpi" path="anioEpi" placeholder="<spring:message code="lbl.year"/>" class="input-sm">
-                                        </label>
+                                    <section class="col col-xs-6 col-sm-6 col-md-3 col-lg-3">
+                                        <section class="col col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <label class="text-left txt-color-blue font-md">
+                                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.month" />
+                                            </label>
+                                            <div class="">
+                                                <label class="input">
+                                                    <i class="icon-prepend fa fa-pencil fa-fw"></i><i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                                                    <input type="text" id="mesEpi" name="mesEpi" placeholder="<spring:message code="lbl.month"/>" class="form-control">
+                                                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.month.survey"/></b>
+                                                </label>
+                                            </div>
+                                        </section>
+                                        <section class="col col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <label class="text-left txt-color-blue font-md">
+                                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.year" />
+                                            </label>
+                                            <div class="">
+                                                <label class="input">
+                                                    <i class="icon-prepend fa fa-pencil fa-fw"></i><i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                                                    <input type="text" id="anioEpi" name="anioEpi" placeholder="<spring:message code="lbl.year"/>" class="input-sm">
+                                                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.year.survey"/></b>
+                                                </label>
+                                            </div>
+                                        </section>
                                     </section>
                                 </div>
                             </fieldset>
@@ -297,11 +307,17 @@
 <!-- JQUERY BLOCK UI -->
 <spring:url value="/resources/js/plugin/jquery-blockui/jquery.blockUI.js" var="jqueryBlockUi" />
 <script src="${jqueryBlockUi}"></script>
+
+<!-- JQUERY INPUT MASK -->
+<spring:url value="/resources/js/plugin/jquery-inputmask/jquery.inputmask.bundle.min.js" var="jqueryInputMask" />
+<script src="${jqueryInputMask}"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <spring:url value="/resources/scripts/encuestas/survey-search.js" var="surveySearch" />
 <script src="${surveySearch}"></script>
+<spring:url value="/resources/scripts/utilidades/handleInputMask.js" var="handleInputMask" />
+<script src="${handleInputMask}"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
     $(function () {
@@ -313,6 +329,7 @@
         pageSetUp();
         var parametros = {sSurveyUrl: "${consultaEncuestasURL}", sSurveyEditUrl : "${editarEncuestasURL}", sUnidadesUrl: "${unidadesURL}"};
         SearchSurvey.init(parametros);
+        handleInputMasks();
         $("li.entomologia").addClass("open");
         $("li.entosearch").addClass("active");
         if("top"!=localStorage.getItem("sm-setmenu")){

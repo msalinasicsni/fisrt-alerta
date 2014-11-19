@@ -43,7 +43,7 @@ var SearchPerson = function () {
 					responsiveHelper_dt_basic.respond();
 				}
 			});
-            
+
             $('#search-form').validate({
     			// Rules for form validation
     				rules : {
@@ -71,18 +71,27 @@ var SearchPerson = function () {
     				ajax : 'true'
     			}, function(data) {
     				var len = data.length;
-    				for ( var i = 0; i < len; i++) {
+                    for ( var i = 0; i < len; i++) {
 						var actionUrl = parametros.sActionUrl + '/'+data[i].personaId;
 						table1.fnAddData(
     							[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].municipioResidencia.nombre,'<a href='+ actionUrl + ' class="btn btn-default btn-xs"><i class="fa fa-mail-forward"></i></a>']);
+
+                        /*var actionUrl = parametros.sActionUrl + '/'+data[i].personaId;
+                        table1.fnAddData(
+                            [data[i].identNumero, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].muniResiNombre,'<a href='+ actionUrl + ' class="btn btn-default btn-xs"><i class="fa fa-mail-forward"></i></a>']);*/
     				}
-    				setTimeout($.unblockUI, 500); 
+                    setTimeout($.unblockUI, 500);
     			})
     			.fail(function() {
 				    alert( "error" );
-				    setTimeout($.unblockUI, 5); 
+				    setTimeout($.unblockUI, 5);
+                        alert(" status: " + status + " er:" + er);
 				});
             };
+
+            $("#create-person").click(function(){
+                window.location.href = parametros.sCreatePersonUrl;
+            });
         }
     };
 
