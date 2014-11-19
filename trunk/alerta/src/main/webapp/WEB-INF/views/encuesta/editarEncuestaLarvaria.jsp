@@ -165,7 +165,7 @@
                                                     <span class="input-group-addon">
                                                          <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
-                <select path="codSilais" id="codSilais" name="codSilais" class="select2">
+                <select id="codSilais" name="codSilais" class="select2">
                     <option value=""><spring:message code="lbl.select" />...</option>
                     <c:forEach items="${entidades}" var="entidad">
                         <option value="${entidad.codigo}">${entidad.nombre}</option>
@@ -216,7 +216,7 @@
                                                     <span class="input-group-addon">
                                                         <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
-                <select  id="codigoDistrito" name="codigoDistrito" path="codigoDistrito" class="select2">
+                <select  id="codigoDistrito" name="codigoDistrito" class="select2">
                     <option value=""><spring:message code="lbl.select" />...</option>
                     <c:forEach items="${distritos}" var="distritos">
                         <option value="${distritos.codigo}">${distritos.valor}</option>
@@ -233,7 +233,7 @@
                                                     <span class="input-group-addon">
                                                         <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
-                <select  id="codigoArea" name="codigoArea"  path="codigoArea" class="select2">
+                <select  id="codigoArea" name="codigoArea" class="select2">
                     <option value=""><spring:message code="lbl.select" />...</option>
                     <c:forEach items="${areas}" var="areas">
                         <option value="${areas.codigo}">${areas.valor}</option>
@@ -249,7 +249,7 @@
                                                     <span class="input-group-addon">
                                                         <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
-                <select id="codOrdinal" name="codOrdinal"  path="codOrdinal" class="select2">
+                <select id="codOrdinal" name="codOrdinal" class="select2">
                     <option value=""><spring:message code="lbl.select" />...</option>
                     <c:forEach items="${ordinales}" var="ordinales">
                         <option value="${ordinales.codigo}">${ordinales.valor}</option>
@@ -265,7 +265,7 @@
                                                     <span class="input-group-addon">
                                                         <i class="fa fa-location-arrow fa-fw"></i>
                                                     </span>
-                <select id="codProcedencia" name="codProcedencia" path="codProcedencia" class="select2">
+                <select id="codProcedencia" name="codProcedencia" class="select2">
                     <option value=""><spring:message code="lbl.select" />...</option>
                     <c:forEach items="${procedencias}" var="procedencias">
                         <option value="${procedencias.codigo}">${procedencias.valor}</option>
@@ -279,51 +279,95 @@
             <label class="text-left txt-color-blue font-md">
                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.start.date" />
             </label>
-            <div class="input-group">
+            <div class="">
+                <!--<span class="input-group-addon">
+                    <i class="fa fa-pencil fa-fw"></i>
+		        </span>-->
+                <label class="input">
+                <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-calendar fa-fw"></i>
                 <input type="text" name="fecInicioEncuesta" id="fecInicioEncuesta"
                        placeholder="<spring:message code="lbl.date.format"/>"
                        class="form-control from_date" data-date-end-date="+0d" value="${fechaInicioEncuesta}" />
-                                                <span class="input-group-addon"> <i    class="fa fa-calendar fa-fw"></i>
-                                                </span>
+                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.starddate.survey"/></b>
+                </label>
+                                                <!--<span class="input-group-addon"> <i    class="fa fa-calendar fa-fw"></i>
+                                                </span>-->
             </div>
         </section>
         <section class="col col-sm-6 col-md-4 col-lg-2">
             <label class="text-left txt-color-blue font-md">
                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.end.date" />
             </label>
-            <div class="input-group">
+            <div class="">
+                <!--<span class="input-group-addon">
+                    <i class="fa fa-pencil fa-fw"></i>
+		        </span>-->
+                <label class="input">
+                <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-calendar fa-fw"></i>
                 <input type="text" name="fecFinEncuesta" id="fecFinEncuesta"
                        placeholder="<spring:message code="lbl.date.format"/>"
                        class="form-control to_date" data-date-end-date="+0d" value="${fechaFinEncuesta}"/>
-                                                    <span class="input-group-addon"> <i class="fa fa-calendar fa-fw"></i>
-                                                    </span>
+                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enddate.survey"/></b>
+                </label>
+                                                    <!--<span class="input-group-addon"> <i class="fa fa-calendar fa-fw"></i>
+                                                    </span>-->
             </div>
         </section>
-        <section class="col col-sm-12 col-md-4 col-lg-4">
+        <section class="col col-sm-12 col-md-6 col-lg-6">
             <!--<div class="col col-12">-->
             <section class="col col-3">
                 <label class="text-left txt-color-blue font-md">
                     <spring:message code="lbl.month" />
                 </label>
-                <label class="input">
-                    <input type="number" id="mesEpi" name="mesEpi" path="mesEpi" disabled="true" placeholder="<spring:message code="lbl.month"/>" class="input-sm">
+                <div class="">
+                        <!--<span class="input-group-addon">
+                            <i class="fa fa-pencil fa-fw"></i>
+                        </span>-->
+                    <label class="input">
+                        <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                    <input type="text" id="mesEpi" name="mesEpi" readonly placeholder="<spring:message code="lbl.month"/>" class="form-control">
+                        <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.month.survey"/></b>
                 </label>
+                        <!--<span class="input-group-addon">
+                            <i class="fa fa-sort-numeric-asc fa-fw"></i>
+                        </span>-->
+                </div>
             </section>
             <section class="col col-3">
                 <label class="text-left txt-color-blue font-md">
                     <spring:message code="lbl.year" />
                 </label>
-                <label class="input">
-                    <input type="number" id="anioEpi" name="anioEpi" path="anioEpi" disabled="true" placeholder="<spring:message code="lbl.year"/>" class="input-sm">
+                <div class="">
+                        <!--<span class="input-group-addon">
+                            <i class="fa fa-pencil fa-fw"></i>
+                        </span>-->
+                    <label class="input">
+                        <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                    <input type="text" id="anioEpi" name="anioEpi" readonly placeholder="<spring:message code="lbl.year"/>" class="form-control">
+                        <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.year.survey"/></b>
                 </label>
+                        <!--<span class="input-group-addon">
+                            <i class="fa fa-sort-numeric-asc fa-fw"></i>
+                        </span>-->
+                </div>
             </section>
-            <section class="col col-6">
+            <section class="col col-4">
                 <label class="text-left txt-color-blue font-md">
                     <spring:message code="lbl.ew" />
                 </label>
-                <label class="input" >
-                    <input type="number" id="semanaEpi" name="semanaEpi" path="semanaEpi" disabled="true" placeholder="<spring:message code="lbl.ew"/>" class="input-sm">
+                <div class="">
+                        <!--<span class="input-group-addon">
+                            <i class="fa fa-pencil fa-fw"></i>
+                        </span>-->
+                    <label class="input" >
+                        <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                    <input type="text" id="semanaEpi" name="semanaEpi" readonly placeholder="<spring:message code="lbl.ew"/>" class="form-control">
+                        <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.ew"/></b>
                 </label>
+                                    <!--<span class="input-group-addon">
+                            <i class="fa fa-sort-numeric-asc fa-fw"></i>
+                        </span>-->
+                </div>
             </section>
             <!--</div>-->
         </section>
@@ -332,7 +376,7 @@
 <fieldset>
     <div class="row">
         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-            <a class="btn btn-primary btn-lg pull-right header-btn hidden-mobile" id="btnActualizarMae"><i class="fa fa-circle-arrow-up fa-lg"></i><spring:message code="act.ento.update.header.survey" /></a>
+            <a class="btn btn-primary btn-lg pull-left header-btn hidden-mobile" id="btnActualizarMae"><i class="fa fa-circle-arrow-up fa-lg"></i><spring:message code="act.ento.update.header.survey" /></a>
         </div>
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
             <input id="msg_location_updated" type="hidden" value="<spring:message code="msg.ento.location.updated.successfully"/>"/>
@@ -520,7 +564,7 @@
 	    					        <span class="input-group-addon">
                                         <i class="fa fa-location-arrow fa-fw"></i>
 		    				        </span>
-            <select class="select2" id="codigoSector" name="codigoSector" path="codigoSector">
+            <select class="select2" id="codigoSector" name="codigoSector">
                 <option value=""><spring:message code="lbl.select" />...</option>
                 <c:forEach items="${sectores}" var="sectores">
                     <option value="${sectores.codigo}">${sectores.nombre}</option>
@@ -536,7 +580,7 @@
 	    					        <span class="input-group-addon">
                                         <i class="fa fa-location-arrow fa-fw"></i>
 		    				        </span>
-            <select class="select2" id="codigoLocalidad" name="codigoLocalidad" path="codigoLocalidad">
+            <select class="select2" id="codigoLocalidad" name="codigoLocalidad">
                 <option value=""><spring:message code="lbl.select" />...</option>
                 <!--<c:forEach items="${localidades}" var="localidades">
                         <option value="${localidades.codigo}">${localidades.nombre}</option>
@@ -555,7 +599,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtPila" id="txtPila">
+                            <input type="text" name="txtPila" id="txtPila">
                         </label>
                     </div>
                 </section>
@@ -565,7 +609,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtLlanta" id="txtLlanta">
+                            <input type="text" name="txtLlanta" id="txtLlanta">
                         </label>
                     </div>
                 </section>
@@ -575,7 +619,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtBarril" id="txtBarril">
+                            <input type="text" name="txtBarril" id="txtBarril">
                         </label>
                     </div>
                 </section>
@@ -585,7 +629,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtFlorero" id="txtFlorero">
+                            <input type="text" name="txtFlorero" id="txtFlorero">
                         </label>
                     </div>
                 </section>
@@ -595,7 +639,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtBebedero" id="txtBebedero">
+                            <input type="text" name="txtBebedero" id="txtBebedero">
                         </label>
                     </div>
                 </section>
@@ -605,7 +649,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtArt_Esp" id="txtArt_Esp">
+                            <input type="text" name="txtArt_Esp" id="txtArt_Esp">
                         </label>
                     </div>
                 </section>
@@ -617,7 +661,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtO_Dep" id="txtO_Dep">
+                            <input type="text" name="txtO_Dep" id="txtO_Dep">
                         </label>
                     </div>
                 </section>
@@ -627,7 +671,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtCister" id="txtCister">
+                            <input type="text" name="txtCister" id="txtCister">
                         </label>
                     </div>
                 </section>
@@ -637,7 +681,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtInodoro" id="txtInodoro">
+                            <input type="text" name="txtInodoro" id="txtInodoro">
                         </label>
                     </div>
                 </section>
@@ -647,7 +691,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtBarro" id="txtBarro">
+                            <input type="text" name="txtBarro" id="txtBarro">
                         </label>
                     </div>
                 </section>
@@ -657,7 +701,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtPlanta" id="txtPlanta">
+                            <input type="text" name="txtPlanta" id="txtPlanta">
                         </label>
                     </div>
                 </section>
@@ -667,7 +711,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtArbol" id="txtArbol">
+                            <input type="text" name="txtArbol" id="txtArbol">
                         </label>
                     </div>
                 </section>
@@ -679,7 +723,7 @@
                     </label>
                     <div class="">
                         <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                            <input type="number" name="txtPozo" id="txtPozo">
+                            <input type="text" name="txtPozo" id="txtPozo">
                         </label>
                     </div>
                 </section>
@@ -691,8 +735,9 @@
             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.species.Aegypti" />
         </label>
         <div class="">
-            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                <input type="number" name="txtAedesAegyti" id="txtAedesAegyti">
+            <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="txtAedesAegyti" id="txtAedesAegyti" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.numberspecie"/> <spring:message code="lbl.ento.species.Aegypti"/></b>
             </label>
         </div>
     </section>
@@ -701,8 +746,9 @@
             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.species.Albopic" />
         </label>
         <div class="">
-            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                <input type="number" name="txtAedesAlbopic" id="txtAedesAlbopic">
+            <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="txtAedesAlbopic" id="txtAedesAlbopic" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.numberspecie"/> <spring:message code="lbl.ento.species.Albopic"/></b>
             </label>
         </div>
     </section>
@@ -711,8 +757,9 @@
             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.species.CulexQuinque" />
         </label>
         <div class="">
-            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                <input type="number" name="txtCulexQuinque" id="txtCulexQuinque">
+            <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="txtCulexQuinque" id="txtCulexQuinque" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.numberspecie"/> <spring:message code="lbl.ento.species.CulexQuinque"/></b>
             </label>
         </div>
     </section>
@@ -723,8 +770,9 @@
             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.species.CulexNigrip" />
         </label>
         <div class="">
-            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                <input type="number" name="txtCulexNigrip" id="txtCulexNigrip">
+            <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="txtCulexNigrip" id="txtCulexNigrip" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.numberspecie"/> <spring:message code="lbl.ento.species.CulexNigrip"/></b>
             </label>
         </div>
     </section>
@@ -733,8 +781,9 @@
             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.species.CulexCoronat" />
         </label>
         <div class="">
-            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                <input type="number" name="txtCulexCoronat" id="txtCulexCoronat">
+            <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="txtCulexCoronat" id="txtCulexCoronat" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.numberspecie"/> <spring:message code="lbl.ento.species.CulexCoronat"/></b>
             </label>
         </div>
     </section>
@@ -743,8 +792,9 @@
             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.species.CulexErratico" />
         </label>
         <div class="">
-            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                <input type="number" name="txtCulexErratico" id="txtCulexErratico">
+            <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="txtCulexErratico" id="txtCulexErratico" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.numberspecie"/> <spring:message code="lbl.ento.species.CulexErratico"/></b>
             </label>
         </div>
     </section>
@@ -755,8 +805,9 @@
             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.species.CulexTarsalis" />
         </label>
         <div class="">
-            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                <input type="number" name="txtCulexTarsalis" id="txtCulexTarsalis">
+            <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="txtCulexTarsalis" id="txtCulexTarsalis" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.numberspecie"/> <spring:message code="lbl.ento.species.CulexTarsalis"/></b>
             </label>
         </div>
     </section>
@@ -764,8 +815,9 @@
         <label class="txt-color-blue font-md"><i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.species.CulexFatigans" />
         </label>
         <div class="">
-            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                <input type="number" name="txtCulexFatigans" id="txtCulexFatigans">
+            <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="txtCulexFatigans" id="txtCulexFatigans" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.numberspecie"/> <spring:message code="lbl.ento.species.CulexFatigans"/></b>
             </label>
         </div>
     </section>
@@ -773,8 +825,9 @@
         <label class=" txt-color-blue font-md"><i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.species.CulexAlbim" />
         </label>
         <div class="">
-            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
-                <input type="number" name="txtAnophAlbim" id="txtAnophAlbim">
+            <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="txtAnophAlbim" id="txtAnophAlbim" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.numberspecie"/> <spring:message code="lbl.ento.species.CulexAlbim"/></b>
             </label>
         </div>
     </section>
@@ -835,6 +888,10 @@
 <!-- JQUERY BLOCK UI -->
 <spring:url value="/resources/js/plugin/jquery-blockui/jquery.blockUI.js" var="jqueryBlockUi" />
 <script src="${jqueryBlockUi}"></script>
+
+<!-- JQUERY INPUT MASK -->
+<spring:url value="/resources/js/plugin/jquery-inputmask/jquery.inputmask.bundle.min.js" var="jqueryInputMask" />
+<script src="${jqueryInputMask}"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <spring:url value="/resources/scripts/utilidades/seleccionUnidad.js" var="selecUnidad" />
@@ -843,7 +900,8 @@
 <script src="${surveyEditLarva}"></script>
 <spring:url value="/resources/scripts/utilidades/handleDatePickers.js" var="handleDatePickers" />
 <script src="${handleDatePickers}"></script>
-
+<spring:url value="/resources/scripts/utilidades/handleInputMask.js" var="handleInputMask" />
+<script src="${handleInputMask}"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
     $(function () {
@@ -888,6 +946,7 @@
         EditLarvariaSurvey.init(parametros);
         SeleccionUnidad.init(parametros);
         handleDatePickers("${pageContext.request.locale.language}");
+        handleInputMasks();
         $("li.entomologia").addClass("open");
         $("li.entosearch").addClass("active");
         if("top"!=localStorage.getItem("sm-setmenu")){
