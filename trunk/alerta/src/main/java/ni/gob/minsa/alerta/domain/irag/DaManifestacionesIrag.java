@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 public class DaManifestacionesIrag implements Serializable {
 
     private Integer idManifestacion;
-    private DaIrag idIrag;
+    private DaIrag idNotificacion;
     private ManifestacionClinica codManifestacion;
     private String otraManifestacion;
     private Timestamp fechaRegistro;
@@ -34,12 +34,17 @@ public class DaManifestacionesIrag implements Serializable {
         this.idManifestacion = idManifestacion;
     }
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="ID_IRAG", referencedColumnName = "ID_IRAG")
-    @ForeignKey(name = "ID_IRAG_MCLIN_FK")
-    public DaIrag getIdIrag() {  return idIrag; }
 
-    public void setIdIrag(DaIrag idIrag) { this.idIrag = idIrag;     }
+    @ManyToOne(optional=false)
+    @JoinColumn(name="ID_NOTIFICACION", referencedColumnName = "ID_NOTIFICACION")
+    @ForeignKey(name = "ID_NOTI_MCLIN_FK")
+    public DaIrag getIdNotificacion() {
+        return idNotificacion;
+    }
+
+    public void setIdNotificacion(DaIrag idNotificacion) {
+        this.idNotificacion = idNotificacion;
+    }
 
     @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
     @JoinColumn(name="COD_MANIFESTACION", referencedColumnName = "CODIGO")

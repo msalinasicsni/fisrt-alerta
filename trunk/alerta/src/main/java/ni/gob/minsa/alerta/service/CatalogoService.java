@@ -2,6 +2,9 @@ package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.irag.*;
+import ni.gob.minsa.alerta.domain.muestra.EstadoOrdenEx;
+import ni.gob.minsa.alerta.domain.muestra.TipoMx;
+import ni.gob.minsa.alerta.domain.notificacion.TipoNotificacion;
 import ni.gob.minsa.alerta.domain.persona.*;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.*;
 import ni.gob.minsa.alerta.domain.vih.*;
@@ -198,6 +201,28 @@ public class CatalogoService {
     }
 
     @SuppressWarnings("unchecked")
+    public List<ClasificacionFinalNV> getClasificacionFinalNV(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM ClasificacionFinalNV cla where cla.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ClasificacionFinalNB> getClasificacionFinalNB(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM ClasificacionFinalNB clasi where clasi.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+
+    }
+
+    @SuppressWarnings("unchecked")
     public List<Vacuna> getVacuna(){
         //Retrieve session Hibernate
         Session session = sessionFactory.getCurrentSession();
@@ -276,6 +301,50 @@ public class CatalogoService {
         Session session = sessionFactory.getCurrentSession();
         //Create a hibernate query (HQL)
         Query query = session.createQuery("FROM ManifestacionClinica mani where mani.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<TipoMx> getTipoMuestra(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoMx tpmx where tpmx.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<TipoMx> getEstadoMx(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM EstadoMx est where est.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<TipoNotificacion> getTipoNotificacion(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoNotificacion noti where noti.pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<EstadoOrdenEx> getEstadoOrdenEx(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM EstadoOrdenEx est where est.pasivo = false order by orden");
         //retrieve all
         return query.list();
 
@@ -386,6 +455,24 @@ public class CatalogoService {
         Query query = session.getNamedQuery("getClasificacionFinalByCodigo").setString("pCodigo", clas);
         //Retrieve all
         return (ClasificacionFinal) query.uniqueResult();
+    }
+
+    public ClasificacionFinalNV getClasificacionFinalNV (String cla){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getClasificacionFinalNVByCodigo").setString("pCodigo", cla);
+        //Retrieve all
+        return (ClasificacionFinalNV) query.uniqueResult();
+    }
+
+    public ClasificacionFinalNB getClasificacionFinalNB (String clasi){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getClasificacionFinalNBByCodigo").setString("pCodigo", clasi);
+        //Retrieve all
+        return (ClasificacionFinalNB) query.uniqueResult();
     }
 
     public Vacuna getVacuna (String vac){
@@ -813,6 +900,45 @@ public class CatalogoService {
         Query query = session.createQuery("FROM Identificacion where pasivo = false order by orden");
         //retrieve all
         return query.list();
+    }
+
+
+
+    public TipoMx getTipoMuestra (String tmx){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getTipoMxByCodigo").setString("pCodigo", tmx);
+        //Retrieve all
+        return (TipoMx) query.uniqueResult();
+    }
+
+    public TipoMx getEstadoMx (String tmx){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getEstadoMxByCodigo").setString("pCodigo", tmx);
+        //Retrieve all
+        return (TipoMx) query.uniqueResult();
+    }
+
+    public TipoNotificacion getTipoNotificacion (String tpNoti){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getTipoNotifCodigo").setString("pCodigo", tpNoti);
+        //Retrieve all
+        return (TipoNotificacion) query.uniqueResult();
+    }
+
+
+    public EstadoOrdenEx getEstadoOrdenEx(String est){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getEstadoOrdenExByCodigo").setString("pCodigo", est);
+        //Retrieve all
+        return (EstadoOrdenEx) query.uniqueResult();
     }
 
 }

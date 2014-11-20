@@ -68,6 +68,15 @@
                     </li>
                 </ul>
             </li>
+            <li class="samples">
+                <a href="#" title="<spring:message code="menu.samples" />"><i class="fa fa-lg fa-fw fa-flask"></i> <span class="menu-item-parent"><spring:message code="menu.samples" /></span></a>
+                <ul>
+                    <li class="tomaMx">
+                        <a href="<spring:url value="/tomaMx/search" htmlEscape="true "/>" title="<spring:message code="menu.taking.sample" />"><i class="fa fa-lg fa-fw fa-eyedropper"></i> <spring:message code="menu.taking.sample" /></a>
+                    </li>
+
+                </ul>
+            </li>
             <li class="entomologia">
                 <a href="#" title="<spring:message code="menu.ento" />"><i class="fa fa-lg fa-fw fa-bug"></i> <span class="menu-item-parent"><spring:message code="menu.ento" /></span></a>
                 <ul>

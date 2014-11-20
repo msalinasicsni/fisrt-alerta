@@ -57,7 +57,7 @@ var SeleccionUnidad = function () {
             				var html='<option value=""></option>';
             				var len = data.length;
             				for ( var i = 0; i < len; i++) {
-            					html += '<option value="' + data[i].codigoNacional + '">'
+            					html += '<option value="' + data[i].codigo + '">'
             							+ data[i].nombre + '</option>';
             				}
             				html += '</option>';

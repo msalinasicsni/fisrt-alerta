@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.irag.DaIrag;
+import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.Session;
@@ -30,6 +31,7 @@ public class DaIragService {
      * Retorna las fichas activas
      *
      */
+    @SuppressWarnings("unchecked")
     public List<DaIrag> getAllFormActivos() {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("FROM DaIrag vi where vi.anulada = false ");
@@ -46,27 +48,20 @@ public class DaIragService {
 
         Session session = sessionFactory.getCurrentSession();
 
-        Query query = session.createQuery("FROM DaIrag vi where vi.idIrag = '" + id + "'");
+        Query query = session.createQuery("FROM DaIrag vi where vi.idNotificacion = '" + id + "'");
         DaIrag fichaVI = (DaIrag) query.uniqueResult();
         return  fichaVI;
 
     }
 
 
-    /**
-     * Agrega Ficha Vigilancia Integrada
-     *
-     */
-    public String addIrag(DaIrag dto) throws Exception {
-        String idIrag = null;
-        if (dto != null){
-            Session session = sessionFactory.getCurrentSession();
-            idIrag = (String)session.save(dto);
 
-    }else{
-            throw new Exception("DaIrag null");
-        }
-        return idIrag;
+    /**
+     * Agrega Notificacion irag
+     */
+    public void addNotificationIrag(DaIrag irag) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(irag);
     }
     /**
      * Actualiza Ficha Vigilancia Integrada
@@ -78,13 +73,6 @@ public class DaIragService {
         session.update(vigIntegrada);
     }
 
-    @SuppressWarnings("unchecked")
-    public List<DaIrag> getDaIragPersona(long idPerson){
-        Session session = sessionFactory.getCurrentSession();
-        return session.createCriteria(DaIrag.class)
-                .add(Restrictions.eq("persona.personaId", idPerson))
-                .list();
-    }
 
 
 
