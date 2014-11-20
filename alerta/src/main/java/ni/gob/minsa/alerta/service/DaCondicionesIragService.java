@@ -29,7 +29,7 @@ public class DaCondicionesIragService {
     */
     public DaCondicionesPreviasIrag searchConditionRecord(String condicion, String id){
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM DaCondicionesPreviasIrag con where con.codCondicion ='"+condicion+"' and  con.idIrag = '"+id+"' and con.pasivo = false");
+        Query query = session.createQuery("FROM DaCondicionesPreviasIrag con where con.codCondicion ='"+condicion+"' and  con.idNotificacion = '"+id+"' and con.pasivo = false");
         DaCondicionesPreviasIrag cond = (DaCondicionesPreviasIrag) query.uniqueResult();
         return cond;
     }
@@ -41,7 +41,7 @@ public class DaCondicionesIragService {
 
     public List<DaCondicionesPreviasIrag> getAllConditionsByIdIrag(String id){
 
-        String query = "select cond FROM DaCondicionesPreviasIrag cond where cond.idIrag = :id and cond.pasivo = :pasivo";
+        String query = "select cond FROM DaCondicionesPreviasIrag cond where cond.idNotificacion = :id and cond.pasivo = :pasivo";
         org.hibernate.Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
         q.setParameter("pasivo", false);

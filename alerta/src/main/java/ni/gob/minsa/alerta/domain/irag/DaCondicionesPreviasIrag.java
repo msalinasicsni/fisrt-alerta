@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 public class DaCondicionesPreviasIrag implements Serializable {
 
     private Integer idCondicion;
-    private DaIrag idIrag;
+    private DaIrag idNotificacion;
     private CondicionPrevia codCondicion;
     private Integer semanasEmbarazo;
     private String otraCondicion;
@@ -33,12 +33,15 @@ public class DaCondicionesPreviasIrag implements Serializable {
 
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="ID_IRAG", referencedColumnName = "ID_IRAG")
-    @ForeignKey(name = "ID_IRAG_CPRE_FK")
+    @JoinColumn(name="ID_NOTIFICACION", referencedColumnName = "ID_NOTIFICACION")
+    @ForeignKey(name = "ID_NOTI_CPRE_FK")
+    public DaIrag getIdNotificacion() {
+        return idNotificacion;
+    }
 
-    public DaIrag getIdIrag() { return idIrag; }
-
-    public void setIdIrag(DaIrag idIrag) { this.idIrag = idIrag; }
+    public void setIdNotificacion(DaIrag idNotificacion) {
+        this.idNotificacion = idNotificacion;
+    }
 
 
     @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)

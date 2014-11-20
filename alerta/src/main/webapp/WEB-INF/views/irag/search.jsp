@@ -194,7 +194,7 @@
 	<script src="${jqueryValidate}"></script>
 	<spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
 	<spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>				
-	<script src="${jQValidationLoc}"/></script>
+	<script src="${jQValidationLoc}"></script>
 	<!-- JQUERY BLOCK UI -->
 	<spring:url value="/resources/js/plugin/jquery-blockui/jquery.blockUI.js" var="jqueryBlockUi" />
 	<script src="${jqueryBlockUi}"></script>
@@ -205,11 +205,14 @@
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<spring:url value="/personas/persons" var="sPersonUrl"/>
 	<spring:url value="/irag/search" var="sActionUrl"/>
+    <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
 			var parametros = {sPersonUrl: "${sPersonUrl}",
-					sActionUrl: "${sActionUrl}"};
+					sActionUrl: "${sActionUrl}",
+                    blockMess: "${blockMess}"
+            };
 			SearchPerson.init(parametros);
 	    	$("li.notificacion").addClass("open");
 	    	$("li.irageti").addClass("active");

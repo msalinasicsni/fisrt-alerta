@@ -83,15 +83,15 @@ var CreateIrag = function () {
 
 
 
-            var idIrag = $('#idIrag').val();
-            if (idIrag != null) {
-                $('#inVacIdIrag').val(idIrag).change();
-                $('#inCondIdIrag').val(idIrag).change();
-                $('#inManifIdIrag').val(idIrag).change();
+            var idNotificacion = $('#idNotificacion').val();
+            if (idNotificacion != null) {
+                $('#inVacIdNoti').val(idNotificacion).change();
+                $('#inCondIdNoti').val(idNotificacion).change();
+                $('#inManifIdNoti').val(idNotificacion).change();
 
-                getVaccines(idIrag);
-                getConditions(idIrag);
-                getManifestations(idIrag);
+                getVaccines(idNotificacion);
+                getConditions(idNotificacion);
+                getManifestations(idNotificacion);
             }
 
             //rango de fecha segun fecha de consulta
@@ -103,54 +103,6 @@ var CreateIrag = function () {
             });
 
 
-            //Filtro Unidad de Salud segun Silais seleccionado
-            $('#codMunicipio').click(function () {
-                $('#codUnidadAtencion option:first').prop("selected", true).change();
-                $.getJSON(parametros.unidadesUrl, {
-                    codMunicipio: $(this).val(),
-                    codSilais: $('#codSilaisAtencion').val(),
-                    ajax: 'true'
-                }, function (data) {
-                    var html = null;
-                    var len = data.length;
-                    html += '<option value=""><spring:message code="lbl.select" /></option>';
-                    for (var i = 0; i < len; i++) {
-                        html += '<option value="' + data[i].codigo + '">'
-                            + data[i].nombre
-                            + '</option>';
-
-                    }
-                    $('#codUnidadAtencion').html(html);
-
-                })
-
-            });
-
-            <!-- Filtro de Municipio segun silais seleccionado  -->
-
-                $('#codSilaisAtencion').change(function () {
-                    $('#codMunicipio option:first').prop("selected", true).change();
-
-                    $.getJSON(parametros.municipiosUrl, {
-                        idSilais: $(this).val(),
-                        ajax: 'true'
-                    }, function (data) {
-                        var html = null;
-                         html += '<option value=""><spring:message code="lbl.select" /></option>';
-                        var len = data.length;
-                        for (var i = 0; i < len; i++) {
-                            html += '<option value="' + data[i].codigoNacional + '">'
-                                + data[i].nombre
-                                + '</option>';
-                        }
-                        html += '</option>';
-                        $('#codMunicipio').html(html);
-                    });
-
-                });
-
-
-
             //filtro de Municipio segun departamento
             $('#departamento').click(function(){
                 $('#municipioResidencia option:first').prop("selected", true).change();
@@ -160,7 +112,7 @@ var CreateIrag = function () {
                     ajax: 'true'
                 }, function (data) {
                     var html = null;
-                    html += '<option value=""><spring:message code="lbl.select" /></option>';
+                    html += '<option value="">' + $('#msjSelect').val() + '</option>';
                     var len = data.length;
                     for (var i = 0; i < len; i++) {
                         html += '<option value="' + data[i].codigoNacional + '">'
@@ -181,7 +133,7 @@ var CreateIrag = function () {
                     ajax: 'true'
                 }, function (data) {
                     var html = null;
-                     html += '<option value=""><spring:message code="lbl.select" /></option>';
+                    html += '<option value="">' + $('#msjSelect').val() + '</option>';
                     var len = data.length;
                     for (var i = 0; i < len; i++) {
                         html += '<option value="' + data[i].codigo + '">'
@@ -196,24 +148,32 @@ var CreateIrag = function () {
             var wizard = $('#wizard').wizard();
 
             wizard.on('change', function (e, data) {
+                var autorizado = $('#autorizado').val();
                 var $valid = $("#wizard-1").valid();
-                if (!$valid) {
-                    $validator.focusInvalid();
-                    return false;
-                } else {
 
-                    fnGuardarFicha(data.step);
+                if(autorizado == "true"){
+                    if (!$valid) {
+                        $validator.focusInvalid();
+                        return false;
+                    }else{
+                        fnGuardarFicha(data.step);
+                    }
+
                 }
+
 
             });
 
             wizard.on('finished', function (e, data) {
+                var autorizado = $('#autorizado').val();
                 var $valid = $("#wizard-1").valid();
                 if (!$valid) {
                     $validator.focusInvalid();
                     return false;
                 } else {
-                   completeIrag();
+                    if(autorizado == "true"){
+                        completeIrag();
+                    }
                 }
 
             });
@@ -221,14 +181,16 @@ var CreateIrag = function () {
 
 
             function fnGuardarFicha(step) {
-
                 if(step == 2){
-                    fnguardarPersona();
-                    fnguardar();
+                        fnguardarPersona();
+                        fnguardar();
+
                 }
 
-                if (step != 4 && step!= 2) {
-                    fnguardar();
+                if (step != 4 && step != 2) {
+                        fnguardar();
+
+
                 }
 
 
@@ -277,10 +239,10 @@ var CreateIrag = function () {
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (data) {
-                        $('#idIrag').val(data.idIrag).change();
-                        $('#inVacIdIrag').val(data.idIrag).change();
-                        $('#inCondIdIrag').val(data.idIrag).change();
-                        $('#inManifIdIrag').val(data.idIrag).change();
+                        $('#idNotificacion').val(data.idNotificacion).change();
+                        $('#inVacIdNoti').val(data.idNotificacion).change();
+                        $('#inCondIdNoti').val(data.idNotificacion).change();
+                        $('#inManifIdNoti').val(data.idNotificacion).change();
                         $.smallBox({
                             title: $('#msjSuccessful').val() ,
                             content:  $('#disappear').val(),
@@ -454,7 +416,7 @@ var CreateIrag = function () {
             });
 
             //funcion guardar vacuna
-            function saveVaccine(idIrag)
+            function saveVaccine(idNotificacion)
             {
                 var datos_vac = $('#fVaccine').serialize();
                 $.ajax({
@@ -465,7 +427,7 @@ var CreateIrag = function () {
                     dataType: "json",
                     success: function (data) {
                         tableVac.fnClearTable();
-                        getVaccines(data.idIrag.idIrag);
+                        getVaccines(data.idNotificacion.idNotificacion);
 
                         $('#codVacuna option:first').prop("selected", true).change();
                         $('#tVacHib option:first').prop("selected", true).change();
@@ -481,7 +443,6 @@ var CreateIrag = function () {
                         $("#btnCancel").click();
                     },
                     error: function (result) {
-                        console.log(result);
                         alert("Error " + result.status + '' + result.statusText + result.s);
                       $.smallBox({
                             title : $('#msjErrorSaving').val() ,
@@ -494,17 +455,26 @@ var CreateIrag = function () {
                 });
             }
 
-            function getVaccines(idIrag) {
-
+            function getVaccines(idNotificacion) {
+                var autorizado = $('#autorizado').val();
                 $.getJSON(parametros.vaccines, {
-                    idIrag: idIrag,
+                    idNotificacion: idNotificacion,
                     ajax : 'true'
                 }, function(data) {
+
                     var len = data.length;
                     for ( var i = 0; i < len; i++) {
                         var overrideUrl = parametros.overrideVaccineUrl + '/'+data[i].idVacuna;
-                        tableVac.fnAddData(
-                            [data[i].codVacuna.valor, data[i].codTipoVacuna.valor, data[i].dosis, data[i].fechaUltimaDosis, '<a href='+ overrideUrl+ ' class="btn btn-default btn-xs btn-danger"><i class="fa fa-times"></i></a>']);
+
+                        if(autorizado == "true"){
+                            tableVac.fnAddData(
+                                [data[i].codVacuna.valor, data[i].codTipoVacuna.valor, data[i].dosis, data[i].fechaUltimaDosis, '<a href='+ overrideUrl+ ' class="btn btn-default btn-xs btn-danger"><i class="fa fa-times"></i></a>']);
+
+                        }else{
+                            tableVac.fnAddData(
+                                [data[i].codVacuna.valor, data[i].codTipoVacuna.valor, data[i].dosis, data[i].fechaUltimaDosis, '<a href='+ overrideUrl+ ' class="btn btn-default btn-xs btn-danger disabled" ><i class="fa fa-times"></i></a>' ]);
+
+                        }
 
                     }
                 })
@@ -573,7 +543,7 @@ var CreateIrag = function () {
                     dataType: "json",
                     success: function  (data) {
                         tableCond.fnClearTable();
-                         getConditions(data.idIrag.idIrag);
+                         getConditions(data.idNotificacion.idNotificacion);
 
                         $('#codCondicion option:first').prop("selected", true).change();
                         $("#semanasEmbarazo").val('').change();
@@ -593,15 +563,16 @@ var CreateIrag = function () {
                 });
             }
 
-            function getConditions(idIrag) {
+            function getConditions(idNotificacion) {
 
                 var datos_form = $('#wizard-1').serialize();
                 $.getJSON(parametros.conditions, {
-                    idIrag: idIrag,
+
+                    idNotificacion: idNotificacion,
                     ajax : 'true',
                     data:datos_form
                 }, function(data) {
-
+                    var autorizado = $('#autorizado').val();
                     var len = data.length;
                     for ( var i = 0; i < len; i++) {
                         var sem = "";
@@ -615,8 +586,15 @@ var CreateIrag = function () {
                         if (data[i].otraCondicion != null){
                             otraC = data[i].otraCondicion;
                         }
+
+                        if(autorizado == "true"){
                             tableCond.fnAddData(
                                 [data[i].codCondicion.valor + " " + sem + " " + otraC, '<a href='+ overrideUrl+ ' class="btn btn-default btn-xs btn-danger"><i class="fa fa-times"></i></a>']);
+                        }else{
+                            tableCond.fnAddData(
+                                [data[i].codCondicion.valor + " " + sem + " " + otraC, '<a href='+ overrideUrl+ ' class="btn btn-default btn-xs btn-danger disabled"><i class="fa fa-times"></i></a>']);
+                        }
+
                         }
 
                 })
@@ -673,7 +651,7 @@ var CreateIrag = function () {
                     success: function (data) {
 
                         tableMani.fnClearTable();
-                        getManifestations(data.idIrag.idIrag);
+                        getManifestations(data.idNotificacion.idNotificacion);
 
                         $('#codManifestacion option:first').prop("selected", true).change();
 
@@ -691,13 +669,14 @@ var CreateIrag = function () {
                 });
             }
 
-            function getManifestations(idIrag) {
+            function getManifestations(idNotificacion) {
                 var datos_form = $('#wizard-1').serialize();
                 $.getJSON(parametros.manifestations, {
-                    idIrag: idIrag,
+                    idNotificacion: idNotificacion,
                     ajax : 'true',
                     data: datos_form
                 }, function(data) {
+                    var autorizado = $('#autorizado').val();
                     var len = data.length;
                     for ( var i = 0; i < len; i++) {
                         var overrideUrl = parametros.overrideManifestationUrl + '/'+ data[i].idManifestacion;
@@ -707,8 +686,16 @@ var CreateIrag = function () {
                             otraMani = data[i].otraManifestacion;
                         }
 
-                        tableMani.fnAddData(
-                            [data[i].codManifestacion.valor + " " + otraMani, '<a href='+ overrideUrl+ ' class="btn btn-default btn-xs btn-danger"><i class="fa fa-times"></i></a>']);
+                        if(autorizado == "true"){
+                            tableMani.fnAddData(
+                                [data[i].codManifestacion.valor + " " + otraMani, '<a href='+ overrideUrl+ ' class="btn btn-default btn-xs btn-danger"><i class="fa fa-times"></i></a>']);
+
+                        }else{
+                            tableMani.fnAddData(
+                                [data[i].codManifestacion.valor + " " + otraMani, '<a href='+ overrideUrl+ ' class="btn btn-default btn-xs btn-danger disabled"><i class="fa fa-times"></i></a>']);
+
+                        }
+
 
                     }
                 })
@@ -725,20 +712,84 @@ var CreateIrag = function () {
             });
 
             $('#codClasFCaso').change(function(){
-                $('#dConfNB').fadeOut('slow');
-                $('#dViralEti').fadeOut('slow');
-                $('#dEtiAgents').fadeOut('slow');
+                $('#dNB').fadeOut('slow');
+                $('#sNV').fadeOut('slow');
+
 
                 //limpiar inputs
 
-                if($('#codClasFCaso option:selected').text() === "Confirmado NB"){
-                    $('#dConfNB').fadeIn('slow');
-                }else if($('#codClasFCaso option:selected').text() === "Confirmado NV"){
-                    $('#dViralEti').fadeIn('slow');
-                }else if($('#codClasFCaso option:selected').text() === "Coinfección Bacteriana y Viral"){
-                    $('#dEtiAgents').fadeIn('slow');
+                var clasi = $('#codClasFCaso').val();
+                var nb = "CLASFI|NB";
+                var nv = "CLASFI|NV";
+                var inad = "CLASFI|INAD";
+
+                if($.inArray(nb,clasi) !==-1){
+                    $('#dNB').fadeIn('slow');
+                }else{
+                    $('#codClasFDetalleNB option:first').prop("selected", true).change();
+                    $('#serotipificacion').val('').change();
+                    $('#agenteBacteriano').val('').change();
+                    $('#dNB').fadeOut('slow');
                 }
 
+                if($.inArray(nv,clasi) !==-1){
+                    $('#dNV').fadeIn('slow');
+                }else{
+                    $('#dNV').fadeOut('slow');
+                    $('#codClasFDetalleNV option:first').prop("selected", true).change();
+                    $('#agenteViral').val('').change();
+                }
+
+                if($.inArray(inad,clasi) !==-1){
+
+                    $("#codClasFCaso").find("option[value='CLASFI|NB']").remove();
+                    $('#codClasFDetalleNB option:first').prop("selected", true).change();
+                    $('#codClasFDetalleNV option:first').prop("selected", true).change();
+                    $('#serotipificacion').val('').change();
+                    $('#agenteBacteriano').val('').change();
+                    $('#agenteViral').val('').change();
+                    $("#codClasFCaso option[value='CLASFI|NB']").attr('disabled','disabled');
+                    $("#codClasFCaso option[value='CLASFI|NV']").attr('disabled','disabled');
+                    $("#codClasFCaso option[value='CLASFI|INAD']").attr('disabled','disabled');
+                }else{
+                    $("#codClasFCaso option[value='CLASFI|NB']").removeAttr('disabled');
+                    $("#codClasFCaso option[value='CLASFI|NV']").removeAttr('disabled');
+                    $("#codClasFCaso option[value='CLASFI|INAD']").removeAttr('disabled');
+                }
+
+            });
+
+
+
+
+            $('#codClasFDetalleNB').change(function(){
+
+                if($('#codClasFDetalleNB option:selected').text() === "Confirmado NB"){
+                    $('#dNBDet').fadeIn('slow');
+                }else{
+                    $('#dNBDet').fadeOut('slow');
+                    $('#serotipificacion').val('').change();
+                    $('#agenteBacteriano').val('').change();
+                }
+
+            });
+
+            $('#codClasFDetalleNV').change(function(){
+                if($('#codClasFDetalleNV option:selected').text() === "Confirmado NV"){
+                    $('#sNV').fadeIn('slow');
+                }else{
+                    $('#sNV').fadeOut('slow');
+                    $('#agenteViral').val('').change();
+                }
+
+
+            });
+
+            $('#codClasificacion').change(function(){
+                if($('#codClasificacion option:selected').text() === "ETI"){
+                    $('#step5').readOnly(true);
+                    $('#liStep5').readOnly(true);
+                }
             });
 
         }

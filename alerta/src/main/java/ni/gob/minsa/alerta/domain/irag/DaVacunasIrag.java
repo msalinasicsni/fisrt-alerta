@@ -20,7 +20,7 @@ public class DaVacunasIrag implements Serializable {
 
 
     private Integer idVacuna;
-    private DaIrag idIrag;
+    private DaIrag idNotificacion;
     private Vacuna codVacuna;
     private TipoVacuna codTipoVacuna;
     private Integer dosis;
@@ -30,25 +30,27 @@ public class DaVacunasIrag implements Serializable {
     private Usuarios usuario;
 
 
-@Id
-@GeneratedValue(strategy=GenerationType.AUTO)
-@Column(name = "ID_VACUNA", nullable = false, updatable = true, insertable = true, precision = 0)
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "ID_VACUNA", nullable = false, updatable = true, insertable = true, precision = 0)
     public Integer getIdVacuna() {
         return idVacuna;
     }
-
     public void setIdVacuna(Integer idVacuna) {
         this.idVacuna = idVacuna;
     }
 
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="ID_IRAG", referencedColumnName = "ID_IRAG")
-    @ForeignKey(name = "ID_IRAG_VAC_FK")
+    @ManyToOne()
+    @JoinColumn(name="ID_NOTIFICACION", referencedColumnName = "ID_NOTIFICACION")
+    @ForeignKey(name = "ID_NOTI_VAC_FK")
+    public DaIrag getIdNotificacion() {
+        return idNotificacion;
+    }
 
-    public DaIrag getIdIrag() { return idIrag; }
-
-    public void setIdIrag(DaIrag idIrag) { this.idIrag = idIrag; }
+    public void setIdNotificacion(DaIrag idNotificacion) {
+        this.idNotificacion = idNotificacion;
+    }
 
 
     @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)

@@ -32,6 +32,10 @@
 <spring:url value="/resources/css/datepicker.css" var="datepickerCss" />
 <link href="${datepickerCss}" rel="stylesheet" type="text/css"/>
 <!-- END DATE PICKER -->
+<!-- DATETIME PICKER -->
+<spring:url value="/resources/css/bootstrap-datetimepicker.css" var="datetimepickerCss" />
+<link href="${datetimepickerCss}" rel="stylesheet" type="text/css"/>
+
 <style>
     .select2-hidden-accessible {
         display: none !important;
