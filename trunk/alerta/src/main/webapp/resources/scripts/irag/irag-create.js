@@ -97,8 +97,12 @@ var CreateIrag = function () {
             //rango de fecha segun fecha de consulta
             $('#fechaConsulta').change(function() {
                 var fecha = $('#fechaConsulta').datepicker("getDate");
-                $('#fechaPrimeraConsulta').datepicker('setEndDate', fecha);
-                $('#fechaInicioSintomas').datepicker('setEndDate', fecha);
+
+                if(fecha != null){
+                    $('#fechaPrimeraConsulta').datepicker('setEndDate', fecha);
+                    $('#fechaInicioSintomas').datepicker('setEndDate', fecha);
+                }
+
 
             });
 
@@ -791,6 +795,16 @@ var CreateIrag = function () {
                     $('#liStep5').readOnly(true);
                 }
             });
+
+
+            $("#fechaNacimiento").change(
+                function() {
+                    if (this.val()!=null && this.val().length > 0) {
+                        $("#edad").val(getAge($("#fechaNacimiento").val()));
+                    }else{
+                        $("#edad").val('');
+                    }
+                });
 
         }
     };

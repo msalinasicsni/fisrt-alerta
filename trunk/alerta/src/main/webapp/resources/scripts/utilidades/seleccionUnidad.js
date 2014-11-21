@@ -44,7 +44,7 @@ var SeleccionUnidad = function () {
             			setTimeout($.unblockUI, 500);
             			});
         	
-        	$('#codMunicipio').change(
+        	$('#codMunicipio').click(
             		function() {
             			bloquearUI(parametros.blockMess);
             			$.getJSON(parametros.unidadesUrl, {
@@ -62,6 +62,7 @@ var SeleccionUnidad = function () {
             				}
             				html += '</option>';
             				$('#codUnidadAtencion').html(html);
+                            console.log("unidades cargadas");
             			});
             			setTimeout($.unblockUI, 500);
             			});
