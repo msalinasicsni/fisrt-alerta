@@ -273,21 +273,14 @@
                     ${hu}
                 </label>
 
-                <spring:message code="msg.select.hu" var="selectHU" />
-                <select data-placeholder="${selectHU}" name="codUnidadAtencion" id="codUnidadAtencion" class="select2">
-                    <option value=""></option>
-                    <c:forEach items="${uni}" var="unidad">
-                        <c:choose>
-                            <c:when test="${unidad.codigo eq noti.codUnidadAtencion.codigo}">
-                                <option selected value="${unidad.codigo}">${unidadad.nombre}</option>
-                            </c:when>
-                            <c:otherwise>
-                                <option value="${unidad.codigo}">${unidad.nombre}</option>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                </select>
 
+                <div class="input-group">
+                    <spring:message code="msg.select.hu" var="selectHU" />
+                    <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                    <select data-placeholder="${selectHU}" name="codUnidadAtencion" id="codUnidadAtencion" class="select2">
+                        <option selected value="${noti.codUnidadAtencion.codigo}">${noti.codUnidadAtencion.nombre}</option>
+                    </select>
+                </div>
             </section>
 
 
@@ -321,7 +314,7 @@
                     <spring:message var="consDate" code="lbl.first.cons.date"/>
 
                    <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar fa-fw"></i>
-                        <form:input path="fechaPrimeraConsulta" class="form-control date-picker" data-date-end-date="+0d" data-date-start-date="-30d"
+                        <form:input path="fechaPrimeraConsulta" class="form-control date-picker"
                                type="text" name="fechaPrimeraConsulta" id="fechaPrimeraConsulta" pattern="dd/MM/yyyy"
                         placeholder="${consDate}"/>
                     <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i>  <spring:message code="lbl.first.consultation.date"/></b>
@@ -455,7 +448,7 @@
             </label>
 
             <label class="input"> <i
-                    class="icon-prepend fa fa-calendar fa-fw"></i> <input readonly="true"
+                    class="icon-prepend fa fa-calendar fa-fw"></i> <input readonly="true" id="fechaNacimiento"
                                                                                cssStyle="background-color: #f0fff0"
                                                                                type="text" name="fechaNacimiento"
                                                                               value="${noti.persona.fechaNacimiento}" />
@@ -471,8 +464,8 @@
             <label class="input"> <i
                     class="icon-prepend fa fa-credit-card fa-fw"></i> <input readonly=""
                                                                              style="background-color: #f0fff0"
-                                                                             type="text" name="edadAnios"
-                                                                             id="edadAnios">
+                                                                             type="text" name="edad"
+                                                                             id="edad">
             </label>
         </section>
     </div>
@@ -1881,6 +1874,9 @@
 <script src="${selecUnidad}"></script>
 <!-- PARAMETROS LENGUAJE -->
 <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
+<!-- script calcular edad -->
+<spring:url value="/resources/scripts/utilidades/calcularEdad.js" var="calculateAge" />
+<script src="${calculateAge}"></script>
 
 <spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
 <spring:url value="/irag/saveIrag" var="sAddIragUrl"/>
@@ -1933,6 +1929,8 @@
         handleDatePickers("${pageContext.request.locale.language}");
         //asignar departamento segun municipio
         $("#departamento").val("${departamentoProce.codigoNacional}").change();
+        $('#fechaConsulta').change();
+
 
         if ($('#codUnidadAtencion').val() != "") {
             $("#codMunicipio").val("${municipio.codigoNacional}").change();
