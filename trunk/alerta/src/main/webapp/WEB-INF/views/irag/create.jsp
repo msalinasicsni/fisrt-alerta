@@ -8,6 +8,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <!-- BEGIN HEAD -->
 <head>
@@ -31,6 +32,10 @@
         a.disabled {
             pointer-events: none;
             cursor: default;
+        }
+
+        .datepicker {
+            z-index: 1065 !important;
         }
 
     </style>
@@ -197,16 +202,16 @@
         </h3>
 
     <fieldset>
-        <div hidden="hidden">
+        <div hidden="hidden" >
 
-            <label hidden="hidden" class="input"> <i
+            <label  class="input"> <i
                     class="icon-prepend fa fa-male fa-fw"></i> <input value="${noti.persona.personaId}" type="text" name="personaId"
                                                                           />
             </label>
 
-            <label hidden="hidden" class="input"> <i
-                    class="icon-prepend fa fa-male fa-fw"></i> <form:input type="text" id="idNotificacion" name="idNotificacion"
-                                                                           path="idNotificacion"/>
+            <label class="input"> <i
+                    class="icon-prepend fa fa-male fa-fw"></i> <input type="text" id="idNotificacion" name="idNotificacion.idNotificacion"
+                                                                           />
             </label>
         </div>
         <div class="row">
@@ -429,12 +434,25 @@
                 <spring:message code="person.sexo"/>
             </label>
 
-            <label class="input"> <i
-                    class="icon-prepend fa fa-male fa-fw"></i> <input readonly="true"
-                                                                           cssStyle="background-color: #f0fff0"
-                                                                           type="text" name="sexo"
-                                                                         value="${noti.persona.sexo}"  />
-            </label>
+            <div class="input-group">
+                <c:choose>
+                    <c:when test="${noti.persona.sexo.codigo eq 'SEXO|M'}">
+                        <span class="input-group-addon"><i class="fa fa-male fa-fw"></i></span>
+                    </c:when>
+                    <c:when test="${noti.persona.sexo.codigo eq 'SEXO|F'}">
+                        <span class="input-group-addon"><i class="fa fa-female fa-fw"></i></span>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="input-group-addon"><i class="fa fa-question fa-fw"></i></span>
+                    </c:otherwise>
+                </c:choose>
+                <label class="input">
+                    <input class="form-control" type="text" name="sexo" id="sexo"
+                           value="${noti.persona.sexo}" readonly  cssStyle="background-color: #f0fff0"
+                           placeholder=" <spring:message code="person.sexo" />">
+                </label>
+                <span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
+            </div>
 
 
         </section>
@@ -447,17 +465,20 @@
 
             </label>
 
-            <label class="input"> <i
-                    class="icon-prepend fa fa-calendar fa-fw"></i> <input readonly="true" id="fechaNacimiento"
-                                                                               cssStyle="background-color: #f0fff0"
-                                                                               type="text" name="fechaNacimiento"
-                                                                              value="${noti.persona.fechaNacimiento}" />
-            </label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+                <label class="input">
+                    <input  style="background-color: #f0fff0" class="form-control" readonly
+                           type="text" name="fechaNacimiento" id="fechaNacimiento" value="<fmt:formatDate value="${noti.persona.fechaNacimiento}" pattern="dd/MM/yyyy" />"
+                    placeholder=" <spring:message code="person.fecnac" />">
+                </label>
+                <span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
+            </div>
 
 
         </section>
 
-        <section class="col col-2">
+        <section class="col col-4">
             <label class="text-left txt-color-blue font-md">
                 <spring:message code="lbl.age"/>
             </label>
@@ -500,12 +521,12 @@
 
             <div class="input-group">
                 <span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
-                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.mun.res" />" id="municipioResidencia" name="municipioResidencia" class="select2">
+                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.mun.res" />" id="municipioResidencia" name="municipioResidencia.codigoNacional" class="select2">
                     <option value=""></option>
                     <c:forEach items="${municipiosResi}" var="muniResi">
                         <c:choose>
-                            <c:when test="${muniResi.codigoNacional eq noti.persona.municipioResidencia.codigoNacional}">
-                                <option selected value="${muniResi.codigoNacional}">${muniResi.nombre}</option>
+                            <c:when test="${fn:contains(noti.persona.municipioResidencia.codigoNacional, muniResi.codigoNacional)}">
+                            <option selected value="${muniResi.codigoNacional}">${muniResi.nombre}</option>
                             </c:when>
                             <c:otherwise>
                                 <option value="${muniResi.codigoNacional}">${muniResi.nombre}</option>
@@ -525,7 +546,7 @@
 
             <div class="input-group">
                 <span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
-                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.com.res" />" id="comunidadResidencia" name="comunidadResidencia" class="select2">
+                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.com.res" />" id="comunidadResidencia" name="noti.persona.comunidadResidencia.codigo" class="select2">
                     <option value=""></option>
                     <c:forEach items="${comunidades}" var="comu">
                         <c:choose>
@@ -1526,11 +1547,10 @@
 
             <div class="modal-body">
                 <form:form id="fVaccine" modelAttribute="fVacuna" class="smart-form">
+                    <input id="inVacIdNoti" hidden="hidden" type="text" name="idNotificacion.idNotificacion"/>
 
                     <div class="row">
                         <section class="col col-sm-12 col-md-6 col-lg-5">
-
-                            <input hidden="hidden" id="inVacIdNoti" type="text" name="idNotificacion"/>
 
                             <label class="text-left txt-color-blue font-md">
                                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
@@ -1664,7 +1684,7 @@
                 <form:form id="fCondPre" modelAttribute="fCondPre" class="smart-form">
 
                     <div class="row">
-                        <input hidden="hidden" id="inCondIdNoti" type="text" name="idNotificacion"/>
+                        <input hidden="hidden" id="inCondIdNoti" type="text" name="idNotificacion.idNotificacion"/>
 
                         <div class="col col-sm-12 col-md-6 col-lg-6">
                             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
@@ -1751,7 +1771,7 @@
 
                     <div class="row">
 
-                        <input hidden="hidden" id="inManifIdNoti" type="text" name="idNotificacion"/>
+                        <input hidden="hidden" id="inManifIdNoti" type="text" name="idNotificacion.idNotificacion"/>
 
                         <div class="col col-sm-12 col-md-6 col-lg-6">
                             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
@@ -1935,6 +1955,12 @@
         if ($('#codUnidadAtencion').val() != "") {
             $("#codMunicipio").val("${municipio.codigoNacional}").change();
         }
+
+
+        $('#idNotificacion').val("${irag.idNotificacion.idNotificacion}").change();
+
+
+        $('#fechaNacimiento').change();
 
         $("li.notificacion").addClass("open");
         $("li.irageti").addClass("active");

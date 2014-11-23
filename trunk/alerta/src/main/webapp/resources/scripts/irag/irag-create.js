@@ -85,8 +85,9 @@ var CreateIrag = function () {
 
             var idNotificacion = $('#idNotificacion').val();
             if (idNotificacion != null) {
-                $('#inVacIdNoti').val(idNotificacion).change();
+
                 $('#inCondIdNoti').val(idNotificacion).change();
+                $('#inVacIdNoti').val(idNotificacion).change();
                 $('#inManifIdNoti').val(idNotificacion).change();
 
                 getVaccines(idNotificacion);
@@ -186,8 +187,8 @@ var CreateIrag = function () {
 
             function fnGuardarFicha(step) {
                 if(step == 2){
-                        fnguardarPersona();
                         fnguardar();
+//                        fnguardarPersona();
 
                 }
 
@@ -243,10 +244,10 @@ var CreateIrag = function () {
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (data) {
-                        $('#idNotificacion').val(data.idNotificacion).change();
-                        $('#inVacIdNoti').val(data.idNotificacion).change();
-                        $('#inCondIdNoti').val(data.idNotificacion).change();
-                        $('#inManifIdNoti').val(data.idNotificacion).change();
+                        $('#idNotificacion').val(data.idNotificacion.idNotificacion).change();
+                        $('#inVacIdNoti').val(data.idNotificacion.idNotificacion).change();
+                        $('#inCondIdNoti').val(data.idNotificacion.idNotificacion).change();
+                        $('#inManifIdNoti').val(data.idNotificacion.idNotificacion).change();
                         $.smallBox({
                             title: $('#msjSuccessful').val() ,
                             content:  $('#disappear').val(),
@@ -280,7 +281,7 @@ var CreateIrag = function () {
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     error: function () {
-
+                        alert("Error " + result.status + '' + result.statusText);
                         $.smallBox({
                             title: $('#msjErrorSaving').val(),
                             content:  $('#disappear').val(),
@@ -447,7 +448,7 @@ var CreateIrag = function () {
                         $("#btnCancel").click();
                     },
                     error: function (result) {
-                        alert("Error " + result.status + '' + result.statusText + result.s);
+
                       $.smallBox({
                             title : $('#msjErrorSaving').val() ,
                             content :  $('#disappear').val(),
@@ -570,6 +571,7 @@ var CreateIrag = function () {
             function getConditions(idNotificacion) {
 
                 var datos_form = $('#wizard-1').serialize();
+                console.log(idNotificacion);
                 $.getJSON(parametros.conditions, {
 
                     idNotificacion: idNotificacion,
@@ -645,7 +647,7 @@ var CreateIrag = function () {
             function saveCM()
             {
                 var datos_manif = $('#fCM').serialize();
-
+                var idNotificacion = $('#inManifIdNoti').val();
                 $.ajax({
                     type: "GET",
                     url: parametros.addManifestation,
@@ -655,7 +657,7 @@ var CreateIrag = function () {
                     success: function (data) {
 
                         tableMani.fnClearTable();
-                        getManifestations(data.idNotificacion.idNotificacion);
+                        getManifestations(idNotificacion);
 
                         $('#codManifestacion option:first').prop("selected", true).change();
 
@@ -799,7 +801,7 @@ var CreateIrag = function () {
 
             $("#fechaNacimiento").change(
                 function() {
-                    if (this.val()!=null && this.val().length > 0) {
+                    if ($("#fechaNacimiento").val()!=null && $("#fechaNacimiento").val().length > 0) {
                         $("#edad").val(getAge($("#fechaNacimiento").val()));
                     }else{
                         $("#edad").val('');

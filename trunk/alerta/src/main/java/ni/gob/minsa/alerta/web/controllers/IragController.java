@@ -263,7 +263,7 @@ public class IragController {
     @RequestMapping("edit/{idNotificacion}")
     public ModelAndView editIrag(@PathVariable("idNotificacion") String idNotificacion, HttpServletRequest request) throws Exception {
         String urlValidacion="";
-        boolean autorizado = false;
+        boolean autorizado = true;
         try {
             urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
@@ -280,6 +280,7 @@ public class IragController {
             if(idNotificacion != null){
                 DaIrag irag = daIragService.getFormById(idNotificacion);
                 DaNotificacion noti = daNotificacionService.getNotifById(idNotificacion);
+
                 if (irag != null) {
                     Initialize();
 
@@ -296,9 +297,18 @@ public class IragController {
                     List<Unidades> uni = unidadesService.getPUnitsHospByMuniAndSilais(municipio.getCodigoNacional(), HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), noti.getCodSilaisAtencion().getCodigo());
 
                     //datos persona
-                    Divisionpolitica departamentoProce = divisionPoliticaService.getDepartamentoByMunicipi(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
-                    List<Divisionpolitica> municipiosResi = divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional());
-                    List<Comunidades> comunidades = comunidadesService.getComunidades(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
+                    Divisionpolitica departamentoProce = null;
+                    List<Divisionpolitica> municipiosResi = null;
+                    List<Comunidades> comunidades = null;
+
+                    if(noti.getPersona().getMunicipioResidencia() != null){
+                        String municipioResidencia = noti.getPersona().getMunicipioResidencia().getCodigoNacional();
+                        departamentoProce = divisionPoliticaService.getDepartamentoByMunicipi(municipioResidencia);
+                        municipiosResi = divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional());
+                        String comu = noti.getPersona().getMunicipioResidencia().getCodigoNacional();
+                        comunidades = comunidadesService.getComunidades(comu);
+                    }
+
 
                     mav.addObject("formVI", irag);
                     mav.addObject("autorizado", autorizado);
@@ -308,6 +318,7 @@ public class IragController {
                     mav.addObject("municipiosResi", municipiosResi);
                     mav.addObject("comunidades", comunidades);
                     mav.addObject("uni", uni);
+                    mav.addObject("irag", irag);
                     mav.addObject("fVacuna", new DaVacunasIrag());
                     mav.addObject("fCondPre", new DaCondicionesPreviasIrag());
                     mav.addObject("fCM", new DaManifestacionesIrag());
@@ -369,7 +380,7 @@ public class IragController {
             , @RequestParam(value = "personaId", required = false) Integer personaId
             , @RequestParam(value = "codClasFDetalleNV", required = false) String codClasFDetalleNV
             , @RequestParam(value = "codClasFDetalleNV", required = false) String codClasFDetalleNB
-            , @RequestParam(value = "idNotificacion", required = false) String idNotificacion, HttpServletRequest request
+            , @RequestParam(value = "idNotificacion.idNotificacion", required = false) String idNotificacion, HttpServletRequest request
 
 
     ) throws Exception {
@@ -384,8 +395,8 @@ public class IragController {
         }
 
         long idUsuario = seguridadService.obtenerIdUsuario(request);
-      //  irag.setUsuario(usuarioService.getUsuarioById((int)idUsuario));
-         irag.setUsuario(usuarioService.getUsuarioById(1));
+        irag.setUsuario(usuarioService.getUsuarioById((int)idUsuario));
+
 
        // if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, codSilaisAtencion) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, codUnidadAtencion)) {
 
@@ -531,7 +542,7 @@ public class IragController {
             , @RequestParam(value = "serotipificacion", required = false) String serotipificacion
             , @RequestParam(value = "agenteViral", required = false) String agenteViral
             , @RequestParam(value = "agenteEtiologico", required = false) String agenteEtiologico
-            , @RequestParam(value = "idNotificacion", required = false) String idNotificacion
+            , @RequestParam(value = "idNotificacion.idNotificacion", required = false) String idNotificacion
             , @RequestParam(value = "persona.personaId", required = false) Integer personaId, HttpServletRequest request
 
 
@@ -549,8 +560,8 @@ public class IragController {
         }
 
         long idUsuario = seguridadService.obtenerIdUsuario(request);
-      //  irag.setUsuario(usuarioService.getUsuarioById((int)idUsuario));
-        irag.setUsuario(usuarioService.getUsuarioById(1));
+        irag.setUsuario(usuarioService.getUsuarioById((int)idUsuario));
+        //irag.setUsuario(usuarioService.getUsuarioById(1));
         if (noti != null){
             if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, noti.getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, noti.getCodUnidadAtencion().getCodigo())) {
                 irag.setCodClasFCaso(codClasFCaso);
@@ -574,8 +585,8 @@ public class IragController {
 
     @RequestMapping(value = "updatePerson", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updatePerson(
-            @RequestParam(value = "municipioResidencia", required = false) String municipioResidencia
-            , @RequestParam(value = "comunidadResidencia", required = false) String comunidadResidencia
+            @RequestParam(value = "municipioResidencia.codigoNacional", required = false) String municipioResidencia
+            , @RequestParam(value = "noti.persona.comunidadResidencia.codigo", required = false) String comunidadResidencia
             , @RequestParam(value = "direccionResidencia", required = false) String direccionResidencia
             , @RequestParam(value = "telefonoResidencia", required = false) String telefonoResidencia
             , @RequestParam(value = "personaId", required = false) Integer personaId
@@ -631,7 +642,7 @@ public class IragController {
                                                          @RequestParam(value = "codTipoVacuna", required = true) String codTipoVacuna,
                                                          @RequestParam(value = "dosis", required = false) Integer dosis,
                                                          @RequestParam(value = "fechaUltimaDosis", required = false) String fechaUltimaDosis,
-                                                         @RequestParam(value = "idNotificacion", required = false) String idNotificacion,
+                                                         @RequestParam(value = "idNotificacion.idNotificacion", required = false) String idNotificacion,
                                                          ModelMap model, HttpServletRequest request) throws Exception {
 
         String error = null;
@@ -698,7 +709,7 @@ public class IragController {
     public ResponseEntity<String> processCreationPreCondition(@RequestParam(value = "codCondicion", required = true) String codCondicion,
                                                               @RequestParam(value = "semanasEmbarazo", required = false) Integer semanasEmbarazo,
                                                               @RequestParam(value = "otraCondicion", required = false) String otraCondicion,
-                                                              @RequestParam(value = "idNotificacion", required = false) String idNotificacion, HttpServletRequest request) throws Exception {
+                                                              @RequestParam(value = "idNotificacion.idNotificacion", required = false) String idNotificacion, HttpServletRequest request) throws Exception {
 
         DaCondicionesPreviasIrag condicion = new DaCondicionesPreviasIrag();
 
@@ -754,7 +765,7 @@ public class IragController {
 
     public ResponseEntity<String> processCreationClinicalMan(@RequestParam(value = "codManifestacion", required = true) String codManifestacion,
                                                              @RequestParam(value = "otraManifestacion", required = false) String otraManifestacion,
-                                                             @RequestParam(value = "idNotificacion", required = false) String idNotificacion, HttpServletRequest request) throws Exception {
+                                                             @RequestParam(value = "idNotificacion.idNotificacion", required = false) String idNotificacion, HttpServletRequest request) throws Exception {
 
         DaManifestacionesIrag manifestacion = new DaManifestacionesIrag();
 

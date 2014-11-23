@@ -225,7 +225,7 @@ public class SeguridadService {
      * @return long con Id del usuario almacenado en sesión o O si no se encontró
      */
     public long obtenerIdUsuario(HttpServletRequest request){
-        long idUsuario=0L;
+        long idUsuario=1L;
         InfoSesion infoSesion = (InfoSesion) request.getSession().getAttribute("infoSesionActual");
 
         if (infoSesion != null) {
