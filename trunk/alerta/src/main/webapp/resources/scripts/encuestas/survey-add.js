@@ -727,7 +727,7 @@ var AddLarvariaSurvey = function () {
             }
 
             function saveSurvey(){
-                console.log("entra savesurvey");
+                //console.log("entra savesurvey");
                 var maestro = {
                     encuestaId: $("#idMaestroAgregado").val(), // se pasa el id del maestro que se esta trabajando, la primera vez es null
                     codSilais: $('#codSilais option:selected').val(),
@@ -805,7 +805,7 @@ var AddLarvariaSurvey = function () {
             }
 
             function getSurveyDetails(idMaestro) {
-                console.log("entra get surveydetails");
+                //console.log("entra get surveydetails");
                 var nIndiceAegypti  = 0, nIndiceAlbopic  = 0, nIndiceQuinque  = 0, nIndiceNigrip   = 0, nIndiceCoronat  = 0, nIndiceErratico = 0, nIndiceTarsalis = 0, nIndiceFatigans = 0, nIndiceAlbim    = 0;
                 var nTotalAegypti  = 0, nTotalAlbopic  = 0, nTotalQuinque  = 0, nTotalNigrip   = 0, nTotalCoronat  = 0, nTotalErratico = 0, nTotalTarsalis = 0, nTotalFatigans = 0, nTotalAlbim    = 0, nTotalTotalDist=0;
 
@@ -1211,7 +1211,7 @@ var AddLarvariaSurvey = function () {
 
                 },
                 submitHandler: function (form) {
-                    console.log("entra summithandler");
+                    //console.log("entra summithandler");
                     //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
                     saveSurvey();
                 }

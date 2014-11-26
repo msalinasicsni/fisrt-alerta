@@ -6,7 +6,7 @@ import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 /**
  * Created by souyen-ics on 11-20-14.
@@ -20,7 +20,7 @@ public class DaOrdenExamen {
     private DaTomaMx idTomaMx;
     private Timestamp fechaHOrden;
     private String codExamen;
-    private String idOrdenEnvio;
+    private DaEnvioOrden envio;
     private Usuarios usarioRegistro;
 
     @Id
@@ -78,14 +78,15 @@ public class DaOrdenExamen {
         this.codExamen = codExamen;
     }
 
-    @Basic
-    @Column(name = "ID_ORDEN_ENVIO", nullable = false, insertable = true, updatable = true, length = 36)
-    public String getIdOrdenEnvio() {
-        return idOrdenEnvio;
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "ID_ORDEN_ENVIO", referencedColumnName = "ID_ENVIO_ORDEN")
+    @ForeignKey(name = "ENVIORDEN_FK")
+    public DaEnvioOrden getEnvio() {
+        return envio;
     }
 
-    public void setIdOrdenEnvio(String idOrdenEnvio) {
-        this.idOrdenEnvio = idOrdenEnvio;
+    public void setEnvio(DaEnvioOrden envio) {
+        this.envio = envio;
     }
 
     @ManyToOne(optional = false)

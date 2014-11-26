@@ -76,24 +76,4 @@ public class DetalleDepositoPreferencialTypeAdapter extends TypeAdapter<DaDetaDe
         final DaDetaDepositopreferencial detalleEncuesta = new DaDetaDepositopreferencial();
         return detalleEncuesta;
     }
-
-    /* UTILITARIOS*/
-    private Date StringToDate(String strFecha) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            return simpleDateFormat.parse(strFecha);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return  null;
-        }
-    }
-
-    private String DateToString(Date dtFecha)  {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        if(dtFecha!=null)
-            return simpleDateFormat.format(dtFecha);
-        else
-            return null;
-    }
-
 }

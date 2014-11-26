@@ -15,7 +15,7 @@ var handleDatePickers = function (idioma) {
             autoclose: true
         })
             .on('changeDate', function (selected) {
-                console.log('change fecha inicio');
+                //console.log('change fecha inicio');
                 startDate = new Date(selected.date.valueOf());
                 startDate.setDate(startDate.getDate(new Date(selected.date.valueOf())));
                 //si la fecha de inicio es mayor a la fecha de fin, entoces la fecha de fin se etsablece igual a la fecha de inicio
@@ -23,7 +23,7 @@ var handleDatePickers = function (idioma) {
                 endDateCompare=$('.to_date').datepicker("getDate");
                 if(endDateCompare!=null&&endDateCompare!='undefined'){
                     if (startDateCompare > endDateCompare){
-                        console.log('fec inicio es mayor - from_date');
+                        //console.log('fec inicio es mayor - from_date');
                         $('.to_date').datepicker('update', startDateCompare);
                     }
                 }
@@ -39,7 +39,7 @@ var handleDatePickers = function (idioma) {
                 autoclose: true
             })
             .on('changeDate', function (selected) {
-                console.log('change fecha fin');
+                //console.log('change fecha fin');
                 FromEndDate = new Date(selected.date.valueOf());
                 FromEndDate.setDate(FromEndDate.getDate(new Date(selected.date.valueOf())));
                 //si la fecha de inicio es mayor a la fecha de fin, entoces la fecha de inicio se etsablece igual a la fecha de fin
@@ -47,7 +47,7 @@ var handleDatePickers = function (idioma) {
                 startDateCompare=$('.from_date').datepicker("getDate");
                 if(endDateCompare!=null&&endDateCompare!='undefined'){
                     if (startDateCompare > endDateCompare){
-                        console.log('fec fin es menor - to_date');
+                        //console.log('fec fin es menor - to_date');
                         $('.from_date').datepicker('update', endDateCompare);
                     }
                 }

@@ -26,4 +26,9 @@ var handleInputMasks = function () {
         "repeat": 6,
         "greedy": false
     });
+    $(".decimal").inputmask("decimal",{
+         allowMinus: false,
+        radixPoint: ".",
+        digits: 2
+    });
 };

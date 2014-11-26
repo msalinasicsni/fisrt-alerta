@@ -214,7 +214,7 @@ public class PersonaController {
     }
 
     @RequestMapping(value = "agregarActualizarPersona", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    protected void agregarActualizarPersona(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        protected void agregarActualizarPersona(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String json = "";
         String resultado = "";
         String strPersona="";
@@ -231,7 +231,7 @@ public class PersonaController {
 
             personaService.iniciarTransaccion();
 
-             infoResultado =  personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
+            infoResultado =  personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
             if (infoResultado.isOk() && infoResultado.getObjeto() != null ){
                 idPersona = String.valueOf(((Persona) (infoResultado.getObjeto())).getPersonaId());
             }else
@@ -339,5 +339,4 @@ public class PersonaController {
         return simpleDateFormat.parse(strFecha);
     }
     //endregion
-
 }

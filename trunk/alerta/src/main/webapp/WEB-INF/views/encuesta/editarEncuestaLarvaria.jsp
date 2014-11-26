@@ -288,7 +288,7 @@
                 <input type="text" name="fecInicioEncuesta" id="fecInicioEncuesta"
                        placeholder="<spring:message code="lbl.date.format"/>"
                        class="form-control from_date" data-date-end-date="+0d" value="${fechaInicioEncuesta}" />
-                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.starddate.survey"/></b>
+                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.startdate.survey"/></b>
                 </label>
                                                 <!--<span class="input-group-addon"> <i    class="fa fa-calendar fa-fw"></i>
                                                 </span>-->

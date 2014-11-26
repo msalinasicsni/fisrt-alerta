@@ -17,7 +17,7 @@ import javax.persistence.*;
 })
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorValue(value = "ESTOREX")
+@DiscriminatorValue(value = "ESTORDEN")
 public class EstadoOrdenEx extends Catalogo {
 
     private static final long serialVersionUID = -3844363255569516837L;
