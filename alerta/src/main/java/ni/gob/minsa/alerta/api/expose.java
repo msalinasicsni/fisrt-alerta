@@ -145,6 +145,20 @@ public class expose {
         }
     }
 
+    @RequestMapping(value = "unidadesPrimariasHospSilais", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    List<Unidades> getPrimaryUnitsAndHospBySilais(@RequestParam(value = "codSilais", required = true) long codSilais, HttpServletRequest request) throws Exception {
+        logger.info("Obteniendo las unidades por SILAIS en JSON");
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        //Si es usuario a nivel central se cargan todas las unidades asociados al SILAIS
+        if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+            return unidadesService.getPrimaryUnitsBySilais(codSilais, HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","));
+        }else{//sino sólo se cargarn las unidades autorizadas para el usuario según SILAIS
+            return seguridadService.obtenerUnidadesPorUsuarioEntidad((int)idUsuario,codSilais, ConstantsSecurity.SYSTEM_CODE,HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+        }
+    }
+
     @RequestMapping(value = "comunidad", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody

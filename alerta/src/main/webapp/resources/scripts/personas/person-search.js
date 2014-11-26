@@ -72,9 +72,14 @@ var SearchPerson = function () {
     			}, function(data) {
     				var len = data.length;
                     for ( var i = 0; i < len; i++) {
+                        var nombreMuniRes = "";
+
+                        if (data[i].municipioResidencia!=null){
+                            nombreMuniRes = data[i].municipioResidencia.nombre;
+                        }
 						var actionUrl = parametros.sActionUrl + '/'+data[i].personaId;
 						table1.fnAddData(
-    							[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].municipioResidencia.nombre,'<a href='+ actionUrl + ' class="btn btn-default btn-xs"><i class="fa fa-mail-forward"></i></a>']);
+    							[data[i].identificacion, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,nombreMuniRes,'<a href='+ actionUrl + ' class="btn btn-default btn-xs"><i class="fa fa-mail-forward"></i></a>']);
 
                         /*var actionUrl = parametros.sActionUrl + '/'+data[i].personaId;
                         table1.fnAddData(

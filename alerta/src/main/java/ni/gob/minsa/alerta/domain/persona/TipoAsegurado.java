@@ -7,7 +7,7 @@ import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 @NamedQueries({
 @NamedQuery(
 	name = "obtenerTipoAseguradoPorCodigo",
-	query = "select cat from TipoAseguradovih cat where cat.codigo = :pCodigo"
+	query = "select cat from TipoAsegurado cat where cat.codigo = :pCodigo"
 	)
 })
 @Entity

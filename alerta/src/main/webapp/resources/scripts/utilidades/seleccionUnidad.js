@@ -62,7 +62,7 @@ var SeleccionUnidad = function () {
             				}
             				html += '</option>';
             				$('#codUnidadAtencion').html(html);
-                            console.log("unidades cargadas");
+                            //console.log("unidades cargadas");
             			});
             			setTimeout($.unblockUI, 500);
             			});

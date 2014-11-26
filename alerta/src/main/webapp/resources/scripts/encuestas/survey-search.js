@@ -95,7 +95,7 @@ var SearchSurvey = function () {
                     filtrosEncuesta: JSON.stringify(encuestaFiltros),
     				ajax : 'true'
     			}, function(dataToLoad) {
-                    console.log(dataToLoad);
+                    //console.log(dataToLoad);
                     var len = Object.keys(dataToLoad).length;
                     //var d = dataToLoad['encu0'];
                     if (len > 0) {

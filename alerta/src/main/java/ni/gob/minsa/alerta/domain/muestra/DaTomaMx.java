@@ -7,7 +7,7 @@ import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.sql.Time;
 
 /**
@@ -148,7 +148,7 @@ public class DaTomaMx {
     }
 
     @Basic
-    @Column(name = "FECHA_ANULACION", nullable = false, insertable = true, updatable = true)
+    @Column(name = "FECHA_ANULACION", nullable = true, insertable = true, updatable = true)
     public Timestamp getFechaAnulacion() {
         return fechaAnulacion;
     }
