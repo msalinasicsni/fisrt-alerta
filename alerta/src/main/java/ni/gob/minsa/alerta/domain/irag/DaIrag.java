@@ -1,14 +1,10 @@
 package ni.gob.minsa.alerta.domain.irag;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
-import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
-import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
-import ni.gob.minsa.alerta.domain.persona.SisPersona;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
 import org.hibernate.annotations.ForeignKey;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -105,7 +101,6 @@ public class DaIrag implements Serializable {
 
     @Basic
     @Column(name = "COD_EXPEDIENTE", nullable = true, insertable = true, updatable = true, length = 30)
-
     public String getCodExpediente() {
         return codExpediente;
     }

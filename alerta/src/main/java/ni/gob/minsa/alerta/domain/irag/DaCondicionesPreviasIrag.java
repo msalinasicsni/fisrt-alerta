@@ -24,11 +24,11 @@ public class DaCondicionesPreviasIrag implements Serializable {
     private Usuarios usuario;
     private boolean pasivo;
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID_CONDICION", nullable = false, updatable = true, insertable = true, precision = 0)
     public Integer getIdCondicion() { return idCondicion; }
-
     public void setIdCondicion(Integer idCondicion) { this.idCondicion = idCondicion;  }
 
 

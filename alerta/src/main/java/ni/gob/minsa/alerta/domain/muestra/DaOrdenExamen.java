@@ -19,7 +19,7 @@ public class DaOrdenExamen {
     private EstadoOrdenEx codEstado;
     private DaTomaMx idTomaMx;
     private Timestamp fechaHOrden;
-    private String codExamen;
+    private CatalogoExamenes codExamen;
     private DaEnvioOrden envio;
     private Usuarios usarioRegistro;
 
@@ -68,15 +68,17 @@ public class DaOrdenExamen {
         this.fechaHOrden = fechaHOrden;
     }
 
-    @Basic
-    @Column(name = "COD_EXAMEN", nullable = false, insertable = true, updatable = true, length = 100)
-    public String getCodExamen() {
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "ID_EXAMEN", referencedColumnName = "ID_EXAMEN")
+    @ForeignKey(name = "ID_EXA_FK")
+    public CatalogoExamenes getCodExamen() {
         return codExamen;
     }
 
-    public void setCodExamen(String codExamen) {
+    public void setCodExamen(CatalogoExamenes codExamen) {
         this.codExamen = codExamen;
     }
+
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "ID_ORDEN_ENVIO", referencedColumnName = "ID_ENVIO_ORDEN")

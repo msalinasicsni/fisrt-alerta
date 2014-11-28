@@ -136,7 +136,7 @@ public class IragController {
             catClasFNB = catalogoService.getClasificacionFinalNB();
             catClasFNV = catalogoService.getClasificacionFinalNV();
 
-            mapModel = new HashMap<String, Object>();
+            mapModel = new HashMap<>();
 
             mapModel.put("catProcedencia", catProcedencia);
             mapModel.put("catClasif", catClasif);
