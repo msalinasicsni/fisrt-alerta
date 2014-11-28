@@ -35,7 +35,7 @@ public class DaManifestacionesIrag implements Serializable {
     }
 
 
-    @ManyToOne(optional=false)
+    @ManyToOne(optional=false, fetch=FetchType.LAZY)
     @JoinColumn(name="ID_NOTIFICACION", referencedColumnName = "ID_NOTIFICACION")
     @ForeignKey(name = "ID_NOTI_MCLIN_FK")
     public DaIrag getIdNotificacion() {

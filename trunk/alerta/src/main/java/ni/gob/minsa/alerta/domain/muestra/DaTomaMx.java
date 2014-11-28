@@ -22,10 +22,10 @@ public class DaTomaMx {
     private TipoMx codTipoMx;
     private String examenes;
     private Timestamp fechaHTomaMx;
-    private Time horaRefrigeracion;
+    private String horaRefrigeracion;
     private Integer canTubos;
     private Float volumen;
-    private Integer mxSeparada;
+    private Boolean mxSeparada;
     private EstadoMx estadoMx;
     private Usuarios usuario;
     private Timestamp fechaRegistro;
@@ -107,14 +107,15 @@ public class DaTomaMx {
     }
 
     @Basic
-    @Column(name = "MXSEPARADA", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getMxSeparada() {
+    @Column(name = "MXSEPARADA", nullable = true, insertable = true, updatable = true)
+    public Boolean getMxSeparada() {
         return mxSeparada;
     }
 
-    public void setMxSeparada(Integer mxSeparada) {
+    public void setMxSeparada(Boolean mxSeparada) {
         this.mxSeparada = mxSeparada;
     }
+
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "USUARIO_ID", referencedColumnName = "USUARIO_ID")
@@ -170,12 +171,12 @@ public class DaTomaMx {
     }
 
     @Basic
-    @Column(name = "HORA_REFRIGERACION", nullable = true, insertable = true, updatable = true)
-    public Time getHoraRefrigeracion() {
+    @Column(name = "HORA_REFRIGERACION", nullable = true, insertable = true, updatable = true, length = 50)
+    public String getHoraRefrigeracion() {
         return horaRefrigeracion;
     }
 
-    public void setHoraRefrigeracion(Time horaRefrigeracion) {
+    public void setHoraRefrigeracion(String horaRefrigeracion) {
         this.horaRefrigeracion = horaRefrigeracion;
     }
 }

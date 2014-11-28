@@ -103,9 +103,10 @@
 								<!-- widget content -->
 								<div class="widget-body fuelux">
 
-                                <form:form modelAttribute="noti" id="registroMxFormIrag" class="smart-form" >
+                                <form:form modelAttribute="noti" id="noti" class="smart-form" >
                                 <fieldset >
-                                    <legend class="text-left txt-color-blue font-md"> <spring:message code="lbl.notification.data"/>  </legend>
+                                    <legend class="text-left txt-color-blue font-md"> <spring:message code="lbl.notification.data"/>
+                                   </legend>
 
 
                                     <div class="row">
@@ -113,6 +114,8 @@
                                         <section class="col col-md-4">
                                             <label class="text-left txt-color-blue font-md">
                                                 <spring:message code="sindfeb.silais" />
+                                                <input value="${noti.codTipoNotificacion.codigo}" hidden="hidden" type="text" id="tipoNoti" name="tipoNoti"/>
+
                                             </label>
 
 
@@ -261,6 +264,7 @@
                                     <legend class="text-left txt-color-blue font-md"> <spring:message
                                             code="lbl.taking.sample.data"/></legend>
                                     <div class="row">
+                                        <input value="${noti.idNotificacion}" hidden="hidden" type="text" id="idNotificacion" name="idNotificacion"/>
 
 
                                         <section class="col col-3">
@@ -276,11 +280,11 @@
                                                 <div class='input-group date datetimepicker'>
                                                     <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
                                                     <label class="input">
-                                                        <form:input id="fechaHTomaMx" path="fechaHTomaMx" type='text'
+                                                        <form:input name="fechaHTomaMx" id="fechaHTomaMx" path="fechaHTomaMx" type='text'
                                                                     class="form-control"
                                                                     placeholder="${datet} "/>
-                                                        <b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i>
-                                                            <spring:message code="lbl.sampling.datetime"/></b>
+
+                                                        <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.sampling.datetime"/></b>
 
                                                     </label>
                                              <span class="input-group-addon"><span
@@ -305,7 +309,7 @@
                                             <div class="input-group">
                                                 <span class="input-group-addon"> <i class="fa fa-list fa-fw"></i></span>
 
-                                                <form:select id="codTipoMx" data-placeholder="${selectTMx} " cssClass="select2" path="codTipoMx">
+                                                <form:select name="codTipoMx" id="codTipoMx" data-placeholder="${selectTMx} " cssClass="select2" path="codTipoMx">
                                                     <option value=""></option>
                                                     <form:options items="${catTipoMx}" itemValue="codigo" itemLabel="valor"/>
                                                 </form:select>
@@ -328,15 +332,15 @@
                                             <div class="input-group">
                                                 <spring:message code="msj.select.test" var="selectTests" />
                                                 <span class="input-group-addon"> <i class="fa fa-file-text-o"></i></span>
-                                                <form:select name="examenes" placeholder="${selectTests}" path="examenes" id="codResRadiologia" multiple="true" style="width:100%" class="select2">
+                                                <form:select name="examenes" placeholder="${selectTests}" path="examenes" id="examenes" multiple="true" style="width:100%" class="select2">
 
-                                                    <c:forEach items="${catResRad}" var="result">
+                                                    <c:forEach items="${catExamenes}" var="exams">
                                                         <c:choose>
-                                                            <c:when test="${fn:contains(tomaMx.examenes, result.codigo)}">
-                                                                <option selected value="${result.codigo}">${result.valor}</option>
+                                                            <c:when test="${fn:contains(tomaMx.examenes, exams.idExamen)}">
+                                                                <option selected value="${exams.idExamen}">${exams.codExamen.valor}</option>
                                                             </c:when>
                                                             <c:otherwise>
-                                                                <option value="${result.codigo}">${result.valor}</option>
+                                                                <option value="${exams.idExamen}">${exams.codExamen.valor}</option>
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </c:forEach>
@@ -357,9 +361,10 @@
                                                 <span class="input-group-addon"><i class="fa fa-pencil fa-fw"></i></span>
                                                 <label class="input">
 
-                                                    <form:input path="canTubos" class="form-control" type="number"
+                                                    <form:input name="canTubos" id="canTubos" path="canTubos" class="form-control" type="number"
                                                            placeholder="${nTubes} "/>
-                                                    <b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="lbl.number.tubes" /></b>
+                                                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.number.tubes"/></b>
+
                                                 </label>
                                                 <span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>
                                             </div>
@@ -373,9 +378,10 @@
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-pencil fa-fw"></i></span>
                                                 <label class="input">
-                                                    <form:input path="volumen" name="volumen" class="form-control" type="number"
+                                                    <form:input path="volumen" id="volumen" name="volumen" class="form-control" type="number"
                                                            placeholder="${volume}" />
-                                                    <b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="lbl.volume" /></b>
+                                                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.volume"/></b>
+
                                                 </label>
                                                 <span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>
                                             </div>
@@ -394,11 +400,10 @@
                                                 <div class='input-group date'>
                                                     <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
                                                     <label class="input">
-                                                        <form:input id="horaRefrigeracion" path="horaRefrigeracion" type='text'
+                                                        <form:input id="horaRefrigeracion" name="horaRefrigeracion" path="horaRefrigeracion" type='text'
                                                                     class="form-control"
                                                                     placeholder="${coolingTime} "/>
-                                                        <b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i>
-                                                            ${coolingTime}</b>
+                                                        <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.cooling.time"/></b>
 
                                                     </label>
                                              <span class="input-group-addon"><span
@@ -410,7 +415,7 @@
 
                                         <section class="col col-3">
                                             <label class="text-left txt-color-blue font-md">
-                                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i> <spring:message code="sample.separation" />
+                                             <spring:message code="sample.separation" />
                                             </label>
 
                                             <div class="inline-group">
@@ -423,11 +428,17 @@
                                         </section>
                                     </div>
                                     <footer style="background-color:white;">
-                                        <button type="submit" class="btn btn-primary fc-header-center">
-                                            Guardar
+
+                                      <button type="button" id="submit" class="btn btn-primary fc-header-center">
+                                            <spring:message code="act.save"  />
                                         </button>
                                     </footer>
                                 </fieldset>
+
+                                    <input type="hidden" id="disappear"  value="<spring:message code="lbl.messagebox.disappear"/>"/>
+                                    <input type="hidden" id="msjError"  value="<spring:message code="lbl.messagebox.error.completing"/>"/>
+                                    <input type="hidden" id="msjErrorSaving"  value="<spring:message code="lbl.messagebox.error.saving"/>"/>
+                                    <input type="hidden" id="msjSuccessful"  value="<spring:message code="lbl.messagebox.successful.saved"/>"/>
                                 </form:form>
 
 
@@ -498,10 +509,16 @@
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<!-- PARAMETROS LENGUAJE -->
 	<c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
+    <spring:url value="/tomaMx/examenesByMuestra" var="examenesUrl"/>
+    <spring:url value="/tomaMx/saveToma" var="saveTomaUrl"/>
+    <spring:url value="/tomaMx/search" var="searchUrl"/>
     <script type="text/javascript">
         $(document).ready(function() {
             pageSetUp();
-            var parametros = {blockMess: "${blockMess}"
+            var parametros = {blockMess: "${blockMess}",
+                             examenesUrl: "${examenesUrl}",
+                              saveTomaUrl: "${saveTomaUrl}",
+                              searchUrl: "${searchUrl}"
 
             };
             EnterFormTomaMx.init(parametros);
