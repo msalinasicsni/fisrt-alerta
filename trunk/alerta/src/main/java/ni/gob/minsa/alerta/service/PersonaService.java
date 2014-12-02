@@ -139,7 +139,7 @@ public class PersonaService {
         return this.personaUTMService.guardarPersona(pPersona, pUsuarioRegistra);
     }
 
-    public Persona buscarPorId(long pIdPersona) throws NamingException {
+    public Persona buscarPorId(long pIdPersona) throws Exception {
 
         InfoResultado infoResultado;
         InitialContext ctx;

@@ -8,7 +8,11 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.ForeignKey;
 
 
 @Entity
@@ -21,7 +25,7 @@ public class Comunidades implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer comunidadId;
 	private String nombre;
-	private String sector;
+	private Sectores sector;
 	private String referencias;
 	private Character tipoArea;
 	private String codigo;
@@ -36,7 +40,7 @@ public class Comunidades implements Serializable{
 	public Comunidades() {
 	}
 
-	public Comunidades(Integer comunidadId, String nombre, String sector,
+	public Comunidades(Integer comunidadId, String nombre, Sectores sector,
 			String codigo, char pasivo, Date fechaRegistro,
 			String usuarioRegistro) {
 		this.comunidadId = comunidadId;
@@ -48,7 +52,7 @@ public class Comunidades implements Serializable{
 		this.usuarioRegistro = usuarioRegistro;
 	}
 
-	public Comunidades(Integer comunidadId, String nombre, String sector,
+	public Comunidades(Integer comunidadId, String nombre, Sectores sector,
 			String referencias, Character tipoArea, String codigo,
 			String caracteristicas, char pasivo, Date fechaRegistro,
 			String usuarioRegistro, BigDecimal longitud, BigDecimal latitud,
@@ -87,12 +91,14 @@ public class Comunidades implements Serializable{
 		this.nombre = nombre;
 	}
 
-	@Column(name = "SECTOR", nullable = false, length = 7)
-	public String getSector() {
+	@ManyToOne(optional=false)
+	@JoinColumn(name="SECTOR",referencedColumnName="CODIGO", nullable=true)
+	@ForeignKey(name = "COMUNIDAD_SECTOR_FK")
+	public Sectores getSector() {
 		return this.sector;
 	}
 
-	public void setSector(String sector) {
+	public void setSector(Sectores sector) {
 		this.sector = sector;
 	}
 

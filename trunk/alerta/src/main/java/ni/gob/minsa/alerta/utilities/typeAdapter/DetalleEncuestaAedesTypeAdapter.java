@@ -43,7 +43,7 @@ public class DetalleEncuestaAedesTypeAdapter extends TypeAdapter<DaDetalleEncues
         out.beginObject();
         out.name("detaEncuestaId").value(value.getDetaEncuestaId());
         out.name("encuestaId").value(value.getMaeEncuesta().getEncuestaId());
-        out.name("codSector").value(value.getLocalidad().getSector());
+        out.name("codSector").value(value.getLocalidad().getSector().getCodigo());
         out.name("codLocalidad").value(value.getLocalidad().getCodigo());
         out.name("localidad").value(value.getLocalidad().getNombre());
         out.name("viviendasInspec").value(value.getViviendaInspeccionada());

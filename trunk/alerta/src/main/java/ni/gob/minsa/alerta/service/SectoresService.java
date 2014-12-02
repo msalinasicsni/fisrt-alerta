@@ -1,6 +1,5 @@
 package ni.gob.minsa.alerta.service;
 
-import ni.gob.minsa.alerta.domain.poblacion.Paises;
 import ni.gob.minsa.alerta.domain.poblacion.Sectores;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -34,7 +33,7 @@ public class SectoresService {
         // Retrieve session from Hibernate
         Session session = sessionFactory.getCurrentSession();
         // Create a Hibernate query (HQL)
-        Query query = session.createQuery("FROM Sectores where municipio = :codMunicipio and pasivo = :pasivo");
+        Query query = session.createQuery("FROM Sectores where municipio.codigoNacional = :codMunicipio and pasivo = :pasivo");
         query.setParameter("codMunicipio",codMunicipio);
         query.setParameter("pasivo",'0');
         // Retrieve all

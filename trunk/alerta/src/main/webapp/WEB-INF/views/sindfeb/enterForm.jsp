@@ -133,7 +133,7 @@
 											<!-- wizard form starts here -->
 											<div class="step-pane active" id="step1">
 												<h3><spring:message code="sindfeb.step1.long" /></h3>
-												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.persona.primerNombre} ${daSindFeb.persona.primerApellido}</h4>
+												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
 												<fieldset>
 													<!-- START ROW -->
                                       				<div class="row">
@@ -148,7 +148,7 @@
 																<option value=""></option>
 																<c:forEach items="${entidades}" var="entidad">
 																	<c:choose> 
-																		<c:when test="${entidad.codigo eq daSindFeb.codSilaisAtencion.codigo}">
+																		<c:when test="${entidad.codigo eq daSindFeb.idNotificacion.codSilaisAtencion.codigo}">
 																			<option selected value="${entidad.codigo}">${entidad.nombre}</option>
 																		</c:when>
 																		<c:otherwise>
@@ -179,7 +179,7 @@
                                                     	<div class="input-group">
                                                     		<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.unidad" />" name="codUnidadAtencion" id="codUnidadAtencion" class="select2">
-																<option selected value="${daSindFeb.codUnidadAtencion.codigo}">${daSindFeb.codUnidadAtencion.nombre}</option>
+																<option selected value="${daSindFeb.idNotificacion.codUnidadAtencion.codigo}">${daSindFeb.idNotificacion.codUnidadAtencion.nombre}</option>
 															</select>
 														</div>
                                             		</section>
@@ -210,6 +210,7 @@
 															<label class="input">
 																<input class="form-control" type="text" name="numFicha" id="numFicha" value="${daSindFeb.numFicha}"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.numFicha" />">
+																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="act.enter" /> <spring:message code="sindfeb.numFicha" /></b>
 															</label>
 															<span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>
 														</div>
@@ -225,6 +226,7 @@
 																<input class="form-control date-picker" data-date-end-date="+0d" data-date-start-date="-30d" 
 																	type="text" name="fechaFicha" id="fechaFicha" value="<fmt:formatDate value="${daSindFeb.fechaFicha}" pattern="dd/MM/yyyy" />"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.date" />">
+																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="act.enter" /> <spring:message code="sindfeb.date" /></b>
 															</label>
 															<span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
 														</div>
@@ -246,7 +248,7 @@
 															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
 															<label class="input">
 																<input class="form-control" type="text" name="primerNombre" id="primerNombre" 
-																	value="${daSindFeb.persona.primerNombre}" readonly
+																	value="${daSindFeb.idNotificacion.persona.primerNombre}" readonly
 																	placeholder=" <spring:message code="person.name1" />">
 															</label>
 															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
@@ -260,7 +262,7 @@
 															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
 															<label class="input">
 																<input class="form-control" type="text" name="segundoNombre" id="segundoNombre" 
-																	value="${daSindFeb.persona.segundoNombre}" readonly
+																	value="${daSindFeb.idNotificacion.persona.segundoNombre}" readonly
 																	placeholder=" <spring:message code="person.name2" />">
 															</label>
 															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
@@ -274,7 +276,7 @@
 															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
 															<label class="input">
 																<input class="form-control" type="text" name="primerApellido" id="primerApellido" 
-																	value="${daSindFeb.persona.primerApellido}" readonly
+																	value="${daSindFeb.idNotificacion.persona.primerApellido}" readonly
 																	placeholder=" <spring:message code="person.lastname1" />">
 															</label>
 															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
@@ -288,7 +290,7 @@
 															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
 															<label class="input">
 																<input class="form-control" type="text" name="segundoApellido" id="segundoApellido" 
-																	value="${daSindFeb.persona.segundoApellido}" readonly
+																	value="${daSindFeb.idNotificacion.persona.segundoApellido}" readonly
 																	placeholder=" <spring:message code="person.name2" />">
 															</label>
 															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
@@ -306,7 +308,7 @@
 															<span class="input-group-addon"><i class="fa fa-pencil"></i></span>
 															<label class="input">
 																<input class="form-control" readonly 
-																	type="text" name="fechaNacimiento" id="fechaNacimiento" value="<fmt:formatDate value="${daSindFeb.persona.fechaNacimiento}" pattern="dd/MM/yyyy" />"
+																	type="text" name="fechaNacimiento" id="fechaNacimiento" value="<fmt:formatDate value="${daSindFeb.idNotificacion.persona.fechaNacimiento}" pattern="dd/MM/yyyy" />"
 																	placeholder=" <spring:message code="person.fecnac" />">
 															</label>
 															<span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
@@ -331,10 +333,10 @@
                                             			</label>
                                             			<div class="input-group">
                                             				<c:choose>
-															<c:when test="${daSindFeb.persona.sexo.codigo eq 'SEXO|M'}">
+															<c:when test="${daSindFeb.idNotificacion.persona.sexo.codigo eq 'SEXO|M'}">
 																<span class="input-group-addon"><i class="fa fa-male fa-fw"></i></span>
 															</c:when>
-															<c:when test="${daSindFeb.persona.sexo.codigo eq 'SEXO|F'}">
+															<c:when test="${daSindFeb.idNotificacion.persona.sexo.codigo eq 'SEXO|F'}">
 																<span class="input-group-addon"><i class="fa fa-female fa-fw"></i></span>
 															</c:when>
 															<c:otherwise>
@@ -343,7 +345,7 @@
 															</c:choose>
 															<label class="input">
 																<input class="form-control" type="text" name="sexo" id="sexo" 
-																	value="${daSindFeb.persona.sexo}" readonly
+																	value="${daSindFeb.idNotificacion.persona.sexo}" readonly
 																	placeholder=" <spring:message code="person.sexo" />">
 															</label>
 															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
@@ -359,7 +361,7 @@
 																<option value=""></option>
 																<c:forEach items="${ocupaciones}" var="ocupacion">
 																	<c:choose> 
-																		<c:when test="${ocupacion.codigo eq daSindFeb.persona.ocupacion.codigo}">
+																		<c:when test="${ocupacion.codigo eq daSindFeb.idNotificacion.persona.ocupacion.codigo}">
 																			<option selected value="${ocupacion.codigo}">${ocupacion.nombre}</option>
 																		</c:when>
 																		<c:otherwise>
@@ -397,8 +399,9 @@
 															<span class="input-group-addon"><i class="fa fa-map-marker fa-fw"></i></span>
 															<label class="input">
 																<input class="form-control" type="text" name="direccionResidencia" id="direccionResidencia" 
-																	value="${daSindFeb.persona.direccionResidencia}" 
+																	value="${daSindFeb.idNotificacion.persona.direccionResidencia}" 
 																	placeholder=" <spring:message code="person.direccion" />">
+																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="person.direccion" /></b>
 															</label>
 															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
@@ -436,7 +439,7 @@
                                                     	<div class="input-group">
                                                     		<span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.muni" />" name="municipioResidencia" id="municipioResidencia" class="select2">
-																<option selected value="${daSindFeb.persona.municipioResidencia.codigoNacional}">${daSindFeb.persona.municipioResidencia.nombre}</option>
+																<option selected value="${daSindFeb.idNotificacion.persona.municipioResidencia.codigoNacional}">${daSindFeb.idNotificacion.persona.municipioResidencia.nombre}</option>
 															</select>
 														</div>
                                             		</section>
@@ -448,7 +451,7 @@
                                                     	<div class="input-group">
                                                     		<span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.com.res" />" name="comunidadResidencia" id="comunidadResidencia" class="select2">
-																<option selected value="${daSindFeb.persona.comunidadResidencia.codigo}">${daSindFeb.persona.comunidadResidencia.nombre}</option>
+																<option selected value="${daSindFeb.idNotificacion.persona.comunidadResidencia.codigo}">${daSindFeb.idNotificacion.persona.comunidadResidencia.nombre}</option>
 															</select>
 														</div>
                                             		</section>
@@ -636,7 +639,7 @@
 											</div>
 											<div class="step-pane" id="step3">
 												<h3><spring:message code="sindfeb.step3.long" /></h3>
-												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.persona.primerNombre} ${daSindFeb.persona.primerApellido}</h4>
+												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
 												<fieldset>
 													<!-- START ROW -->
                                       				<div class="row">
@@ -664,15 +667,15 @@
                                             		</section>
                                             		<section class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
-                                            				<spring:message code="sindfeb.other" />
+                                            				<spring:message code="sindfeb.water.other" />
                                             			</label>
                                             			<div class="input-group">
 															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
 															<label class="input">
 																<input class="form-control" type="text" name="otraFuenteAgua" id="otraFuenteAgua" 
 																	value="${daSindFeb.otraFuenteAgua}" 
-																	placeholder=" <spring:message code="sindfeb.other" />">
-																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.other" /></b>
+																	placeholder=" <spring:message code="sindfeb.water.other" />">
+																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.water.other" /></b>
 															</label>
 															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
@@ -701,15 +704,15 @@
                                             		</section>
                                             		<section class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
-                                            				<spring:message code="sindfeb.other" />
+                                            				<spring:message code="sindfeb.animals.other" />
                                             			</label>
                                             			<div class="input-group">
 															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
 															<label class="input">
 																<input class="form-control" type="text" name="otrosAnimales" id="otrosAnimales" 
 																	value="${daSindFeb.otrosAnimales}" 
-																	placeholder=" <spring:message code="sindfeb.other" />">
-																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.other" /></b>
+																	placeholder=" <spring:message code="sindfeb.animals.other" />">
+																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.animals.other" /></b>
 															</label>
 															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
@@ -720,7 +723,7 @@
 											</div>
 											<div class="step-pane" id="step4">
 												<h3><spring:message code="sindfeb.step4.long" /></h3>
-												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.persona.primerNombre} ${daSindFeb.persona.primerApellido}</h4>
+												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
 												<fieldset>
 													<!-- START ROW -->
                                       				<div class="row">
@@ -947,11 +950,103 @@
                                             		</section>
                                       				</div>
                                       				<!-- END ROW -->
+                                      				<!-- START ROW -->
+                                      				<div class="row">
+                                      				<section class="col col-3">
+                                                		<i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
+                                                		<label class="text-left txt-color-blue font-md hidden-xs">
+                                                    		<spring:message code="sindfeb.hosp" />
+                                                    	</label>
+                                                    	<div class="input-group">
+                                                    		<span class="input-group-addon"> <i class="fa fa-hospital-o fa-fw"></i></span>
+	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.hosp" />" name="hosp" id="hosp" class="select2">
+																<option value=""></option>
+																<c:forEach items="${catResp}" var="cresp">
+																	<c:choose> 
+																		<c:when test="${cresp.codigo eq daSindFeb.hosp.codigo}">
+																			<option selected value="${cresp.codigo}">${cresp.nombre}</option>
+																		</c:when>
+																		<c:otherwise>
+																			<option value="${cresp.codigo}">${cresp.valor}</option>
+																		</c:otherwise>
+																	</c:choose> 
+																</c:forEach>
+															</select>
+														</div>
+                                            		</section>
+                                            		<section class="col col-3">
+                                            			<label class="text-left txt-color-blue font-md hidden-xs">
+                                            				<spring:message code="sindfeb.hosp.date" />
+                                            			</label>
+                                            			<div class="input-group">
+															<span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+															<label class="input">
+																<input class="form-control date-picker" data-date-end-date="+0d" data-date-start-date="-30d" 
+																	type="text" name="fechaIngreso" id="fechaIngreso" value="<fmt:formatDate value="${daSindFeb.fechaIngreso}" pattern="dd/MM/yyyy" />"
+																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.hosp.date" />">
+																	<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.hosp.date" /></b>
+															</label>
+															<span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
+														</div>
+                                            		</section>
+                                            		<section class="col col-3">
+                                                		<i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
+                                                		<label class="text-left txt-color-blue font-md hidden-xs">
+                                                    		<spring:message code="sindfeb.dead" />
+                                                    	</label>
+                                                    	<div class="input-group">
+                                                    		<span class="input-group-addon"> <i class="fa fa-plus-square fa-fw"></i></span>
+	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.dead" />" name="fallecido" id="fallecido" class="select2">
+																<option value=""></option>
+																<c:forEach items="${catResp}" var="cresp">
+																	<c:choose> 
+																		<c:when test="${cresp.codigo eq daSindFeb.fallecido.codigo}">
+																			<option selected value="${cresp.codigo}">${cresp.nombre}</option>
+																		</c:when>
+																		<c:otherwise>
+																			<option value="${cresp.codigo}">${cresp.valor}</option>
+																		</c:otherwise>
+																	</c:choose> 
+																</c:forEach>
+															</select>
+														</div>
+                                            		</section>
+                                            		<section class="col col-3">
+                                            			<label class="text-left txt-color-blue font-md hidden-xs">
+                                            				<spring:message code="sindfeb.dead.date" />
+                                            			</label>
+                                            			<div class="input-group">
+															<span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+															<label class="input">
+																<input class="form-control date-picker" data-date-end-date="+0d" data-date-start-date="-30d" 
+																	type="text" name="fechaFallecido" id="fechaFallecido" value="<fmt:formatDate value="${daSindFeb.fechaFallecido}" pattern="dd/MM/yyyy" />"
+																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.dead.date" />">
+																	<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.dead.date" /></b>
+															</label>
+															<span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
+														</div>
+                                            		</section>
+                                      				</div>
+                                      				<!-- END ROW -->
 												</fieldset>
 											</div>
 											<div class="step-pane" id="step5">
 												<h3><spring:message code="sindfeb.step5.long" /></h3>
-												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.persona.primerNombre} ${daSindFeb.persona.primerApellido}</h4>
+												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
+												<fieldset>
+											        <div class="table-responsive">
+											            <table class="table table-striped table-hover table-bordered" id="lista_resultados">
+											                <thead>
+											                <tr>
+											                    <th><spring:message code="lbl.test"/></th>
+											                    <th><spring:message code="lbl.result"/></th>
+											                    <th><spring:message code="lbl.laboratory"/></th>
+											                    <th><spring:message code="lbl.result.date"/></th>
+											                </tr>
+											                </thead>
+											            </table>
+											        </div>
+											    </fieldset>
 											</div>
 										</form>
 									</div>
