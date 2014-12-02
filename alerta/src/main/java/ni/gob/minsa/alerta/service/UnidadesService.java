@@ -79,8 +79,9 @@ public class UnidadesService {
         try {
             Session session = sessionFactory.getCurrentSession();
             Criteria criteria = session.createCriteria(Unidades.class);
-            criteria.add(Restrictions.eq("municipio",codMunicipio));
-            criteria.add(Restrictions.eq("entidadAdtva",codSilais));
+            //criteria.createAlias("Unidades.municipio", "Municipio");
+            criteria.add(Restrictions.eq("municipio.codigoNacional",codMunicipio));
+            criteria.add(Restrictions.eq("entidadAdtva.codigo",codSilais));
             criteria.add(Restrictions.eq("pasivo",'0'));
             Long[] dataTipUnidades = new Long[codTiposUnidades.length];
             for(int i=0; i < codTiposUnidades.length; i++){
@@ -122,8 +123,8 @@ public class UnidadesService {
         try {
             Session session = sessionFactory.getCurrentSession();
             Criteria criteria = session.createCriteria(Unidades.class);
-            criteria.add(Restrictions.eq("municipio",codMunicipio));
-            criteria.add(Restrictions.eq("entidadAdtva",codSilais));
+            criteria.add(Restrictions.eq("municipio.codigoNacional",codMunicipio));
+            criteria.add(Restrictions.eq("entidadAdtva.codigo",codSilais));
             Long[] dataTipUnidades = new Long[codTiposUnidades.length];
             for(int i=0; i < codTiposUnidades.length; i++){
                 dataTipUnidades[i] = Long.parseLong(codTiposUnidades[i]);

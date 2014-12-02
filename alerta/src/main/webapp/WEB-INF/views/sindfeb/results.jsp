@@ -100,16 +100,16 @@
 								<!-- end widget edit box -->
 								<!-- widget content -->
 								<div class="widget-body no-padding">
-									<table id="persons_result" class="table table-striped table-bordered table-hover" data-width="100%">
+									<table id="fichas_result" class="table table-striped table-bordered table-hover" width="100%">
 										<thead>			                
 											<tr>
 												<th data-class="expand"><i class="fa fa-fw fa-key text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.numFicha"/></th>
-												<th data-class="expand"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.date"/></th>
-												<th data-class="expand"><i class="fa fa-fw fa-folder-o txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.exp"/></th>
-												<th data-class="expand"><i class="fa fa-fw fa-stethoscope txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.unidad"/></th>
-												<th data-class="expand"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
-												<th data-class="expand"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
-												<th data-class="expand"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.date"/></th>
+												<th data-hide="phone, tablet"><i class="fa fa-fw fa-folder-o txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.exp"/></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-stethoscope txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.unidad"/></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
+												<th data-hide="phone,tablet"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
 												<th></th>
 											</tr>
 										</thead>
@@ -119,12 +119,12 @@
 												<td><c:out value="${ficha.numFicha}" /></td>
 												<td><c:out value="${ficha.fechaFicha}" /></td>
 												<td><c:out value="${ficha.codExpediente}" /></td>
-												<td><c:out value="${ficha.codUnidadAtencion.nombre}" /></td>
-												<td><c:out value="${ficha.persona.primerNombre}" /></td>
-												<td><c:out value="${ficha.persona.primerApellido}" /></td>
-												<td><c:out value="${ficha.persona.segundoApellido}" /></td>
-												<spring:url value="/febriles/edit/{idficha}" var="editUrl">
-													<spring:param name="idficha" value="${ficha.idFichaEpidem}" />
+												<td><c:out value="${ficha.idNotificacion.codUnidadAtencion.nombre}" /></td>
+												<td><c:out value="${ficha.idNotificacion.persona.primerNombre}" /></td>
+												<td><c:out value="${ficha.idNotificacion.persona.primerApellido}" /></td>
+												<td><c:out value="${ficha.idNotificacion.persona.segundoApellido}" /></td>
+												<spring:url value="/febriles/edit/{idNotificacion}" var="editUrl">
+													<spring:param name="idNotificacion" value="${ficha.idNotificacion.idNotificacion}" />
 												</spring:url>
 												<td><a href="${fn:escapeXml(editUrl)}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a></td>
 											</tr>
@@ -174,6 +174,29 @@
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
 	    		$("li.sindfeb").parents("ul").slideDown(200);
 	    	}
+		});
+		var responsiveHelper_dt_basic = undefined;
+		var breakpointDefinition = {
+			tablet : 1024,
+			phone : 480
+		};
+		var table1 = $('#fichas_result').dataTable({
+			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
+				"t"+
+				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+			"autoWidth" : true,
+			"preDrawCallback" : function() {
+				// Initialize the responsive datatables helper once.
+				if (!responsiveHelper_dt_basic) {
+					responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#fichas_result'), breakpointDefinition);
+				}
+			},
+			"rowCallback" : function(nRow) {
+				responsiveHelper_dt_basic.createExpandIcon(nRow);
+			},
+			"drawCallback" : function(oSettings) {
+				responsiveHelper_dt_basic.respond();
+			}
 		});
 	</script>
 	<!-- END JAVASCRIPTS -->
