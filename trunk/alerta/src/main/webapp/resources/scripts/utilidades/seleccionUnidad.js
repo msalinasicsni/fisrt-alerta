@@ -125,21 +125,6 @@ var SeleccionUnidad = function () {
                         }
                         $('#codUnidadSalud').html(html);
                     });
-                    $.getJSON(parametros.sSectoresUrl, {
-                        codMunicipio: $(this).val(),
-                        ajax: 'true'
-                    }, function (data) {
-                        var html = null;
-                        var len = data.length;
-                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
-                        for (var i = 0; i < len; i++) {
-                            html += '<option value="' + data[i].codigo + '">'
-                                + data[i].nombre
-                                + '</option>';
-                            html += '</option>';
-                        }
-                        $('#codigoSector').html(html);
-                    });
                     $.getJSON(parametros.sDistritosUrl, {
                         codMunicipio: $(this).val(),
                         ajax: 'true'
@@ -173,15 +158,39 @@ var SeleccionUnidad = function () {
                 }else{
                     var html = '<option value="">' + $("#text_opt_select").val() + '...</option>';
                     $('#codUnidadSalud').html(html);
-                    $('#codigoSector').html(html);
                     $('#codigoDistrito').html(html);
                     $('#codigoArea').html(html);
                 }
                 $('#codUnidadSalud').val('').change();
                 $('#codigoArea').val('').change();
                 $('#codigoDistrito').val('').change();
-                $('#codigoSector').val('').change();
                 setTimeout($.unblockUI, 500);
+            });
+
+            <!-- Al seleccionar unidad de salud-->
+            $('#codUnidadSalud').change(function () {
+                if ($(this).val().length > 0){
+                    $.getJSON(parametros.sSectoresUrl, {
+                        codUnidad: $(this).val(),
+                        ajax: 'true'
+                    }, function (data) {
+                        var html = null;
+                        var len = data.length;
+                        html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].codigo + '">'
+                                + data[i].nombre
+                                + '</option>';
+                            html += '</option>';
+                        }
+                        $('#codigoSector').html(html);
+                    });
+                }else {
+                    var html = '<option value="">' + $("#text_opt_select").val() + '...</option>';
+                    $('#codigoSector').html(html);
+                }
+                $('#codigoSector').val('').change();
+
             });
 
             <!-- al seleccionar sector-->

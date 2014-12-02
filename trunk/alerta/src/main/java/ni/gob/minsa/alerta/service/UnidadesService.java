@@ -102,7 +102,7 @@ public class UnidadesService {
         try {
             Session session = sessionFactory.getCurrentSession();
             Criteria criteria = session.createCriteria(Unidades.class);
-            criteria.add(Restrictions.eq("entidadAdtva",codSilais));
+            criteria.add(Restrictions.eq("entidadAdtva.codigo",codSilais));
             criteria.add(Restrictions.eq("pasivo",'0'));
             Long[] dataTipUnidades = new Long[codTiposUnidades.length];
             for(int i=0; i < codTiposUnidades.length; i++){

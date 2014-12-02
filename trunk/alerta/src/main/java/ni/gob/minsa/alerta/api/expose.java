@@ -216,10 +216,10 @@ public class expose {
     @RequestMapping(value = "sectoresMunicipio", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    List<Sectores> getSectoresByMunicipio(@RequestParam(value = "codMunicipio", required = true) String codMunicipio) throws Exception {
-        logger.info("Obteniendo los sectores por municipio en JSON");
+    List<Sectores> getSectoresByUnidad(@RequestParam(value = "codUnidad", required = true) long codUnidad) throws Exception {
+        logger.info("Obteniendo los sectores por unidad de salud en JSON");
         List<Sectores> sectoresList = new ArrayList<Sectores>();
-        sectoresList = sectoresService.getSectoresByMunicipio(codMunicipio);
+        sectoresList = sectoresService.getSectoresByUnidad(codUnidad);
         return sectoresList;
     }
 

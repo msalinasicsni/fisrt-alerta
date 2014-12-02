@@ -120,7 +120,7 @@
                                         <div class="row">
                                             <section class="col col-6">
                                                 <label class="text-left txt-color-blue font-md">
-                                                    </i><spring:message code="lbl.send.person.name" />
+                                                    <spring:message code="lbl.send.person.name" />
                                                 </label>
                                                 <label class="input"><i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
                                                     <input type="text" id="txtfiltroNombre" name="filtroNombre" placeholder="<spring:message code="lbl.send.person.name"/>">
@@ -129,7 +129,7 @@
                                             </section>
                                             <section class="col col-3">
                                                 <label class="text-left txt-color-blue font-md">
-                                                    </i><spring:message code="lbl.send.start.date.mx" />
+                                                    <spring:message code="lbl.send.start.date.mx" />
                                                 </label>
                                                 <label class="input">
                                                     <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
@@ -141,7 +141,7 @@
                                             </section>
                                             <section class="col col-3">
                                                 <label class="text-left txt-color-blue font-md">
-                                                    </i><spring:message code="lbl.send.end.date.mx" />
+                                                    <spring:message code="lbl.send.end.date.mx" />
                                                 </label>
                                                 <label class="input">
                                                     <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
@@ -155,7 +155,7 @@
                                         <div class="row">
                                             <section class="col col-4">
                                                 <label class="text-left txt-color-blue font-md">
-                                                    </i><spring:message code="lbl.silais" /> </label>
+                                                    <spring:message code="lbl.silais" /> </label>
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="fa fa-location-arrow fa-fw"></i></span>
                                                     <select id="codSilais" name="codSilais"
@@ -169,7 +169,7 @@
                                             </section>
                                             <section class="col col-6">
                                                 <label class="text-left txt-color-blue font-md">
-                                                    </i><spring:message code="lbl.health.unit" /> </label>
+                                                    <spring:message code="lbl.health.unit" /> </label>
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="fa fa-location-arrow fa-fw"></i></span>
                                                     <select id="codUnidadSalud" name="codSilais"
@@ -180,7 +180,7 @@
                                             </section>
                                             <section class="col col-2">
                                                 <label class="text-left txt-color-blue font-md">
-                                                    </i><spring:message code="lbl.sample.type" /> </label>
+                                                    <spring:message code="lbl.sample.type" /> </label>
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="fa fa-location-arrow fa-fw"></i></span>
                                                     <select id="codTipoMx" name="codTipoMx"
@@ -271,13 +271,15 @@
                                             </section>
                                             <section class="col col-4">
                                                 <label class="text-left txt-color-blue font-md">
-                                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.send.laboratory.origin" /> </label>
+                                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.send.recipient.laboratory" /> </label>
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="fa fa-location-arrow fa-fw"></i></span>
                                                     <select id="codLaboratorioProce" name="codLaboratorioProce"
                                                             class="select2">
                                                         <option value=""><spring:message code="lbl.select" />...</option>
-                                                        <option value="1">Laboratorio por defecto</option>
+                                                        <c:forEach items="${laboratorios}" var="laboratorios">
+                                                            <option value="${laboratorios.codigo}">${laboratorios.nombre}</option>
+                                                        </c:forEach>
                                                     </select>
                                                 </div>
                                             </section>
@@ -386,7 +388,7 @@
 
             handleDatePickers("${pageContext.request.locale.language}");
             handleInputMasks();
-	    	$("li.tomaMx").addClass("open");
+	    	$("li.samples").addClass("open");
 	    	$("li.envioOrdenMx").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
 	    		$("li.envioOrdenMx").parents("ul").slideDown(200);

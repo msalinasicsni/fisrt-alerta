@@ -88,8 +88,10 @@ public class EnvioOrdenExamenMxController {
 
             List<EntidadesAdtvas> entidadesAdtvases =  entidadAdmonService.getAllEntidadesAdtvas();
             List<TipoMx> tipoMxList = catalogosService.getTipoMuestra();
+            List<Laboratorio> laboratorioList = envioOrdenExamenMxService.getLaboratorios();
             mav.addObject("entidades",entidadesAdtvases);
             mav.addObject("tipoMuestra", tipoMxList);
+            mav.addObject("laboratorios",laboratorioList);
         }else{
             mav.setViewName(urlValidacion);
         }
@@ -99,7 +101,7 @@ public class EnvioOrdenExamenMxController {
     @RequestMapping(value = "orders", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     String fetchOrdersJson(@RequestParam(value = "strFilter", required = true) String filtro) throws Exception{
-        logger.info("Obteniendo las personas en JSON");
+        logger.info("Obteniendo las ordenes de examen pendienetes según filtros en JSON");
         FiltroOrdenExamen filtroOrdenExamen= jsonToFiltroOrdenExamen(filtro);
         List<DaOrdenExamen> ordenExamenList = envioOrdenExamenMxService.getOrdenesExamenPendiente(filtroOrdenExamen);
         return OrdenesExamenToJson(ordenExamenList);

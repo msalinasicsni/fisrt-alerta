@@ -39,4 +39,15 @@ public class SectoresService {
         // Retrieve all
         return  query.list();
     }
+
+    public List<Sectores> getSectoresByUnidad(long codUnidad) {
+        // Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        // Create a Hibernate query (HQL)
+        Query query = session.createQuery("FROM Sectores where unidad.codigo = :codUnidad and pasivo = :pasivo");
+        query.setParameter("codUnidad",codUnidad);
+        query.setParameter("pasivo",'0');
+        // Retrieve all
+        return  query.list();
+    }
 }

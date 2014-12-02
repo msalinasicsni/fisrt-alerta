@@ -4,6 +4,7 @@ import ni.gob.minsa.alerta.domain.irag.DaIrag;
 import ni.gob.minsa.alerta.domain.muestra.DaEnvioOrden;
 import ni.gob.minsa.alerta.domain.muestra.DaOrdenExamen;
 import ni.gob.minsa.alerta.domain.muestra.FiltroOrdenExamen;
+import ni.gob.minsa.alerta.domain.muestra.Laboratorio;
 import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.DaSindFebril;
 import org.apache.commons.codec.language.Soundex;
 import org.hibernate.Criteria;
@@ -145,6 +146,7 @@ public class EnvioOrdenExamenMxService {
         String query = "select irag from DaIrag as irag, DaCondicionesPreviasIrag cIrag where irag.idNotificacion.idNotificacion = cIrag.idNotificacion.idNotificacion.idNotificacion" +
                 " and irag.idNotificacion.idNotificacion = :idNotificacion" +
                 " and cIrag.codCondicion.codigo = :codCondicion";
+       // String query = "select irag from DaIrag where idNotificacion.idNotificacion = :idNotificacion and condiciones like :codCondicion";
         Query q = session.createQuery(query);
         q.setParameter("idNotificacion", strIdNotificacion);
         q.setParameter("codCondicion","CONDPRE|EMB");//código para condición embarazo
@@ -164,5 +166,11 @@ public class EnvioOrdenExamenMxService {
             embarazo="Si";
 
         return embarazo;
+    }
+
+    public List<Laboratorio> getLaboratorios(){
+        String query = "from Laboratorio ORDER BY nombre";
+        Query q = sessionFactory.getCurrentSession().createQuery(query);
+        return q.list();
     }
 }
