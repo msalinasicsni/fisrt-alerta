@@ -136,7 +136,7 @@ public class IragController {
             catClasFNB = catalogoService.getClasificacionFinalNB();
             catClasFNV = catalogoService.getClasificacionFinalNV();
 
-            mapModel = new HashMap<>();
+            mapModel = new HashMap<String, Object>();
 
             mapModel.put("catProcedencia", catProcedencia);
             mapModel.put("catClasif", catClasif);
@@ -292,7 +292,7 @@ public class IragController {
 
                     entidades = entidadAdmonService.getAllEntidadesAdtvas();
 
-                    Divisionpolitica municipio = divisionPoliticaService.getMunicipiosByUnidadSalud(noti.getCodUnidadAtencion().getMunicipio());
+                    Divisionpolitica municipio = divisionPoliticaService.getMunicipiosByUnidadSalud(noti.getCodUnidadAtencion().getMunicipio().getCodigoNacional());
                     List<Divisionpolitica> munic = divisionPoliticaService.getMunicipiosBySilais(noti.getCodSilaisAtencion().getCodigo());
                     List<Unidades> uni = unidadesService.getPUnitsHospByMuniAndSilais(municipio.getCodigoNacional(), HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), noti.getCodSilaisAtencion().getCodigo());
 
