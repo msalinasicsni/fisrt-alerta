@@ -154,8 +154,6 @@ public class EntomologiaController {
             }
             procedencias = catalogosService.getProcedencia();
             ordinales = catalogosService.getOrdinalEncuesta();
-            //List<Divisionpolitica> muni = seguridadService.obtenerMunicipiosPorUsuarioEntidad((int)infoSesion.getUsuarioId(),10,UtilitySecurity.SYSTEM_CODE);
-            //List<Unidades> prueba = seguridadService.obtenerUnidadesPorUsuario((int)infoSesion.getUsuarioId(), UtilitySecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimarias.getDiscriminator());
             mav.addObject("entidades", silais);
             mav.addObject("procedencias", procedencias);
             mav.addObject("ordinales", ordinales);
@@ -357,7 +355,6 @@ public class EntomologiaController {
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
-            seguridadService.obtenerUnidadesPorUsuario(1,"","");
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
@@ -566,7 +563,6 @@ public class EntomologiaController {
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
-            seguridadService.obtenerUnidadesPorUsuario(1,"","");
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
@@ -786,7 +782,6 @@ public class EntomologiaController {
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
-            seguridadService.obtenerUnidadesPorUsuario(1,"","");
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
@@ -931,7 +926,7 @@ public class EntomologiaController {
                 unidadesSalud = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int)idUsuario ,maestro.getEntidadesAdtva().getCodigo(),maestro.getMunicipio().getCodigoNacional(), ConstantsSecurity.SYSTEM_CODE,HealthUnitType.UnidadesPrimarias.getDiscriminator());
             }
 
-            sectores = sectoresService.getSectoresByMunicipio(maestro.getMunicipio().getCodigoNacional());
+            sectores = sectoresService.getSectoresByUnidad(maestro.getUnidadSalud().getCodigo());
             //comunidades = comunidadesService.getComunidades(maestro.getMunicipio().getCodigoNacional());
             if (maestro.getMunicipio().getCodigoNacional().equalsIgnoreCase(COD_NACIONAL_MUNI_MANAGUA)) {
                 distritosMng = catalogosService.getDistritos();
