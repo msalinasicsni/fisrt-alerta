@@ -194,8 +194,8 @@
     </div>
 </div>
 <div class="step-content">
-<form:form modelAttribute="formVI" id="wizard-1" class="smart-form">
-<h2 class="row-seperator-header"><i class="fa fa-male "></i> <spring:message code="lbl.patient" /> ${noti.persona.primerNombre} ${noti.persona.primerApellido}  </h2>
+<form:form modelAttribute="irag" id="wizard-1" class="smart-form">
+<h2 class="row-seperator-header"><i class="fa fa-male "></i> <spring:message code="lbl.patient" /> ${irag.idNotificacion.persona.primerNombre} ${irag.idNotificacion.persona.primerApellido}  </h2>
 <div class="step-pane active" id="step1">
         <h3 class="">
             <spring:message code="lbl.general.data"/>
@@ -205,12 +205,12 @@
         <div hidden="hidden" >
 
             <label  class="input"> <i
-                    class="icon-prepend fa fa-male fa-fw"></i> <input value="${noti.persona.personaId}" type="text" name="personaId"
+                    class="icon-prepend fa fa-male fa-fw"></i> <input value="${irag.idNotificacion.persona.personaId}" type="text" name="personaId"
                                                                           />
             </label>
 
             <label class="input"> <i
-                    class="icon-prepend fa fa-male fa-fw"></i> <input type="text" id="idNotificacion" name="idNotificacion.idNotificacion"
+                    class="icon-prepend fa fa-male fa-fw"></i> <input type="text" id="idNotificacion" name="idNotificacion"
                                                                            />
             </label>
         </div>
@@ -231,7 +231,7 @@
                         <option value=""></option>
                         <c:forEach items="${entidades}" var="entidad">
                             <c:choose>
-                                <c:when test="${entidad.codigo eq noti.codSilaisAtencion.codigo}">
+                                <c:when test="${entidad.codigo eq irag.idNotificacion.codSilaisAtencion.codigo}">
                                     <option selected value="${entidad.codigo}">${entidad.nombre}</option>
                                 </c:when>
                                 <c:otherwise>
@@ -281,9 +281,19 @@
 
                 <div class="input-group">
                     <spring:message code="msg.select.hu" var="selectHU" />
-                    <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
-                    <select data-placeholder="${selectHU}" name="codUnidadAtencion" id="codUnidadAtencion" class="select2">
-                        <option selected value="${noti.codUnidadAtencion.codigo}">${noti.codUnidadAtencion.nombre}</option>
+                    <span class="input-group-addon"> <i class="fa fa-file-text-o"></i></span>
+                    <select data-placeholder="${selectHU}" name="codUnidadAtencion" id="codUnidadAtencion"  class="select2">
+
+                        <c:forEach items="${uni}" var="unid">
+                            <c:choose>
+                                <c:when test="${fn:contains(irag.idNotificacion.codUnidadAtencion.codigo, unid.codigo)}">
+                                    <option selected value="${unid.codigo}">${unid.nombre}</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="${unid.codigo}">${unid.nombre}</option>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
                     </select>
                 </div>
             </section>
@@ -384,7 +394,7 @@
                     class="icon-prepend fa fa-pencil fa-fw"></i> <input readonly="true"
                                                                              cssStyle="background-color: #f0fff0"
                                                                              type="text" name="primerNombre"
-                                                                             value="${noti.persona.primerNombre}"/>
+                                                                             value="${irag.idNotificacion.persona.primerNombre}"/>
             </label>
         </section>
 
@@ -396,7 +406,7 @@
                     class="icon-prepend fa fa-pencil fa-fw"></i> <input readonly="true"
                                                                              cssStyle="background-color: #f0fff0"
                                                                              type="text" name="segundoNombre"
-                                                                           value="${noti.persona.segundoNombre}" />
+                                                                           value="${irag.idNotificacion.persona.segundoNombre}" />
             </label>
         </section>
 
@@ -408,7 +418,7 @@
                     class="icon-prepend fa fa-pencil fa-fw"></i> <input readonly="true"
                                                                              cssStyle="background-color: #f0fff0"
                                                                              type="text" name="primerApellido"
-                                                                             value="${noti.persona.primerApellido}"/>
+                                                                             value="${irag.idNotificacion.persona.primerApellido}"/>
             </label>
         </section>
 
@@ -420,7 +430,7 @@
                     class="icon-prepend fa fa-pencil fa-fw"></i> <input readonly="true"
                                                                              cssStyle="background-color: #f0fff0"
                                                                              type="text" name="segundoApellido"
-                                                                            value="${noti.persona.segundoApellido}" />
+                                                                            value="${irag.idNotificacion.persona.segundoApellido}" />
             </label>
         </section>
 
@@ -436,10 +446,10 @@
 
             <div class="input-group">
                 <c:choose>
-                    <c:when test="${noti.persona.sexo.codigo eq 'SEXO|M'}">
+                    <c:when test="${irag.idNotificacion.persona.sexo.codigo eq 'SEXO|M'}">
                         <span class="input-group-addon"><i class="fa fa-male fa-fw"></i></span>
                     </c:when>
-                    <c:when test="${noti.persona.sexo.codigo eq 'SEXO|F'}">
+                    <c:when test="${irag.idNotificacion.persona.sexo.codigo eq 'SEXO|F'}">
                         <span class="input-group-addon"><i class="fa fa-female fa-fw"></i></span>
                     </c:when>
                     <c:otherwise>
@@ -448,7 +458,7 @@
                 </c:choose>
                 <label class="input">
                     <input class="form-control" type="text" name="sexo" id="sexo"
-                           value="${noti.persona.sexo}" readonly  cssStyle="background-color: #f0fff0"
+                           value="${irag.idNotificacion.persona.sexo}" readonly  cssStyle="background-color: #f0fff0"
                            placeholder=" <spring:message code="person.sexo" />">
                 </label>
                 <span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
@@ -469,7 +479,7 @@
                 <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
                 <label class="input">
                     <input  style="background-color: #f0fff0" class="form-control" readonly
-                           type="text" name="fechaNacimiento" id="fechaNacimiento" value="<fmt:formatDate value="${noti.persona.fechaNacimiento}" pattern="dd/MM/yyyy" />"
+                           type="text" name="fechaNacimiento" id="fechaNacimiento" value="<fmt:formatDate value="${irag.idNotificacion.persona.fechaNacimiento}" pattern="dd/MM/yyyy" />"
                     placeholder=" <spring:message code="person.fecnac" />">
                 </label>
                 <span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
@@ -499,14 +509,19 @@
             </label>
 
             <div class="input-group">
-                <spring:message code="msg.select.depa" var="selectDepa" />
                 <span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
-                <select data-placeholder="${selectDepa}"
-                        id="departamento" name="departamento"
+                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.depa.resi" />" id="departamento" name="departamento"
                         class="select2">
-                    <option value=""><spring:message code="lbl.select"/></option>
+                    <option value=""></option>
                     <c:forEach items="${departamentos}" var="depa">
-                        <option value="${depa.codigoNacional}">${depa.nombre}</option>
+                        <c:choose>
+                            <c:when test="${depa.divisionpoliticaId eq irag.idNotificacion.persona.municipioResidencia.dependencia}">
+                                <option selected value="${depa.codigoNacional}">${depa.nombre}</option>
+                            </c:when>
+                            <c:otherwise>
+                                <option value="${depa.codigoNacional}">${depa.nombre}</option>
+                            </c:otherwise>
+                        </c:choose>
                     </c:forEach>
                 </select>
             </div>
@@ -521,11 +536,12 @@
 
             <div class="input-group">
                 <span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
-                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.mun.res" />" id="municipioResidencia" name="municipioResidencia.codigoNacional" class="select2">
+                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.mun.res" />" id="municipioResidencia" name="municipioResidencia"
+                        class="select2">
                     <option value=""></option>
                     <c:forEach items="${municipiosResi}" var="muniResi">
                         <c:choose>
-                            <c:when test="${fn:contains(noti.persona.municipioResidencia.codigoNacional, muniResi.codigoNacional)}">
+                            <c:when test="${muniResi.codigoNacional eq irag.idNotificacion.persona.municipioResidencia.codigoNacional}">
                             <option selected value="${muniResi.codigoNacional}">${muniResi.nombre}</option>
                             </c:when>
                             <c:otherwise>
@@ -546,11 +562,11 @@
 
             <div class="input-group">
                 <span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
-                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.com.res" />" id="comunidadResidencia" name="noti.persona.comunidadResidencia.codigo" class="select2">
+                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.com.res" />" id="comunidadResidencia" name="comunidadResidencia" class="select2">
                     <option value=""></option>
                     <c:forEach items="${comunidades}" var="comu">
                         <c:choose>
-                            <c:when test="${comu.codigo eq noti.persona.comunidadResidencia.codigo}">
+                            <c:when test="${comu.codigo eq irag.idNotificacion.persona.comunidadResidencia.codigo}">
                                 <option selected value="${comu.codigo}">${comu.nombre}</option>
                             </c:when>
                             <c:otherwise>
@@ -575,7 +591,7 @@
 
               <i class="icon-prepend fa fa-map-marker fa-fw"></i>  <i class="icon-append fa fa-sort-alpha-asc fa-fw"></i>
                     <input class="form-control" type="text" name="direccionResidencia" id="direccionResidencia"
-                           value="${noti.persona.direccionResidencia}"
+                           value="${irag.idNotificacion.persona.direccionResidencia}"
                            placeholder=" <spring:message code="person.direccion" />">
                 <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i>  <spring:message code="person.direccion" /></b>
             </div>
@@ -592,7 +608,7 @@
 
                 <i class="icon-prepend fa fa-pencil fa-fw"></i>  <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
                 <input class="form-control" type="text" name="telefonoResidencia" id="telefonoResidencia"
-                       value="${noti.persona.telefonoResidencia}"
+                       value="${irag.idNotificacion.persona.telefonoResidencia}"
                        placeholder=" <spring:message code="person.telefono" />">
                 <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i>  <spring:message code="person.telefono" /></b>
             </div>
@@ -773,54 +789,60 @@
 
     </legend>
 
+    <section class="col col-6">
+        <label class="text-left txt-color-blue font-md">
+            <spring:message code="lbl.preexisting.conditions"/>
+        </label>
+        <div class="input-group">
+            <spring:message code="msg.select.preexisting.condition" var="selectPreCon"/>
 
-    <diV class="row">
-        <section class="col md-3">
-            <c:choose>
-                <c:when test="${!autorizado}">
-                    <button disabled type="button" class="btn btn-primary styleButton" data-toggle="modal" data-target="#modalCondPre">
-                        <i class="fa fa-plus icon-white"></i>
-                        <spring:message code="act.add.preexisting.conditions"/>
-                    </button>
-                </c:when>
+            <span class="input-group-addon"> <i class="fa fa-stethoscope"></i></span>
+            <select data-placeholder="${selectCM}" name="condiciones" id="condiciones" multiple style="width:100%" class="select2">
 
-                <c:otherwise>
-                    <button type="button" class="btn btn-primary styleButton" data-toggle="modal" data-target="#modalCondPre">
-                        <i class="fa fa-plus icon-white"></i>
-                        <spring:message code="act.add.preexisting.conditions"/>
-                    </button>
-                </c:otherwise>
-            </c:choose>
-        </section>
-    </diV>
-    <br>
-
-    <div>
-
-        <!-- widget edit box -->
-        <div class="jarviswidget-editbox">
-            <!-- This area used as dropdown edit box -->
-
+                <c:forEach items="${catCondPre}" var="cond">
+                    <c:choose>
+                        <c:when test="${fn:contains(irag.condiciones,cond.codigo)}">
+                            <option selected value="${cond.codigo}">${cond.valor}</option>
+                        </c:when>
+                        <c:otherwise>
+                            <option value="${cond.codigo}">${cond.valor}</option>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </select>
         </div>
-        <!-- end widget edit box -->
+    </section>
 
-        <!-- widget content -->
-        <div class="widget-body no-padding col-md-6">
+    <section hidden="hidden" id="sOtraCond" class="col col-3">
+        <label class="text-left txt-color-blue font-md">
+            <spring:message code="lbl.other.preexisting.condition"/>
+        </label>
 
+        <label class="input"> <i
+                class="icon-prepend fa fa-sort-alpha-asc fa-fw"></i> <form:input
+                type="text" name="otraCondicion" id="otraCondicion"
+                path="otraCondicion"
+                />
+        </label>
+    </section>
 
-            <table id="lista_condiciones"
-                   class="table table-striped table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th><i class="fa fa-fw fa-stethoscope text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message
-                            code="lbl.preexisting.condition"/></th>
-                    <th></th>
-                </tr>
-                </thead>
-            </table>
+    <section hidden="hidden" id="sWeeksP" class="col col-3">
+        <spring:message var="weeksP" code="lbl.weeks.pregnancy"/>
+        <label class="text-left txt-color-blue font-md">
+        ${weeksP}
+        </label>
+
+        <div class="input">
+            <i class="icon-prepend fa fa-pencil fa-fw"></i>  <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+            <form:input placeholder="${weeksP}" type="text" path="semanasEmbarazo" name="semanasEmbarazo"/>
+            <b class="tooltip tooltip-bottom-right"> <i
+                    class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.weeks.pregnancy"/>
+            </b>
         </div>
+    </section>
 
-    </div>
+
+
 </fieldset>
 
 </div>
@@ -831,6 +853,7 @@
 <fieldset>
     <div class="row">
         <section class="col col-3">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
             <spring:message var="symptomsDate" code="lbl.symptoms.start.date"/>
             <label class="text-left txt-color-blue font-md">
                ${symptomsDate}
@@ -846,55 +869,46 @@
             </div>
         </section>
 
-        <br>
-        <section class="col col-3">
-            <c:choose>
-                <c:when test="${!autorizado}" >
+        <section class="col col-6">
+            <label class="text-left txt-color-blue font-md">
+                    <spring:message code="lbl.clinical.manifestations"/>
+            </label>
+            <div class="input-group">
+                <spring:message code="msg.select.clinical.manifestations" var="selectCM"/>
 
-                    <button disabled type="button" class="btn btn-primary styleButton" data-toggle="modal" data-target="#modalCM">
-                        <i class="fa fa-plus icon-white"></i>
-                        <spring:message code="act.add.clinical.manifestation"/>
-                    </button>
-                </c:when>
+                <span class="input-group-addon"> <i class="fa fa-stethoscope"></i></span>
+                <select data-placeholder="${selectCM}" name="manifestaciones" id="manifestaciones" multiple style="width:100%" class="select2">
 
-                <c:otherwise>
-                    <button type="button" class="btn btn-primary styleButton" data-toggle="modal" data-target="#modalCM">
-                        <i class="fa fa-plus icon-white"></i>
-                        <spring:message code="act.add.clinical.manifestation"/>
-                    </button>
-                </c:otherwise>
-
-            </c:choose>
+                    <c:forEach items="${catManCli}" var="mani">
+                        <c:choose>
+                            <c:when test="${fn:contains(irag.manifestaciones, mani.codigo)}">
+                                <option selected value="${mani.codigo}">${mani.valor}</option>
+                            </c:when>
+                            <c:otherwise>
+                                <option value="${mani.codigo}">${mani.valor}</option>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </select>
+            </div>
         </section>
-    </div>
 
-    <br>
-    <div>
+        <section hidden="hidden" id="sOtraMani" class="col col-3">
+            <label class="text-left txt-color-blue font-md">
+                <spring:message code="lbl.other.clinical.manifestation"/>
+            </label>
 
-        <!-- widget edit box -->
-        <div class="jarviswidget-editbox">
-            <!-- This area used as dropdown edit box -->
+            <label class="input"> <i
+                    class="icon-prepend fa fa-sort-alpha-asc fa-fw"></i> <form:input
+                    type="text" name="otraManifestacion" id="otraManifestacion"
+                    path="otraManifestacion"
+                    />
+            </label>
+        </section>
 
-        </div>
-        <!-- end widget edit box -->
-
-        <!-- widget content -->
-        <div class="widget-body no-padding col-md-6">
-
-
-            <table id="lista_manifestaciones"
-                   class="table table-striped table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th><i class="fa fa-fw fa-stethoscope text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message
-                            code="lbl.clinical.manifestation"/></th>
-                    <th></th>
-                </tr>
-                </thead>
-            </table>
-        </div>
 
     </div>
+
 
 </fieldset>
 <fieldset>
@@ -1136,15 +1150,12 @@
 </fieldset>
 
 <fieldset>
-    <h3>
- <spring:message code="lbl.radiology.results"/>
-    </h3>
 
     <div class="row">
-        <section class="col col-4">
+        <section class="col col-6">
             <spring:message var="radRes" code="lbl.radiology.results"/>
             <label class="text-left txt-color-blue font-md">
-
+            ${radRes}
             </label>
 
 
@@ -1154,7 +1165,7 @@
 
                     <c:forEach items="${catResRad}" var="result">
                         <c:choose>
-                            <c:when test="${fn:contains(formVI.codResRadiologia, result.codigo)}">
+                            <c:when test="${fn:contains(irag.codResRadiologia, result.codigo)}">
                                 <option selected value="${result.codigo}">${result.valor}</option>
                             </c:when>
                             <c:otherwise>
@@ -1167,7 +1178,7 @@
 
         </section>
 
-        <section id="sOtroResRadiologia" hidden="hidden" class="col col-3">
+        <section id="sOtroResRadiologia" hidden="hidden" class="col col-6">
             <label class="text-left txt-color-blue font-md">
                 <spring:message code="lbl.description.other"/>
             </label>
@@ -1360,6 +1371,7 @@
     <fieldset>
         <div class="row">
             <section class="col col-5">
+                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
                 <label class="text-left txt-color-blue font-md">
                     <spring:message code="lbl.final.case.classification"/>
                 </label>
@@ -1373,7 +1385,7 @@
 
                         <c:forEach items="${catClaFinal}" var="clasF">
                             <c:choose>
-                                <c:when test="${fn:contains(formVI.codClasFCaso, clasF.codigo)}">
+                                <c:when test="${fn:contains(irag.codClasFCaso, clasF.codigo)}">
                                     <option selected value="${clasF.codigo}">${clasF.valor}</option>
                                 </c:when>
                                 <c:otherwise>
@@ -1397,11 +1409,21 @@
 
                 <div class="input-group">
                     <spring:message code="msg.select.final.case.nb" var="selectFCNB"/>
-                    <span class="input-group-addon"> <i class="fa fa-list-ul fa-fw"></i></span>
-                    <form:select placeholder="${selectFCNB}" name="codClasFDetalleNB" cssClass="select2" path="codClasFDetalleNB">
-                        <option value=""></option>
-                        <form:options items="${catNB}" itemValue="codigo" itemLabel="valor"/>
-                    </form:select>
+
+                    <span class="input-group-addon"> <i class="fa fa-stethoscope"></i></span>
+                    <select data-placeholder="${selectFCNB}" id="codClasFDetalleNB" name="codClasFDetalleNB" class="select2">
+
+                        <c:forEach items="${catNB}" var="clasNB">
+                            <c:choose>
+                                <c:when test="${fn:contains(irag.codClasFDetalleNB.codigo, clasNB.codigo)}">
+                                    <option selected value="${clasNB.codigo}">${clasNB.valor}</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="${clasNB.codigo}">${clasNB.valor}</option>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </select>
                 </div>
             </section>
             <div id="dNBDet" hidden="hidden">
@@ -1449,13 +1471,23 @@
                     <spring:message code="lbl.final.case.NV"/>
                 </label>
 
+
                 <div class="input-group">
                     <spring:message code="msg.select.final.case.nv" var="selectFCNV"/>
-                    <span class="input-group-addon"> <i class="fa fa-list-ul fa-fw"></i></span>
-                    <form:select placeholder="${selectFCNV}" name="codClasFDetalleNV" cssClass="select2" path="codClasFDetalleNV">
-                        <option value=""></option>
-                        <form:options items="${catNV}" itemValue="codigo" itemLabel="valor"/>
-                    </form:select>
+                    <span class="input-group-addon"> <i class="fa fa-stethoscope"></i></span>
+                    <select data-placeholder="${selectFCNV}" id="codClasFDetalleNV" name="codClasFDetalleNV" class="select2">
+
+                        <c:forEach items="${catNV}" var="clasNV">
+                            <c:choose>
+                                <c:when test="${fn:contains(irag.codClasFDetalleNV.codigo, clasNV.codigo)}">
+                                    <option selected value="${clasNV.codigo}">${clasNV.valor}</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="${clasNV.codigo}">${clasNV.valor}</option>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </select>
                 </div>
             </section>
 
@@ -1547,105 +1579,127 @@
 
             <div class="modal-body">
                 <form:form id="fVaccine" modelAttribute="fVacuna" class="smart-form">
-                    <input id="inVacIdNoti" hidden="hidden" type="text" name="idNotificacion.idNotificacion"/>
+                    <input id="inVacIdNoti" hidden="hidden" type="text" name="idNotificacion"/>
 
                     <div class="row">
-                        <section class="col col-sm-12 col-md-6 col-lg-5">
+                        <section class="col col-sm-12 col-md-6 col-lg-6">
 
                             <label class="text-left txt-color-blue font-md">
                                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
                                 <spring:message code="lbl.vaccine"/>
                             </label>
 
-                            <div>
-                                <form:select id="codVacuna" name="codVacuna" class="select2" path="codVacuna">
-                                    <option value=""><spring:message code="lbl.select"/></option>
-                                    <c:forEach items="${catVacunas}" var="vac">
-                                        <form:option value="${vac.codigo}">${vac.valor}</form:option>
-                                    </c:forEach>
+                            <div class="input-group">
+                                <spring:message code="msg.select.vaccine" var="selectVac"/>
+                                <span class="input-group-addon"> <i class="fa fa-list-ul fa-fw"></i></span>
+                                <form:select placeholder="${selectVac}" id="codVacuna" name="codVacuna"
+                                             cssClass="select2" path="codVacuna">
+                                    <option value=""></option>
+                                    <form:options items="${catVacunas}" itemValue="codigo" itemLabel="valor"/>
                                 </form:select>
                             </div>
                         </section>
 
 
-                        <section class="col col-sm-12 col-md-6 col-lg-5">
+                        <section class="col col-sm-12 col-md-6 col-lg-6">
 
                             <label class="text-left txt-color-blue font-md">
                                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
                                 <spring:message code="lbl.which"/>
                             </label>
 
-                            <div id="dVacHib">
 
-                                <select id="tVacHib" hidden="hidden" class="select2">
-                                    <option value=""><spring:message code="lbl.select"/></option>
+                            <div id="dVacHib">
+                                <div class="input-group">
+                                    <spring:message code="msg.select.vaccine.type" var="vacType"/>
+                                    <span class="input-group-addon"> <i class="fa fa-list-ul fa-fw"></i></span>
+                                <select data-placeholder="${vacType}" id="tVacHib" hidden="hidden" class="select2">
+                                    <option value=""></option>
                                     <c:forEach items="${catTVacHib}" var="hib">
                                         <option value="${hib.codigo}">${hib.valor}</option>
                                     </c:forEach>
                                 </select>
+                                </div>
                             </div>
 
                             <div id="dVacMenin" hidden="hidden">
-                                <select id="tVacMenin" class="select2">
-                                    <option value=""><spring:message code="lbl.select"/></option>
+                                <div class="input-group">
+                                    <spring:message code="msg.select.vaccine.type" var="vacType"/>
+                                    <span class="input-group-addon"> <i class="fa fa-list-ul fa-fw"></i></span>
+                                <select data-placeholder="${vacType}"  id="tVacMenin" class="select2">
+                                    <option value=""></option>
                                     <c:forEach items="${catTVacMenin}" var="menin">
                                         <option value="${menin.codigo}">${menin.valor}</option>
                                     </c:forEach>
                                 </select>
+                                </div>
                             </div>
 
                             <div id="dVacNeumo" hidden="hidden">
-                                <select id="tVacNeumo" class="select2">
-                                    <option value=""><spring:message code="lbl.select"/></option>
+
+                                <div class="input-group">
+                                    <spring:message code="msg.select.vaccine.type" var="vacType"/>
+                                    <span class="input-group-addon"> <i class="fa fa-list-ul fa-fw"></i></span>
+                                <select data-placeholder="${vacType}"  id="tVacNeumo" class="select2">
+                                    <option value=""></option>
                                     <c:forEach items="${catTVacNeumo}" var="neumo">
                                         <option value="${neumo.codigo}">${neumo.valor}</option>
                                     </c:forEach>
                                 </select>
+                                </div>
                             </div>
 
                             <div id="dVacFlu" hidden="hidden">
-                                <select id="tVacFlu" class="select2">
-                                    <option value=""><spring:message code="lbl.select"/></option>
+
+                                <div class="input-group">
+                                    <spring:message code="msg.select.vaccine.type" var="vacType"/>
+                                    <span class="input-group-addon"> <i class="fa fa-list-ul fa-fw"></i></span>
+                                <select data-placeholder="${vacType}" id="tVacFlu" class="select2">
+                                    <option value=""></option>
                                     <c:forEach items="${catTVacFlu}" var="flu">
                                         <option value="${flu.codigo}">${flu.valor}</option>
                                     </c:forEach>
                                 </select>
+                            </div>
                             </div>
                         </section>
                     </div>
 
                     <div class="row">
 
-                        <section class="col col-sm-12 col-md-6 col-lg-5">
+                        <section class="col col-sm-12 col-md-6 col-lg-6">
                             <label class="text-left txt-color-blue font-md">
                                 <spring:message code="lbl.dose.number"/>
                             </label>
 
-                            <label style="width: 100px" class="input"> <i
-                                    class="icon-prepend fa fa-sort-numeric-asc fa-fw"></i> <form:input
-                                    type="text" name="dosis" id="dosis"
-                                    path="dosis"
-                                    />
-                            </label>
+
+                            <div class="input">
+                                <i class="icon-prepend fa fa-pencil fa-fw"></i>  <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                                <form:input placeholder="${doseNumber}" type="text" id="dosis" path="dosis" name="dosis"/>
+                                <b class="tooltip tooltip-bottom-right"> <i
+                                        class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.number.dose"/>
+                                </b>
+                            </div>
 
 
                         </section>
 
-                        <section class="col col-sm-12 col-md-6 col-lg-5">
+                        <section class="col col-sm-12 col-md-6 col-lg-6">
                             <label class="text-left txt-color-blue font-md">
                                 <spring:message code="lbl.dose.last.date"/>
                             </label>
 
-                            <div class="input-group">
-                                <form:input id="fechaUltimaDosis" cssStyle="z-index: 1065" type="text"
-                                            name="fechaUltimaDosis"
-                                            path="fechaUltimaDosis"
-                                            class="form-control date-picker"
-                                        />
-                    <span class="input-group-addon"> <i
-                            class="fa fa-calendar fa-fw"></i></span>
+
+                            <div class="input">
+                                <i class="icon-prepend fa fa-pencil"></i>  <i class="icon-append fa fa-calendar fa-fw"></i>
+                                <form:input path="fechaUltimaDosis" class="form-control date-picker" data-date-end-date="+0d"
+                                            type="text" name="fechaUltimaDOsis" id="fechaUltimaDosis" pattern="dd/MM/yyyy"
+                                            placeholder="${cDate}"/>
+                                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="lbl.dose.last.date"/></b>
 
                             </div>
+
+
                         </section>
 
                     </div>
@@ -1669,164 +1723,6 @@
 </div>
 <!-- /.modal -->
 
-<!-- Modal -->
-<div class="modal fade" id="modalCondPre" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color:#3276b1 ">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title txt-color-white"><spring:message code="lbl.new.preexisting.condition"/></h4>
-            </div>
-
-            <div class="modal-body">
-                <form:form id="fCondPre" modelAttribute="fCondPre" class="smart-form">
-
-                    <div class="row">
-                        <input hidden="hidden" id="inCondIdNoti" type="text" name="idNotificacion.idNotificacion"/>
-
-                        <div class="col col-sm-12 col-md-6 col-lg-6">
-                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
-                            <label class="text-left txt-color-blue font-md">
-                                <spring:message code="lbl.preexisting.condition"/>
-                            </label>
-
-                            <div>
-                                <form:select id="codCondicion" name="codCondicion" class="select2" path="codCondicion">
-                                    <option value=""><spring:message code="lbl.select"/></option>
-                                    <c:forEach items="${catCondPre}" var="cond">
-                                        <form:option value="${cond.codigo}">${cond.valor}</form:option>
-                                    </c:forEach>
-                                </form:select>
-                            </div>
-                        </div>
-
-
-                        <div id="dSemEmb" hidden="hidden" class="col col-sm-12 col-md-6 col-lg-6">
-                            <label class="text-left txt-color-blue font-md">
-                                <spring:message code="lbl.weeks.pregnancy"/>
-                            </label>
-
-
-                            <label style="width: 100px" class="input"> <i
-                                    class="icon-prepend fa fa-sort-numeric-asc fa-fw"></i> <form:input
-                                    type="text" name="semanasEmbarazo" id="semanasEmbarazo"
-                                    path="semanasEmbarazo"
-                                    />
-                            </label>
-
-
-                        </div>
-
-                        <div id="dOtraCondicion" hidden="hidden" class="col col-sm-12 col-md-6 col-lg-6">
-                            <label class="text-left txt-color-blue font-md">
-                                <spring:message code="lbl.other.preexisting.condition"/>
-                            </label>
-
-                            <label class="input"> <i
-                                    class="icon-prepend fa fa-sort-alpha-asc fa-fw"></i> <form:input
-                                    type="text" name="otraCondicion" id="otraCondicion"
-                                    path="otraCondicion"
-                                    />
-                            </label>
-
-
-                        </div>
-
-                    </div>
-                    <br>
-
-                </form:form>
-            </div>
-
-            <div class="modal-footer">
-                <button id="btnCancelAddCP" type="button" class="btn btn-default" data-dismiss="modal">
-                    <spring:message code="act.cancel"/>
-                </button>
-                <button id="btnSaveCondPre" type="submit" class="btn btn-primary">
-                    <spring:message code="act.save"/>
-                </button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
-<!-- Modal Manifestaciones clinicas -->
-<div class="modal fade" id="modalCM" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color:#3276b1 ">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title txt-color-white"><spring:message code="lbl.new.clinical.manifestation"/></h4>
-            </div>
-
-            <div class="modal-body">
-                <form:form id="fCM" modelAttribute="fCM" class="smart-form">
-
-                    <div class="row">
-
-                        <input hidden="hidden" id="inManifIdNoti" type="text" name="idNotificacion.idNotificacion"/>
-
-                        <div class="col col-sm-12 col-md-6 col-lg-6">
-                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
-                            <label class="text-left txt-color-blue font-md">
-                                <spring:message code="lbl.clinical.manifestation"/>
-                            </label>
-
-                            <div>
-                                <form:select id="codManifestacion" name="codManifestacion" class="select2"
-                                             path="codManifestacion">
-                                    <option value=""><spring:message code="lbl.select"/></option>
-                                    <c:forEach items="${catManCli}" var="mani">
-                                        <form:option value="${mani.codigo}">${mani.valor}</form:option>
-                                    </c:forEach>
-                                </form:select>
-                            </div>
-                        </div>
-
-
-                        <div id="dMani" hidden="hidden" class="col col-sm-12 col-md-6 col-lg-6">
-                            <label class="text-left txt-color-blue font-md">
-                                <spring:message code="lbl.other.clinical.manifestation"/>
-                            </label>
-
-
-                            <label class="input"> <i
-                                    class="icon-prepend fa fa-sort-alpha-asc fa-fw"></i> <form:input
-                                    type="text" name="otraManifestacion" id="otraManifestacion"
-                                    path="otraManifestacion"
-                                    />
-                            </label>
-
-                        </div>
-
-                    </div>
-
-
-                </form:form>
-            </div>
-
-            <div class="modal-footer">
-                <button id="btnCancelCM" type="button" class="btn btn-default" data-dismiss="modal">
-                    <spring:message code="act.cancel"/>
-                </button>
-                <button id="btnSaveCM" type="submit" class="btn btn-primary">
-                    <spring:message code="act.save"/>
-                </button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
 <input id="inPregnancy" type="hidden" value="<spring:message code="lbl.weeks"/>"/>
 <input type="hidden" id="error"  value="${error}" >
 <input type="hidden" id="autorizado" value="${autorizado}" >
@@ -1835,7 +1731,6 @@
 <input type="hidden" id="msjErrorSaving"  value="<spring:message code="lbl.messagebox.error.saving"/>"/>
 <input type="hidden" id="msjSuccessful"  value="<spring:message code="lbl.messagebox.successful.saved"/>"/>
 <input type="hidden" id="msjSelect"  value="<spring:message code="lbl.select"/>"/>
-
 
 </div>
 
@@ -1903,18 +1798,12 @@
 <spring:url value="/api/v1/unidadesPrimHosp" var="unidadesUrl"/>
 <spring:url value="/irag/newVaccine" var="sAddVaccineUrl"/>
 <spring:url value="/irag/vaccines" var="sLoadVaccinesUrl"/>
-<spring:url value="/irag/conditions" var="conditionsUrl"/>
-<spring:url value="/irag/newPreCondition" var="addConditionUrl"/>
-<spring:url value="/irag/manifestations" var="loadManifestationsUrl"/>
-<spring:url value="/irag/newCM" var="addManifestationUrl"/>
 <spring:url value="/api/v1/municipio" var="municipioByDepaUrl"/>
 <spring:url value="/api/v1/comunidad" var="comunidadUrl"/>
 <spring:url value="/irag/updatePerson" var="updatePersonUrl"/>
 <spring:url value="/irag/completeIrag" var="completeIragUrl"/>
 <spring:url value="/irag/search" var="searchIragUrl"/>
 <spring:url value="/irag/overrideVaccine" var="overrideVaccineUrl"/>
-<spring:url value="/irag/overrideCondition" var="overrideConditionUrl"/>
-<spring:url value="/irag/overrideManifestation" var="overrideManifestationUrl"/>
 
 <script type="text/javascript">
 
@@ -1926,10 +1815,6 @@
             unidadesUrl: "${unidadesUrl}",
             sAddVaccineUrl: "${sAddVaccineUrl}",
             vaccines: "${sLoadVaccinesUrl}",
-            conditions: "${conditionsUrl}",
-            addCondition: "${addConditionUrl}",
-            manifestations: "${loadManifestationsUrl}",
-            addManifestation: "${addManifestationUrl}",
             municipiosUrl: "${municipiosURL}",
             municipioByDepaUrl: "${municipioByDepaUrl}",
             comunidadUrl: "${comunidadUrl}",
@@ -1937,8 +1822,6 @@
             completeIragUrl: "${completeIragUrl}",
             searchIragUrl: "${searchIragUrl}",
             overrideVaccineUrl: "${overrideVaccineUrl}",
-            overrideConditionUrl: "${overrideConditionUrl}",
-            overrideManifestationUrl: "${overrideManifestationUrl}",
             blockMess:"${blockMess}"
 
 
@@ -1947,10 +1830,11 @@
         CreateIrag.init(parametros);
         SeleccionUnidad.init(parametros);
         handleDatePickers("${pageContext.request.locale.language}");
-        //asignar departamento segun municipio
-        $("#departamento").val("${departamentoProce.codigoNacional}").change();
-        $('#fechaConsulta').change();
 
+        $('#fechaConsulta').change();
+        $('#codClasFDetalleNB').change();
+        $('#codClasFDetalleNV').change();
+        $('#codResRadiologia').change();
 
         if ($('#codUnidadAtencion').val() != "") {
             $("#codMunicipio").val("${municipio.codigoNacional}").change();
@@ -1959,7 +1843,9 @@
 
         $('#idNotificacion').val("${irag.idNotificacion.idNotificacion}").change();
 
-
+        $('#condiciones').change();
+        $('#manifestaciones').change();
+        $('#codClasFCaso').change();
         $('#fechaNacimiento').change();
 
         $("li.notificacion").addClass("open");

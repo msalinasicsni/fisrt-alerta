@@ -61,6 +61,11 @@ public class DaIrag implements Serializable {
     private String agenteEtiologico;
     private boolean fichaCompleta;
     private boolean anulada;
+    private String manifestaciones;
+    private String otraManifestacion;
+    private String condiciones;
+    private Integer semanasEmbarazo;
+    private String otraCondicion;
     private Timestamp fechaAnulacion;
     private Timestamp fechaRegistro;
     private Usuarios usuario;
@@ -540,5 +545,54 @@ public class DaIrag implements Serializable {
         this.usuario = usuario;
     }
 
+    @Basic
+    @Column(name = "MANIFESTACIONES", nullable = true, insertable = true, updatable = true, length = 100)
+    public String getManifestaciones() {
+        return manifestaciones;
+    }
 
+    public void setManifestaciones(String manifestaciones) {
+        this.manifestaciones = manifestaciones;
+    }
+
+    @Basic
+    @Column(name = "OTRA_MANIFESTACION", nullable = true, insertable = true, updatable = true, length = 50)
+    public String getOtraManifestacion() {
+        return otraManifestacion;
+    }
+
+    public void setOtraManifestacion(String otraManifestacion) {
+        this.otraManifestacion = otraManifestacion;
+    }
+
+
+    @Basic
+    @Column(name = "CONDICIONES", nullable = true, insertable = true, updatable = true, length = 100)
+    public String getCondiciones() {
+        return condiciones;
+    }
+
+    public void setCondiciones(String condiciones) {
+        this.condiciones = condiciones;
+    }
+
+    @Basic
+    @Column(name = "SEMANAS_EMBARAZO", nullable = true, insertable = true, updatable = true, length = 2)
+    public Integer getSemanasEmbarazo() {
+        return semanasEmbarazo;
+    }
+
+    public void setSemanasEmbarazo(Integer semanasEmbarazo) {
+        this.semanasEmbarazo = semanasEmbarazo;
+    }
+
+    @Basic
+    @Column(name = "OTRA_CONDICION", nullable = true, insertable = true, updatable = true, length = 100)
+    public String getOtraCondicion() {
+        return otraCondicion;
+    }
+
+    public void setOtraCondicion(String otraCondicion) {
+        this.otraCondicion = otraCondicion;
+    }
 }
