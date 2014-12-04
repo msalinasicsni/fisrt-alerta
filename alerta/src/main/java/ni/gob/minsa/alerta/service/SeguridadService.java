@@ -453,7 +453,7 @@ public class SeguridadService {
             String query = "select uni from Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
                     "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
                     "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo and uni.tipoUnidad in ("+tipoUnidades+")" +
-                    "and uni.entidadAdtva = :pCodSilais order by uni.nombre";
+                    "and uni.entidadAdtva.codigo = :pCodSilais order by uni.nombre";
             Query qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
             qrUsuarioUnidad.setParameter("pUsuarioId",pUsuarioId);
             qrUsuarioUnidad.setParameter("pCodigoSis",pCodigoSis);
@@ -479,7 +479,7 @@ public class SeguridadService {
             String query = "select uni from Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
                     "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
                     "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo " +
-                    "and uni.entidadAdtva = :pCodSilais order by uni.nombre";
+                    "and uni.entidadAdtva.codigo = :pCodSilais order by uni.nombre";
             Query qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
             qrUsuarioUnidad.setParameter("pUsuarioId",pUsuarioId);
             qrUsuarioUnidad.setParameter("pCodigoSis",pCodigoSis);
@@ -507,7 +507,7 @@ public class SeguridadService {
             String query = "select uni from Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
                     "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
                     "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo and uni.tipoUnidad in ("+tipoUnidades+")" +
-                    "and uni.entidadAdtva = :pCodSilais and uni.municipio = :pCodMunicipio order by uni.nombre";
+                    "and uni.entidadAdtva.codigo = :pCodSilais and uni.municipio.codigoNacional = :pCodMunicipio order by uni.nombre";
             Query qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
             qrUsuarioUnidad.setParameter("pUsuarioId",pUsuarioId);
             qrUsuarioUnidad.setParameter("pCodigoSis",pCodigoSis);
@@ -535,7 +535,7 @@ public class SeguridadService {
         String query = "select distinct muni from Divisionpolitica as muni, Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
                 "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
                 "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo " +
-                "and muni.pasivo = :pasivo and  uni.entidadAdtva = :pCodSilais and uni.municipio = muni.codigoNacional " +
+                "and muni.pasivo = :pasivo and  uni.entidadAdtva.codigo = :pCodSilais and uni.municipio.codigoNacional = muni.codigoNacional " +
                 "order by muni.nombre";
          Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);

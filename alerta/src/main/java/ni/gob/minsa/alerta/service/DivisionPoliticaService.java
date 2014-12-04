@@ -59,7 +59,7 @@ public class DivisionPoliticaService {
 
     public List<Divisionpolitica> getMunicipiosFromDepartamento(String codigoNacional) throws Exception {
         String query = "select muni from Divisionpolitica as muni, Divisionpolitica as depa " +
-                "where muni.pasivo = :pasivo and muni.dependencia is not null and muni.dependencia=depa.divisionpoliticaId and depa.codigoNacional =:codigoNacional order by muni.nombre asc";
+                "where muni.pasivo = :pasivo and muni.dependencia is not null and muni.dependencia.codigoNacional =depa.codigoNacional and depa.codigoNacional =:codigoNacional order by muni.nombre asc";
 
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
@@ -70,8 +70,8 @@ public class DivisionPoliticaService {
 
 
     public Divisionpolitica getDepartamentoByMunicipi(String codNac){
-        String query = "select depa from Divisionpolitica as muni, Divisionpolitica as depa " +
-                "where muni.dependencia is not null and muni.dependencia=depa.divisionpoliticaId and muni.codigoNacional =:codigoNacional";
+        String query = "select muni.dependencia from Divisionpolitica as muni " +
+                "where muni.dependencia is not null and muni.codigoNacional =:codigoNacional";
 
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
