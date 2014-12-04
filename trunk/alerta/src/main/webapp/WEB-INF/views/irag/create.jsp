@@ -249,21 +249,22 @@
                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
                 <label class="text-left txt-color-blue font-md">
                     <spring:message code="sindfeb.muni"/>
-
                 </label>
 
 
-
                 <div class="input-group">
-                    <spring:message var="selectMunic" code="msg.select.munic" />
-																<span class="input-group-addon"> <i
-                                                                        class="fa fa-location-arrow fa-fw"></i>
-																</span>
-                    <select data-placeholder="${selectMunic}" id="codMunicipio" name="codMunicipio"
-                            class="select2">
+                    <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                    <select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.muni" />" name="codMunicipio" id="codMunicipio" class="select2">
                         <option value=""></option>
                         <c:forEach items="${munic}" var="muni">
-                            <option value="${muni.codigoNacional}">${muni.nombre}</option>
+                            <c:choose>
+                                <c:when test="${muni.codigoNacional eq irag.idNotificacion.codUnidadAtencion.municipio.codigoNacional}">
+                                    <option selected value="${muni.codigoNacional}">${muni.nombre}</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="${muni.codigoNacional}">${muni.nombre}</option>
+                                </c:otherwise>
+                            </c:choose>
                         </c:forEach>
                     </select>
                 </div>
@@ -280,10 +281,10 @@
 
 
                 <div class="input-group">
-                    <spring:message code="msg.select.hu" var="selectHU" />
-                    <span class="input-group-addon"> <i class="fa fa-file-text-o"></i></span>
-                    <select data-placeholder="${selectHU}" name="codUnidadAtencion" id="codUnidadAtencion"  class="select2">
-
+                    <spring:message code="msg.select.hu" var="selectUni" />
+                    <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                    <select data-placeholder="${selectUni}" name="codUnidadAtencion" id="codUnidadAtencion" class="select2">
+                        <option value=""></option>
                         <c:forEach items="${uni}" var="unid">
                             <c:choose>
                                 <c:when test="${fn:contains(irag.idNotificacion.codUnidadAtencion.codigo, unid.codigo)}">
@@ -297,7 +298,6 @@
                     </select>
                 </div>
             </section>
-
 
         </div>
 
@@ -515,7 +515,7 @@
                     <option value=""></option>
                     <c:forEach items="${departamentos}" var="depa">
                         <c:choose>
-                            <c:when test="${depa.divisionpoliticaId eq irag.idNotificacion.persona.municipioResidencia.dependencia}">
+                            <c:when test="${depa.divisionpoliticaId eq irag.idNotificacion.persona.municipioResidencia.dependencia.divisionpoliticaId}">
                                 <option selected value="${depa.codigoNacional}">${depa.nombre}</option>
                             </c:when>
                             <c:otherwise>
@@ -603,16 +603,12 @@
                 <spring:message code="person.telefono"/>
             </label>
 
-
-            <div class="input">
-
-                <i class="icon-prepend fa fa-pencil fa-fw"></i>  <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
-                <input class="form-control" type="text" name="telefonoResidencia" id="telefonoResidencia"
-                       value="${irag.idNotificacion.persona.telefonoResidencia}"
-                       placeholder=" <spring:message code="person.telefono" />">
-                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i>  <spring:message code="person.telefono" /></b>
+            <div>
+                <label class="input"> <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-sort-numeric-asc"></i>
+                    <input type="text" name="telefonoResidencia" value="${irag.idNotificacion.persona.telefonoResidencia}" id="telefonoResidencia" class="telefono">
+                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="person.telefono"/> </b>
+                </label>
             </div>
-
 
         </section>
 
@@ -1017,7 +1013,7 @@
 
             <div class="input">
                 <i class="icon-prepend fa fa-pencil fa-fw"></i>  <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
-                <form:input placeholder="${doseNumber}" type="text" path="noDosisAntib" name="noDosisAntib"/>
+                <form:input class="entero" placeholder="${doseNumber}" type="text" path="noDosisAntib" name="noDosisAntib"/>
                 <b class="tooltip tooltip-bottom-right"> <i
                     class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.number.dose"/>
                  </b>
@@ -1138,7 +1134,7 @@
 
             <div class="input">
                 <i class="icon-prepend fa fa-pencil fa-fw"></i>  <i class="icon-append fa fa-calendar fa-fw"></i>
-                <form:input type="text" placeholder="${doseNumber}" path="noDosisAntiviral" name="noDosisAntiviral"/>
+                <form:input class="entero" type="text" placeholder="${doseNumber}" path="noDosisAntiviral" name="noDosisAntiviral"/>
                 <b class="tooltip tooltip-bottom-right"> <i
                     class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.number.dose"/> </b>
             </div>
@@ -1257,7 +1253,7 @@
 
                 <div class="input" >
                     <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
-                    <form:input placeholder="${numberDays}" type="text" path="noDiasHospitalizado" name="noDiasHospitalizado"/>
+                    <form:input class="entero" placeholder="${numberDays}" type="text" path="noDiasHospitalizado" name="noDiasHospitalizado"/>
                     <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i>
                         <spring:message code="msg.enter.number.days"/>
                 </b>
@@ -1675,7 +1671,7 @@
 
                             <div class="input">
                                 <i class="icon-prepend fa fa-pencil fa-fw"></i>  <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
-                                <form:input placeholder="${doseNumber}" type="text" id="dosis" path="dosis" name="dosis"/>
+                                <form:input class="entero" placeholder="${doseNumber}" type="text" id="dosis" path="dosis" name="dosis"/>
                                 <b class="tooltip tooltip-bottom-right"> <i
                                         class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.number.dose"/>
                                 </b>
@@ -1792,6 +1788,11 @@
 <!-- script calcular edad -->
 <spring:url value="/resources/scripts/utilidades/calcularEdad.js" var="calculateAge" />
 <script src="${calculateAge}"></script>
+<!-- JQUERY INPUT MASK -->
+<spring:url value="/resources/js/plugin/jquery-inputmask/jquery.inputmask.bundle.min.js" var="jqueryInputMask" />
+<script src="${jqueryInputMask}"></script>
+<spring:url value="/resources/scripts/utilidades/handleInputMask.js" var="handleInputMask" />
+<script src="${handleInputMask}"></script>
 
 <spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
 <spring:url value="/irag/saveIrag" var="sAddIragUrl"/>
@@ -1828,20 +1829,18 @@
         };
 
         CreateIrag.init(parametros);
+        handleInputMasks();
         SeleccionUnidad.init(parametros);
         handleDatePickers("${pageContext.request.locale.language}");
-
+        $('#idNotificacion').val("${irag.idNotificacion.idNotificacion}").change();
         $('#fechaConsulta').change();
         $('#codClasFDetalleNB').change();
         $('#codClasFDetalleNV').change();
         $('#codResRadiologia').change();
 
-        if ($('#codUnidadAtencion').val() != "") {
+       /* if ($('#codUnidadAtencion').val() != "") {
             $("#codMunicipio").val("${municipio.codigoNacional}").change();
-        }
-
-
-        $('#idNotificacion').val("${irag.idNotificacion.idNotificacion}").change();
+        }*/
 
         $('#condiciones').change();
         $('#manifestaciones').change();

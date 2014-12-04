@@ -246,6 +246,68 @@ public class IragController {
         return mav;
     }
 
+
+    /**
+     * Custom handler to create a new one.
+     *
+     * @param idPerson the ID of the person
+     * @return a ModelMap with the model attributes for the respective view
+     */
+    @RequestMapping("new/{idPerson}")
+    public ModelAndView newIrag(@PathVariable("idPerson") long idPerson, HttpServletRequest request) throws Exception {
+        String urlValidacion = "";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        ModelAndView mav = new ModelAndView();
+        if (urlValidacion.isEmpty()) {
+            boolean autorizado = true;
+            DaIrag irag = new DaIrag();
+            DaNotificacion noti = new DaNotificacion();
+            Initialize();
+            SisPersona persona = personaService.getPersona(idPerson);
+
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            //Si es usuario a nivel central se cargan todas las unidades asociados al SILAIS y municipio
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            } else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
+
+            if (persona != null) {
+                noti.setPersona(persona);
+                irag.setIdNotificacion(noti);
+                Divisionpolitica departamentoProce = divisionPoliticaService.getDepartamentoByMunicipi(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
+                List<Divisionpolitica> municipiosResi = divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional());
+                List<Comunidades> comunidades = comunidadesService.getComunidades(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
+
+                mav.addObject("entidades", entidades);
+                mav.addObject("autorizado", autorizado);
+                mav.addObject("departamentoProce", departamentoProce);
+                mav.addObject("municipiosResi", municipiosResi);
+                mav.addObject("comunidades", comunidades);
+                mav.addObject("irag", irag);
+                mav.addObject("fVacuna", new DaVacunasIrag());
+                mav.addAllObjects(mapModel);
+                mav.setViewName("irag/create");
+            } else {
+                mav.setViewName("404");
+            }
+
+        } else {
+            mav.setViewName(urlValidacion);
+        }
+
+        return mav;
+    }
+
     /**
      * Handler for edit reports.
      *

@@ -134,6 +134,8 @@
 								</div>
 								<!-- end widget edit box -->
 								<!-- widget content -->
+
+
 								<div class="widget-body no-padding">
 									<table id="persons_result" class="table table-striped table-bordered table-hover" width="100%">
 										<thead>			                
@@ -150,6 +152,7 @@
 										</thead>
 									</table>
 								</div>
+
 								<!-- end widget content -->
 							</div>
 							<!-- end widget div -->
@@ -205,13 +208,15 @@
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<spring:url value="/personas/persons" var="sPersonUrl"/>
 	<spring:url value="/irag/search" var="sActionUrl"/>
+    <spring:url value="/irag/create" var="newUrl"/>
     <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
 			var parametros = {sPersonUrl: "${sPersonUrl}",
 					sActionUrl: "${sActionUrl}",
-                    blockMess: "${blockMess}"
+                    blockMess: "${blockMess}",
+                    newUrl: "${newUrl}"
             };
 			SearchPerson.init(parametros);
 	    	$("li.notificacion").addClass("open");
