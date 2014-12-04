@@ -1,33 +1,33 @@
 package ni.gob.minsa.alerta.domain.vigilanciaSindFebril;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.ForeignKey;
-import org.hibernate.annotations.GenericGenerator;
-
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
-import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
-import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.irag.Respuesta;
-import ni.gob.minsa.alerta.domain.persona.SisPersona;
+import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
 @Entity
 @Table(name = "DA_FICHA_SINDFEB", schema = "ALERTA")
-public class DaSindFebril {
+public class DaSindFebril implements Serializable{
 	
-	private String idFichaEpidem;
-	private SisPersona persona;
-	private EntidadesAdtvas codSilaisAtencion;
-    private Unidades codUnidadAtencion;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private DaNotificacion idNotificacion;
+	
     private String codExpediente;
     private String numFicha;
     private String idLab;
@@ -73,35 +73,6 @@ public class DaSindFebril {
     private Date fechaFallecido;
     
     private String dxPresuntivo;
-    
-    private Float hto;
-    private Float hgb;
-    private Integer plaq;
-    private Integer gblancos;
-    private Float linf;
-    private Float seg;
-    private Float mono;
-    
-    
-    private String rxDenElisaIgM;
-    private String rxDenPCR;
-    private String serotipoDen;
-    private String rxDenAV;
-    private String rxDenFinal;
-    
-    private String rxLeptoFinal;
-    private String txLepto;
-    
-    private String rxHantaFinal;
-    private String txHanta;
-    
-    private String rxChkElisaIgM;
-    private String rxChkPCR;
-    private String rxChkAV;
-    private String rxChkFinal;
-    
-    private String resCinta;
-    
     private String dxFinal;
     
     private String nombreLlenoFicha;
@@ -111,68 +82,17 @@ public class DaSindFebril {
 		super();
 	}
 
-	public DaSindFebril(SisPersona persona, EntidadesAdtvas codSilaisAtencion,
-			Unidades codUnidadAtencion, String codExpediente, String numFicha,
-			String idLab, Date fechaFicha, Integer semanaEpi, Integer mesEpi,
-			Integer anioEpi) {
-		super();
-		this.persona = persona;
-		this.codSilaisAtencion = codSilaisAtencion;
-		this.codUnidadAtencion = codUnidadAtencion;
-		this.codExpediente = codExpediente;
-		this.numFicha = numFicha;
-		this.idLab = idLab;
-		this.fechaFicha = fechaFicha;
-		this.semanaEpi = semanaEpi;
-		this.mesEpi = mesEpi;
-		this.anioEpi = anioEpi;
-	}
-
 	@Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    @Column(name = "ID_FICHA_SINDFEB", nullable = false, insertable = true, updatable = true, length = 50)
-	public String getIdFichaEpidem() {
-		return idFichaEpidem;
-	}
+    @OneToOne(targetEntity=DaNotificacion.class)
+    @JoinColumn(name = "ID_NOTIFICACION", referencedColumnName = "ID_NOTIFICACION")
+    public DaNotificacion getIdNotificacion() {
+        return idNotificacion;
+    }
 
-	public void setIdFichaEpidem(String idFichaEpidem) {
-		this.idFichaEpidem = idFichaEpidem;
-	}
-
-	@ManyToOne(optional=false)
-    @JoinColumn(name="PERSONA_ID", referencedColumnName = "PERSONA_ID")
-    @ForeignKey(name = "PERSONA_SINDFEB_FK")
-	public SisPersona getPersona() {
-		return persona;
-	}
-
-	public void setPersona(SisPersona persona) {
-		this.persona = persona;
-	}
-
-	@ManyToOne(optional=false)
-    @JoinColumn(name="COD_SILAIS_ATENCION", referencedColumnName = "CODIGO")
-    @ForeignKey(name = "ENTIDADES_SINDFEB_FK")
-	public EntidadesAdtvas getCodSilaisAtencion() {
-		return codSilaisAtencion;
-	}
-
-	public void setCodSilaisAtencion(EntidadesAdtvas codSilaisAtencion) {
-		this.codSilaisAtencion = codSilaisAtencion;
-	}
-
-	@ManyToOne(optional=false)
-    @JoinColumn(name="COD_UNIDAD_ATENCION", referencedColumnName = "CODIGO")
-    @ForeignKey(name = "UNIDADES_SINDFEB_FK")
-	public Unidades getCodUnidadAtencion() {
-		return codUnidadAtencion;
-	}
-
-	public void setCodUnidadAtencion(Unidades codUnidadAtencion) {
-		this.codUnidadAtencion = codUnidadAtencion;
-	}
-
+    public void setIdNotificacion(DaNotificacion idNotificacion) {
+        this.idNotificacion = idNotificacion;
+    }
+    
 	@Column(name = "EXPEDIENTE", nullable = true, length = 50)
 	public String getCodExpediente() {
 		return codExpediente;
@@ -514,195 +434,6 @@ public class DaSindFebril {
 
 	public void setDxPresuntivo(String dxPresuntivo) {
 		this.dxPresuntivo = dxPresuntivo;
-	}
-
-	@Column(name = "HEMATOCRITO", nullable = true)
-	public Float getHto() {
-		return hto;
-	}
-
-	public void setHto(Float hto) {
-		this.hto = hto;
-	}
-
-	@Column(name = "HEMAGLOBINA", nullable = true)
-	public Float getHgb() {
-		return hgb;
-	}
-
-	public void setHgb(Float hgb) {
-		this.hgb = hgb;
-	}
-
-	@Column(name = "PLAQUETAS", nullable = true)
-	public Integer getPlaq() {
-		return plaq;
-	}
-
-	public void setPlaq(Integer plaq) {
-		this.plaq = plaq;
-	}
-
-	@Column(name = "GLOBULOS_BLANCOS", nullable = true)
-	public Integer getGblancos() {
-		return gblancos;
-	}
-
-	public void setGblancos(Integer gblancos) {
-		this.gblancos = gblancos;
-	}
-
-	@Column(name = "LINFOCITOS", nullable = true)
-	public Float getLinf() {
-		return linf;
-	}
-
-	public void setLinf(Float linf) {
-		this.linf = linf;
-	}
-
-	@Column(name = "SEGMENTADOS", nullable = true)
-	public Float getSeg() {
-		return seg;
-	}
-
-	public void setSeg(Float seg) {
-		this.seg = seg;
-	}
-
-	@Column(name = "MONOCITOS", nullable = true)
-	public Float getMono() {
-		return mono;
-	}
-
-	public void setMono(Float mono) {
-		this.mono = mono;
-	}
-
-	@Column(name = "RESULT_ELISAIGM_DENGUE", nullable = true)
-	public String getRxDenElisaIgM() {
-		return rxDenElisaIgM;
-	}
-
-	public void setRxDenElisaIgM(String rxDenElisaIgM) {
-		this.rxDenElisaIgM = rxDenElisaIgM;
-	}
-
-	@Column(name = "RESULT_PCR_DENGUE", nullable = true)
-	public String getRxDenPCR() {
-		return rxDenPCR;
-	}
-
-	public void setRxDenPCR(String rxDenPCR) {
-		this.rxDenPCR = rxDenPCR;
-	}
-
-	@Column(name = "SEROTIPO_DENGUE", nullable = true)
-	public String getSerotipoDen() {
-		return serotipoDen;
-	}
-
-	public void setSerotipoDen(String serotipoDen) {
-		this.serotipoDen = serotipoDen;
-	}
-
-	@Column(name = "RESULT_AV_DENGUE", nullable = true)
-	public String getRxDenAV() {
-		return rxDenAV;
-	}
-
-	public void setRxDenAV(String rxDenAV) {
-		this.rxDenAV = rxDenAV;
-	}
-
-	@Column(name = "RESULT_DENGUE_FINAL", nullable = true)
-	public String getRxDenFinal() {
-		return rxDenFinal;
-	}
-
-	public void setRxDenFinal(String rxDenFinal) {
-		this.rxDenFinal = rxDenFinal;
-	}
-
-	@Column(name = "RESULT_LEPTO_FINAL", nullable = true)
-	public String getRxLeptoFinal() {
-		return rxLeptoFinal;
-	}
-
-	public void setRxLeptoFinal(String rxLeptoFinal) {
-		this.rxLeptoFinal = rxLeptoFinal;
-	}
-
-	@Column(name = "TECNICA_LEPTO", nullable = true)
-	public String getTxLepto() {
-		return txLepto;
-	}
-
-	public void setTxLepto(String txLepto) {
-		this.txLepto = txLepto;
-	}
-
-	@Column(name = "RESULT_HANTA_FINAL", nullable = true)
-	public String getRxHantaFinal() {
-		return rxHantaFinal;
-	}
-
-	public void setRxHantaFinal(String rxHantaFinal) {
-		this.rxHantaFinal = rxHantaFinal;
-	}
-
-	@Column(name = "TECNICA_HANTA", nullable = true)
-	public String getTxHanta() {
-		return txHanta;
-	}
-
-	public void setTxHanta(String txHanta) {
-		this.txHanta = txHanta;
-	}
-
-	@Column(name = "RESULT_ELISAIGM_CHK", nullable = true)
-	public String getRxChkElisaIgM() {
-		return rxChkElisaIgM;
-	}
-
-	public void setRxChkElisaIgM(String rxChkElisaIgM) {
-		this.rxChkElisaIgM = rxChkElisaIgM;
-	}
-
-	@Column(name = "RESULT_PCR_CHK", nullable = true)
-	public String getRxChkPCR() {
-		return rxChkPCR;
-	}
-
-	public void setRxChkPCR(String rxChkPCR) {
-		this.rxChkPCR = rxChkPCR;
-	}
-
-	@Column(name = "RESULT_AV_CHK", nullable = true)
-	public String getRxChkAV() {
-		return rxChkAV;
-	}
-
-	public void setRxChkAV(String rxChkAV) {
-		this.rxChkAV = rxChkAV;
-	}
-
-	@Column(name = "RESULT_CHK_FINAL", nullable = true)
-	public String getRxChkFinal() {
-		return rxChkFinal;
-	}
-
-	public void setRxChkFinal(String rxChkFinal) {
-		this.rxChkFinal = rxChkFinal;
-	}
-
-	@Column(name = "RESULT_CINTA", nullable = true)
-	public String getResCinta() {
-		return resCinta;
-	}
-
-	public void setResCinta(String resCinta) {
-		this.resCinta = resCinta;
 	}
 
 	@Column(name = "DIAGNOSTICO_FINAL", nullable = true)
