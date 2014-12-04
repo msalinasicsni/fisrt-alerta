@@ -29,8 +29,8 @@ var SeleccionUnidad = function () {
             				ajax : 'true'
             			}, function(data) {
             				$("#codMunicipio").select2('data',null);
-            				$("#codMunicipio").empty();
             				$("#codUnidadAtencion").select2('data',null);
+            				$("#codMunicipio").empty();
             				$("#codUnidadAtencion").empty();
             				var html='<option value=""></option>';
             				var len = data.length;
@@ -44,7 +44,7 @@ var SeleccionUnidad = function () {
             			setTimeout($.unblockUI, 500);
             			});
         	
-        	$('#codMunicipio').click(
+        	$('#codMunicipio').change(
             		function() {
             			bloquearUI(parametros.blockMess);
             			$.getJSON(parametros.unidadesUrl, {
@@ -73,7 +73,11 @@ var SeleccionUnidad = function () {
                     departamentoId: $(departamento).val(),
                     ajax: 'true'
                 }, function (data) {
-                    var html = '<option value="">Seleccione...</option>';
+                	$("#municipioResidencia").select2('data',null);
+                	$("#comunidadResidencia").select2('data',null);
+                	$("#municipioResidencia").empty();
+                	$("#comunidadResidencia").empty();
+                    var html = '<option value=""></option>';
                     var len = data.length;
                     for (var i = 0; i < len; i++) {
                         html += '<option value="' + data[i].codigoNacional + '">'
@@ -91,7 +95,9 @@ var SeleccionUnidad = function () {
                     municipioId: $(municipioResidencia).val(),
                     ajax: 'true'
                 }, function (data) {
-                    var html = '<option value="">Seleccione...</option>';
+                	$("#comunidadResidencia").select2('data',null);
+                	$("#comunidadResidencia").empty();
+                    var html = '<option value=""></option>';
                     var len = data.length;
                     for (var i = 0; i < len; i++) {
                         html += '<option value="' + data[i].codigo + '">'
@@ -105,7 +111,7 @@ var SeleccionUnidad = function () {
             });
 
             //ENTOMOLOGIA
-            <!-- al seleccionar municipio -->
+            // al seleccionar municipio 
             $('#codMunicipioEncu').change(function(){
                 bloquearUI(parametros.blockMess);
                 if ($(this).val().length > 0) {
@@ -154,7 +160,7 @@ var SeleccionUnidad = function () {
                             html += '</option>';
                         }
                         $('#codigoArea').html(html);
-                    })
+                    });
                 }else{
                     var html = '<option value="">' + $("#text_opt_select").val() + '...</option>';
                     $('#codUnidadSalud').html(html);
@@ -193,7 +199,7 @@ var SeleccionUnidad = function () {
 
             });
 
-            <!-- al seleccionar sector-->
+            //<!-- al seleccionar sector-->
             $('#codigoSector').change(function(){
                 bloquearUI(parametros.blockMess);
                 if ($(this).val().length > 0) {
@@ -220,7 +226,7 @@ var SeleccionUnidad = function () {
                 setTimeout($.unblockUI, 500);
             });
 
-            <!-- al seleccionar SILAIS -->
+            //<!-- al seleccionar SILAIS -->
             $('#codSilais').change(function(){
                 bloquearUI(parametros.blockMess);
                 if ($(this).val().length > 0) {

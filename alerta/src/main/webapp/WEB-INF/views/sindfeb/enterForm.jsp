@@ -167,7 +167,17 @@
                                                     	<div class="input-group">
                                                     		<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.muni" />" name="codMunicipio" id="codMunicipio" class="select2">
-																<option selected value="${municipioAtencion.codigo}">${municipioAtencion.nombre}</option>
+	                                                    		<option value=""></option>
+																<c:forEach items="${munic}" var="muni">
+																	<c:choose> 
+																		<c:when test="${muni.codigoNacional eq daSindFeb.idNotificacion.codUnidadAtencion.municipio.codigoNacional}">
+																			<option selected value="${muni.codigoNacional}">${muni.nombre}</option>
+																		</c:when>
+																		<c:otherwise>
+																			<option value="${muni.codigoNacional}">${muni.nombre}</option>
+																		</c:otherwise>
+																	</c:choose> 
+																</c:forEach>
 															</select>
 														</div>
                                             		</section>
@@ -179,7 +189,17 @@
                                                     	<div class="input-group">
                                                     		<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.unidad" />" name="codUnidadAtencion" id="codUnidadAtencion" class="select2">
-																<option selected value="${daSindFeb.idNotificacion.codUnidadAtencion.codigo}">${daSindFeb.idNotificacion.codUnidadAtencion.nombre}</option>
+																<option value=""></option>
+																<c:forEach items="${uni}" var="us">
+																	<c:choose> 
+																		<c:when test="${us.codigo eq daSindFeb.idNotificacion.codUnidadAtencion.codigo}">
+																			<option selected value="${us.codigo}">${us.nombre}</option>
+																		</c:when>
+																		<c:otherwise>
+																			<option value="${us.codigo}">${us.nombre}</option>
+																		</c:otherwise>
+																	</c:choose> 
+																</c:forEach>
 															</select>
 														</div>
                                             		</section>
@@ -420,7 +440,7 @@
 																<option value=""></option>
 																<c:forEach items="${departamentos}" var="departamento">
 																	<c:choose> 
-																		<c:when test="${departamento.codigoNacional eq depaResidencia.codigoNacional}">
+																		<c:when test="${departamento.codigoNacional eq daSindFeb.idNotificacion.persona.municipioResidencia.dependencia.codigoNacional}">
 																			<option selected value="${departamento.codigoNacional}">${departamento.nombre}</option>
 																		</c:when>
 																		<c:otherwise>
@@ -439,7 +459,17 @@
                                                     	<div class="input-group">
                                                     		<span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.muni" />" name="municipioResidencia" id="municipioResidencia" class="select2">
-																<option selected value="${daSindFeb.idNotificacion.persona.municipioResidencia.codigoNacional}">${daSindFeb.idNotificacion.persona.municipioResidencia.nombre}</option>
+																<option value=""></option>
+																<c:forEach items="${municipiosResi}" var="municipioResi">
+																	<c:choose> 
+																		<c:when test="${municipioResi.codigoNacional eq daSindFeb.idNotificacion.persona.municipioResidencia.codigoNacional}">
+																			<option selected value="${municipioResi.codigoNacional}">${municipioResi.nombre}</option>
+																		</c:when>
+																		<c:otherwise>
+																			<option value="${municipioResi.codigoNacional}">${municipioResi.nombre}</option>
+																		</c:otherwise>
+																	</c:choose> 
+																</c:forEach>
 															</select>
 														</div>
                                             		</section>
@@ -451,7 +481,17 @@
                                                     	<div class="input-group">
                                                     		<span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.com.res" />" name="comunidadResidencia" id="comunidadResidencia" class="select2">
-																<option selected value="${daSindFeb.idNotificacion.persona.comunidadResidencia.codigo}">${daSindFeb.idNotificacion.persona.comunidadResidencia.nombre}</option>
+																<option value=""></option>
+																<c:forEach items="${comunidades}" var="comunid">
+																	<c:choose> 
+																		<c:when test="${comunid.codigo eq daSindFeb.idNotificacion.persona.comunidadResidencia.codigo}">
+																			<option selected value="${comunid.codigo}">${comunid.nombre}</option>
+																		</c:when>
+																		<c:otherwise>
+																			<option value="${comunid.codigo}">${comunid.nombre}</option>
+																		</c:otherwise>
+																	</c:choose> 
+																</c:forEach>
 															</select>
 														</div>
                                             		</section>
@@ -775,7 +815,7 @@
 																	placeholder=" <spring:message code="sindfeb.temp" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.temp" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
+															<span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-4">
@@ -790,7 +830,7 @@
 																	placeholder=" <spring:message code="sindfeb.pas" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.pas" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
+															<span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-4">
@@ -805,7 +845,7 @@
 																	placeholder=" <spring:message code="sindfeb.pad" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.pad" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
+															<span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                       				</div>
@@ -1028,6 +1068,55 @@
                                             		</section>
                                       				</div>
                                       				<!-- END ROW -->
+                                      				<!-- START ROW -->
+                                      				<div class="row">
+                                      				<section class="col col-4">
+                                            			<label class="text-left txt-color-blue font-md hidden-xs">
+                                            				<spring:message code="sindfeb.pre.dx" />
+                                            			</label>
+                                            			<div class="input-group">
+															<span class="input-group-addon"><i class="fa fa-user-md fa-fw"></i></span>
+															<label class="input">
+																<input class="form-control" type="text" name="dxPresuntivo" id="dxPresuntivo" 
+																	value="${daSindFeb.dxPresuntivo}" 
+																	placeholder=" <spring:message code="sindfeb.pre.dx" />">
+																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.pre.dx" /></b>
+															</label>
+															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
+														</div>
+                                            		</section>
+                                            		<section class="col col-4">
+                                            			<label class="text-left txt-color-blue font-md hidden-xs">
+                                            				<spring:message code="sindfeb.final.dx" />
+                                            			</label>
+                                            			<div class="input-group">
+															<span class="input-group-addon"><i class="fa fa-user-md fa-fw"></i></span>
+															<label class="input">
+																<input class="form-control" type="text" name="dxFinal" id="dxFinal" 
+																	value="${daSindFeb.dxFinal}" 
+																	placeholder=" <spring:message code="sindfeb.final.dx" />">
+																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.final.dx" /></b>
+															</label>
+															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
+														</div>
+                                            		</section>
+                                            		<section class="col col-4">
+                                            			<label class="text-left txt-color-blue font-md hidden-xs">
+                                            				<spring:message code="sindfeb.llenoficha" />
+                                            			</label>
+                                            			<div class="input-group">
+															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+															<label class="input">
+																<input class="form-control" type="text" name="nombreLlenoFicha" id="nombreLlenoFicha" 
+																	value="${daSindFeb.nombreLlenoFicha}" 
+																	placeholder=" <spring:message code="sindfeb.llenoficha" />">
+																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.llenoficha" /></b>
+															</label>
+															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
+														</div>
+                                            		</section>
+                                      				</div>
+                                      				<!-- END ROW -->
 												</fieldset>
 											</div>
 											<div class="step-pane" id="step5">
@@ -1105,6 +1194,9 @@
 	<script src="${enterFormSindFeb}"></script>
 	<spring:url value="/resources/scripts/utilidades/handleDatePickers.js" var="handleDatePickers" />
 	<script src="${handleDatePickers}"></script>
+	<!-- script calcular edad -->
+	<spring:url value="/resources/scripts/utilidades/calcularEdad.js" var="calculateAge" />
+	<script src="${calculateAge}"></script>
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<!-- PARAMETROS URL -->
 	<spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
@@ -1130,7 +1222,7 @@
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
 	    		$("li.sindfeb").parents("ul").slideDown(200);
 	    	}
-	    	$('#fechaNacimiento').change(); $("#departamento").change(); ; $("#municipioResidencia").change();
+	    	$('#fechaNacimiento').change();
 		});
 	</script>
 	<!-- END JAVASCRIPTS -->

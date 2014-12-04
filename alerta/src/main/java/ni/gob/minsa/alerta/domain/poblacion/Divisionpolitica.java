@@ -30,7 +30,7 @@ public class Divisionpolitica implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private long divisionpoliticaId;
 	private String nombre;
-	private Long dependencia;
+	private Divisionpolitica dependencia;
 	private Long administracion;
 	private BigDecimal latitud;
 	private BigDecimal longitud;
@@ -57,7 +57,7 @@ public class Divisionpolitica implements Serializable {
 	}
 
 	public Divisionpolitica(long divisionpoliticaId, String nombre,
-			Long dependencia, Long administracion, BigDecimal latitud,
+			Divisionpolitica dependencia, Long administracion, BigDecimal latitud,
 			BigDecimal longitud, String codigoIso, String codigoNacional,
 			char pasivo, Date fechaRegistro, String usuarioRegistro,
 			Short codigoCse) {
@@ -94,12 +94,17 @@ public class Divisionpolitica implements Serializable {
 		this.nombre = nombre;
 	}
 
-	@Column(name = "DEPENDENCIA", nullable = true)
-	public Long getDependencia() {
+	@ManyToOne
+	@JoinColumn(name="DEPENDENCIA",
+				updatable=false,
+				nullable=true,
+				insertable=false,
+				referencedColumnName="DIVISIONPOLITICA_ID")
+	public Divisionpolitica getDependencia() {
 		return this.dependencia;
 	}
 
-	public void setDependencia(Long dependencia) {
+	public void setDependencia(Divisionpolitica dependencia) {
 		this.dependencia = dependencia;
 	}
 

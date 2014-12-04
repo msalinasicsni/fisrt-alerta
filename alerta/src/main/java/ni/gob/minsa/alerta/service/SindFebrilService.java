@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.DaSindFebril;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -20,15 +21,15 @@ public class SindFebrilService {
 	@SuppressWarnings("unchecked")
 	public List<DaSindFebril> getDaSindFebrilesPersona(long idPerson){
 		Session session = sessionFactory.getCurrentSession();
-		return session.createCriteria(DaSindFebril.class)
-					.add(Restrictions.eq("persona.personaId", idPerson))
-				    .list();
+		Query query = session.createQuery("From DaSindFebril sf where sf.idNotificacion.persona.personaId =:idPerson");
+		query.setParameter("idPerson", idPerson);
+		return query.list();
 	}
 	
-	public DaSindFebril getDaSindFebril(String idFicha){
+	public DaSindFebril getDaSindFebril(String idNotificacion){
 		Session session = sessionFactory.getCurrentSession();
 		return (DaSindFebril) session.createCriteria(DaSindFebril.class)
-					.add(Restrictions.eq("idFichaEpidem", idFicha)).uniqueResult();
+					.add(Restrictions.eq("idNotificacion.idNotificacion", idNotificacion)).uniqueResult();
 				   
 	}
 }
