@@ -1,6 +1,9 @@
 package ni.gob.minsa.alerta.web.controllers;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -34,11 +37,14 @@ import ni.gob.minsa.alerta.service.PersonaService;
 import ni.gob.minsa.alerta.service.SeguridadService;
 import ni.gob.minsa.alerta.service.SindFebrilService;
 import ni.gob.minsa.alerta.service.UnidadesService;
+import ni.gob.minsa.alerta.service.UsuarioService;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +53,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.google.gson.Gson;
 
 /**
  * Controlador web de peticiones relacionadas a DaSindFebril
@@ -75,6 +83,8 @@ public class SindFebrilController {
     public UnidadesService unidadesService;
 	@Resource(name = "comunidadesService")
     public ComunidadesService comunidadesService;
+	@Resource(name = "usuarioService")
+	public UsuarioService usuarioService;
           
 	
 	@RequestMapping(value = "create", method = RequestMethod.GET)
@@ -271,21 +281,116 @@ public class SindFebrilController {
     }
     
     @RequestMapping( value="save", method=RequestMethod.POST)
-	public ResponseEntity<String> processCreationSindFebrilForm( @RequestParam(value="comunidad", required=true ) String comunidad
-			, @RequestParam( value="numVivienda", required=true ) Integer numVivienda
-			, @RequestParam( value="numFamilia", required=true ) Integer numFamilia
-			, @RequestParam( value="direccion", required=true ) String direccion
-			, @RequestParam( value="idFamilia", required=false, defaultValue="" ) String idFamilia
-			, @RequestParam( value="idVisita", required=false, defaultValue="" ) String idVisita
-			, @RequestParam( value="numFicha", required=true ) Integer numFicha
-			, @RequestParam( value="personaVisita", required=true) String personaVisita
-			, @RequestParam( value="personaVisitaProfesion", required=true) String personaVisitaProfesion
-			, @RequestParam( value="fechaVisita", required=true) String fechaVisita) throws ParseException
+	public ResponseEntity<String> processCreationSindFebrilForm( @RequestParam(value="codSilaisAtencion", required=true ) Integer codSilaisAtencion
+			, @RequestParam( value="codUnidadAtencion", required=true ) Integer codUnidadAtencion
+			, @RequestParam( value="personaId", required=true ) long personaId
+			, @RequestParam( value="idNotificacion", required=false, defaultValue="" ) String idNotificacion
+			, @RequestParam( value="codExpediente", required=false) String codExpediente
+			, @RequestParam( value="numFicha", required=false) String numFicha
+			, @RequestParam( value="nombPadre", required=false) String nombPadre
+			, @RequestParam( value="codProcedencia", required=false) String codProcedencia
+			, @RequestParam( value="viaje", required=false) String viaje
+			, @RequestParam( value="dondeViaje", required=false) String dondeViaje
+			, @RequestParam( value="embarazo", required=false) String embarazo
+			, @RequestParam( value="mesesEmbarazo", required=false) int mesesEmbarazo
+			, @RequestParam( value="enfCronica", required=false) String enfCronica
+			, @RequestParam( value="otraCronica", required=false) String otraCronica
+			, @RequestParam( value="enfAgudaAdicional", required=false) String enfAgudaAdicional
+			, @RequestParam( value="otraAgudaAdicional", required=false) String otraAgudaAdicional
+			, @RequestParam( value="fuenteAgua", required=false) String fuenteAgua
+			, @RequestParam( value="otraFuenteAgua", required=false) String otraFuenteAgua
+			, @RequestParam( value="animales", required=false) String animales
+			, @RequestParam( value="otrosAnimales", required=false) String otrosAnimales
+			, @RequestParam( value="fechaTomaMuestra", required=false, defaultValue="") String fechaTomaMuestra
+			, @RequestParam( value="temperatura", required=false) Float temperatura
+			, @RequestParam( value="pas", required=false) Integer pas
+			, @RequestParam( value="pad", required=false) Integer pad
+			, @RequestParam( value="ssDSA", required=true) String ssDSA
+			, @RequestParam( value="ssDCA", required=true) String ssDCA
+			, @RequestParam( value="ssDS", required=true) String ssDS
+			, @RequestParam( value="ssLepto", required=true) String ssLepto
+			, @RequestParam( value="ssHV", required=true) String ssHV
+			, @RequestParam( value="ssCK", required=true) String ssCK
+			, @RequestParam( value="hosp", required=false) String hosp
+			, @RequestParam( value="fechaIngreso", required=false, defaultValue="") String fechaIngreso
+			, @RequestParam( value="fallecido", required=false) String fallecido
+			, @RequestParam( value="fechaFallecido", required=false, defaultValue="") String fechaFallecido
+			, @RequestParam( value="dxPresuntivo", required=true) String dxPresuntivo
+			, @RequestParam( value="dxFinal", required=true) String dxFinal
+			, @RequestParam( value="nombreLlenoFicha", required=true) String nombreLlenoFicha
+			, @RequestParam( value="fechaFicha", required=true) String fechaFicha
+			, @RequestParam( value="fechaInicioSintomas", required=true) String fechaInicioSintomas) throws Exception 
 	{
-		
-    	
-    		return null;
-    	
+    	DaSindFebril daSindFeb = new DaSindFebril();
+    	DaNotificacion daNotificacion = new DaNotificacion();
+    	daNotificacion.setPersona(personaService.getPersona(personaId));
+    	daNotificacion.setFechaRegistro(new Timestamp(new Date().getTime()));
+    	daNotificacion.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
+		daNotificacion.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
+		daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById(1));
+		daNotificacion.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|FEBRIL"));
+    	if (!idNotificacion.equals("")){
+    		daNotificacion.setIdNotificacion(idNotificacion);
+		}
+    	daSindFeb.setIdNotificacion(daNotificacion);
+    	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		Date dateFicha = formatter.parse(fechaFicha);
+		daSindFeb.setFechaFicha(dateFicha);
+		daSindFeb.setCodExpediente(codExpediente);
+		daSindFeb.setNumFicha(numFicha);
+		daSindFeb.setNombPadre(nombPadre);
+		daSindFeb.setCodProcedencia(catalogoService.getProcedencia(codProcedencia));
+		daSindFeb.setViaje(catalogoService.getRespuesta(viaje));
+		daSindFeb.setDondeViaje(dondeViaje);
+		daSindFeb.setEmbarazo(catalogoService.getRespuesta(embarazo));
+		daSindFeb.setMesesEmbarazo(mesesEmbarazo);
+		daSindFeb.setEnfCronica(enfCronica);
+		daSindFeb.setOtraCronica(otraCronica);
+		daSindFeb.setEnfAgudaAdicional(enfAgudaAdicional);
+		daSindFeb.setOtraAgudaAdicional(otraAgudaAdicional);
+		daSindFeb.setFuenteAgua(fuenteAgua);
+		daSindFeb.setOtraFuenteAgua(otraFuenteAgua);
+		daSindFeb.setAnimales(animales);
+		daSindFeb.setOtrosAnimales(otrosAnimales);
+		Date dateFIS = formatter.parse(fechaInicioSintomas);
+		daSindFeb.setFechaInicioSintomas(dateFIS);
+		if (!fechaTomaMuestra.equals("")){
+			Date dateFTM = formatter.parse(fechaTomaMuestra);
+			daSindFeb.setFechaTomaMuestra(dateFTM);
+		}
+		daSindFeb.setTemperatura(temperatura);
+		daSindFeb.setPas(pas);
+		daSindFeb.setPad(pad);
+		daSindFeb.setSsCK(ssCK);
+		daSindFeb.setSsDCA(ssDCA);
+		daSindFeb.setSsDS(ssDS);
+		daSindFeb.setSsDSA(ssDSA);
+		daSindFeb.setSsHV(ssHV);
+		daSindFeb.setSsLepto(ssLepto);
+		daSindFeb.setHosp(catalogoService.getRespuesta(hosp));
+		if (!fechaIngreso.equals("")){
+			Date dateIngreso = formatter.parse(fechaIngreso);
+			daSindFeb.setFechaIngreso(dateIngreso);
+		}
+		daSindFeb.setFallecido(catalogoService.getRespuesta(fallecido));
+		if (!fechaFallecido.equals("")){
+			Date dateFallecido = formatter.parse(fechaFallecido);
+			daSindFeb.setFechaFallecido(dateFallecido);
+		}
+		daSindFeb.setDxPresuntivo(dxPresuntivo);
+		daSindFeb.setDxFinal(dxFinal);
+		daSindFeb.setNombreLlenoFicha(nombreLlenoFicha);
+    	sindFebrilService.saveSindFebril(daSindFeb);
+    	return createJsonResponse(daSindFeb);
+	}
+    
+    private ResponseEntity<String> createJsonResponse( Object o )
+	{
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.set("Content-Type", "application/json");
+	    Gson gson = new Gson();
+	    String json = gson.toJson( o );
+	    return new ResponseEntity<String>( json, headers, HttpStatus.CREATED );
 	}
 
 }
