@@ -29,7 +29,6 @@ var EnterFormTomaMx = function () {
                        html += '<option value="' + data[i].idExamen + '">'
                             + data[i].codExamen.valor
                             + '</option>';
-                        console.log(html);
                     }
 
                     $('#examenes').html(html);
@@ -80,8 +79,6 @@ var EnterFormTomaMx = function () {
 
             function save() {
                 var datos_form = $('#registroMx').serialize();
-
-                console.log(datos_form);
                 $.ajax({
                     type: "GET",
                     url: parametros.saveTomaUrl,

@@ -361,7 +361,7 @@
                                                 <span class="input-group-addon"><i class="fa fa-pencil fa-fw"></i></span>
                                                 <label class="input">
 
-                                                    <form:input name="canTubos" id="canTubos" path="canTubos" class="form-control" type="number"
+                                                    <form:input name="canTubos" id="canTubos" path="canTubos" class="form-control entero" type="text"
                                                            placeholder="${nTubes} "/>
                                                     <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.number.tubes"/></b>
 
@@ -378,7 +378,7 @@
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-pencil fa-fw"></i></span>
                                                 <label class="input">
-                                                    <form:input path="volumen" id="volumen" name="volumen" class="form-control" type="number"
+                                                    <form:input path="volumen" id="volumen" name="volumen" class="decimal"  type="text"
                                                            placeholder="${volume}" />
                                                     <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.volume"/></b>
 
@@ -505,6 +505,11 @@
     <spring:url value="/resources/js/plugin/bootstrap-datetimepicker/locale/{languagedt}.js" var="datetimePickerLoc">
         <spring:param name="languagedt" value="${pageContext.request.locale.language}" /></spring:url>
     <script src="${datetimePickerLoc}"></script>
+    <!-- JQUERY INPUT MASK -->
+    <spring:url value="/resources/js/plugin/jquery-inputmask/jquery.inputmask.bundle.min.js" var="jqueryInputMask" />
+    <script src="${jqueryInputMask}"></script>
+    <spring:url value="/resources/scripts/utilidades/handleInputMask.js" var="handleInputMask" />
+    <script src="${handleInputMask}"></script>
 
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<!-- PARAMETROS LENGUAJE -->
@@ -522,6 +527,7 @@
 
             };
             EnterFormTomaMx.init(parametros);
+            handleInputMasks();
             $("li.samples").addClass("open");
             $("li.tomaMx").addClass("active");
             if("top"!=localStorage.getItem("sm-setmenu")){

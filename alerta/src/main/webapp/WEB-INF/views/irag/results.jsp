@@ -100,7 +100,7 @@
 								<!-- end widget edit box -->
 								<!-- widget content -->
 								<div class="widget-body no-padding">
-									<table id="persons_result" class="table table-striped table-bordered table-hover" data-width="100%">
+									<table id="noti_results" class="table table-striped table-bordered table-hover" data-width="100%">
 										<thead>			                
 											<tr>
 
@@ -126,6 +126,9 @@
                                                 <spring:url value="/irag/override/{idIrag}" var="overrideUrl">
                                                     <spring:param name="idIrag" value="${record.idNotificacion}" />
                                                 </spring:url>
+                                                <spring:url value="/irag/new/{personaId}" var="newUrl">
+                                                    <spring:param name="personaId" value="${record.persona.personaId}" />
+                                                </spring:url>
 												<td><a href="${fn:escapeXml(editUrl)}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a></td>
                                                 <td><a href="${fn:escapeXml(overrideUrl)}" class="btn btn-default btn-xs  btn-danger"><i class="fa fa-times"></i></a></td>
 
@@ -134,9 +137,18 @@
 										</tbody>
 									</table>
 								</div>
+
+
 								<!-- end widget content -->
 							</div>
+
 							<!-- end widget div -->
+
+                            <div style="border: none" class="row">
+                                <a href="${fn:escapeXml(newUrl)}" class="btn btn-default btn-large btn-primary pull-right"><i class="fa fa-plus"></i> <spring:message code="lbl.add.notification"/>   </a>
+
+                            </div>
+
 						</div>
 						<!-- end widget -->
 					</article>
@@ -177,6 +189,30 @@
 	    		$("li.irageti").parents("ul").slideDown(200);
 	    	}
 		});
+
+        var responsiveHelper_dt_basic = undefined;
+        var breakpointDefinition = {
+            tablet : 1024,
+            phone : 480
+        };
+        var table1 = $('#noti_results').dataTable({
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
+                    "t"+
+                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+            "autoWidth" : true,
+            "preDrawCallback" : function() {
+                // Initialize the responsive datatables helper once.
+                if (!responsiveHelper_dt_basic) {
+                    responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#noti_results'), breakpointDefinition);
+                }
+            },
+            "rowCallback" : function(nRow) {
+                responsiveHelper_dt_basic.createExpandIcon(nRow);
+            },
+            "drawCallback" : function(oSettings) {
+                responsiveHelper_dt_basic.respond();
+            }
+        });
 	</script>
 	<!-- END JAVASCRIPTS -->
 </body>

@@ -31,4 +31,9 @@ var handleInputMasks = function () {
         radixPoint: ".",
         digits: 2
     });
+    $(".telefono").inputmask({
+        "mask": "9",
+        "repeat": 9,
+        "greedy": false
+    });
 };
