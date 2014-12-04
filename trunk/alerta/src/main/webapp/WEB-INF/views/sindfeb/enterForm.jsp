@@ -129,12 +129,22 @@
 										</div>
 									</div>
 									<div class="step-content">
-										<form id="fuelux-wizard" id="wizard1" class ="smart-form">
+										<form id="sind_feb_form" class ="smart-form">
 											<!-- wizard form starts here -->
 											<div class="step-pane active" id="step1">
 												<h3><spring:message code="sindfeb.step1.long" /></h3>
 												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
 												<fieldset>
+													<div hidden="true">
+														<label class="input"> 
+															<i class="icon-prepend fa fa-male fa-fw"></i> 
+															<input value="${daSindFeb.idNotificacion.persona.personaId}" type="text" id="personaId" name="personaId" />
+														</label>
+														<label class="input"> 
+															<i class="icon-prepend fa fa-folder fa-fw"></i> 
+															<input value="${daSindFeb.idNotificacion.idNotificacion}" type="text" id="idNotificacion" name="idNotificacion" />
+														</label>
+													</div>
 													<!-- START ROW -->
                                       				<div class="row">
                                             		<section class="col col-4">
@@ -211,28 +221,26 @@
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.exp" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-folder"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-folder"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
 																<input class="form-control" type="text" name="codExpediente" id="codExpediente" value="${daSindFeb.codExpediente}"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.exp" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="act.enter" /> <spring:message code="sindfeb.exp" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-4">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.numFicha" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-tag"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-tag"></i> <i class="icon-append fa fa-sort-numeric-asc"></i>
 																<input class="form-control" type="text" name="numFicha" id="numFicha" value="${daSindFeb.numFicha}"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.numFicha" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="act.enter" /> <spring:message code="sindfeb.numFicha" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-4">
@@ -240,15 +248,14 @@
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.date" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
 																<input class="form-control date-picker" data-date-end-date="+0d" data-date-start-date="-30d" 
 																	type="text" name="fechaFicha" id="fechaFicha" value="<fmt:formatDate value="${daSindFeb.fechaFicha}" pattern="dd/MM/yyyy" />"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.date" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="act.enter" /> <spring:message code="sindfeb.date" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		</div>
@@ -507,7 +514,7 @@
 																<c:forEach items="${catProcedencia}" var="catProc">
 																	<c:choose> 
 																		<c:when test="${catProc.codigo eq daSindFeb.codProcedencia.codigo}">
-																			<option selected value="${catProc.codigo}">${catProc.nombre}</option>
+																			<option selected value="${catProc.codigo}">${catProc.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${catProc.codigo}">${catProc.valor}</option>
@@ -533,7 +540,7 @@
 																<c:forEach items="${catResp}" var="cresp">
 																	<c:choose> 
 																		<c:when test="${cresp.codigo eq daSindFeb.viaje.codigo}">
-																			<option selected value="${cresp.codigo}">${cresp.nombre}</option>
+																			<option selected value="${cresp.codigo}">${cresp.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${cresp.codigo}">${cresp.valor}</option>
@@ -570,7 +577,7 @@
 																<c:forEach items="${catResp}" var="cresp">
 																	<c:choose> 
 																		<c:when test="${cresp.codigo eq daSindFeb.embarazo.codigo}">
-																			<option selected value="${cresp.codigo}">${cresp.nombre}</option>
+																			<option selected value="${cresp.codigo}">${cresp.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${cresp.codigo}">${cresp.valor}</option>
@@ -611,7 +618,7 @@
 																<c:forEach items="${enfCronicas}" var="enfCronica">
 																	<c:choose> 
 																		<c:when test="${fn:contains(daSindFeb.enfCronica, enfCronica.codigo)}">
-																			<option selected value="${enfCronica.codigo}">${enfCronica.nombre}</option>
+																			<option selected value="${enfCronica.codigo}">${enfCronica.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${enfCronica.codigo}">${enfCronica.valor}</option>
@@ -648,7 +655,7 @@
 																<c:forEach items="${enfAgudas}" var="enfAguda">
 																	<c:choose> 
 																		<c:when test="${fn:contains(daSindFeb.enfAgudaAdicional, enfAguda.codigo)}">
-																			<option selected value="${enfAguda.codigo}">${enfAguda.nombre}</option>
+																			<option selected value="${enfAguda.codigo}">${enfAguda.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${enfAguda.codigo}">${enfAguda.valor}</option>
@@ -695,7 +702,7 @@
 																<c:forEach items="${fuentesAgua}" var="fuenteAgua">
 																	<c:choose> 
 																		<c:when test="${fn:contains(daSindFeb.fuenteAgua, fuenteAgua.codigo)}">
-																			<option selected value="${fuenteAgua.codigo}">${fuenteAgua.nombre}</option>
+																			<option selected value="${fuenteAgua.codigo}">${fuenteAgua.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${fuenteAgua.codigo}">${fuenteAgua.valor}</option>
@@ -732,7 +739,7 @@
 																<c:forEach items="${animales}" var="animal">
 																	<c:choose> 
 																		<c:when test="${fn:contains(daSindFeb.animales, animal.codigo)}">
-																			<option selected value="${animal.codigo}">${animal.nombre}</option>
+																			<option selected value="${animal.codigo}">${animal.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${animal.codigo}">${animal.valor}</option>
@@ -864,7 +871,7 @@
 																<c:forEach items="${sintDssa}" var="sint">
 																	<c:choose> 
 																		<c:when test="${fn:contains(daSindFeb.ssDSA, sint.codigo)}">
-																			<option selected value="${sint.codigo}">${sint.nombre}</option>
+																			<option selected value="${sint.codigo}">${sint.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${sint.codigo}">${sint.valor}</option>
@@ -886,7 +893,7 @@
 																<c:forEach items="${sintDcsa}" var="sint">
 																	<c:choose> 
 																		<c:when test="${fn:contains(daSindFeb.ssDCA, sint.codigo)}">
-																			<option selected value="${sint.codigo}">${sint.nombre}</option>
+																			<option selected value="${sint.codigo}">${sint.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${sint.codigo}">${sint.valor}</option>
@@ -908,7 +915,7 @@
 																<c:forEach items="${sintDgra}" var="sint">
 																	<c:choose> 
 																		<c:when test="${fn:contains(daSindFeb.ssDS, sint.codigo)}">
-																			<option selected value="${sint.codigo}">${sint.nombre}</option>
+																			<option selected value="${sint.codigo}">${sint.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${sint.codigo}">${sint.valor}</option>
@@ -934,7 +941,7 @@
 																<c:forEach items="${sintLept}" var="sint">
 																	<c:choose> 
 																		<c:when test="${fn:contains(daSindFeb.ssLepto, sint.codigo)}">
-																			<option selected value="${sint.codigo}">${sint.nombre}</option>
+																			<option selected value="${sint.codigo}">${sint.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${sint.codigo}">${sint.valor}</option>
@@ -956,7 +963,7 @@
 																<c:forEach items="${sintHant}" var="sint">
 																	<c:choose> 
 																		<c:when test="${fn:contains(daSindFeb.ssHV, sint.codigo)}">
-																			<option selected value="${sint.codigo}">${sint.nombre}</option>
+																			<option selected value="${sint.codigo}">${sint.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${sint.codigo}">${sint.valor}</option>
@@ -978,7 +985,7 @@
 																<c:forEach items="${sintChik}" var="sint">
 																	<c:choose> 
 																		<c:when test="${fn:contains(daSindFeb.ssCK, sint.codigo)}">
-																			<option selected value="${sint.codigo}">${sint.nombre}</option>
+																			<option selected value="${sint.codigo}">${sint.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${sint.codigo}">${sint.valor}</option>
@@ -1004,7 +1011,7 @@
 																<c:forEach items="${catResp}" var="cresp">
 																	<c:choose> 
 																		<c:when test="${cresp.codigo eq daSindFeb.hosp.codigo}">
-																			<option selected value="${cresp.codigo}">${cresp.nombre}</option>
+																			<option selected value="${cresp.codigo}">${cresp.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${cresp.codigo}">${cresp.valor}</option>
@@ -1041,7 +1048,7 @@
 																<c:forEach items="${catResp}" var="cresp">
 																	<c:choose> 
 																		<c:when test="${cresp.codigo eq daSindFeb.fallecido.codigo}">
-																			<option selected value="${cresp.codigo}">${cresp.nombre}</option>
+																			<option selected value="${cresp.codigo}">${cresp.valor}</option>
 																		</c:when>
 																		<c:otherwise>
 																			<option value="${cresp.codigo}">${cresp.valor}</option>
@@ -1203,6 +1210,7 @@
 	<spring:url var="unidadesUrl"   value="/api/v1/unidadesPrimHosp"  />
 	<spring:url var="municipioByDepaUrl" value="/api/v1/municipio" />
 	<spring:url var="comunidadUrl" value="/api/v1/comunidad"/>
+	<spring:url var="sAddFebrilUrl" value="/febriles/save"/>
 	<!-- PARAMETROS LENGUAJE -->
 	<c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
 	<script type="text/javascript">
@@ -1212,6 +1220,7 @@
 			var parametros = {
                     municipiosUrl:"${municipiosURL}",
                     unidadesUrl: "${unidadesUrl}",municipioByDepaUrl: "${municipioByDepaUrl}",comunidadUrl: "${comunidadUrl}",
+                    sAddFebrilUrl: "${sAddFebrilUrl}",
                     blockMess:"${blockMess}"
  			 };
 			EnterFormSindFeb.init(parametros);

@@ -3,7 +3,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.DaSindFebril;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -31,5 +30,11 @@ public class SindFebrilService {
 		return (DaSindFebril) session.createCriteria(DaSindFebril.class)
 					.add(Restrictions.eq("idNotificacion.idNotificacion", idNotificacion)).uniqueResult();
 				   
+	}
+	
+	public void saveSindFebril(DaSindFebril daSindFebril) {
+		Session session = sessionFactory.getCurrentSession();
+		session.saveOrUpdate(daSindFebril.getIdNotificacion());
+		session.saveOrUpdate(daSindFebril);
 	}
 }
