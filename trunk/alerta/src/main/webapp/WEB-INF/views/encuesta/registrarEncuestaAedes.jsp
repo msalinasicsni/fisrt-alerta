@@ -377,9 +377,6 @@
             <c:set var="valTanks"><spring:message code="lbl.ento.tank"/></c:set>
             <c:set var="valPosit"><spring:message code="lbl.ento.posit"/></c:set>
             <c:set var="valInspec"><spring:message code="lbl.ento.insp"/></c:set>
-            <c:set var="valNoAbat"><spring:message code="lbl.ento.no"/> <spring:message code="lbl.ento.abat"/></c:set>
-            <c:set var="valNoElimi"><spring:message code="lbl.ento.no"/> <spring:message code="lbl.ento.elimi"/></c:set>
-            <c:set var="valNoNeutr"><spring:message code="lbl.ento.no"/> <spring:message code="lbl.ento.neutr"/></c:set>
             <input id="txt_act_edit" type="hidden" value="<spring:message code="act.edit"/>"/>
             <input id="smallBox_content" type="hidden" value="<spring:message code="smallBox.content.4s"/>"/>
             <input id="blockUI_message" type="hidden" value="<spring:message code="blockUI.message"/>"/>
@@ -447,7 +444,7 @@
                             <th><p class="text-center font-sm "><spring:message code="lbl.ento.bretes" /></p></th>
                             <th><p class="text-center font-sm "><spring:message code="lbl.ento.pupae" /></p></th>
                             <th><p class="text-center font-sm "><spring:message code="lbl.ento.ipupae" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.abat" /></p></th>
+                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.date.abati" /></p></th>
                             <!--<th><p class="text-center font-sm "><spring:message code="lbl.ento.report" /></p></th>-->
                             <th><p class="text-center font-sm "><spring:message code="lbl.ento.vent" /></p></th>
                             <th><p class="text-center font-sm "><spring:message code="lbl.ento.abat" /></p></th>
@@ -668,7 +665,7 @@
 <div class="row">
     <section class="col col-sm-12 col-md-6 col-lg-4">
         <label class="txt-color-blue font-md">
-            <spring:message code="lbl.ento.date" /> <spring:message code="lbl.ento.abat" />
+            <spring:message code="lbl.ento.date" /> <spring:message code="lbl.ento.date.abatizado" />
         </label>
         <div class="">
             <!--<span class="input-group-addon"> <i class="fa fa-pencil fa-fw"></i></span>-->
@@ -700,7 +697,7 @@
                 </section>-->
     <section class="col col-sm-12 col-md-6 col-lg-4">
         <label class="txt-color-blue font-md">
-            <spring:message code="lbl.ento.date" /> <spring:message code="lbl.ento.vent" />
+            <spring:message code="lbl.ento.date" /> <spring:message code="lbl.ento.modal.vent" />
         </label>
         <div class="">
             <!--<span class="input-group-addon"> <i class="fa fa-pencil fa-fw"></i></span>-->
@@ -823,9 +820,6 @@
             sValTanks : "${valTanks}",
             sValPosit : "${valPosit}",
             sValInspec : "${valInspec}",
-            sValNoAbat : "${valNoAbat}",
-            sValNoElimi : "${valNoElimi}",
-            sValNoNeutr : "${valNoNeutr}",
             blockMess : $("#blockUI_message").val()
         };
         AddAedesSurvey.init(parametros);
