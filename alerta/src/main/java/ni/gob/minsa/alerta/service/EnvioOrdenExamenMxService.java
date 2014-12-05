@@ -121,7 +121,7 @@ public class EnvioOrdenExamenMxService {
     public Date getFechaInicioSintomas(String strIdNotificacion){
         Date fecInicioSintomas = null;
         String query = "from DaIrag where idNotificacion.idNotificacion = :idNotificacion";
-        String query2 = "from DaSindFebril where idFichaEpidem = :idNotificacion";
+        String query2 = "from DaSindFebril where idNotificacion.idNotificacion = :idNotificacion";
 
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
@@ -152,7 +152,7 @@ public class EnvioOrdenExamenMxService {
         q.setParameter("codCondicion","%"+"CONDPRE|EMB"+"%");//código para condición embarazo
 
         //SINDROMES FEBRILES
-        String query2 = "from DaSindFebril where idFichaEpidem = :idNotificacion" +
+        String query2 = "from DaSindFebril where idNotificacion.idNotificacion = :idNotificacion" +
                 " and embarazo.codigo = :codigoEmb";
         Query q2 = session.createQuery(query2);
         q2.setParameter("idNotificacion", strIdNotificacion);

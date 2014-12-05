@@ -398,9 +398,6 @@
             <c:set var="valTanks"><spring:message code="lbl.ento.tank"/></c:set>
             <c:set var="valPosit"><spring:message code="lbl.ento.posit"/></c:set>
             <c:set var="valInspec"><spring:message code="lbl.ento.insp"/></c:set>
-            <c:set var="valNoAbat"><spring:message code="lbl.ento.no"/> <spring:message code="lbl.ento.abat"/></c:set>
-            <c:set var="valNoElimi"><spring:message code="lbl.ento.no"/> <spring:message code="lbl.ento.elimi"/></c:set>
-            <c:set var="valNoNeutr"><spring:message code="lbl.ento.no"/> <spring:message code="lbl.ento.neutr"/></c:set>
 
             <hidden id="idMaestroEditado"></hidden>
             <!-- Button trigger modal -->
@@ -458,7 +455,7 @@
                     <th><p class="text-center font-sm "><spring:message code="lbl.ento.bretes" /></p></th>
                     <th><p class="text-center font-sm "><spring:message code="lbl.ento.pupae" /></p></th>
                     <th><p class="text-center font-sm "><spring:message code="lbl.ento.ipupae" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.abat" /></p></th>
+                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.date.abati" /></p></th>
                     <!--<th><p class="text-center font-sm "><spring:message code="lbl.ento.report" /></p></th>-->
                     <th><p class="text-center font-sm "><spring:message code="lbl.ento.vent" /></p></th>
                     <th><p class="text-center font-sm "><spring:message code="lbl.ento.abat" /></p></th>
@@ -693,7 +690,7 @@
     <div class="row">
         <section class="col col-sm-12 col-md-6 col-lg-4">
             <label class="txt-color-blue font-md">
-                <spring:message code="lbl.ento.date" /> <spring:message code="lbl.ento.abat" />
+                <spring:message code="lbl.ento.date" /> <spring:message code="lbl.ento.date.abatizado" />
             </label>
             <div class="">
                 <label class="input">
@@ -725,7 +722,7 @@
                     </section>-->
         <section class="col col-sm-12 col-md-6 col-lg-4">
             <label class="txt-color-blue font-md">
-                <spring:message code="lbl.ento.date" /> <spring:message code="lbl.ento.vent" />
+                <spring:message code="lbl.ento.date" /> <spring:message code="lbl.ento.modal.vent" />
             </label>
             <div class="">
                 <label class="input">
@@ -860,9 +857,6 @@
             sValTanks : "${valTanks}",
             sValPosit : "${valPosit}",
             sValInspec : "${valInspec}",
-            sValNoAbat : "${valNoAbat}",
-            sValNoElimi : "${valNoElimi}",
-            sValNoNeutr : "${valNoNeutr}",
             sSectoresUrl : "${sectoresURL}",
             blockMess : $("#blockUI_message").val()
         };

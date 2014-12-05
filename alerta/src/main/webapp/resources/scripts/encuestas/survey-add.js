@@ -216,8 +216,8 @@ var AddAedesSurvey = function () {
                         var nTotalViviendasIndice    = parseFloat((nTotalViviendasPosit / nTotalViviendasInspec)*100).toFixed(1);
                         var nTotalManzanasIndice     = parseFloat((nTotalManzanasPosit / nTotalManzanasInspec)*100).toFixed(1);
                         var nTotalDepositosIndice    = parseFloat((nTotalDepositosPosit/nTotalDepositosInspec)*100).toFixed(1);
-                        var nTotalIndiceBrete        = parseFloat((nTotalPupas/nTotalViviendasInspec)*100).toFixed(1);
-                        var nTotalIndiceIPupa		 = parseFloat((nTotalDepositosPosit/nTotalViviendasInspec)*100).toFixed(1);
+                        var nTotalIndiceIPupa        = parseFloat((nTotalPupas/nTotalViviendasInspec)*100).toFixed(1);
+                        var nTotalIndiceBrete		 = parseFloat((nTotalDepositosPosit/nTotalViviendasInspec)*100).toFixed(1);
                     }
 
                     $("#totalViviendasInspec").text(nTotalViviendasInspec);
