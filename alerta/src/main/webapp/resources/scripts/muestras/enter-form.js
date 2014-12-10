@@ -97,8 +97,7 @@ var EnterFormTomaMx = function () {
                         window.location.href = parametros.searchUrl;
 
                     },
-                    error: function (status, er) {
-                        alert("error: " + " status: " + status + " er:" + er);
+                    error: function () {
                         $.smallBox({
                             title: $('#msjErrorSaving').val(),
                             content:  $('#disappear').val(),

@@ -664,15 +664,15 @@
                 ${diagnosis}
             </label>
 
-            <div class="input">
-                <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-alpha-asc fa-fw"></i>
-                <form:input placeholder="${diagnosis}" type="text" path="diagnostico" name="diagnostico"
-                            class="form-control"/>
-                <b class="tooltip tooltip-bottom-right"> <i
+
+            <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i>
+                <input style="width: 100%" placeholder="${diagnosis}" value="${irag.diagnostico.codigoCie10}"
+                            type="text"  name="diagnostico" id="diagnostico" />
+                <b class="tooltip tooltip-top-right"> <i
                         class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.diagnosis"/>
                 </b>
+            </label>
 
-            </div>
         </section>
 
         <section class="col col-4">
@@ -1285,14 +1285,14 @@
                 </label>
 
 
-                <div class="input">
-                    <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-alpha-asc fa-fw"></i>
-                    <form:input placeholder="${diagnosis1}" type="text" name="diagnostico1Egreso"
-                        path="diagnostico1Egreso" />
-                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i>
-                        <spring:message code="msg.enter.diagnosis1"/>
+                <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i>
+                    <form:input cssStyle="width: 100%" placeholder="${diagnosis1}"
+                                type="text" path="diagnostico1Egreso.codigoCie10" name="diagnostico1Egreso" id="diagnostico1Egreso" />
+                    <b class="tooltip tooltip-top-right"> <i
+                            class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.diagnosis1"/>
                     </b>
-                </div>
+                </label>
+
 
             </section>
         </div>
@@ -1305,15 +1305,13 @@
                    ${diagnosis2}
                 </label>
 
-                <div class="input">
-                    <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-alpha-asc fa-fw"></i>
-                    <form:input placeholder="${diagnosis2}" type="text" name="diagnostico2Egreso"
-                        path="diagnostico2Egreso"
-                        />
-                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i>
-                        <spring:message code="msg.enter.diagnosis2"/>
+                   <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i>
+                    <form:input cssStyle="width: 100%" placeholder="${diagnosis2}"
+                                type="text" path="diagnostico2Egreso.codigoCie10" name="diagnostico2Egreso" id="diagnostico2Egreso" />
+                    <b class="tooltip tooltip-top-right"> <i
+                            class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.diagnosis2"/>
                     </b>
-                </div>
+                </label>
 
             </section>
 
@@ -1408,7 +1406,7 @@
 
                     <span class="input-group-addon"> <i class="fa fa-stethoscope"></i></span>
                     <select data-placeholder="${selectFCNB}" id="codClasFDetalleNB" name="codClasFDetalleNB" class="select2">
-
+                        <option value=""></option>
                         <c:forEach items="${catNB}" var="clasNB">
                             <c:choose>
                                 <c:when test="${fn:contains(irag.codClasFDetalleNB.codigo, clasNB.codigo)}">
@@ -1472,7 +1470,7 @@
                     <spring:message code="msg.select.final.case.nv" var="selectFCNV"/>
                     <span class="input-group-addon"> <i class="fa fa-stethoscope"></i></span>
                     <select data-placeholder="${selectFCNV}" id="codClasFDetalleNV" name="codClasFDetalleNV" class="select2">
-
+                        <option value=""></option>
                         <c:forEach items="${catNV}" var="clasNV">
                             <c:choose>
                                 <c:when test="${fn:contains(irag.codClasFDetalleNV.codigo, clasNV.codigo)}">
@@ -1646,7 +1644,6 @@
                             </div>
 
                             <div id="dVacFlu" hidden="hidden">
-
                                 <div class="input-group">
                                     <spring:message code="msg.select.vaccine.type" var="vacType"/>
                                     <span class="input-group-addon"> <i class="fa fa-list-ul fa-fw"></i></span>
@@ -1805,6 +1802,7 @@
 <spring:url value="/irag/completeIrag" var="completeIragUrl"/>
 <spring:url value="/irag/search" var="searchIragUrl"/>
 <spring:url value="/irag/overrideVaccine" var="overrideVaccineUrl"/>
+<spring:url value="/irag/enfermedades" var="enfermedadUrl"/>
 
 <script type="text/javascript">
 
@@ -1823,7 +1821,8 @@
             completeIragUrl: "${completeIragUrl}",
             searchIragUrl: "${searchIragUrl}",
             overrideVaccineUrl: "${overrideVaccineUrl}",
-            blockMess:"${blockMess}"
+            blockMess:"${blockMess}",
+            enfermedadUrl:"${enfermedadUrl}"
 
 
         };
@@ -1838,14 +1837,12 @@
         $('#codClasFDetalleNV').change();
         $('#codResRadiologia').change();
 
-       /* if ($('#codUnidadAtencion').val() != "") {
-            $("#codMunicipio").val("${municipio.codigoNacional}").change();
-        }*/
 
         $('#condiciones').change();
         $('#manifestaciones').change();
         $('#codClasFCaso').change();
         $('#fechaNacimiento').change();
+
 
         $("li.notificacion").addClass("open");
         $("li.irageti").addClass("active");

@@ -271,6 +271,42 @@ var CreateIrag = function () {
                             return  $.inArray(otroR, res) !== -1
                         }
 
+                    },
+
+                    agenteBacteriano:{
+                        required:function(){
+                            return $('#codClasFDetalleNB').find('option:selected').text() === "Confirmado NB";
+                        }
+                    },
+
+                    serotipificacion:{
+                        required:function(){
+                            return $('#codClasFDetalleNB').find('option:selected').text() === "Confirmado NB";
+                        }
+                    },
+
+                    agenteViral:{
+                        required:function(){
+                            return $('#codClasFDetalleNV').find('option:selected').text() === "Confirmado NV";
+                        }
+                    },
+
+                    codClasFDetalleNB: {
+                        required: function () {
+                            var nb = "CLASFI|NB";
+                            var clas = $('#codClasFCaso').val();
+                            return  $.inArray(nb, clas) !== -1
+                        }
+
+                    },
+
+                    codClasFDetalleNV: {
+                        required: function () {
+                            var nv = "CLASFI|NV";
+                            var clas = $('#codClasFCaso').val();
+                            return  $.inArray(nv, clas) !== -1
+                        }
+
                     }
 
 
@@ -280,7 +316,7 @@ var CreateIrag = function () {
                     error.insertAfter(element.parent());
 
                 }
-            });
+            });;
 
             //mostrar tipo de vacuna segun seleccion
             $('#codVacuna').change(function () {
@@ -566,8 +602,9 @@ var CreateIrag = function () {
             });
 
             $('#codClasificacion').change(function () {
-                if ($('#codClasificacion option:selected').text() === "ETI") {
-                    $('#step5').css("display", "block");
+                console.log("prueba");
+                if ($('#codClasificacion').find('option:selected').text() === "ETI") {
+                    $('#step5').attr('disabled','disabled');
 
                 }
             });
@@ -581,6 +618,112 @@ var CreateIrag = function () {
                         $("#edad").val('');
                     }
                 });
+
+            $('#diagnostico').select2({
+                minimumInputLength: 3,
+              id: function(enfermedad){ return enfermedad.codigoCie10; },
+                ajax: {
+                    url: parametros.enfermedadUrl,
+                    dataType: 'json',
+                    quietMillis: 100,
+                    data: function(term, page) {
+                        return {
+                            filtro: term
+                        };
+                    },
+                    results: function(data, page ) {
+                        return {
+                            results: data
+                        };
+                    }
+                },
+                formatResult: function(enfermedad) {
+                    var markup = "<table'><tr>";
+                    markup += "<td valign='top'><h5>" + enfermedad.codigoCie10 + "</h5>";
+                    markup += "<div>" + enfermedad.nombreCie10 + "</div>";
+                    markup += "</td></tr></table>";
+                    return markup;
+                },
+                formatSelection: function(enfermedad) {
+                    return enfermedad.nombreCie10;
+                },
+                dropdownCssClass: "bigdrop",
+                initSelection: function (item, callback) {
+                    return item;
+                },
+                escapeMarkup: function (m) { return m; }
+            });
+
+
+            $('#diagnostico2Egreso').select2({
+                minimumInputLength: 3,
+                id: function(enfermedad){ return enfermedad.codigoCie10; },
+                ajax: {
+                    url: parametros.enfermedadUrl,
+                    dataType: 'json',
+                    quietMillis: 100,
+                    data: function(term, page) {
+                        return {
+                            filtro: term
+                        };
+                    },
+                    results: function(data, page ) {
+                        return {
+                            results: data
+                        };
+                    }
+                },
+                formatResult: function(enfermedad) {
+                    var markup = "<table'><tr>";
+                    markup += "<td valign='top'><h5>" + enfermedad.codigoCie10 + "</h5>";
+                    markup += "<div>" + enfermedad.nombreCie10 + "</div>";
+                    markup += "</td></tr></table>";
+                    return markup;
+                },
+                formatSelection: function(enfermedad) {
+                    return enfermedad.nombreCie10;
+                },
+                dropdownCssClass: "bigdrop",
+                initSelection: function (item, callback) {
+                    return item;
+                },
+                escapeMarkup: function (m) { return m; }
+            });
+
+            $('#diagnostico1Egreso').select2({
+                minimumInputLength: 3,
+                id: function(enfermedad){ return enfermedad.codigoCie10; },
+                ajax: {
+                    url: parametros.enfermedadUrl,
+                    dataType: 'json',
+                    quietMillis: 100,
+                    data: function(term, page) {
+                        return {
+                            filtro: term
+                        };
+                    },
+                    results: function(data, page ) {
+                        return {
+                            results: data
+                        };
+                    }
+                },
+                formatResult: function(enfermedad) {
+                    var markup = "<table'><tr>";
+                    markup += "<td valign='top'><h5>" + enfermedad.codigoCie10 + "</h5>";
+                    markup += "<div>" + enfermedad.nombreCie10 + "</div>";
+                    markup += "</td></tr></table>";
+                    return markup;
+                },
+                formatSelection: function(enfermedad) {
+                    return enfermedad.nombreCie10;
+                },
+                dropdownCssClass: "bigdrop",
+                initSelection: function (item, callback) {
+                    return item;
+                },
+                escapeMarkup: function (m) { return m; }
+            });
 
         }
     };

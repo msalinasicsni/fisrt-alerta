@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.web.controllers;
 
 import com.google.gson.Gson;
+import ni.gob.minsa.alerta.domain.estructura.Cie10;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.irag.*;
@@ -81,6 +82,9 @@ public class IragController {
 
     @Resource(name="daNotificacionService")
     private DaNotificacionService daNotificacionService;
+
+    @Resource(name="cie10Service")
+    private Cie10Service cie10Service;
 
     @Autowired
     MessageSource messageSource;
@@ -444,6 +448,7 @@ public class IragController {
             irag = daIragService.getFormById(idNotificacion);
         } else {
             irag = new DaIrag();
+            irag.setFechaRegistro(new Timestamp(new Date().getTime()));
         }
 
         long idUsuario = seguridadService.obtenerIdUsuario(request);
@@ -473,7 +478,7 @@ public class IragController {
                 irag.setCodCaptacion(catalogoService.getCaptacion(codCaptacion));
             }
 
-            irag.setDiagnostico(diagnostico);
+            irag.setDiagnostico(cie10Service.getCie10ByCodigo(diagnostico));
 
             if (tarjetaVacuna != null) {
                 irag.setTarjetaVacuna(tarjetaVacuna);
@@ -532,8 +537,8 @@ public class IragController {
                 irag.setVentilacionAsistida(ventilacionAsistida);
             }
 
-            irag.setDiagnostico1Egreso(diagnostico1Egreso);
-            irag.setDiagnostico2Egreso(diagnostico2Egreso);
+            irag.setDiagnostico1Egreso(cie10Service.getCie10ByCodigo(diagnostico1Egreso));
+            irag.setDiagnostico2Egreso(cie10Service.getCie10ByCodigo(diagnostico2Egreso));
 
             if (!fechaEgreso.equals("")) {
                 irag.setFechaEgreso(StringToDate(fechaEgreso));
@@ -542,9 +547,6 @@ public class IragController {
             irag.setCodCondEgreso(catalogoService.getCondicionEgreso(codCondEgreso));
 
             irag.setCodProcedencia(catalogoService.getProcedencia(codProcedencia));
-
-            irag.setFechaRegistro(new Timestamp(new Date().getTime()));
-
             irag.setManifestaciones(manifestaciones);
             irag.setCondiciones(condiciones);
             irag.setOtraCondicion(otraCondicion);
@@ -797,6 +799,22 @@ public class IragController {
         date = formatter.parse(strFecha);
         return date;
     }
+
+    /**
+     * Retorna una lista de enfermedades. Acepta una solicitud GET para JSON
+     * @return Un arreglo JSON de Cie10
+     */
+    @RequestMapping(value = "enfermedades", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<Cie10> fetchEnfermedadesJson(@RequestParam(value = "filtro", required = true) String filtro) {
+        logger.info("Obteniendo las enfermedades en JSON");
+        List<Cie10> enfermedades = cie10Service.getCie10Filtered(filtro);
+        if (enfermedades == null){
+            logger.debug("Nulo");
+        }
+        return enfermedades;
+    }
+
+
 
 
 }
