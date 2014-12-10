@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.domain.irag;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
+import ni.gob.minsa.alerta.domain.estructura.Cie10;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
@@ -20,6 +21,7 @@ import java.util.Date;
 @Table(name = "DA_IRAG", schema = "ALERTA")
 public class DaIrag implements Serializable {
 
+    private static final long serialVersionUID = 4700369684537438371L;
     private DaNotificacion idNotificacion;
     private Date fechaConsulta;
     private Date fechaPrimeraConsulta;
@@ -28,7 +30,7 @@ public class DaIrag implements Serializable {
     private String nombreMadreTutor;
     private Procedencia codProcedencia;
     private Captacion codCaptacion;
-    private String diagnostico;
+    private Cie10 diagnostico;
     private Integer tarjetaVacuna;
     private Date fechaInicioSintomas;
     private Respuesta codAntbUlSem;
@@ -48,8 +50,8 @@ public class DaIrag implements Serializable {
     private Integer uci;
     private Integer noDiasHospitalizado;
     private Integer ventilacionAsistida;
-    private String diagnostico1Egreso;
-    private String diagnostico2Egreso;
+    private Cie10 diagnostico1Egreso;
+    private Cie10 diagnostico2Egreso;
     private Date fechaEgreso;
     private CondicionEgreso codCondEgreso;
     private String codClasFCaso;
@@ -161,16 +163,16 @@ public class DaIrag implements Serializable {
     }
 
 
-    @Basic
-    @Column(name = "DIAGNOSTICO", nullable = true, insertable = true, updatable = true, length = 100)
-    public String getDiagnostico() {
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Cie10.class)
+    @JoinColumn(name = "DIAGNOSTICO", referencedColumnName = "CODIGO_CIE10")
+    @ForeignKey(name = "COD_CIE10_FK")
+    public Cie10 getDiagnostico() {
         return diagnostico;
     }
 
-    public void setDiagnostico(String diagnostico) {
+    public void setDiagnostico(Cie10 diagnostico) {
         this.diagnostico = diagnostico;
     }
-
 
     @Basic
     @Column(name = "TARJETA_VACUNA", nullable = true, insertable = true, updatable = true, length = 4)
@@ -376,24 +378,25 @@ public class DaIrag implements Serializable {
         this.ventilacionAsistida = ventilacionAsistida;
     }
 
-
-    @Basic
-    @Column(name = "DIAG1_EGRESO", nullable = true, insertable = true, updatable = true, length = 100)
-    public String getDiagnostico1Egreso() {
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Cie10.class)
+    @JoinColumn(name = "DIAG1_EGRESO", referencedColumnName = "CODIGO_CIE10")
+    @ForeignKey(name = "COD_CIE10_FK")
+    public Cie10 getDiagnostico1Egreso() {
         return diagnostico1Egreso;
     }
 
-    public void setDiagnostico1Egreso(String diagnostico1Egreso) {
+    public void setDiagnostico1Egreso(Cie10 diagnostico1Egreso) {
         this.diagnostico1Egreso = diagnostico1Egreso;
     }
 
-    @Basic
-    @Column(name = "DIAG2_EGRESO", nullable = true, insertable = true, updatable = true, length = 100)
-    public String getDiagnostico2Egreso() {
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Cie10.class)
+    @JoinColumn(name = "DIAG2_EGRESO", referencedColumnName = "CODIGO_CIE10")
+    @ForeignKey(name = "COD_CIE10_FK")
+    public Cie10 getDiagnostico2Egreso() {
         return diagnostico2Egreso;
     }
 
-    public void setDiagnostico2Egreso(String diagnostico2Egreso) {
+    public void setDiagnostico2Egreso(Cie10 diagnostico2Egreso) {
         this.diagnostico2Egreso = diagnostico2Egreso;
     }
 
