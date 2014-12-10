@@ -328,7 +328,7 @@ public class SindFebrilController {
     	daNotificacion.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
 		daNotificacion.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
 		daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById(1));
-		daNotificacion.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|FEBRIL"));
+		daNotificacion.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|SINFEB"));
     	if (!idNotificacion.equals("")){
     		daNotificacion.setIdNotificacion(idNotificacion);
 		}
