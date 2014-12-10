@@ -101,6 +101,31 @@
                     </li>
                 </ul>
             </li>
+            <li class="analisis"><a href="#"> <i class="fa fa-lg fa-fw fa-bar-chart-o"></i> <span class="menu-item-parent"><fmt:message key="analysis" /></span></a>
+				<ul>
+					<li><a href="#"> <i class=""></i> <span
+							class="menu-item-parent"><fmt:message key="descriptive" /></span>
+					</a>
+						<ul>
+							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="agesex" /></span></a>
+							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="sex" /></span></a>
+							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="pato" /></span></a>
+						</ul>
+					<li><a href="#"> <i class=""></i> <span
+							class="menu-item-parent"><fmt:message key="obsexp" /></span>
+					</a>
+						<ul>
+							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="numandrate" /></span></a>
+							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="ratioandindex" /></span></a>
+							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="endemic" /></span></a>
+							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="epiindex" /></span></a>
+						</ul>
+					<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="bol" /></span></a>
+					<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="series" /></span></a>
+					<li class="mapas"><a href="<spring:url value="/analisis/mapas/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="maps" /></span></a>
+					<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="pyram" /></span></a>
+				</ul>
+			</li>
             <li>
                 <a href="<spring:url value="/logout" htmlEscape="true "/>"> <i class="fa fa-lg fa-fw fa-sign-out"></i> <span class="menu-item-parent"><spring:message code="menu.logout" /></span></a>
             </li>
