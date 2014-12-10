@@ -173,4 +173,11 @@ public class EnvioOrdenExamenMxService {
         Query q = sessionFactory.getCurrentSession().createQuery(query);
         return q.list();
     }
+
+    public Laboratorio getLaboratorio(String codigo){
+        String query = "from Laboratorio where codigo =:codigo";
+        Query q = sessionFactory.getCurrentSession().createQuery(query);
+        q.setParameter("codigo",codigo);
+        return (Laboratorio)q.uniqueResult();
+    }
 }
