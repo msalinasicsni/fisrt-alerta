@@ -132,6 +132,7 @@ public class EnvioOrdenExamenMxController {
             Usuarios usuario = usuarioService.getUsuarioById((int)idUsuario);
             //Se obtiene estado enviado a laboratorio
             EstadoOrdenEx estadoOrdenEx = catalogosService.getEstadoOrdenEx("ESTORDEN|ENV");
+            Laboratorio labProcedencia = envioOrdenExamenMxService.getLaboratorio(laboratorioProcedencia);
 
             DaEnvioOrden envioOrden = new DaEnvioOrden();
 
@@ -140,7 +141,7 @@ public class EnvioOrdenExamenMxController {
             envioOrden.setNombreTransporta(nombreTransporta);
             envioOrden.setTemperaturaTermo(temperaturaTermo);
             //envioOrden.setTiempoEspera(CalcularDiferenciaHorasFechas());
-            envioOrden.setLaboratorioProcedencia(laboratorioProcedencia);
+            envioOrden.setLaboratorioProcedencia(labProcedencia);
 
             try {
                 idEnvio = envioOrdenExamenMxService.addEnvioOrden(envioOrden);

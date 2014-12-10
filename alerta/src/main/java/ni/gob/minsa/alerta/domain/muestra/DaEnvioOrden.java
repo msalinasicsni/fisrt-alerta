@@ -18,7 +18,7 @@ public class DaEnvioOrden {
     private Float temperaturaTermo;
     private Timestamp fechaHoraEnvio;
     private long tiempoEspera;
-    private String laboratorioProcedencia;
+    private Laboratorio laboratorioProcedencia;
     private Usuarios usarioRegistro;
 
     @Id
@@ -71,13 +71,14 @@ public class DaEnvioOrden {
         this.tiempoEspera = tiempoEspera;
     }
 
-    @Basic
-    @Column(name = "LABORATORIO_PROC", nullable = true, insertable = true, updatable = true, length = 16)
-    public String getLaboratorioProcedencia() {
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "LABORATORIO_PROC", referencedColumnName = "CODIGO")
+    @ForeignKey(name = "ENVIO_ORDEN_LABORATORIO_FK")
+    public Laboratorio getLaboratorioProcedencia() {
         return laboratorioProcedencia;
     }
 
-    public void setLaboratorioProcedencia(String laboratorioProcedencia) {
+    public void setLaboratorioProcedencia(Laboratorio laboratorioProcedencia) {
         this.laboratorioProcedencia = laboratorioProcedencia;
     }
 
