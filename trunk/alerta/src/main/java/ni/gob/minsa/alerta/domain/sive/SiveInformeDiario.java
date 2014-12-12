@@ -14,7 +14,7 @@ import org.hibernate.annotations.ForeignKey;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 
 @Entity
-@Table(name = "SIVE_INFORME_DIARIO", schema = "ALERTA")
+@Table(name = "sive_informe_diario", schema = "alerta")
 public class SiveInformeDiario {
 	
 	private String id;

@@ -105,11 +105,13 @@
 											<tr>
 												<th data-class="expand"><i class="fa fa-fw fa-key text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.numFicha"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.date"/></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.ento.elimi"/></th>
 												<th data-hide="phone, tablet"><i class="fa fa-fw fa-folder-o txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.exp"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-stethoscope txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.unidad"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
 												<th data-hide="phone,tablet"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
+												<th></th>
 												<th></th>
 											</tr>
 										</thead>
@@ -118,6 +120,7 @@
 											<tr>
 												<td><c:out value="${ficha.numFicha}" /></td>
 												<td><c:out value="${ficha.fechaFicha}" /></td>
+												<td><c:out value="${ficha.idNotificacion.pasivo}" /></td>
 												<td><c:out value="${ficha.codExpediente}" /></td>
 												<td><c:out value="${ficha.idNotificacion.codUnidadAtencion.nombre}" /></td>
 												<td><c:out value="${ficha.idNotificacion.persona.primerNombre}" /></td>
@@ -126,7 +129,14 @@
 												<spring:url value="/febriles/edit/{idNotificacion}" var="editUrl">
 													<spring:param name="idNotificacion" value="${ficha.idNotificacion.idNotificacion}" />
 												</spring:url>
-												<td><a href="${fn:escapeXml(editUrl)}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a></td>
+												<spring:url value="/febriles/delete/{idNotificacion}" var="deleteUrl">
+													<spring:param name="idNotificacion" value="${ficha.idNotificacion.idNotificacion}" />
+												</spring:url>
+												<spring:url value="/febriles/new/{idPersona}" var="newUrl">
+													<spring:param name="idPersona" value="${ficha.idNotificacion.persona.personaId}" />
+												</spring:url>
+												<td><c:if test="${ficha.idNotificacion.pasivo==false}"><a href="${fn:escapeXml(editUrl)}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a></c:if></td>
+												<td><c:if test="${ficha.idNotificacion.pasivo==false}"><a href="${fn:escapeXml(deleteUrl)}" class="btn btn-default btn-xs"><i class="fa fa-times"></i></a></c:if></td>
 											</tr>
 										</c:forEach>
 										</tbody>
@@ -135,6 +145,13 @@
 								<!-- end widget content -->
 							</div>
 							<!-- end widget div -->
+							<div style="border: none" class="row">
+								<a href="${fn:escapeXml(newUrl)}"
+									class="btn btn-default btn-large btn-primary pull-right"><i
+									class="fa fa-plus"></i> <spring:message
+										code="lbl.add.notification" /> </a>
+							</div>
+							<a data-toggle="modal" href="#" class="btn btn-success btn-lg pull-right header-btn hidden-mobile" id="openModal"><i class="fa fa-circle-arrow-up fa-lg"></i><spring:message code="act.ento.add.locality" /></a>
 						</div>
 						<!-- end widget -->
 					</article>
@@ -142,6 +159,261 @@
 				</div>
 				<!-- end row -->
 			</section>
+			<!-- Modal -->
+<div class="modal fade" id="myModal" aria-hidden="true" data-backdrop="static"> <!--tabindex="-1" role="dialog" -->
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+    <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+                    </button>-->
+    <h4 class="modal-title">
+        <spring:message code="lbl.widgettitle.ento.add.det" />
+    </h4>
+</div>
+<div class="modal-body"> <!--  no-padding -->
+<form id="frmDetalleEncuesta" class="smart-form" novalidate="novalidate">
+<fieldset>
+<!-- NOTIFICACIÓN -->
+<div id="mensaje">
+</div>
+<!-- NOTIFICACIÓN -->
+<!-- SECTOR Y LOCALIDAD -->
+<div class="row">
+    <section class="col col-sm-12 col-md-5 col-lg-5">
+        <label class="text-left txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.sector" />
+        </label>
+        <div class="input-group">
+    		        <span class="input-group-addon">
+                        <i class="fa fa-location-arrow fa-fw"></i>
+			        </span>
+            <select  class="select2" id="codigoSector" name="codigoSector" >
+                <option value=""><spring:message code="lbl.select" />...</option>
+            </select>
+        </div>
+    </section>
+    <section class="col col-sm-12 col-md-7 col-lg-7">
+        <label class="text-left txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.locality" />
+        </label>
+        <div class="input-group">
+	    					        <span class="input-group-addon">
+                                        <i class="fa fa-location-arrow fa-fw"></i>
+		    				        </span>
+            <select class="select2" id="codigoLocalidad" name="codigoLocalidad" >
+                <option value=""><spring:message code="lbl.select" />...</option>
+            </select>
+        </div>
+    </section>
+</div>
+<!-- FIN LOCALIDAD -->
+<!-- MANZANAS -->
+<div class="row">
+    <section class="col col-sm-12 col-md-6 col-lg-4">
+        <label class="txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.block" /> <spring:message code="lbl.ento.insp" />
+        </label>
+        <div class="">
+            <label class="input"> <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-sort-numeric-desc"></i>
+                <input type="text" name="manzanasInspec" id="manzanasInspec" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.quantity"/> <spring:message code="lbl.ento.block"/> <spring:message code="tooltip.ento.inspecf"/></b>
+            </label>
+        </div>
+    </section>
+    <section class="col col-sm-12 col-md-6 col-lg-4">
+        <label class="txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.block" /> <spring:message code="lbl.ento.posit" />
+        </label>
+        <div class="">
+            <label class="input"> <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-sort-numeric-desc"></i>
+                <input type="text" name="manzanasPositivas" id="manzanasPositivas" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.quantity"/> <spring:message code="lbl.ento.block"/> <spring:message code="tooltip.ento.positf"/></b>
+            </label>
+        </div>
+        <!--<div class="">
+            <label class="input"> <i class="icon-append fa fa-sort-numeric-desc"></i>
+                <input type="text" name="manzanasPositivas" id="manzanasPositivas">
+            </label>
+        </div> -->
+    </section>
+</div>
+<!--FIN MANZANAS -->
+<!-- VIVIENDAS -->
+<div class="row">
+    <section class="col col-sm-12 col-md-6 col-lg-4">
+        <label class=" txt-color-blue font-md"><!--col col-4-->
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.homes" /> <spring:message code="lbl.ento.insp" />
+        </label>
+        <div class="">
+            <label class="input"> <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="viviendasInspec" id="viviendasInspec" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.quantity"/> <spring:message code="lbl.ento.homes"/> <spring:message code="tooltip.ento.inspecf"/></b>
+            </label>
+        </div>
+    </section>
+    <section class="col col-sm-12 col-md-6 col-lg-4">
+        <label class="txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.homes" /> <spring:message code="lbl.ento.posit" />
+        </label>
+        <div class="">
+            <label class="input"> <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="viviendasPositivas" id="viviendasPositivas" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.quantity"/> <spring:message code="lbl.ento.homes"/> <spring:message code="tooltip.ento.positf"/></b>
+            </label>
+        </div>
+    </section>
+</div>
+<!--FIN VIVIENDAS -->
+<!-- DEPOSITOS Y PUPAS -->
+<div class="row">
+    <section class="col col-sm-12 col-md-6 col-lg-4">
+        <label class="txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.tank" /> <spring:message code="lbl.ento.insp" />
+        </label>
+        <div class="">
+            <label class="input"> <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="depositosInspec" id="depositosInspec" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.quantity"/> <spring:message code="lbl.ento.tank"/> <spring:message code="tooltip.ento.inspecm"/></b>
+            </label>
+        </div>
+    </section>
+    <section class="col col-sm-12 col-md-6 col-lg-4">
+        <label class="txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.tank" /> <spring:message code="lbl.ento.posit" />
+        </label>
+        <div class="">
+            <label class="input"> <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="depositosPositovos" id="depositosPositovos" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.quantity"/> <spring:message code="lbl.ento.tank"/> <spring:message code="tooltip.ento.positm"/></b>
+            </label>
+        </div>
+    </section>
+    <section class="col col-sm-12 col-md-6 col-lg-4">
+        <label class="txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.modal.pupae.posit" />
+        </label>
+        <div class="">
+            <label class="input"> <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="pupasPositivas" id="pupasPositivas" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.quantity"/> <spring:message code="lbl.ento.pupae"/> <spring:message code="tooltip.ento.positf"/></b>
+            </label>
+        </div>
+    </section>
+</div>
+<!-- FIN DEPOSITO Y PUPAS-->
+<!-- NO ABATI, NO ELIMINI Y NO NEUTR -->
+<div class="row">
+    <section class="col col-sm-12 col-md-6 col-lg-4">
+        <label class="txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.no" /> </i><spring:message code="lbl.ento.abatizado" />
+        </label>
+        <div class="">
+            <label class="input"> <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="noAbati" id="noAbati" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.quantity"/> no <spring:message code="lbl.ento.abatizado"/></b>
+            </label>
+        </div>
+    </section>
+    <section class="col col-sm-12 col-md-6 col-lg-4">
+        <label class=" txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.no" /> <spring:message code="lbl.ento.eliminado" />
+        </label>
+        <div class="">
+            <label class="input"> <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="noElimni" id="noElimni" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.quantity"/> no <spring:message code="lbl.ento.eliminado"/></b>
+            </label>
+        </div>
+    </section>
+    <section class="col col-sm-12 col-md-6 col-lg-4">
+        <label class="txt-color-blue font-md">
+            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.no" /> <spring:message code="lbl.ento.neutralizado" />
+        </label>
+        <div class="">
+            <label class="input"> <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                <input type="text" name="noNeutr" id="noNeutr" class="entero">
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.enter.quantity"/> no <spring:message code="lbl.ento.neutralizado"/></b>
+            </label>
+        </div>
+    </section>
+</div>
+<!-- FIN NO ABATI, NO ELIMINI Y NO NEUTR -->
+<!-- FECHAS-->
+<div class="row">
+    <section class="col col-sm-12 col-md-6 col-lg-4">
+        <label class="txt-color-blue font-md">
+            <spring:message code="lbl.ento.date" /> <spring:message code="lbl.ento.date.abatizado" />
+        </label>
+        <div class="">
+            <!--<span class="input-group-addon"> <i class="fa fa-pencil fa-fw"></i></span>-->
+            <label class="input"> <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar fa-fw"></i>
+                <input type="text"
+                       name="fecAbat" id="fecAbat"
+                       placeholder="<spring:message code="lbl.date.format"/>"
+                       class="form-control date-picker"
+                       data-dateformat="dd/mm/yy"/>
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.date.abat"/></b>
+            </label>
+            <!--                    <span class="input-group-addon"> <i class="fa fa-calendar fa-fw"></i>
+                                </span>-->
+        </div>
+    </section>
+    <!--<section class="col col-sm-12 col-md-6 col-lg-4">
+                    <label class="txt-color-blue font-md">
+                        <spring:message code="lbl.ento.date" /> <spring:message code="lbl.ento.report" />
+                    </label>
+                    <div class="input-group">
+                        <input type="text"
+                               name="fecReport" id="fecReport"
+                               placeholder="<spring:message code="lbl.date.format"/>"
+                               class="form-control datepicker midatepicker"
+                               data-dateformat="dd/mm/yy"/>
+                                        <span class="input-group-addon"> <i class="fa fa-calendar fa-fw"></i>
+                                        </span>
+                    </div>
+                </section>-->
+    <section class="col col-sm-12 col-md-6 col-lg-4">
+        <label class="txt-color-blue font-md">
+            <spring:message code="lbl.ento.date" /> <spring:message code="lbl.ento.modal.vent" />
+        </label>
+        <div class="">
+            <!--<span class="input-group-addon"> <i class="fa fa-pencil fa-fw"></i></span>-->
+            <label class="input">
+                <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar fa-fw"></i>
+                <input type="text"
+                       name="fecVent" id="fecVent"
+                       placeholder="<spring:message code="lbl.date.format"/>"
+                       class="form-control date-picker"
+                       data-dateformat="dd/mm/yy"/>
+                <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="tooltip.ento.date.vent"/></b>
+                <!--<span class="input-group-addon"> <i class="fa fa-calendar fa-fw"></i>
+                </span>-->
+            </label>
+        </div>
+    </section>
+</div>
+<!-- FIN FECHAS-->
+</fieldset>
+
+<footer>
+    <!--<button type="button" class="btn btn-primary" id="btnGuardarDetalle">
+        Guardar
+    </button>-->
+    <button type="submit" class="btn btn-primary" id="btnGuardarDetalle">
+        <spring:message code="act.save" />
+    </button>
+    <button type="button" class="btn btn-default" data-dismiss="modal">
+        <spring:message code="act.end" />
+    </button>
+
+</footer>
+
+</form>
+</div>
+</div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 			<!-- end widget grid -->
 		</div>
 		<!-- END MAIN CONTENT -->

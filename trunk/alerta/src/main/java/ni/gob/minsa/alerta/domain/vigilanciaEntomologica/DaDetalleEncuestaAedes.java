@@ -13,7 +13,7 @@ import java.util.Date;
  * Created by MSalinas
  */
 @Entity
-@Table(name = "DA_DETALLE_ENCUESTA_AEDES", schema = "ALERTA")
+@Table(name = "da_detalle_encuesta_aedes", schema = "alerta")
 public class DaDetalleEncuestaAedes {
     private String detaEncuestaId;
     private Comunidades localidad;
