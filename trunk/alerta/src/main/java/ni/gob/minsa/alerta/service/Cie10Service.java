@@ -1,15 +1,20 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.estructura.Cie10;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Junction;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,9 +51,39 @@ public class Cie10Service {
         Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery("FROM Cie10 ci where ci.codigoCie10 = '" + codigo + "'");
-        Cie10 enfermedad = (Cie10) query.uniqueResult();
-        return  enfermedad;
+        return (Cie10) query.uniqueResult();
 
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Cie10> getCie10Irag(String codigo) {
+        List<Cie10> res = new ArrayList<Cie10>();
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            Criteria criteria = session.createCriteria(Cie10.class);
+
+            String[] cod = codigo.split(",");
+            criteria.add(Restrictions.in("codigoCie10", cod));
+            criteria.add(Restrictions.eq("activo", true));
+
+
+            res = criteria.list();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return res;
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Cie10> getCie10(){
+        //Retrieve session from Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Cie10 ci where ci.activo = true  order by ci.nombreCie10");
+        //retrieve all
+        return query.list();
     }
 
 }

@@ -108,6 +108,7 @@ public class IragController {
     List<ManifestacionClinica> catManCli;
     List<ClasificacionFinalNB> catClasFNB;
     List<ClasificacionFinalNV> catClasFNV;
+    List<Cie10> catCie10Irag;
     Map<String, Object> mapModel;
 
 
@@ -133,6 +134,8 @@ public class IragController {
             catTVacFlu = catalogoService.getTipoVacunaFlu();
             catClasFNB = catalogoService.getClasificacionFinalNB();
             catClasFNV = catalogoService.getClasificacionFinalNV();
+            catCie10Irag = cie10Service.getCie10Irag("J458,J459");
+
 
             mapModel = new HashMap<String, Object>();
 
@@ -154,6 +157,7 @@ public class IragController {
             mapModel.put("departamentos", departamentos);
             mapModel.put("catNV", catClasFNV);
             mapModel.put("catNB", catClasFNB);
+            mapModel.put("catCie10Irag", catCie10Irag);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
@@ -458,7 +462,6 @@ public class IragController {
        // if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, codSilaisAtencion) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, codUnidadAtencion)) {
 
 
-
             if (!codClasificacion.isEmpty()) {
                 irag.setCodClasificacion(catalogoService.getClasificacion(codClasificacion));
             }
@@ -682,12 +685,16 @@ public class IragController {
     @RequestMapping(value = "override/{idNotificacion}")
     public ModelAndView overrideForm(@PathVariable("idNotificacion") String idNotificacion, HttpServletRequest request) throws Exception {
         DaIrag irag = null;
+        DaNotificacion noti = null;
         Long personaId = null;
         if (idNotificacion != null) {
             irag = daIragService.getFormById(idNotificacion);
-            irag.setAnulada(true);
-            irag.setFechaAnulacion(new Timestamp(new Date().getTime()));
-            daIragService.updateIrag(irag);
+
+            //DaNotificacion
+            noti = daNotificacionService.getNotifById(idNotificacion);
+            noti.setPasivo(true);
+            noti.setFechaAnulacion(new Timestamp(new Date().getTime()));
+            daNotificacionService.updateNotificacion(noti);
             personaId = irag.getIdNotificacion().getPersona().getPersonaId();
         }
         return showPersonReport(personaId, request);

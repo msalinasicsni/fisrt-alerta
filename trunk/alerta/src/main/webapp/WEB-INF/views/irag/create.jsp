@@ -665,13 +665,23 @@
             </label>
 
 
-            <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i>
-                <input style="width: 100%" placeholder="${diagnosis}" value="${irag.diagnostico.codigoCie10}"
-                            type="text"  name="diagnostico" id="diagnostico" />
-                <b class="tooltip tooltip-top-right"> <i
-                        class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.diagnosis"/>
-                </b>
-            </label>
+            <div class="input-group">
+                <spring:message code="msg.select.diagnosis" var="sDx"/>
+                <span class="input-group-addon"> <i class="fa fa-list"></i></span>
+                <select data-placeholder="${sDx}" id="diagnostico" name="diagnostico" class="select2">
+                    <option value=""></option>
+                    <c:forEach items="${catCie10Irag}" var="enf">
+                        <c:choose>
+                            <c:when test="${fn:contains(irag.diagnostico.codigoCie10, enf.codigoCie10)}">
+                                <option selected value="${enf.codigoCie10}">${enf.nombreCie10}</option>
+                            </c:when>
+                            <c:otherwise>
+                                <option value="${enf.codigoCie10}">${enf.nombreCie10}</option>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </select>
+            </div>
 
         </section>
 
@@ -761,7 +771,7 @@
                             code="lbl.vaccine"/></th>
                     <th data-hide="phone"><i class="fa fa-fw fa-list-alt text-muted hidden-md hidden-sm hidden-xs"></i>
                         <spring:message code="lbl.which"/></th>
-                    <th data-class="expand"><i
+                    <th data-hide="phone"><i
                             class="fa fa-fw fa-sort-numeric-asc text-muted hidden-md hidden-sm hidden-xs"></i>
                         <spring:message code="lbl.dose.number"/></th>
                     <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i>
@@ -1284,14 +1294,23 @@
                    ${diagnosis1}
                 </label>
 
-
-                <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i>
-                    <form:input cssStyle="width: 100%" placeholder="${diagnosis1}"
-                                type="text" path="diagnostico1Egreso.codigoCie10" name="diagnostico1Egreso" id="diagnostico1Egreso" />
-                    <b class="tooltip tooltip-top-right"> <i
-                            class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.diagnosis1"/>
-                    </b>
-                </label>
+                <div class="input-group">
+                    <spring:message code="msg.select.diagnosis" var="sDx"/>
+                    <span class="input-group-addon"> <i class="fa fa-list"></i></span>
+                    <select data-placeholder="${sDx}" id="diagnostico1Egreso" name="diagnostico1Egreso" class="select2">
+                        <option value=""></option>
+                        <c:forEach items="${catCie10Irag}" var="enf">
+                            <c:choose>
+                                <c:when test="${fn:contains(irag.diagnostico1Egreso.codigoCie10, enf.codigoCie10)}">
+                                    <option selected value="${enf.codigoCie10}">${enf.nombreCie10}</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="${enf.codigoCie10}">${enf.nombreCie10}</option>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </select>
+                </div>
 
 
             </section>
@@ -1305,13 +1324,23 @@
                    ${diagnosis2}
                 </label>
 
-                   <label class="input"> <i class="icon-prepend fa fa-pencil fa-fw"></i>
-                    <form:input cssStyle="width: 100%" placeholder="${diagnosis2}"
-                                type="text" path="diagnostico2Egreso.codigoCie10" name="diagnostico2Egreso" id="diagnostico2Egreso" />
-                    <b class="tooltip tooltip-top-right"> <i
-                            class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.diagnosis2"/>
-                    </b>
-                </label>
+                <div class="input-group">
+                    <spring:message code="msg.select.diagnosis" var="sDx"/>
+                    <span class="input-group-addon"> <i class="fa fa-list"></i></span>
+                    <select data-placeholder="${sDx}" id="diagnostico2Egreso" name="diagnostico2Egreso" class="select2">
+                        <option value=""></option>
+                        <c:forEach items="${catCie10Irag}" var="enf">
+                            <c:choose>
+                                <c:when test="${fn:contains(irag.diagnostico2Egreso.codigoCie10, enf.codigoCie10)}">
+                                    <option selected value="${enf.codigoCie10}">${enf.nombreCie10}</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="${enf.codigoCie10}">${enf.nombreCie10}</option>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </select>
+                </div>
 
             </section>
 

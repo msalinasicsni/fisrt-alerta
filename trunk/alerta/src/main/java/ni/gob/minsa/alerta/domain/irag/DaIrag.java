@@ -62,13 +62,11 @@ public class DaIrag implements Serializable {
     private String agenteViral;
     private String agenteEtiologico;
     private boolean fichaCompleta;
-    private boolean anulada;
     private String manifestaciones;
     private String otraManifestacion;
     private String condiciones;
     private Integer semanasEmbarazo;
     private String otraCondicion;
-    private Timestamp fechaAnulacion;
     private Timestamp fechaRegistro;
     private Usuarios usuario;
 
@@ -506,25 +504,6 @@ public class DaIrag implements Serializable {
 
     public void setFichaCompleta(boolean fichaCompleta) {
         this.fichaCompleta = fichaCompleta;
-    }
-
-    @Basic
-    @Column(name = "ANULADA", nullable = true, insertable = true, updatable = true)
-    public boolean isAnulada() {
-        return anulada;
-    }
-
-    public void setAnulada(boolean anulada) {
-        this.anulada = anulada;
-    }
-
-    @Column(name = "FECHA_ANULACION", nullable = true, insertable = true, updatable = true)
-    public Timestamp getFechaAnulacion() {
-        return fechaAnulacion;
-    }
-
-    public void setFechaAnulacion(Timestamp fechaAnulacion) {
-        this.fechaAnulacion = fechaAnulacion;
     }
 
     @Basic

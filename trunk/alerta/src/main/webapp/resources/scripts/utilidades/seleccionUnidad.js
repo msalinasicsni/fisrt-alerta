@@ -52,7 +52,7 @@ var SeleccionUnidad = function () {
             				codSilais: $('#codSilaisAtencion').val(),
             				ajax : 'true'
             			}, function(data) {
-            				$("#codUnidadAtencion").select2('data',null);
+            			    $("#codUnidadAtencion").select2('data',null);
             				$("#codUnidadAtencion").empty();
             				var html='<option value=""></option>';
             				var len = data.length;
