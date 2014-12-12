@@ -418,7 +418,7 @@ var AddAedesSurvey = function () {
             });
 */
             <!-- al seleccionar localidad -->
-            $('#codigoLocalidad').change(function() {
+            $('#codigoLocalidad').click(function() {
                 if ($("#idMaestroAgregado").val().length > 0 && $(this).val().length > 0){
                     var maestro = {
                         encuestaId:'' ,
@@ -1067,7 +1067,7 @@ var AddLarvariaSurvey = function () {
             });
 */
             <!-- al seleccionar localidad -->
-            $('#codigoLocalidad').change(function() {
+            $('#codigoLocalidad').click(function() {
                 if ($("#idMaestroAgregado").val().length > 0 && $(this).val().length > 0){
                     var maestro = {
                         encuestaId:'' ,
@@ -1940,7 +1940,7 @@ var AddDepositoSurvey = function(){
             });
 */
             <!-- al seleccionar localidad -->
-            $('#codigoLocalidad').change(function() {
+            $('#codigoLocalidad').click(function() {
                 /*if ($("#idMaestroAgregado").val().length > 0 && $(this).val().length > 0){
                  var maestro = {
                  encuestaId:'' ,
