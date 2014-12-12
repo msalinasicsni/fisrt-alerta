@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  * Created by souyen-ics on 11-20-14.
  */
 @Entity
-@Table(name = "DA_ORDEN_EXAMEN", schema = "ALERTA")
+@Table(name = "da_orden_examen", schema = "alerta")
 public class DaOrdenExamen {
 
     private String idOrdenExamen;

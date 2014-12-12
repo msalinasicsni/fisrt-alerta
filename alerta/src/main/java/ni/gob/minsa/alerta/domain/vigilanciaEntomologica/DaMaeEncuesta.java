@@ -17,7 +17,7 @@ import java.util.Date;
  * Created by MSalinas
  */
 @Entity
-@Table(name = "DA_MAE_ENCUESTA", schema = "ALERTA")
+@Table(name = "da_mae_encuesta", schema = "alerta")
 public class DaMaeEncuesta {
     private String encuestaId;
     private Divisionpolitica municipio;

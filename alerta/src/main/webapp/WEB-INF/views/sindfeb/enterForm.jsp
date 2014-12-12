@@ -237,7 +237,7 @@
                                             			<div>
 															<label class="input">
 																<i class="icon-prepend fa fa-tag"></i> <i class="icon-append fa fa-sort-numeric-asc"></i>
-																<input class="form-control" type="text" name="numFicha" id="numFicha" value="${daSindFeb.numFicha}"
+																<input class="entero" type="text" name="numFicha" id="numFicha" value="${daSindFeb.numFicha}"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.numFicha" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="act.enter" /> <spring:message code="sindfeb.numFicha" /></b>
 															</label>
@@ -271,56 +271,52 @@
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="person.name1" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-user"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
 																<input class="form-control" type="text" name="primerNombre" id="primerNombre" 
 																	value="${daSindFeb.idNotificacion.persona.primerNombre}" readonly
 																	placeholder=" <spring:message code="person.name1" />">
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="person.name2" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-user"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
 																<input class="form-control" type="text" name="segundoNombre" id="segundoNombre" 
 																	value="${daSindFeb.idNotificacion.persona.segundoNombre}" readonly
 																	placeholder=" <spring:message code="person.name2" />">
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="person.lastname1" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-user"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
 																<input class="form-control" type="text" name="primerApellido" id="primerApellido" 
 																	value="${daSindFeb.idNotificacion.persona.primerApellido}" readonly
 																	placeholder=" <spring:message code="person.lastname1" />">
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="person.lastname2" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-user"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
 																<input class="form-control" type="text" name="segundoApellido" id="segundoApellido" 
 																	value="${daSindFeb.idNotificacion.persona.segundoApellido}" readonly
 																	placeholder=" <spring:message code="person.name2" />">
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
 	                                      			</div>	
@@ -331,51 +327,48 @@
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="person.fecnac" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
 																<input class="form-control" readonly 
 																	type="text" name="fechaNacimiento" id="fechaNacimiento" value="<fmt:formatDate value="${daSindFeb.idNotificacion.persona.fechaNacimiento}" pattern="dd/MM/yyyy" />"
 																	placeholder=" <spring:message code="person.fecnac" />">
 															</label>
-															<span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="lbl.age" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-user"></i> <i class="icon-append fa fa-sort-numeric-asc"></i>
 																<input class="form-control" type="text" name="edad" id="edad" readonly
 																placeholder=" <spring:message code="lbl.age" />">
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="person.sexo" />
                                             			</label>
-                                            			<div class="input-group">
-                                            				<c:choose>
-															<c:when test="${daSindFeb.idNotificacion.persona.sexo.codigo eq 'SEXO|M'}">
-																<span class="input-group-addon"><i class="fa fa-male fa-fw"></i></span>
-															</c:when>
-															<c:when test="${daSindFeb.idNotificacion.persona.sexo.codigo eq 'SEXO|F'}">
-																<span class="input-group-addon"><i class="fa fa-female fa-fw"></i></span>
-															</c:when>
-															<c:otherwise>
-																<span class="input-group-addon"><i class="fa fa-question fa-fw"></i></span>
-															</c:otherwise>
-															</c:choose>
+                                            			<div>
 															<label class="input">
+																<c:choose>
+																	<c:when test="${daSindFeb.idNotificacion.persona.sexo.codigo eq 'SEXO|M'}">
+																		<i class="icon-prepend fa fa-male"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
+																	</c:when>
+																	<c:when test="${daSindFeb.idNotificacion.persona.sexo.codigo eq 'SEXO|F'}">
+																		<i class="icon-prepend fa fa-female"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
+																	</c:when>
+																	<c:otherwise>
+																		<i class="icon-prepend fa fa-question"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
+																	</c:otherwise>
+																</c:choose>
 																<input class="form-control" type="text" name="sexo" id="sexo" 
 																	value="${daSindFeb.idNotificacion.persona.sexo}" readonly
 																	placeholder=" <spring:message code="person.sexo" />">
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-3">
@@ -407,30 +400,28 @@
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="lbl.mother.father" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-male"></i><i class="fa fa-female"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-female"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
 																<input class="form-control" type="text" name="nombPadre" id="nombPadre" 
 																	value="${daSindFeb.nombPadre}" 
 																	placeholder=" <spring:message code="lbl.mother.father" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="msg.enter.mother" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-9">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="person.direccion" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-map-marker fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-map-marker"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
 																<input class="form-control" type="text" name="direccionResidencia" id="direccionResidencia" 
 																	value="${daSindFeb.idNotificacion.persona.direccionResidencia}" 
 																	placeholder=" <spring:message code="person.direccion" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="person.direccion" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
 	                                      			</div>	
@@ -459,7 +450,6 @@
 														</div>
                                             		</section>
                                             		<section class="col col-3">
-                                                		<i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
                                                 		<label class="text-left txt-color-blue font-md hidden-xs">
                                                     		<spring:message code="person.mun.res" />
                                                     	</label>
@@ -481,7 +471,6 @@
 														</div>
                                             		</section>
                                             		<section class="col col-3">
-                                                		<i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
                                                 		<label class="text-left txt-color-blue font-md hidden-xs">
                                                     		<spring:message code="person.com.res" />
                                                     	</label>
@@ -550,19 +539,18 @@
 															</select>
 														</div>
                                             		</section>
-                                            		<section class="col col-3">
+                                            		<section id="sihayviaje" hidden="hidden" class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.travel.where" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-globe fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-globe"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
 																<input class="form-control" type="text" name="dondeViaje" id="dondeViaje" 
 																	value="${daSindFeb.dondeViaje}" 
 																	placeholder=" <spring:message code="sindfeb.travel.where" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.travel.where" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-3">
@@ -587,19 +575,18 @@
 															</select>
 														</div>
                                             		</section>
-                                            		<section class="col col-3">
+                                            		<section id="sihayemb" hidden="hidden" class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.pregnancy.time" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-child fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-child"></i> <i class="icon-append fa fa-calendar"></i>
 																<input class="form-control" type="text" name="mesesEmbarazo" id="mesesEmbarazo" 
 																	value="${daSindFeb.mesesEmbarazo}" 
 																	placeholder=" <spring:message code="sindfeb.pregnancy.time" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.pregnancy.time" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		</div>
@@ -628,19 +615,18 @@
 															</select>
 														</div>
                                             		</section>
-                                            		<section class="col col-3">
+                                            		<section id="sihayotracronica" hidden="hidden" class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.cronic.other" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-wheelchair"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
 																<input class="form-control" type="text" name="otraCronica" id="otraCronica" 
 																	value="${daSindFeb.otraCronica}" 
 																	placeholder=" <spring:message code="sindfeb.cronic.other" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.cronic.other" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-3">
@@ -665,19 +651,18 @@
 															</select>
 														</div>
                                             		</section>
-                                            		<section class="col col-3">
+                                            		<section id="sihayotraaguda" hidden="hidden" class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.acute.other" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-user-md"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
 																<input class="form-control" type="text" name="otraAgudaAdicional" id="otraAgudaAdicional" 
 																	value="${daSindFeb.otraAgudaAdicional}" 
 																	placeholder=" <spring:message code="sindfeb.acute.other" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.acute.other" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                       				</div>
@@ -696,7 +681,7 @@
                                                     		<spring:message code="sindfeb.water" />
                                                     	</label>
                                                     	<div class="input-group">
-                                                    		<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                    		<span class="input-group-addon"> <i class="fa fa-flask"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.water" />" name="fuenteAgua" id="fuenteAgua" multiple style="width:100%" class="select2">
 																<option value=""></option>
 																<c:forEach items="${fuentesAgua}" var="fuenteAgua">
@@ -712,19 +697,18 @@
 															</select>
 														</div>
                                             		</section>
-                                            		<section class="col col-3">
+                                            		<section id="sihayotrafuente" hidden="hidden" class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.water.other" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-flask"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
 																<input class="form-control" type="text" name="otraFuenteAgua" id="otraFuenteAgua" 
 																	value="${daSindFeb.otraFuenteAgua}" 
 																	placeholder=" <spring:message code="sindfeb.water.other" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.water.other" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-3">
@@ -733,7 +717,7 @@
                                                     		<spring:message code="sindfeb.animals" />
                                                     	</label>
                                                     	<div class="input-group">
-                                                    		<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                    		<span class="input-group-addon"> <i class="fa fa-paw"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.animals" />" name="animales" id="animales" multiple style="width:100%" class="select2">
 																<option value=""></option>
 																<c:forEach items="${animales}" var="animal">
@@ -749,19 +733,18 @@
 															</select>
 														</div>
                                             		</section>
-                                            		<section class="col col-3">
+                                            		<section id="sihayotroanimal" hidden="hidden" class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.animals.other" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-paw"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
 																<input class="form-control" type="text" name="otrosAnimales" id="otrosAnimales" 
 																	value="${daSindFeb.otrosAnimales}" 
 																	placeholder=" <spring:message code="sindfeb.animals.other" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.animals.other" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-alpha-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                       				</div>
@@ -779,31 +762,27 @@
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.dos" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+                                            			<div>
 															<label class="input">
+																<i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
 																<input class="form-control date-picker" data-date-end-date="+0d" data-date-start-date="-30d" 
 																	type="text" name="fechaInicioSintomas" id="fechaInicioSintomas" value="<fmt:formatDate value="${daSindFeb.fechaInicioSintomas}" pattern="dd/MM/yyyy" />"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.dos" />">
 																	<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.dos" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-4">
-                                            			<i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.dst" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+                                            			<div>
 															<label class="input">
-																<input class="form-control date-picker" data-date-end-date="+0d" data-date-start-date="-30d" 
-																	type="text" name="fechaTomaMuestra" id="fechaTomaMuestra" value="<fmt:formatDate value="${daSindFeb.fechaTomaMuestra}" pattern="dd/MM/yyyy" />"
+																<i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
+																<input readonly class="form-control" type="text" name="fechaTomaMuestra" id="fechaTomaMuestra" value="<fmt:formatDate value="${daSindFeb.fechaTomaMuestra}" pattern="dd/MM/yyyy" />"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.dst" />">
 																	<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.dst" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
 														</div>
                                             		</section>
                                       				</div>
@@ -814,45 +793,42 @@
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.temp" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
-																<input class="form-control" type="text" name="temperatura" id="temperatura" 
+																<i class="icon-prepend fa fa-fire"></i> <i class="icon-append fa fa-sort-numeric-asc"></i>
+																<input class="decimal" type="text" name="temperatura" id="temperatura" 
 																	value="${daSindFeb.temperatura}" 
 																	placeholder=" <spring:message code="sindfeb.temp" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.temp" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-4">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.pas" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
-																<input class="form-control" type="text" name="pas" id="pas" 
+																<i class="icon-prepend fa fa-stethoscope"></i> <i class="icon-append fa fa-sort-numeric-asc"></i>
+																<input class="entero" type="text" name="pas" id="pas" 
 																	value="${daSindFeb.pas}" 
 																	placeholder=" <spring:message code="sindfeb.pas" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.pas" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                             		<section class="col col-4">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.pad" />
                                             			</label>
-                                            			<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            			<div>
 															<label class="input">
-																<input class="form-control" type="text" name="pad" id="pad" 
+																<i class="icon-prepend fa fa-stethoscope"></i> <i class="icon-append fa fa-sort-numeric-asc"></i>
+																<input class="entero" type="text" name="pad" id="pad" 
 																	value="${daSindFeb.pad}" 
 																	placeholder=" <spring:message code="sindfeb.pad" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.pad" /></b>
 															</label>
-															<span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>
 														</div>
                                             		</section>
                                       				</div>
@@ -865,7 +841,7 @@
                                                     		<spring:message code="sindfeb.ssa" />
                                                     	</label>
                                                     	<div class="input-group">
-                                                    		<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                    		<span class="input-group-addon"> <i class="fa fa-medkit"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.ssa" />" name="ssDSA" id="ssDSA" multiple style="width:100%" class="select2">
 																<option value=""></option>
 																<c:forEach items="${sintDssa}" var="sint">
@@ -887,7 +863,7 @@
                                                     		<spring:message code="sindfeb.sca" />
                                                     	</label>
                                                     	<div class="input-group">
-                                                    		<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                    		<span class="input-group-addon"> <i class="fa fa-medkit"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.sca" />" name="ssDCA" id="ssDCA" multiple style="width:100%" class="select2">
 																<option value=""></option>
 																<c:forEach items="${sintDcsa}" var="sint">
@@ -909,7 +885,7 @@
                                                     		<spring:message code="sindfeb.dg" />
                                                     	</label>
                                                     	<div class="input-group">
-                                                    		<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                    		<span class="input-group-addon"> <i class="fa fa-medkit"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.dg" />" name="ssDS" id="ssDS" multiple style="width:100%" class="select2">
 																<option value=""></option>
 																<c:forEach items="${sintDgra}" var="sint">
@@ -935,7 +911,7 @@
                                                     		<spring:message code="sindfeb.lept" />
                                                     	</label>
                                                     	<div class="input-group">
-                                                    		<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                    		<span class="input-group-addon"> <i class="fa fa-medkit"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.lept" />" name="ssLepto" id="ssLepto" multiple style="width:100%" class="select2">
 																<option value=""></option>
 																<c:forEach items="${sintLept}" var="sint">
@@ -957,7 +933,7 @@
                                                     		<spring:message code="sindfeb.hanta" />
                                                     	</label>
                                                     	<div class="input-group">
-                                                    		<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                    		<span class="input-group-addon"> <i class="fa fa-medkit"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.hanta" />" name="ssHV" id="ssHV" multiple style="width:100%" class="select2">
 																<option value=""></option>
 																<c:forEach items="${sintHant}" var="sint">
@@ -979,7 +955,7 @@
                                                     		<spring:message code="sindfeb.chik" />
                                                     	</label>
                                                     	<div class="input-group">
-                                                    		<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                    		<span class="input-group-addon"> <i class="fa fa-medkit"></i></span>
 	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.chik" />" name="ssCK" id="ssCK" multiple style="width:100%" class="select2">
 																<option value=""></option>
 																<c:forEach items="${sintChik}" var="sint">
@@ -1021,7 +997,7 @@
 															</select>
 														</div>
                                             		</section>
-                                            		<section class="col col-3">
+                                            		<section id="sieshosp" hidden="hidden" class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.hosp.date" />
                                             			</label>
@@ -1058,7 +1034,7 @@
 															</select>
 														</div>
                                             		</section>
-                                            		<section class="col col-3">
+                                            		<section id="siesfallecido" hidden="hidden" class="col col-3">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.dead.date" />
                                             			</label>
@@ -1193,6 +1169,8 @@
 	<!-- bootstrap datepicker -->
 	<spring:url value="/resources/js/plugin/bootstrap-datepicker/bootstrap-datepicker.js" var="datepickerPlugin" />
 	<script src="${datepickerPlugin}"></script>
+	<spring:url value="/resources/js/plugin/jquery-inputmask/jquery.inputmask.bundle.min.js" var="jqueryInputMask" />
+	<script src="${jqueryInputMask}"></script>
 	<!-- END PAGE LEVEL PLUGINS -->
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
 	<spring:url value="/resources/scripts/utilidades/seleccionUnidad.js" var="selecUnidad" />
@@ -1201,6 +1179,8 @@
 	<script src="${enterFormSindFeb}"></script>
 	<spring:url value="/resources/scripts/utilidades/handleDatePickers.js" var="handleDatePickers" />
 	<script src="${handleDatePickers}"></script>
+	<spring:url value="/resources/scripts/utilidades/handleInputMask.js" var="handleInputMask" />
+	<script src="${handleInputMask}"></script>
 	<!-- script calcular edad -->
 	<spring:url value="/resources/scripts/utilidades/calcularEdad.js" var="calculateAge" />
 	<script src="${calculateAge}"></script>
@@ -1226,6 +1206,7 @@
 			EnterFormSindFeb.init(parametros);
 			SeleccionUnidad.init(parametros);
 			handleDatePickers("${pageContext.request.locale.language}");
+			handleInputMasks();
 	    	$("li.notificacion").addClass("open");
 	    	$("li.sindfeb").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){

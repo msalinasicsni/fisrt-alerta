@@ -40,7 +40,6 @@ import ni.gob.minsa.alerta.service.UnidadesService;
 import ni.gob.minsa.alerta.service.UsuarioService;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -53,6 +52,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
 
@@ -383,6 +383,123 @@ public class SindFebrilController {
     	sindFebrilService.saveSindFebril(daSindFeb);
     	return createJsonResponse(daSindFeb);
 	}
+    
+    /**
+     * Custom handler for voiding a notificacion.
+     *
+     * @param idPersona the ID of the chs to avoid
+     * @return a String
+     */
+    @RequestMapping("/delete/{idNotificacion}")
+    public String voidNoti(@PathVariable("idNotificacion") String idNotificacion, 
+    		RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    	String urlValidacion= "";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "redirect:/404";
+        }
+        if(urlValidacion.isEmpty()){
+	        DaSindFebril daSindFeb = sindFebrilService.getDaSindFebril(idNotificacion);
+	        if (daSindFeb!=null){
+	        	daSindFeb.getIdNotificacion().setPasivo(true);
+	        	sindFebrilService.saveSindFebril(daSindFeb);
+	        	return "redirect:/febriles/search/"+daSindFeb.getIdNotificacion().getPersona().getPersonaId();
+	        }
+	        else{
+	        	return "redirect:/404";
+	        }
+        }else{
+        	return "redirect:"+urlValidacion;
+        }
+    }
+    
+    /**
+     * Custom handler for create a new report.
+     *
+     * @param idPerson the ID of the person
+     * @return a ModelMap with the model attributes for the respective view
+	 * @throws Exception 
+     */
+    @RequestMapping("new/{idPerson}")
+    public ModelAndView newPersonReport(@PathVariable("idPerson") long idPerson, HttpServletRequest request) throws Exception {
+    	String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validaciÃ³n del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        ModelAndView mav = new ModelAndView();
+        if(urlValidacion.isEmpty()){
+        	SisPersona persona = personaService.getPersona(idPerson);
+        	if (persona!=null){
+	        	DaSindFebril daSindFeb = new DaSindFebril();
+	        	daSindFeb.setIdNotificacion(new DaNotificacion());
+	        	daSindFeb.getIdNotificacion().setPersona(persona);
+	        	List<EntidadesAdtvas> entidades = null;
+	        	long idUsuario = seguridadService.obtenerIdUsuario(request);
+                //Si es usuario a nivel central se cargan todas las unidades asociados al SILAIS y municipio
+                if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+                    entidades = entidadAdmonService.getAllEntidadesAdtvas();
+                }else {
+                    entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+                }
+	        	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+	        	List<Divisionpolitica> municipiosResi = null;
+        		List<Comunidades> comunidades = null;
+	        	if(daSindFeb.getIdNotificacion().getPersona().getMunicipioResidencia()!=null){
+	        		municipiosResi = divisionPoliticaService.getMunicipiosFromDepartamento(daSindFeb.getIdNotificacion().getPersona().getMunicipioResidencia().getDependencia().getCodigoNacional());
+	        		comunidades = comunidadesService.getComunidades(daSindFeb.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
+	        	}
+	        	List<Procedencia> catProcedencia = catalogoService.getProcedencia();
+	        	List<Ocupacion> ocupaciones = ocupacionService.getAllOcupaciones();
+	        	List<Respuesta> catResp =catalogoService.getRespuesta();
+	        	List<EnfCronicas> enfCronicas =catalogoService.getEnfCronicas();
+	        	List<EnfAgudas> enfAgudas =catalogoService.getEnfAgudas();
+	        	List<FuenteAgua> fuentesAgua =catalogoService.getFuenteAgua();
+	        	List<Animales> animales =catalogoService.getAnimales();
+	        	List<SintomasCHIK> sintChik =catalogoService.getSintomasCHIK();
+	        	List<SintomasDCSA> sintDcsa =catalogoService.getSintomasDCSA();
+	        	List<SintomasDGRA> sintDgra =catalogoService.getSintomasDGRA();
+	        	List<SintomasDSSA> sintDssa =catalogoService.getSintomasDSSA();
+	        	List<SintomasHANT> sintHant =catalogoService.getSintomasHANT();
+	        	List<SintomasLEPT> sintLept =catalogoService.getSintomasLEPT();
+	        	mav.addObject("daSindFeb", daSindFeb);
+	        	mav.addObject("entidades", entidades);
+	        	mav.addObject("departamentos", departamentos);
+	        	mav.addObject("municipiosResi", municipiosResi);
+	        	mav.addObject("comunidades", comunidades);
+	        	mav.addObject("catProcedencia", catProcedencia);
+	        	mav.addObject("ocupaciones", ocupaciones);
+	        	mav.addObject("catResp", catResp);
+	        	mav.addObject("enfCronicas", enfCronicas);
+	        	mav.addObject("enfAgudas", enfAgudas);
+	        	mav.addObject("fuentesAgua", fuentesAgua);
+	        	mav.addObject("animales", animales);
+	        	mav.addObject("sintChik", sintChik);
+	        	mav.addObject("sintDcsa", sintDcsa);
+	        	mav.addObject("sintDgra", sintDgra);
+	        	mav.addObject("sintDssa", sintDssa);
+	        	mav.addObject("sintHant", sintHant);
+	        	mav.addObject("sintLept", sintLept);
+	        	mav.setViewName("sindfeb/enterForm");
+        	}
+        	else{
+        		mav.setViewName("404");
+        	}
+        }else{
+            mav.setViewName(urlValidacion);
+        }
+        return mav;
+    }
     
     private ResponseEntity<String> createJsonResponse( Object o )
 	{

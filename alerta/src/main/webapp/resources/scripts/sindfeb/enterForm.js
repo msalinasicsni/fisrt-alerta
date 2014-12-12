@@ -7,6 +7,15 @@ var EnterFormSindFeb = function () {
         	//Formulario
         	var form = $('#sind_feb_form');
         	
+        	jQuery.validator.addMethod("noNingunoyOtro", function(value, select) { 
+            	var isValid = true;
+            	var number = $('option:selected', select).size();
+                if (number > 1 && select.options[select.options.length-1].selected) {
+                	isValid = false;
+                }
+                return isValid;
+	      	}, "Invalido");
+        	
         	//Validation
 	    	form.validate({
 				// Rules for form validation
@@ -21,6 +30,103 @@ var EnterFormSindFeb = function () {
 	                        required: true
 	                    },
 	                    fechaFicha:{
+	                    	required: true
+	                    },
+	                    codProcedencia:{
+	                    	required: true
+	                    },
+	                    viaje:{
+	                    	required: true
+	                    },
+	                    dondeViaje:{
+	                    	required: true
+	                    },
+	                    embarazo:{
+	                    	required: true
+	                    },
+	                    mesesEmbarazo:{
+	                    	required: true
+	                    },
+	                    enfCronica:{
+	                    	required: true,
+	                    	noNingunoyOtro:true
+	                    },
+	                    enfAgudaAdicional:{
+	                    	required: true,
+	                    	noNingunoyOtro:true
+	                    },
+	                    otraAgudaAdicional:{
+	                    	required: true
+	                    },
+	                    otraCronica:{
+	                    	required: true
+	                    },
+	                    fuenteAgua:{
+	                    	required: true,
+	                    },
+	                    otraFuenteAgua:{
+	                    	required: true
+	                    },
+	                    animales:{
+	                    	required: true,
+	                    	noNingunoyOtro:true
+	                    },
+	                    otrosAnimales:{
+	                    	required: true
+	                    },
+	                    fechaInicioSintomas:{
+	                    	required: true
+	                    }
+	                    ,
+	                    temperatura:{
+	                    	required: false,
+	                    	min:33,
+	                    	max:44
+	                    }
+	                    ,
+	                    pas:{
+	                    	required: false,
+	                    	min:20,
+	                    	max:200
+	                    },
+	                    pad:{
+	                    	required: false,
+	                    	min:10,
+	                    	max:180
+	                    },
+	                    ssDSA:{
+	                    	required: true
+	                    },
+	                    ssDCA:{
+	                    	required: true,
+	                    	noNingunoyOtro:true
+	                    },
+	                    ssDS:{
+	                    	required: true,
+	                    	noNingunoyOtro:true
+	                    },
+	                    ssLepto:{
+	                    	required: true,
+	                    	noNingunoyOtro:true
+	                    },
+	                    ssHV:{
+	                    	required: true,
+	                    	noNingunoyOtro:true
+	                    },
+	                    ssCK:{
+	                    	required: true,
+	                    	noNingunoyOtro:true
+	                    },
+	                    hosp:{
+	                    	required: true
+	                    },
+	                    fechaIngreso:{
+	                    	required: true
+	                    },
+	                    fallecido:{
+	                    	required: true
+	                    },
+	                    fechaFallecido:{
 	                    	required: true
 	                    }
 					},
@@ -78,13 +184,105 @@ var EnterFormSindFeb = function () {
 	    	
 	    	
 	    	$("#fechaNacimiento").change(
-	                function() {
-	                    if ($("#fechaNacimiento").val()!=null && $("#fechaNacimiento").val().length > 0) {
-	                        $("#edad").val(getAge($("#fechaNacimiento").val()));
-	                    }else{
-	                        $("#edad").val('');
-	                    }
-	                });
+	    			function() {
+	    				if ($("#fechaNacimiento").val()!=null && $("#fechaNacimiento").val().length > 0) {
+	    					$("#edad").val(getAge($("#fechaNacimiento").val()));
+	    				}else{
+	    					$("#edad").val('');
+	    				}
+	    			});
+	    	
+	    	$('#viaje').change(function () {
+	    		if ($('#viaje').val() != "") {
+	    			if ($('#viaje').val() == "RESP|S") {
+	    				$('#sihayviaje').fadeIn('slow');
+	    			} else {
+	    				$('#sihayviaje').fadeOut('slow');
+	    				$('#dondeViaje').val('');
+	    			}
+	    		}
+	    	});
+	    	
+	    	$('#embarazo').change(function () {
+	    		if ($('#embarazo').val() != "") {
+	    			if ($('#embarazo').val() == "RESP|S") {
+	    				$('#sihayemb').fadeIn('slow');
+	    			} else {
+	    				$('#sihayemb').fadeOut('slow');
+	    				$('#mesesEmbarazo').val(0);
+	    			}
+	    		}
+	    	});
+	    	
+	    	$('#enfCronica').change(function () {
+	    		if ($('#enfCronica').val() != null) {
+	    			var valor = $('#enfCronica').val().toString();
+	    			if (valor.indexOf("CRONICAS|OTRA")!=-1) {
+	    				$('#sihayotracronica').fadeIn('slow');
+	    			} else {
+	    				$('#sihayotracronica').fadeOut('slow');
+	    				$('#otraCronica').val('');
+	    			}
+	    		}
+	    	});
+	    	
+	    	$('#enfAgudaAdicional').change(function () {
+	    		if ($('#enfAgudaAdicional').val() != null) {
+	    			var valor = $('#enfAgudaAdicional').val().toString();
+	    			if (valor.indexOf("AGUDAS|OTRA")!=-1) {
+	    				$('#sihayotraaguda').fadeIn('slow');
+	    			} else {
+	    				$('#sihayotraaguda').fadeOut('slow');
+	    				$('#otraAgudaAdicional').val('');
+	    			}
+	    		}
+	    	});
+	    	
+	    	$('#fuenteAgua').change(function () {
+	    		if ($('#fuenteAgua').val() != null) {
+	    			var valor = $('#fuenteAgua').val().toString();
+	    			if (valor.indexOf("AGUA|OTRA")!=-1) {
+	    				$('#sihayotrafuente').fadeIn('slow');
+	    			} else {
+	    				$('#sihayotrafuente').fadeOut('slow');
+	    				$('#otraFuenteAgua').val('');
+	    			}
+	    		}
+	    	});
+	    	
+	    	$('#animales').change(function () {
+	    		if ($('#animales').val() != null) {
+	    			var valor = $('#animales').val().toString();
+	    			if (valor.indexOf("ANIM|OTRA")!=-1) {
+	    				$('#sihayotroanimal').fadeIn('slow');
+	    			} else {
+	    				$('#sihayotroanimal').fadeOut('slow');
+	    				$('#otrosAnimales').val('');
+	    			}
+	    		}
+	    	});
+	    	
+	    	$('#hosp').change(function () {
+	    		if ($('#hosp').val() != "") {
+	    			if ($('#hosp').val() == "RESP|S") {
+	    				$('#sieshosp').fadeIn('slow');
+	    			} else {
+	    				$('#sieshosp').fadeOut('slow');
+	    				$('#fechaIngreso').val('');
+	    			}
+	    		}
+	    	});
+	    	
+	    	$('#fallecido').change(function () {
+	    		if ($('#fallecido').val() != "") {
+	    			if ($('#fallecido').val() == "RESP|S") {
+	    				$('#siesfallecido').fadeIn('slow');
+	    			} else {
+	    				$('#siesfallecido').fadeOut('slow');
+	    				$('#fechaFallecido').val('');
+	    			}
+	    		}
+	    	});
         	
         }
 	};

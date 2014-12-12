@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "SIVE_PATOLOGIAS_VIG", schema = "ALERTA", uniqueConstraints = @UniqueConstraint(columnNames = "CODIGO"))
+@Table(name = "sive_patologias_vig", schema = "alerta", uniqueConstraints = @UniqueConstraint(columnNames = "CODIGO"))
 public class SivePatologias {
 	
 	private Integer id;

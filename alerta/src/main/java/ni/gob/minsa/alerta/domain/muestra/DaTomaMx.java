@@ -14,7 +14,7 @@ import java.sql.Time;
  * Created by souyen-ics on 11-05-14.
  */
 @Entity
-@Table(name = "DA_TOMAMX", schema = "ALERTA")
+@Table(name = "da_tomamx", schema = "alerta")
 public class DaTomaMx {
 
     private String idTomaMx;

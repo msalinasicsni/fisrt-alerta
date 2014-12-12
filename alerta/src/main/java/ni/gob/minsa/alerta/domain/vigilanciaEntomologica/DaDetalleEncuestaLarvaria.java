@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  * Created by MSalinas
  */
 @Entity
-@Table(name = "DA_DETALLE_ENCUESTA_LARVARIA", schema = "ALERTA")
+@Table(name = "da_detalle_encuesta_larvaria", schema = "alerta")
 public class DaDetalleEncuestaLarvaria {
     private String detaEncuestaId;
     private Comunidades localidad;
