@@ -105,11 +105,14 @@
 											<tr>
 
 												<th data-class="expand"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.register.date"/></th>
-												<th data-class="expand"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
-												<th data-class="expand"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
-												<th data-class="expand"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
-                                                <th></th>
-                                                <th></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name2"/></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
+                                                <th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
+                                                <th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.canceled"/></th>
+
+                                                <th> <spring:message code="act.edit" /> </th>
+                                                <th><spring:message code="act.override" /> </th>
 											</tr>
 										</thead>
 										<tbody>
@@ -118,8 +121,20 @@
 
 												<td><c:out value="${record.fechaRegistro}" /></td>
 												<td><c:out value="${record.persona.primerNombre}" /></td>
+                                                <td><c:out value="${record.persona.segundoNombre}" /></td>
 												<td><c:out value="${record.persona.primerApellido}" /></td>
 												<td><c:out value="${record.persona.segundoApellido}" /></td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${record.pasivo==true}">
+                                                            <spring:message code="lbl.yes" />
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <spring:message code="lbl.no" />
+                                                        </c:otherwise>
+                                                    </c:choose>
+
+                                                </td>
 												<spring:url value="/irag/edit/{idIrag}" var="editUrl">
 													<spring:param name="idIrag" value="${record.idNotificacion}" />
 												</spring:url>
@@ -129,8 +144,36 @@
                                                 <spring:url value="/irag/new/{personaId}" var="newUrl">
                                                     <spring:param name="personaId" value="${record.persona.personaId}" />
                                                 </spring:url>
-												<td><a href="${fn:escapeXml(editUrl)}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a></td>
-                                                <td><a href="${fn:escapeXml(overrideUrl)}" class="btn btn-default btn-xs  btn-danger"><i class="fa fa-times"></i></a></td>
+												<td>
+                                                    <c:choose>
+                                                    <c:when test="${record.pasivo==true}">
+                                                        <button class="btn btn-xs" disabled>
+                                                            <i class="fa fa-edit fa-fw"></i>
+                                                        </button>
+
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                    <a href="${fn:escapeXml(editUrl)}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+
+                                                </c:otherwise>
+                                                </c:choose>
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${record.pasivo==true}">
+                                                           <button class="btn btn-xs btn-danger override" disabled>
+                                                               <i class="fa fa-times fa-fw"></i>
+                                                           </button>
+
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <a data-toggle="modal" data-id= "${fn:escapeXml(overrideUrl)}" class="btn btn-xs btn-danger override"><i class="fa fa-times fa-fw"></i></a>
+
+                                                        </c:otherwise>
+                                                    </c:choose>
+
+
+                                                </td>
 
                                             </tr>
 										</c:forEach>
@@ -151,7 +194,37 @@
 
 						</div>
 						<!-- end widget -->
-					</article>
+
+                        <div class="modal fade" id="d_confirmacion"  role="dialog" tabindex="-1" data-aria-hidden="true">
+                            <c:set var="questionOverride"><spring:message code="lbl.question.override" /></c:set>
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header alert-warning">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                            &times;
+                                        </button>
+                                        <h4 class="modal-title fa fa-warning"> <spring:message code="msg.sending.confirm.title" /></h4>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <form method="{method}">
+                                            <input type=hidden id="overrideUrl"/>
+                                            <div id="cuerpo"></div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="act.cancel" /></button>
+                                        <button type="button" class="btn btn-info" onclick="override()"><spring:message code="act.accept" /></button>
+                                    </div>
+
+                                </div>
+
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+
+                    </article>
 					<!-- WIDGET END -->
 				</div>
 				<!-- end row -->
@@ -213,6 +286,19 @@
                 responsiveHelper_dt_basic.respond();
             }
         });
+
+        $(".override").click(function(){
+            $('#overrideUrl').val($(this).data('id'));
+            $('#cuerpo').html('<h4 class="modal-title">'+ "${questionOverride}"+'</h4>');
+            $('#d_confirmacion').modal('show');
+        });
+
+        function override() {
+
+            window.location.href = $('#overrideUrl').val();
+
+        }
+
 	</script>
 	<!-- END JAVASCRIPTS -->
 </body>

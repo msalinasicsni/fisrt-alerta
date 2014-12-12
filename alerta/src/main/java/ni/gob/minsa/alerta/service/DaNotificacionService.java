@@ -120,4 +120,21 @@ public class DaNotificacionService {
                     .list();
         }
     }
+
+
+    public void updateNotificacion(DaNotificacion dto) throws Exception {
+        try {
+            if (dto != null) {
+                Session session = sessionFactory.getCurrentSession();
+                session.update(dto);
+            }
+            else
+                throw new Exception("Objeto DaNotificacion es NULL");
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+
 }
