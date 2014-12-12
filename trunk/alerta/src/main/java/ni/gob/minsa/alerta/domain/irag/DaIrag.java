@@ -18,7 +18,7 @@ import java.util.Date;
  * Created by souyen-ics
  */
 @Entity
-@Table(name = "DA_IRAG", schema = "ALERTA")
+@Table(name = "da_irag", schema = "alerta")
 public class DaIrag implements Serializable {
 
     private static final long serialVersionUID = 4700369684537438371L;
