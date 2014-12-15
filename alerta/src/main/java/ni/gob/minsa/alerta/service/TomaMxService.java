@@ -1,7 +1,6 @@
 package ni.gob.minsa.alerta.service;
 
-import ni.gob.minsa.alerta.domain.muestra.CatalogoExamenes;
-import ni.gob.minsa.alerta.domain.muestra.DaEnvioOrden;
+import ni.gob.minsa.alerta.domain.examen.CatalogoExamenes;
 import ni.gob.minsa.alerta.domain.muestra.DaOrdenExamen;
 import ni.gob.minsa.alerta.domain.muestra.DaTomaMx;
 import org.hibernate.Query;

@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.domain.muestra;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
+import ni.gob.minsa.alerta.domain.examen.CatalogoExamenes;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;

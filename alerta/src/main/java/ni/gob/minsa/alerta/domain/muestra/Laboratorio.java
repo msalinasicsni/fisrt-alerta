@@ -16,8 +16,6 @@ public class Laboratorio {
 
     String codigo;
     String nombre;
-    String deptosAsociados;
-    TipoNotificacion tipoNotificacion;
 
     @Id
     @Column(name = "CODIGO", nullable = false, insertable = true, updatable = true, length = 10)

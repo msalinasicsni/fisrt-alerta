@@ -196,8 +196,8 @@ public class EnvioOrdenExamenMxController {
             map.put("codUnidadSalud",orden.getIdTomaMx().getIdNotificacion().getCodUnidadAtencion().getNombre());
             map.put("estadoOrden",orden.getCodEstado().getValor());
             map.put("separadaMx",(orden.getIdTomaMx().getMxSeparada()!=null?(orden.getIdTomaMx().getMxSeparada()?"Si":"No"):""));
-            map.put("tipoMuestra",orden.getIdTomaMx().getCodTipoMx().getValor());
-            map.put("tipoExamen",orden.getCodExamen().getCodExamen().getValor());
+            map.put("tipoMuestra",orden.getIdTomaMx().getCodTipoMx().getNombre());
+            map.put("tipoExamen",orden.getCodExamen().getNombre());
             //Si hay fecha de inicio de sintomas se muestra
             Date fechaInicioSintomas = envioOrdenExamenMxService.getFechaInicioSintomas(orden.getIdTomaMx().getIdNotificacion().getIdNotificacion());
             if (fechaInicioSintomas!=null)
