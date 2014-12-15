@@ -1,8 +1,6 @@
 package ni.gob.minsa.alerta.domain.muestra;
 
-import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.examen.CatalogoExamenes;
-import ni.gob.minsa.alerta.domain.notificacion.TipoNotificacion;
 import org.hibernate.annotations.ForeignKey;
 
 import javax.persistence.*;
