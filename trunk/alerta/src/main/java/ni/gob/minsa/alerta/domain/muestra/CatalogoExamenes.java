@@ -2,6 +2,8 @@ package ni.gob.minsa.alerta.domain.muestra;
 
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
+import ni.gob.minsa.alerta.domain.examen.Area;
+import ni.gob.minsa.alerta.domain.muestra.NombreExamenes;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 
@@ -16,17 +18,12 @@ import java.sql.Timestamp;
 public class CatalogoExamenes {
 
     private Integer idExamen;
-    private String direccion;
-    private String departamento;
-    private String area;
-    private String codTipoMx;
-    private NombreExamenes codExamen;
+    private String nombre;
     private Float precio;
     private boolean pasivo;
-    private String tipoNotificacion;
     private Timestamp fechaRegistro;
     private Usuarios usuarioRegistro;
-
+    private Area area;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,55 +37,13 @@ public class CatalogoExamenes {
     }
 
     @Basic
-    @Column(name = "DIRECCION", nullable = false, insertable = true, updatable = true, length = 100)
-    public String getDireccion() {
-        return direccion;
+    @Column(name = "NOMBRE", nullable = false, insertable = true, updatable = true, length = 100)
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    @Basic
-    @Column(name = "DEPARTAMENTO", nullable = false, insertable = true, updatable = true, length = 100)
-    public String getDepartamento() {
-        return departamento;
-    }
-
-    public void setDepartamento(String departamento) {
-        this.departamento = departamento;
-    }
-
-    @Basic
-    @Column(name = "AREA", nullable = false, insertable = true, updatable = true, length = 100)
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-
-    @Basic
-    @Column(name = "COD_TIPOMX", nullable = false, insertable = true, updatable = true, length = 100)
-    public String getCodTipoMx() {
-        return codTipoMx;
-    }
-
-    public void setCodTipoMx(String codTipoMx) {
-        this.codTipoMx = codTipoMx;
-    }
-
-    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="COD_EXAMEN", referencedColumnName = "CODIGO")
-    @ForeignKey(name = "COD_EXA_FK")
-    public NombreExamenes getCodExamen() {
-        return codExamen;
-    }
-
-    public void setCodExamen(NombreExamenes codExamen) {
-        this.codExamen = codExamen;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     @Column(name = "PRECIO", nullable = true)
@@ -111,17 +66,6 @@ public class CatalogoExamenes {
     }
 
     @Basic
-    @Column(name = "TIPO_NOTIFICACION", nullable = false, insertable = true, updatable = true)
-    public String getTipoNotificacion() {
-        return tipoNotificacion;
-    }
-
-    public void setTipoNotificacion(String tipoNotificacion) {
-        this.tipoNotificacion = tipoNotificacion;
-    }
-
-
-    @Basic
     @Column(name = "FECHA_REGISTRO", nullable = false, insertable = true, updatable = true)
     public Timestamp getFechaRegistro() {
         return fechaRegistro;
@@ -141,5 +85,16 @@ public class CatalogoExamenes {
 
     public void setUsuarioRegistro(Usuarios usuarioRegistro) {
         this.usuarioRegistro = usuarioRegistro;
+    }
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name="ID_AREA", referencedColumnName = "ID_AREA", nullable = false)
+    @ForeignKey(name = "EXAM_AREA_FK")
+    public Area getArea() {
+        return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
     }
 }
