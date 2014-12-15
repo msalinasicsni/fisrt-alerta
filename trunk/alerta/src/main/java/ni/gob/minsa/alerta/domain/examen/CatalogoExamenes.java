@@ -1,4 +1,4 @@
-package ni.gob.minsa.alerta.domain.muestra;
+package ni.gob.minsa.alerta.domain.examen;
 
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
