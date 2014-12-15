@@ -1,13 +1,11 @@
 package ni.gob.minsa.alerta.web.controllers;
 
 import com.google.gson.Gson;
-import ni.gob.minsa.alerta.domain.irag.DaIrag;
-import ni.gob.minsa.alerta.domain.muestra.CatalogoExamenes;
+import ni.gob.minsa.alerta.domain.examen.CatalogoExamenes;
 import ni.gob.minsa.alerta.domain.muestra.DaOrdenExamen;
 import ni.gob.minsa.alerta.domain.muestra.DaTomaMx;
 import ni.gob.minsa.alerta.domain.muestra.TipoMx;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.DaSindFebril;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import org.hibernate.SessionFactory;
@@ -21,16 +19,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

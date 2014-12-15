@@ -56,8 +56,8 @@ public class DaTomaMx {
         this.idNotificacion = idNotificacion;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Catalogo.class, optional = false)
-    @JoinColumn(name = "COD_TIPOMX", referencedColumnName = "CODIGO", nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "COD_TIPOMX", referencedColumnName = "ID_TIPOMX", nullable = false)
     @ForeignKey(name = "COD_TIPOMX_FK")
     public TipoMx getCodTipoMx() {
         return codTipoMx;
