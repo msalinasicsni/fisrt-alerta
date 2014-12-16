@@ -1,8 +1,7 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.examen.CatalogoExamenes;
-import ni.gob.minsa.alerta.domain.muestra.DaOrdenExamen;
-import ni.gob.minsa.alerta.domain.muestra.DaTomaMx;
+import ni.gob.minsa.alerta.domain.muestra.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -53,11 +52,11 @@ public class TomaMxService {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public List<CatalogoExamenes> getExamenes(String codMx, String tipoNoti) throws Exception {
-        String query = "select ca from CatalogoExamenes as ca where ca.tipoNotificacion = :tipoNoti and ca.codTipoMx like :codMx" ;
+    public List<Examen_TipoMxTipoNoti> getExamenes(String codMx, String tipoNoti) throws Exception {
+        String query = "select ex from Examen_TipoMxTipoNoti ex where ex.tipoMxTipoNotificacion.tipoMx.idTipoMx = :codMx and ex.tipoMxTipoNotificacion.tipoNotificacion.codigo = :tipoNoti" ;
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
-         q.setString("codMx", "%" +codMx + "%");
+         q.setString("codMx", codMx);
         q.setString("tipoNoti", tipoNoti);
         return q.list();
     }
@@ -112,6 +111,30 @@ public class TomaMxService {
         Query q = session.createQuery(query);
         q.setString("id", id);
         return (DaTomaMx)q.uniqueResult();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<TipoMx_TipoNotificacion> getTipoMxByTipoNoti(String codigo){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoMx_TipoNotificacion tmx where tmx.tipoNotificacion = :codigo");
+        query.setString("codigo", codigo);
+        //retrieve all
+        return query.list();
+
+    }
+
+    /**
+     * Retorna tipoMx
+     * @param id
+     */
+    public TipoMx getTipoMxById(String id){
+        String query = "from TipoMx where idTipoMx = :id";
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("id", id);
+        return (TipoMx)q.uniqueResult();
     }
 
 }
