@@ -106,7 +106,7 @@ public class EnvioOrdenExamenMxService {
         // se filtra por tipo de muestra
         if (filtro.getCodTipoMx()!=null){
             crit.add( Restrictions.and(
-                            Restrictions.eq("tomaMx.codTipoMx.codigo", filtro.getCodTipoMx()).ignoreCase())
+                            Restrictions.eq("tomaMx.codTipoMx.idTipoMx", Integer.valueOf(filtro.getCodTipoMx())))
             );
         }
 
