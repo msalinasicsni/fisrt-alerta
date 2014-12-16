@@ -13,18 +13,18 @@ import javax.persistence.*;
 @Table(name = "tipo_muestra", schema = "alerta")
     public class TipoMx {
 
-    int idTipoMx;
+    Integer idTipoMx;
     String nombre;
     boolean pasivo;
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "ID_TIPOMX", nullable = false, insertable = true, updatable = true)
-    public int getIdTipoMx() {
+    public Integer getIdTipoMx() {
         return idTipoMx;
     }
 
-    public void setIdTipoMx(int idTipoMx) {
+    public void setIdTipoMx(Integer idTipoMx) {
         this.idTipoMx = idTipoMx;
     }
 

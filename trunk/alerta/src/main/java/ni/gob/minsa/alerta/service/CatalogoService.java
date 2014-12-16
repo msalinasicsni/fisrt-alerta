@@ -312,7 +312,7 @@ public class CatalogoService {
         //Retrieve session Hibernate
         Session session = sessionFactory.getCurrentSession();
         //Create a hibernate query (HQL)
-        Query query = session.createQuery("FROM TipoMx tpmx where tpmx.pasivo = false order by nombre");
+        Query query = session.createQuery("select distinct tpmx.tipoMx FROM TipoMx_TipoNotificacion tpmx where tpmx.pasivo = false order by tpmx.tipoMx.nombre");
         //retrieve all
         return query.list();
 
