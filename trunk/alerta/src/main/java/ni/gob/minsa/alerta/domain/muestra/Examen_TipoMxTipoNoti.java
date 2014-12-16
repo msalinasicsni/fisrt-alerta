@@ -9,22 +9,22 @@ import javax.persistence.*;
  * Created by FIRSTICT on 12/15/2014.
  */
 @Entity
-@Table(name = "examen_tipomx", schema = "alerta",uniqueConstraints=@UniqueConstraint(columnNames={"ID_EXAMEN", "ID_TIPOMX"}))
-public class Examen_TipoMx {
-    Integer idExamenTipoMx;
+@Table(name = "examen_tipomx_tiponoti", schema = "alerta",uniqueConstraints=@UniqueConstraint(columnNames={"ID_EXAMEN", "ID_TIPOMX_NOTIFI"}))
+public class Examen_TipoMxTipoNoti {
+    Integer idExamenTipoMxNt;
     CatalogoExamenes examen;
-    TipoMx tipoMx;
+    TipoMx_TipoNotificacion tipoMxTipoNotificacion;
     boolean pasivo;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID_EXAMEN_TIPOMX", nullable = false, updatable = true, insertable = true, precision = 0)
-    public Integer getIdExamenTipoMx() {
-        return idExamenTipoMx;
+    @Column(name = "ID_EXAMEN_TIPOMXNT", nullable = false, updatable = true, insertable = true, precision = 0)
+    public Integer getIdExamenTipoMxNt() {
+        return idExamenTipoMxNt;
     }
 
-    public void setIdExamenTipoMx(Integer idExamenTipoMx) {
-        this.idExamenTipoMx = idExamenTipoMx;
+    public void setIdExamenTipoMxNt(Integer idExamenTipoMxNt) {
+        this.idExamenTipoMxNt = idExamenTipoMxNt;
     }
 
     @ManyToOne(optional = false)
@@ -39,14 +39,14 @@ public class Examen_TipoMx {
     }
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="ID_TIPOMX", referencedColumnName = "ID_TIPOMX", nullable = false)
-    @ForeignKey(name = "EXTMX_TIPOMX_FK")
-    public TipoMx getTipoMx() {
-        return tipoMx;
+    @JoinColumn(name="ID_TIPOMX_NOTIFI", referencedColumnName = "ID_TIPOMX_NOTIFI", nullable = false)
+    @ForeignKey(name = "EXTMX_TIPOMXTIPONOTI_FK")
+    public TipoMx_TipoNotificacion getTipoMxTipoNotificacion() {
+        return tipoMxTipoNotificacion;
     }
 
-    public void setTipoMx(TipoMx tipoMx) {
-        this.tipoMx = tipoMx;
+    public void setTipoMxTipoNotificacion(TipoMx_TipoNotificacion tipoMx) {
+        this.tipoMxTipoNotificacion = tipoMx;
     }
 
     @Basic
