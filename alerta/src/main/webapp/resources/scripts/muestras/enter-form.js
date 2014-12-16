@@ -26,8 +26,8 @@ var EnterFormTomaMx = function () {
                     var len = data.length;
                     var html = null;
                     for (var i = 0; i < len; i++) {
-                       html += '<option value="' + data[i].idExamen + '">'
-                            + data[i].codExamen.valor
+                       html += '<option value="' + data[i].examen.idExamen + '">'
+                            + data[i].examen.nombre
                             + '</option>';
                     }
 

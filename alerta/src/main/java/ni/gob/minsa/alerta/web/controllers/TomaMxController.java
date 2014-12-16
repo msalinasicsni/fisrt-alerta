@@ -2,9 +2,7 @@ package ni.gob.minsa.alerta.web.controllers;
 
 import com.google.gson.Gson;
 import ni.gob.minsa.alerta.domain.examen.CatalogoExamenes;
-import ni.gob.minsa.alerta.domain.muestra.DaOrdenExamen;
-import ni.gob.minsa.alerta.domain.muestra.DaTomaMx;
-import ni.gob.minsa.alerta.domain.muestra.TipoMx;
+import ni.gob.minsa.alerta.domain.muestra.*;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
@@ -63,8 +61,8 @@ public class TomaMxController {
 
 
     Map<String, Object> mapModel;
-    List<TipoMx> catTipoMx;
-    List <CatalogoExamenes> catExamenes;
+    List<TipoMx_TipoNotificacion> catTipoMx;
+
 
 
     @RequestMapping(value = "search", method = RequestMethod.GET)
@@ -129,14 +127,14 @@ public class TomaMxController {
             DaNotificacion noti = daNotificacionService.getNotifById(idNotificacion);
             if (noti != null) {
 
-                catTipoMx = catalogoService.getTipoMuestra();
-                catExamenes = tomaMxService.getCatalogoExamenes();
+                catTipoMx = tomaMxService.getTipoMxByTipoNoti(noti.getCodTipoNotificacion().getCodigo());
+
 
                 mav.addObject("noti", noti);
+
                 mav.addObject("tomaMx", tomaMx);
                 mav.addObject("autorizado", autorizado);
                 mav.addObject("catTipoMx", catTipoMx);
-                mav.addObject("catExamenes", catExamenes);
                 mav.addAllObjects(mapModel);
                 mav.setViewName("tomaMx/enterForm");
             } else {
@@ -157,21 +155,19 @@ public class TomaMxController {
     @RequestMapping(value = "examenesByMuestra", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    List<CatalogoExamenes> getTestBySample(@RequestParam(value = "codMx", required = true) String codMx,
-                                           @RequestParam(value = "tipoNoti", required = true) String tipoNoti
-                                           ) throws Exception {
+    List<Examen_TipoMxTipoNoti> getTestBySample(@RequestParam(value = "codMx", required = true) String codMx, @RequestParam(value = "tipoNoti", required = true) String tipoNoti) throws Exception {
         logger.info("Obteniendo los examenes segun muestra en JSON");
 
-        List<CatalogoExamenes> examenes = tomaMxService.getExamenes(codMx, tipoNoti);
+        List<Examen_TipoMxTipoNoti> examenes = tomaMxService.getExamenes(codMx, tipoNoti);
         return examenes;
 
     }
 
     @RequestMapping(value = "/saveToma", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveTomaMx(HttpServletRequest request,
-              @RequestParam(value = "examenes", required = true) String examenes
-            , @RequestParam(value = "fechaHTomaMx", required = true) String fechaHTomaMx
-            , @RequestParam(value = "codTipoMx", required = true) String codTipoMx
+              @RequestParam(value = "examenes", required = false) String examenes
+            , @RequestParam(value = "fechaHTomaMx", required = false) String fechaHTomaMx
+            , @RequestParam(value = "codTipoMx", required = false) String codTipoMx
             , @RequestParam(value = "canTubos", required = false) Integer canTubos
             , @RequestParam(value = "volumen", required = false) String volumen
             , @RequestParam(value = "horaRefrigeracion", required = false) String horaRefrigeracion
@@ -189,7 +185,7 @@ public class TomaMxController {
             tomaMx.setFechaHTomaMx(StringToTimestamp(fechaHTomaMx));
         }
 
-        tomaMx.setCodTipoMx(catalogoService.getTipoMuestra(codTipoMx));
+        tomaMx.setCodTipoMx(tomaMxService.getTipoMxById(codTipoMx));
         tomaMx.setCanTubos(canTubos);
 
         if(volumen != null && !volumen.equals("")){

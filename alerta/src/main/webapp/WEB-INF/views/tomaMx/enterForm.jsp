@@ -122,7 +122,7 @@
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-location-arrow"></i></span>
                                                 <label class="input">
-                                                    <input style="background-color: #f0fff0" disabled="true" class="form-control" value="${noti.codSilaisAtencion.nombre}" type="text"   />
+                                                    <input style="background-color: #f0fff0" disabled class="form-control" value="${noti.codSilaisAtencion.nombre}" type="text"   />
                                                 </label>
                                                 <span class="input-group-addon"><i class="fa fa-chevron-down fa-fw"></i></span>
                                             </div>
@@ -136,7 +136,7 @@
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-location-arrow"></i></span>
                                                 <label class="input">
-                                                    <input style="background-color: #f0fff0" disabled="true" class="form-control" type="text" value="${noti.codUnidadAtencion.nombre}"   />
+                                                    <input style="background-color: #f0fff0" disabled class="form-control" type="text" value="${noti.codUnidadAtencion.nombre}"   />
                                                 </label>
                                                 <span class="input-group-addon"><i class="fa fa-chevron-down fa-fw"></i></span>
                                             </div>
@@ -311,7 +311,7 @@
 
                                                 <form:select name="codTipoMx" id="codTipoMx" data-placeholder="${selectTMx} " cssClass="select2" path="codTipoMx">
                                                     <option value=""></option>
-                                                    <form:options items="${catTipoMx}" itemValue="codigo" itemLabel="valor"/>
+                                                    <form:options items="${catTipoMx}" itemValue="tipoMx.idTipoMx" itemLabel="tipoMx.nombre"/>
                                                 </form:select>
 
                                             </div>
@@ -334,16 +334,6 @@
                                                 <span class="input-group-addon"> <i class="fa fa-file-text-o"></i></span>
                                                 <form:select name="examenes" placeholder="${selectTests}" path="examenes" id="examenes" multiple="true" style="width:100%" class="select2">
 
-                                                    <c:forEach items="${catExamenes}" var="exams">
-                                                        <c:choose>
-                                                            <c:when test="${fn:contains(tomaMx.examenes, exams.idExamen)}">
-                                                                <option selected value="${exams.idExamen}">${exams.codExamen.valor}</option>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                <option value="${exams.idExamen}">${exams.codExamen.valor}</option>
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </c:forEach>
                                                 </form:select>
                                             </div>
                                         </section>
