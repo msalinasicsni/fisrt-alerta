@@ -5,10 +5,8 @@ import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.sql.Time;
 
 /**
  * Created by souyen-ics on 11-05-14.

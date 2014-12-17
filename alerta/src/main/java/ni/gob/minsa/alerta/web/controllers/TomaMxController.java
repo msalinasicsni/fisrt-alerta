@@ -96,9 +96,8 @@ public class TomaMxController {
     public @ResponseBody
     List<DaNotificacion> personasJson(@RequestParam(value = "strFilter", required = true) String filtro) {
         logger.info("Obteniendo las notificaciones en JSON");
-        List<DaNotificacion> notices = daNotificacionService.getNoticesByPerson(filtro);
 
-        return notices;
+        return daNotificacionService.getNoticesByPerson(filtro);
     }
 
     /**
@@ -110,7 +109,6 @@ public class TomaMxController {
     @RequestMapping("create/{idNotificacion}")
     public ModelAndView createTomaMx(@PathVariable("idNotificacion") String idNotificacion, HttpServletRequest request) throws Exception {
         String urlValidacion="";
-        boolean autorizado = false;
         try {
             urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
@@ -123,17 +121,16 @@ public class TomaMxController {
 
         ModelAndView mav = new ModelAndView();
         if (urlValidacion.isEmpty()) {
+
+            //registros anteriores de toma Mx
             DaTomaMx tomaMx = new DaTomaMx();
             DaNotificacion noti = daNotificacionService.getNotifById(idNotificacion);
-            if (noti != null) {
 
+            if (noti != null) {
                 catTipoMx = tomaMxService.getTipoMxByTipoNoti(noti.getCodTipoNotificacion().getCodigo());
 
-
                 mav.addObject("noti", noti);
-
                 mav.addObject("tomaMx", tomaMx);
-                mav.addObject("autorizado", autorizado);
                 mav.addObject("catTipoMx", catTipoMx);
                 mav.addAllObjects(mapModel);
                 mav.setViewName("tomaMx/enterForm");
@@ -158,8 +155,18 @@ public class TomaMxController {
     List<Examen_TipoMxTipoNoti> getTestBySample(@RequestParam(value = "codMx", required = true) String codMx, @RequestParam(value = "tipoNoti", required = true) String tipoNoti) throws Exception {
         logger.info("Obteniendo los examenes segun muestra en JSON");
 
-        List<Examen_TipoMxTipoNoti> examenes = tomaMxService.getExamenes(codMx, tipoNoti);
-        return examenes;
+        return tomaMxService.getExamenes(codMx, tipoNoti);
+
+    }
+
+
+    @RequestMapping(value = "tomaMxByIdNoti", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    List<DaTomaMx> getTestBySample(@RequestParam(value = "idNotificacion", required = true) String idNotificacion) throws Exception {
+        logger.info("Realizando búsqueda de Toma de Mx.");
+
+        return tomaMxService.getTomaMxByIdNoti(idNotificacion);
 
     }
 
@@ -215,16 +222,15 @@ public class TomaMxController {
     private void saveOrder(String idTomaMx, String examenes, HttpServletRequest request) throws Exception {
 
         DaOrdenExamen orden = new DaOrdenExamen();
-        String exa = examenes;
-        String[] arrayExa = exa.split(",");
+        String[] arrayExa = examenes.split(",");
 
-        for (int i = 0; i < arrayExa.length; i++) {
-           orden.setCodEstado(catalogoService.getEstadoOrdenEx("ESTORDEN|PEND"));
-           orden.setCodExamen(tomaMxService.getExamById(arrayExa[i]));
-           orden.setFechaHOrden(new Timestamp(new Date().getTime()));
-           long idUsuario = seguridadService.obtenerIdUsuario(request);
-           orden.setUsarioRegistro(usuarioService.getUsuarioById((int) idUsuario));
-           orden.setIdTomaMx(tomaMxService.getTomaMxById(idTomaMx));
+        for (String anArrayExa : arrayExa) {
+            orden.setCodEstado(catalogoService.getEstadoOrdenEx("ESTORDEN|PEND"));
+            orden.setCodExamen(tomaMxService.getExamById(anArrayExa));
+            orden.setFechaHOrden(new Timestamp(new Date().getTime()));
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            orden.setUsarioRegistro(usuarioService.getUsuarioById((int) idUsuario));
+            orden.setIdTomaMx(tomaMxService.getTomaMxById(idTomaMx));
 
             tomaMxService.addOrdenExamen(orden);
         }
@@ -236,8 +242,7 @@ public class TomaMxController {
     private Timestamp StringToTimestamp(String fechah) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
         java.util.Date date = sdf.parse(fechah);
-        java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
-        return timestamp;
+        return new Timestamp(date.getTime());
     }
 
     private ResponseEntity<String> createJsonResponse(Object o) {
@@ -245,7 +250,7 @@ public class TomaMxController {
         headers.set("Content-Type", "application/json");
         Gson gson = new Gson();
         String json = gson.toJson(o);
-        return new ResponseEntity<String>(json, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(json, headers, HttpStatus.CREATED);
     }
 
 

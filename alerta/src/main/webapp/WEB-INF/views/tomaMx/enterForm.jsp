@@ -106,6 +106,7 @@
                                 <form:form modelAttribute="noti" id="noti" class="smart-form" >
                                 <fieldset >
                                     <legend class="text-left txt-color-blue font-md"> <spring:message code="lbl.notification.data"/>
+                                        ${noti.codTipoNotificacion.valor}
                                    </legend>
 
 

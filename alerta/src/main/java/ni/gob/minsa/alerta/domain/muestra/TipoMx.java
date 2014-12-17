@@ -1,8 +1,5 @@
 package ni.gob.minsa.alerta.domain.muestra;
 
-import ni.gob.minsa.alerta.domain.estructura.Catalogo;
-import org.hibernate.annotations.NamedQueries;
-
 import javax.persistence.*;
 
 /**

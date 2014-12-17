@@ -1,7 +1,5 @@
 package ni.gob.minsa.alerta.service;
 
-import ni.gob.minsa.alerta.domain.irag.DaIrag;
-import ni.gob.minsa.alerta.domain.irag.DaVacunasIrag;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import org.apache.commons.codec.language.Soundex;
 import org.hibernate.Criteria;
@@ -51,8 +49,7 @@ public class DaNotificacionService {
         Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery("FROM DaNotificacion noti where noti.idNotificacion = '" + idNotificacion + "'");
-        DaNotificacion notif = (DaNotificacion) query.uniqueResult();
-        return  notif;
+        return (DaNotificacion) query.uniqueResult();
 
     }
 

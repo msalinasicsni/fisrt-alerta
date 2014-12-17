@@ -314,7 +314,7 @@
 <!-- END PAGE LEVEL PLUGINS -->
 
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<spring:url value="/resources/scripts/encuestas/survey-search.js" var="surveySearch" />
+<spring:url value="/resources/scripts/encuestas/survey-search-notices.js" var="surveySearch" />
 <script src="${surveySearch}"></script>
 <spring:url value="/resources/scripts/utilidades/handleInputMask.js" var="handleInputMask" />
 <script src="${handleInputMask}"></script>

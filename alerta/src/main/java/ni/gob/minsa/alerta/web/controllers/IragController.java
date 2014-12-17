@@ -137,7 +137,7 @@ public class IragController {
             catCie10Irag = cie10Service.getCie10Irag("J458,J459");
 
 
-            mapModel = new HashMap<String, Object>();
+            mapModel = new HashMap<>();
 
             mapModel.put("catProcedencia", catProcedencia);
             mapModel.put("catClasif", catClasif);
@@ -358,7 +358,7 @@ public class IragController {
                     List<Unidades> uni = unidadesService.getPUnitsHospByMuniAndSilais(municipio.getCodigoNacional(), HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), irag.getIdNotificacion().getCodSilaisAtencion().getCodigo());
 
                     //datos persona
-                    Divisionpolitica departamentoProce = null;
+                    Divisionpolitica departamentoProce;
                     List<Divisionpolitica> municipiosResi = null;
                     List<Comunidades> comunidades = null;
 
@@ -673,7 +673,7 @@ public class IragController {
         headers.set("Content-Type", "application/json");
         Gson gson = new Gson();
         String json = gson.toJson(o);
-        return new ResponseEntity<String>(json, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(json, headers, HttpStatus.CREATED);
     }
 
     /**
@@ -686,7 +686,7 @@ public class IragController {
     public ModelAndView overrideForm(@PathVariable("idNotificacion") String idNotificacion, HttpServletRequest request) throws Exception {
         DaIrag irag = null;
         DaNotificacion noti = null;
-        Long personaId = null;
+
         if (idNotificacion != null) {
             irag = daIragService.getFormById(idNotificacion);
 
@@ -695,9 +695,9 @@ public class IragController {
             noti.setPasivo(true);
             noti.setFechaAnulacion(new Timestamp(new Date().getTime()));
             daNotificacionService.updateNotificacion(noti);
-            personaId = irag.getIdNotificacion().getPersona().getPersonaId();
+
         }
-        return showPersonReport(personaId, request);
+        return showPersonReport(noti != null ? noti.getPersona().getPersonaId() : 0, request);
     }
 
     @RequestMapping(value = "newVaccine", method = RequestMethod.GET, produces = "application/json")
@@ -708,7 +708,7 @@ public class IragController {
                                                          @RequestParam(value = "idNotificacion", required = false) String idNotificacion,
                                                          ModelMap model, HttpServletRequest request) throws Exception {
 
-        String error = null;
+        String error;
         DaVacunasIrag vacunas = new DaVacunasIrag();
 
         if (idNotificacion != null) {
@@ -784,20 +784,6 @@ public class IragController {
        return editIrag(idNotificacion, request);
     }
 
-
-    /**
-     * Convierte un Date a string con formato dd/MM/yyyy
-     *
-     * @param dtFecha fecha a convertir
-     * @return String
-     * @throws java.text.ParseException
-     */
-    private String DateToString(Date dtFecha) throws ParseException {
-        String date;
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-        date = DATE_FORMAT.format(dtFecha);
-        return date;
-    }
 
     private Date StringToDate(String strFecha) throws ParseException {
         DateFormat formatter;

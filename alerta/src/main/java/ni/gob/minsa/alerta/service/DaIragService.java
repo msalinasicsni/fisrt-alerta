@@ -1,11 +1,9 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.irag.DaIrag;
-import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import org.hibernate.Query;
-import org.hibernate.SessionFactory;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -49,8 +47,7 @@ public class DaIragService {
         Session session = sessionFactory.getCurrentSession();
 
         Query query = session.createQuery("FROM DaIrag vi where vi.idNotificacion = '" + id + "'");
-        DaIrag fichaVI = (DaIrag) query.uniqueResult();
-        return  fichaVI;
+        return (DaIrag) query.uniqueResult();
 
     }
 
