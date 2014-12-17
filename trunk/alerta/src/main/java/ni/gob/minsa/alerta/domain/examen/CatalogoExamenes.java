@@ -1,9 +1,6 @@
 package ni.gob.minsa.alerta.domain.examen;
 
 
-import ni.gob.minsa.alerta.domain.estructura.Catalogo;
-import ni.gob.minsa.alerta.domain.examen.Area;
-import ni.gob.minsa.alerta.domain.muestra.NombreExamenes;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 

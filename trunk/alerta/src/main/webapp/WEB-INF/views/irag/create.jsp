@@ -1746,7 +1746,6 @@
 <!-- /.modal -->
 
 <input id="inPregnancy" type="hidden" value="<spring:message code="lbl.weeks"/>"/>
-<input type="hidden" id="error"  value="${error}" >
 <input type="hidden" id="autorizado" value="${autorizado}" >
 <input type="hidden" id="disappear"  value="<spring:message code="lbl.messagebox.disappear"/>"/>
 <input type="hidden" id="msjError"  value="<spring:message code="lbl.messagebox.error.completing"/>"/>

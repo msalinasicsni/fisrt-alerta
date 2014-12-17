@@ -140,11 +140,11 @@
 											<tr>
 												<th data-class="expand"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name2"/></th>
-												<th data-class="expand"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
+												<th data-hide="phone">><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.fecnac"/></th>
-												<th data-hide="phone,tablet"><i class="fa fa-fw fa-map-marker text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.mun.res"/></th>
-                                                <th data-hide="phone,tablet"><i class="fa fa-fw fa-file-text-o text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.notification.type"/></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-map-marker text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.mun.res"/></th>
+                                                <th data-hide="phone"><i class="fa fa-fw fa-file-text-o text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.notification.type"/></th>
                                                 <th></th>
 											</tr>
 										</thead>
@@ -154,6 +154,8 @@
 							</div>
 							<!-- end widget div -->
 						</div>
+
+
 						<!-- end widget -->
 					</article>
 					<!-- WIDGET END -->
@@ -171,6 +173,13 @@
 			<!-- end widget grid -->
 		</div>
 		<!-- END MAIN CONTENT -->
+
+        <input type="hidden" id="inYes"  value="<spring:message code="lbl.yes"/>"/>
+        <input type="hidden" id="inNo"  value="<spring:message code="lbl.no"/>"/>
+        <input type="hidden" id="titleC"  value="<spring:message code="msg.sending.confirm.title"/>"/>
+        <input type="hidden" id="contentC"  value="<spring:message code="msg.confirmation.content"/>"/>
+        <input type="hidden" id="titleCancel"  value="<spring:message code="msg.sampling.cancel"/>"/>
+        <input id="smallBox_content" type="hidden" value="<spring:message code="smallBox.content.4s"/>"/>
         <input type="hidden" id="iragNotice"  value="<spring:message code="menu.irageti"/>"/>
         <input type="hidden" id="febrilNotice"  value="<spring:message code="menu.sindfeb"/>"/>
 	</div>
@@ -208,12 +217,14 @@
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<spring:url value="/tomaMx/notices" var="noticesUrl"/>
     <spring:url value="/tomaMx/create" var="actionUrl"/>
+    <spring:url value="/tomaMx/tomaMxByIdNoti" var="tomaMxUrl"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
 			var parametros = {noticesUrl: "${noticesUrl}",
                               blockMess: "${blockMess}",
-                              actionUrl: "${actionUrl}"
+                              actionUrl: "${actionUrl}",
+                              tomaMxUrl: "${tomaMxUrl}"
             };
 			SearchNotices.init(parametros);
 	    	$("li.samples").addClass("open");

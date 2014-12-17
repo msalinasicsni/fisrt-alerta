@@ -49,16 +49,14 @@ public class DaVacunasIragService {
     public DaVacunasIrag getVaccineById(Integer id) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("FROM DaVacunasIrag vac where vac.idVacuna = '"+ id + "' ");
-        DaVacunasIrag vac = (DaVacunasIrag) query.uniqueResult();
-        return vac;
+        return (DaVacunasIrag) query.uniqueResult();
     }
 
 
     public DaVacunasIrag searchVaccineRecord(String id, String vac, String tipo){
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("FROM DaVacunasIrag vac where vac.idNotificacion ='"+id+"'and vac.codVacuna = '"+vac+"' and vac.codTipoVacuna = '"+tipo+"' and vac.pasivo = false ");
-        DaVacunasIrag vacu = (DaVacunasIrag) query.uniqueResult();
-        return vacu;
+        return (DaVacunasIrag) query.uniqueResult();
     }
 
     /**

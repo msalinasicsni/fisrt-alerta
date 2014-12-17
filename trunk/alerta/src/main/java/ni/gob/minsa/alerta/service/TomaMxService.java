@@ -137,4 +137,16 @@ public class TomaMxService {
         return (TipoMx)q.uniqueResult();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<DaTomaMx> getTomaMxByIdNoti(String idNotificacion){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM DaTomaMx tmx where tmx.idNotificacion = :idNotificacion");
+        query.setString("idNotificacion", idNotificacion);
+        //retrieve all
+        return query.list();
+
+    }
+
 }

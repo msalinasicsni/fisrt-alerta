@@ -5,15 +5,12 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +54,7 @@ public class Cie10Service {
 
     @SuppressWarnings("unchecked")
     public List<Cie10> getCie10Irag(String codigo) {
-        List<Cie10> res = new ArrayList<Cie10>();
+        List<Cie10> res = new ArrayList<>();
         try {
             Session session = sessionFactory.getCurrentSession();
             Criteria criteria = session.createCriteria(Cie10.class);

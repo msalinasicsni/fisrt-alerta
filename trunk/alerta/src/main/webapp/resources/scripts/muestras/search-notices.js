@@ -1,20 +1,20 @@
 var SearchNotices = function () {
-	
+
 	var bloquearUI = function(mensaje){
 		var loc = window.location;
 	    var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
 	    var mess = '<img src=' + pathName + 'resources/img/ajax-loading.gif>' + mensaje;
 	    $.blockUI({ message: mess,
-	    	css: { 
-	            border: 'none', 
-	            padding: '15px', 
-	            backgroundColor: '#000', 
-	            '-webkit-border-radius': '10px', 
-	            '-moz-border-radius': '10px', 
-	            opacity: .5, 
-	            color: '#fff' 
+	    	css: {
+	            border: 'none',
+	            padding: '15px',
+	            backgroundColor: '#000',
+	            '-webkit-border-radius': '10px',
+	            '-moz-border-radius': '10px',
+	            opacity: .5,
+	            color: '#fff'
 	            	}
-	    }); 
+	    });
 	};
 
     return {
@@ -43,7 +43,7 @@ var SearchNotices = function () {
 					responsiveHelper_dt_basic.respond();
 				}
 			});
-            
+
             $('#search-notices').validate({
     			// Rules for form validation
     				rules : {
@@ -63,26 +63,77 @@ var SearchNotices = function () {
                     }
             });
 
-            
+
             function getNotices() {
-            	bloquearUI(parametros.blockMess); 
+            	bloquearUI(parametros.blockMess);
     			$.getJSON(parametros.noticesUrl, {
     				strFilter : encodeURI($('#filtro').val()),
     				ajax : 'true'
     			}, function(data) {
     				var len = data.length;
     				for ( var i = 0; i < len; i++) {
+
 						var actionUrl = parametros.actionUrl + '/'+data[i].idNotificacion;
 
 						table1.fnAddData(
-    							[data[i].persona.primerNombre, data[i].persona.segundoNombre, data[i].persona.primerApellido, data[i].persona.segundoApellido, data[i].persona.fechaNacimiento,data[i].persona.municipioResidencia.nombre, data[i].codTipoNotificacion.valor, '<a href='+ actionUrl + ' class="btn btn-default btn-xs"><i class="fa fa-mail-forward"></i></a>']);
+    							[data[i].persona.primerNombre, data[i].persona.segundoNombre, data[i].persona.primerApellido, data[i].persona.segundoApellido, data[i].persona.fechaNacimiento,data[i].persona.municipioResidencia.nombre, data[i].codTipoNotificacion.valor, '<a data-toggle="modal" class="btn btn-default btn-xs search" data-id='+data[i].idNotificacion+'><i class="fa fa-edit fa-fw"></i></a>']);
     				}
-    				setTimeout($.unblockUI, 500); 
+
+                    $(".search").on('click', function(){
+                          getTomaMx($(this).data('id'));
+                    });
+
+                    $(".dataTables_paginate").on('click', function() {
+                        $(".search").on('click', function () {
+                            getTomaMx($(this).data('id'));
+                        });
+                    });
+
+
+    				setTimeout($.unblockUI, 500);
+
     			})
     			.fail(function() {
 				    alert( "error" );
-				    setTimeout($.unblockUI, 5); 
+				    setTimeout($.unblockUI, 5);
 				});
+            }
+
+
+            function getTomaMx (idNotificacion){
+                $.getJSON(parametros.tomaMxUrl, {
+                    idNotificacion: idNotificacion,
+                    ajax: 'true'
+                }, function (data) {
+
+                    if(data.length > 0){
+                        var opcSi = $("#inYes").val();
+                        var opcNo = $("#inNo").val();
+                        $.SmartMessageBox({
+
+                            title: $('#titleC').val(),
+                            content: $('#contentC').val(),
+                            buttons: '['+opcSi+']['+opcNo+']'
+                        }, function (ButtonPressed) {
+                            if (ButtonPressed === opcSi) {
+                                window.location.href = parametros.actionUrl + '/'+idNotificacion;
+                            }
+                            if (ButtonPressed === opcNo) {
+                                $.smallBox({
+                                    title: $('#titleCancel').val(),
+                                    content: "<i class='fa fa-clock-o'></i> <i>"+$("#smallBox_content").val()+"</i>",
+                                    color: "#C46A69",
+                                    iconSmall: "fa fa-times fa-2x fadeInRight animated",
+                                    timeout: 4000
+                                });
+                            }
+
+                        });
+                    }else{
+                        window.location.href =  parametros.actionUrl + '/'+idNotificacion;
+                    }
+
+                });
             }
 
         }
