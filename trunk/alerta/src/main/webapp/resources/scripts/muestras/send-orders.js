@@ -27,6 +27,8 @@ var SendOrders = function () {
 				tablet : 1024,
 				phone : 480
 			};
+            var text_selected_all = $("#text_selected_all").val();
+            var text_selected_none = $("#text_selected_none").val();
 			var table1 = $('#orders_result').dataTable({
 				"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
 					"T"+
@@ -48,28 +50,9 @@ var SendOrders = function () {
                 "oTableTools": {
                     "sSwfPath": parametros.sTableToolsPath,
                     "sRowSelect": "multi",
-                    "aButtons": [ {"sExtends":"select_all", "sButtonText": "Seleccionar todo"}, {"sExtends":"select_none", "sButtonText": "Deseleccionar todo"}]
+                    "aButtons": [ {"sExtends":"select_all", "sButtonText": text_selected_all}, {"sExtends":"select_none", "sButtonText": text_selected_none}]
                 }
 			});
-
-           /* var tt = new $.fn.dataTable.TableTools(table1);
-
-            $( tt.fnContainer() ).insertAfter('div.info');
-*/
-            /*$('#enviarSeleccionados').click( function () {
-                var oTT = TableTools.fnGetInstance('orders_result');
-                var aSelectedTrs = oTT.fnGetSelected();
-                var len = aSelectedTrs.length;
-                alert(len +' row(s) selected' );
-                console.log(aSelectedTrs);
-                //el input hidden debe estar siempre en la última columna
-                for (var i = 0; i < len; i++) {
-                    //var texto = aSelectedTrs[i].cells[7].innerHTML;
-                    var texto = aSelectedTrs[i].lastChild.innerHTML;
-                    console.log($(texto).val());
-                }
-
-            } );*/
 
             $('#searchOrders-form').validate({
     			// Rules for form validation

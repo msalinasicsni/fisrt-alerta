@@ -115,6 +115,9 @@
                                     <input id="confirm_msg_opc_yes" type="hidden" value="<spring:message code="lbl.send.confirm.msg.opc.yes"/>"/>
                                     <input id="confirm_msg_opc_no" type="hidden" value="<spring:message code="lbl.send.confirm.msg.opc.no"/>"/>
                                     <input id="msg_no_results_found" type="hidden" value="<spring:message code="msg.ento.no.results.found"/>"/>
+                                    <input id="text_selected_all" type="hidden" value="<spring:message code="lbl.selected.all"/>"/>
+                                    <input id="text_selected_none" type="hidden" value="<spring:message code="lbl.selected.none"/>"/>
+
                                     <form id="searchOrders-form" class="smart-form" autocomplete="off">
                                         <fieldset>
                                         <div class="row">
