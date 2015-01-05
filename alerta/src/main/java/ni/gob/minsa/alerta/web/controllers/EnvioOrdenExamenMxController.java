@@ -115,8 +115,6 @@ public class EnvioOrdenExamenMxController {
         String idEnvio = "";
         int cantOrdenes=0;
         int cantOrdenesProc = 0;
-        InfoResultado infoResultado;
-        boolean hacerRollback = false;
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
             json = br.readLine();
