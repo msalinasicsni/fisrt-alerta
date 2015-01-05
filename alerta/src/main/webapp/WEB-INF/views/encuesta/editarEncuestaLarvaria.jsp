@@ -57,7 +57,7 @@
 			</span>
     <!-- breadcrumb -->
     <ol class="breadcrumb">
-        <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.ento" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="#" htmlEscape="true "/>"><spring:message code="lbl.breadcrumb.ento.editlarva" /></a></li>
+        <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="#" htmlEscape="true "/>"><spring:message code="lbl.breadcrumb.ento.editlarva" /></a></li>
     </ol>
     <!-- end breadcrumb -->
     <jsp:include page="../fragments/layoutOptions.jsp" />
@@ -403,7 +403,7 @@
 <div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
     <header>
         <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-        <h2>Detalle de Encuesta</h2>
+        <h2><spring:message code="lbl.widgettitle.ento.add.det" /></h2>
     </header>
     <!-- widget div-->
     <div>
@@ -474,20 +474,20 @@
             <form class="smart-form" novalidate="novalidate">
                 <header><spring:message code="lbl.ento.modal.subtitle.larv.dis" /></header>
             </form>
-            <table id="dtDetalleDistribucion" class="table table-striped table-bordered table-hover" data-width="100%">
+            <table id="dtDetalleDistribucion" class="table table-striped table-bordered table-hover" width="100%">
                 <thead>
                 <tr><th><p class="text-center font-sm "><spring:message code="lbl.ento.no" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.locality" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.species.Aegypti" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.species.Albopic" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexQuinque" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexNigrip" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexCoronat" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexErratico" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexTarsalis" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexFatigans" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexAlbim" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.total" /></p></th>
+                    <th data-class="expand"><p class="text-center font-sm "><spring:message code="lbl.ento.locality" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.species.Aegypti" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.species.Albopic" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexQuinque" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexNigrip" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexCoronat" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexErratico" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexTarsalis" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexFatigans" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.species.CulexAlbim" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.total" /></p></th>
                     <th></th>
                 </tr></thead>
                 <tfoot><tr><th style="text-align: right; background-color: #86b4dd"></th><th class="font-sm" style="text-align: center; background-color: #86b4dd"><spring:message code="lbl.ento.totals" /></th>

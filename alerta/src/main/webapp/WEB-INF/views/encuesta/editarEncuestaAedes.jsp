@@ -426,41 +426,41 @@
         <!-- end widget edit box -->
         <!-- widget content -->
         <div class="widget-body no-padding">
-            <table id="dtDetalle" class="table table-striped table-bordered table-hover" style="width: 100%" data-width="100%">
+            <table id="dtDetalle" class="table table-striped table-bordered table-hover" width="100%">
                 <thead>
                 <tr>
                     <th colspan="1" ></th><th colspan="1"></th>
-                    <th colspan="3" style="text-align: center " class="font-md "><spring:message code="lbl.ento.block" /></th>
-                    <th colspan="3" style="text-align: center " class="font-md "><spring:message code="lbl.ento.homes" /></th>
-                    <th colspan="3" style="text-align: center" class="font-md "><spring:message code="lbl.ento.tank" /></th>
-                    <th colspan="3" style="text-align: center" class="font-md "><spring:message code="lbl.ento.index" /></th>
-                    <th colspan="2" style="text-align: center" class="font-md "><spring:message code="lbl.ento.dates" /></th>
-                    <th colspan="1" style="text-align: center" class="font-md "><spring:message code="lbl.ento.no" /></th>
-                    <th colspan="1" style="text-align: center" class="font-md "><spring:message code="lbl.ento.no" /></th>
-                    <th colspan="1" style="text-align: center" class="font-md "><spring:message code="lbl.ento.no" /></th>
+                    <th data-hide="phone" colspan="3" style="text-align: center " class="font-md "><spring:message code="lbl.ento.block" /></th>
+                    <th data-hide="phone" colspan="3" style="text-align: center " class="font-md "><spring:message code="lbl.ento.homes" /></th>
+                    <th data-hide="phone" colspan="3" style="text-align: center" class="font-md "><spring:message code="lbl.ento.tank" /></th>
+                    <th data-hide="phone, tablet" colspan="3" style="text-align: center" class="font-md "><spring:message code="lbl.ento.index" /></th>
+                    <th data-hide="phone,tablet" colspan="2" style="text-align: center" class="font-md "><spring:message code="lbl.ento.dates" /></th>
+                    <th data-hide="phone,tablet" colspan="1" style="text-align: center" class="font-md "><spring:message code="lbl.ento.no" /></th>
+                    <th data-hide="phone,tablet" colspan="1" style="text-align: center" class="font-md "><spring:message code="lbl.ento.no" /></th>
+                    <th data-hide="phone,tablet" colspan="1" style="text-align: center" class="font-md "><spring:message code="lbl.ento.no" /></th>
                     <th colspan="1" style="text-align: center" class="font-md "></th>
                 </tr>
                 <tr>
                     <th><p class="text-center font-sm "><spring:message code="lbl.ento.no" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.locality" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.insp" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.posit" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.index" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.insp" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.posit" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.index" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.insp" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.posit" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.index" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.bretes" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.pupae" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.ipupae" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.date.abati" /></p></th>
+                    <th data-class="expand"><p class="text-center font-sm "><spring:message code="lbl.ento.locality" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.insp" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.posit" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.index" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.insp" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.posit" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.index" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.insp" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.posit" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.index" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.bretes" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.pupae" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.ipupae" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.date.abati" /></p></th>
                     <!--<th><p class="text-center font-sm "><spring:message code="lbl.ento.report" /></p></th>-->
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.vent" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.abat" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.elimi" /></p></th>
-                    <th><p class="text-center font-sm "><spring:message code="lbl.ento.neutr" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.vent" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.abat" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.elimi" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.neutr" /></p></th>
                     <th style="text-align: center" class="font-md "></th>
                 </tr>
                 </thead>
