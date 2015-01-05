@@ -52,7 +52,7 @@
 			</span>
     <!-- breadcrumb -->
     <ol class="breadcrumb">
-        <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.ento" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="#" htmlEscape="true "/>"><spring:message code="lbl.breadcrumb.ento.adddep" /></a></li>
+        <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/encuesta/create/dep" htmlEscape="true "/>"><spring:message code="lbl.breadcrumb.ento.adddep" /></a></li>
     </ol>
     <!-- end breadcrumb -->
     <jsp:include page="../fragments/layoutOptions.jsp" />
@@ -400,29 +400,29 @@
         <!-- end widget edit box -->
         <!-- widget content -->
         <div class="widget-body no-padding">
-            <table id="dtDetalleDepositos" class="table table-striped table-bordered table-hover" data-width="100%">
+            <table id="dtDetalleDepositos" class="table table-striped table-bordered table-hover" width="100%">
                 <thead>
                 <tr><th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.no" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.locality" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm ">#<spring:message code="lbl.ento.dep.block" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm ">#<spring:message code="lbl.ento.dep.homes" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.pila" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.tire" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.barrel" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.vase" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.sprue" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.special.items" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.oDep" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.cistern" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.toilet" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.barro" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.plant" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.tree" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.well" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.total" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.name" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.desc.odep" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.desc.cistern" /></p></th>
+                    <th colspan="1" data-class="expand"><p class="text-center font-sm "><spring:message code="lbl.ento.locality" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm ">#<spring:message code="lbl.ento.dep.block" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm ">#<spring:message code="lbl.ento.dep.homes" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.pila" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.tire" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.barrel" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.vase" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.sprue" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.special.items" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.oDep" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.cistern" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.toilet" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.barro" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.plant" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.tree" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.well" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.total" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.name" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.desc.odep" /></p></th>
+                    <th colspan="1" data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.desc.cistern" /></p></th>
                 </tr>
                 </thead>
                 <tfoot>

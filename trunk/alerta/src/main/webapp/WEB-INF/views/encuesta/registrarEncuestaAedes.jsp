@@ -59,7 +59,7 @@
 			</span>
     <!-- breadcrumb -->
     <ol class="breadcrumb">
-        <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.ento" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="#" htmlEscape="true "/>"><spring:message code="lbl.breadcrumb.ento.addaedes" /></a></li>
+        <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/encuesta/create/aedes" htmlEscape="true "/>"><spring:message code="lbl.breadcrumb.ento.addaedes" /></a></li>
     </ol>
     <!-- end breadcrumb -->
     <jsp:include page="../fragments/layoutOptions.jsp" />
@@ -416,7 +416,7 @@
                 <!-- end widget edit box -->
                 <!-- widget content -->
                 <div class="widget-body no-padding">
-                    <table id="dtDetalle" class="table table-striped table-bordered table-hover" data-width="100%" >
+                    <table id="dtDetalle" class="table table-striped table-bordered table-hover" width="100%" >
                         <thead>
                         <tr>
                             <th></th><th></th>
@@ -431,25 +431,25 @@
                         </tr>
                         <tr>
                             <th><p class="text-center font-sm "><spring:message code="lbl.ento.no" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.locality" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.insp" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.posit" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.index" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.insp" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.posit" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.index" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.insp" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.posit" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.index" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.bretes" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.pupae" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.ipupae" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.date.abati" /></p></th>
+                            <th data-class="expand"><p class="text-center font-sm "><spring:message code="lbl.ento.locality" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.insp" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.posit" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.index" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.insp" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.posit" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.index" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.insp" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.posit" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.index" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.bretes" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.pupae" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.ipupae" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.date.abati" /></p></th>
                             <!--<th><p class="text-center font-sm "><spring:message code="lbl.ento.report" /></p></th>-->
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.vent" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.abat" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.elimi" /></p></th>
-                            <th><p class="text-center font-sm "><spring:message code="lbl.ento.neutr" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.vent" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.abat" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.elimi" /></p></th>
+                            <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.neutr" /></p></th>
                         </tr>
                         </thead>
                         <tfoot>

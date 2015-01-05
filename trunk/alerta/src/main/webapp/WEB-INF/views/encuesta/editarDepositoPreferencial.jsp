@@ -425,67 +425,67 @@
         <!-- end widget edit box -->
         <!-- widget content -->
         <div class="widget-body no-padding">
-            <table id="dtDetalleDepositos" class="table table-striped table-bordered table-hover" data-width="100%">
+            <table id="dtDetalleDepositos" class="table table-striped table-bordered table-hover" width="100%">
                 <thead>
-                <tr><th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.no" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.locality" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.block" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.homes" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.pila" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.tire" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.barrel" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.vase" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.sprue" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.special.items" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.oDep" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.cistern" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.toilet" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.barro" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.plant" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.tree" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.well" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.total" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.name" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.desc.odep" /></p></th>
-                    <th colspan="1"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.desc.cistern" /></p></th>
-                    <th colspan="1"></th>
+                <tr><th><p class="text-center font-sm "><spring:message code="lbl.ento.no" /></p></th>
+                    <th data-class="expand"><p class="text-center font-sm "><spring:message code="lbl.ento.locality" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.block" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.homes" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.pila" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.tire" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.barrel" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.vase" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.sprue" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.special.items" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.oDep" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.cistern" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.toilet" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.barro" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.plant" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.tree" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.well" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.total" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.name" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.desc.odep" /></p></th>
+                    <th data-hide="phone,tablet"><p class="text-center font-sm "><spring:message code="lbl.ento.dep.desc.cistern" /></p></th>
+                    <th style="text-align: center" class="font-md "></th>
                 </tr>
                 </thead>
                 <tfoot>
                 <tr><th style="text-align: right; background-color: #86b4dd"></th>
                     <th class="font-sm" colspan="3" style="text-align: center; background-color: #86b4dd"><spring:message code="lbl.ento.totals" /></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalPila" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalLlanta"  style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalBarril" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalFloreros" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalBeberedos" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalArtEspec" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalODep" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalCister" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalInodo" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalBarro" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalPlanta" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalArbol" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalPozo" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalTotalI" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="4" rowspan="1" style="text-align: right; background-color: #86b4dd"></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalPila" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalLlanta"  style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalBarril" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalFloreros" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalBeberedos" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalArtEspec" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalODep" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalCister" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalInodo" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalBarro" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalPlanta" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalArbol" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalPozo" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="totalTotalI" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="4" style="text-align: right; background-color: #86b4dd"></th>
                 </tr>
                 <tr><th colspan="1" style="text-align: right; background-color: #86b4dd"></th>
                     <th class="font-sm" colspan="3" style="text-align: center; background-color: #86b4dd"><spring:message code="lbl.ento.indexs" /></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indicePila" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceLlanta"  style="font-weight: bold"><strong>0</strong></label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceBarril" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceFloreros" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceBeberedos" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceArtEspec" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceODep" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceCister" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceInodo" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceBarro" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indicePlanta" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceArbol" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="1" rowspan="1" style="text-align: right; background-color: #86b4dd"><label id="indicePozo" style="font-weight: bold">0</label></th>
-                    <th class="font-sm" colspan="5" rowspan="1" style="text-align: right; background-color: #86b4dd"></th></tr>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indicePila" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceLlanta"  style="font-weight: bold"><strong>0</strong></label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceBarril" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceFloreros" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceBeberedos" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceArtEspec" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceODep" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceCister" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceInodo" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceBarro" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indicePlanta" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indiceArbol" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="1" style="text-align: right; background-color: #86b4dd"><label id="indicePozo" style="font-weight: bold">0</label></th>
+                    <th class="font-sm" colspan="5" style="text-align: right; background-color: #86b4dd"></th></tr>
                 </tfoot>
             </table>
         </div>
