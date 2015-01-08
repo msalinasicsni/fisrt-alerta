@@ -296,7 +296,7 @@
         </section>
         <section class="col col-sm-6 col-md-4 col-lg-2">
             <label class="text-left txt-color-blue font-md">
-                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.ento.end.date" />
+                <spring:message code="lbl.ento.end.date" />
             </label>
             <div class="">
                 <!--<span class="input-group-addon">

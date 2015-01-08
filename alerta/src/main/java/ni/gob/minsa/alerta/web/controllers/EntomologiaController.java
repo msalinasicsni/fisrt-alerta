@@ -724,7 +724,7 @@ public class EntomologiaController {
                 result = gson1.toJson(detEncuestas, ArrayList.class);
             }
         }catch (Exception ex){
-            logger.error(ex.getStackTrace().toString());
+            logger.error("Error al obtener encuestas deposito preferencial",ex);
         }
         return result;
     }
@@ -827,8 +827,13 @@ public class EntomologiaController {
                 String strModeloEncu = jsonpObject.get("codModeloEncu").getAsString();
                 Integer codSilais = jsonpObject.get("codSilais").getAsInt();
                 Integer codUnidadSalud = jsonpObject.get("codUnidadSalud").getAsInt();
-                Integer anioEpi = jsonpObject.get("anioEpi").getAsInt();
-                Integer mesEpi = jsonpObject.get("mesEpi").getAsInt();
+                Integer anioEpi = null;
+                Integer mesEpi = null;
+                if (jsonpObject.get("anioEpi")!=null && !jsonpObject.get("anioEpi").getAsString().isEmpty())
+                    anioEpi = jsonpObject.get("anioEpi").getAsInt();
+
+                if (jsonpObject.get("mesEpi")!=null && !jsonpObject.get("mesEpi").getAsString().isEmpty())
+                    mesEpi = jsonpObject.get("mesEpi").getAsInt();
 
                 encuestas = daMaeEncuestaService.searchMaestroEncuestaByFiltros(codSilais, codUnidadSalud, anioEpi, mesEpi, strModeloEncu);
                 Divisionpolitica departamento;
@@ -845,8 +850,8 @@ public class EntomologiaController {
                     map.put("encuestaId", encuestas.get(i).getEncuestaId());
                     map.put("silais",encuestas.get(i).getEntidadesAdtva().getNombre());
                     map.put("unidadSalud", encuestas.get(i).getUnidadSalud().getNombre());
-                    map.put("mesEpi",String.valueOf(encuestas.get(i).getMesEpi()));
-                    map.put("anioEpi", String.valueOf(encuestas.get(i).getAnioEpi()));
+                    map.put("mesEpi",(encuestas.get(i).getMesEpi()!=null?String.valueOf(encuestas.get(i).getMesEpi()):""));
+                    map.put("anioEpi",(encuestas.get(i).getAnioEpi()!=null?String.valueOf(encuestas.get(i).getAnioEpi()):""));
                     map.put("departamento",departamento!=null?departamento.getNombre():"");
                     map.put("municipio", encuestas.get(i).getMunicipio().getNombre());
                     map.put("distrito",distrito!=null?distrito.getValor():"");
@@ -854,14 +859,14 @@ public class EntomologiaController {
                     map.put("ordinalEncu",encuestas.get(i).getOrdinalEncuesta().getValor());
                     map.put("procedencia", encuestas.get(i).getProcedencia().getValor());
                     map.put("feInicioEncuesta",DateToString(encuestas.get(i).getFeInicioEncuesta()));
-                    map.put("feFinEncuesta", DateToString(encuestas.get(i).getFeFinEncuesta()));
+                    map.put("feFinEncuesta", (encuestas.get(i).getFeFinEncuesta()!=null?DateToString(encuestas.get(i).getFeFinEncuesta()):""));
                     map.put("modeloEncu",encuestas.get(i).getModeloEncuesta().getValor());
                     data.put("encu"+String.valueOf(i),map);
                 }
                 result = new Gson().toJson(data);
           }
         }catch (Exception ex){
-            logger.error(ex.getStackTrace().toString());
+            logger.error("Error al realizar búsqueda de encuestas", ex);
         }
         return result;
     }
@@ -944,7 +949,7 @@ public class EntomologiaController {
             mav.addObject("procedencias",procedencias);
             mav.addObject("ordinales",ordinales);
             mav.addObject("fechaInicioEncuesta", DateToString(maestro.getFeInicioEncuesta()));
-            mav.addObject("fechaFinEncuesta", DateToString(maestro.getFeFinEncuesta()));
+            mav.addObject("fechaFinEncuesta", (maestro.getFeFinEncuesta()!=null?DateToString(maestro.getFeFinEncuesta()):""));
             mav.addObject("fechaHoy", DateToString(new Date()));
             mav.addObject("distritos",distritosMng);
             mav.addObject("mae",new DaMaeEncuesta());
@@ -1406,12 +1411,25 @@ public class EntomologiaController {
         String strCodUnidadSalud = jObjectMae.get("codUnidadSalud").getAsString();
         String strCodProcedencia = jObjectMae.get("codProcedencia").getAsString();
         String strFeInicioEncuesta = jObjectMae.get("feInicioEncuesta").getAsString();
-        String strFeFinEncuesta = jObjectMae.get("feFinEncuesta").getAsString();
+        String strFeFinEncuesta =null;
+        if (jObjectMae.get("feFinEncuesta")!=null && !jObjectMae.get("feFinEncuesta").getAsString().isEmpty()){
+             strFeFinEncuesta = jObjectMae.get("feFinEncuesta").getAsString();
+        }
         String strCodOrdinalEncu = jObjectMae.get("codOrdinalEncu").getAsString();
         //String strCodModeloEncu = jObjectMae.get("codModeloEncu").getAsString();
-        String strSemanaEpi = jObjectMae.get("semanaEpi").getAsString();
-        String strMesEpi = jObjectMae.get("mesEpi").getAsString();
-        String strAnioEpi = jObjectMae.get("anioEpi").getAsString();
+        Integer semanaEpi = null;
+        Integer mesEpi = null;
+        Integer anioEpi = null;
+        if (jObjectMae.get("semanaEpi")!=null && !jObjectMae.get("semanaEpi").getAsString().isEmpty()){
+            semanaEpi = Integer.valueOf(jObjectMae.get("semanaEpi").getAsString());
+        }
+        if (jObjectMae.get("mesEpi")!=null && !jObjectMae.get("mesEpi").getAsString().isEmpty()){
+            mesEpi = Integer.valueOf(jObjectMae.get("mesEpi").getAsString());
+        }
+        if (jObjectMae.get("anioEpi")!=null && !jObjectMae.get("anioEpi").getAsString().isEmpty()){
+            anioEpi = Integer.valueOf(jObjectMae.get("anioEpi").getAsString());
+        }
+
         String strUsuarioRegistroId = jObjectMae.get("usuarioRegistroId").getAsString();
         DaMaeEncuesta maeEncuesta = new DaMaeEncuesta();
         EntidadesAdtvas silais = silaisServce.getSilaisByCodigo(Integer.valueOf(strCodSilais));
@@ -1435,10 +1453,10 @@ public class EntomologiaController {
         maeEncuesta.setUsuario(usuario);
         maeEncuesta.setMunicipio(divisionpolitica);
         maeEncuesta.setFeInicioEncuesta(StringToDate(strFeInicioEncuesta));
-        maeEncuesta.setFeFinEncuesta(StringToDate(strFeFinEncuesta));
-        maeEncuesta.setAnioEpi(Integer.valueOf(strAnioEpi));
-        maeEncuesta.setMesEpi(Integer.valueOf(strMesEpi));
-        maeEncuesta.setSemanaEpi(Integer.valueOf(strSemanaEpi));
+        maeEncuesta.setFeFinEncuesta((strFeFinEncuesta!=null?StringToDate(strFeFinEncuesta):null));
+        maeEncuesta.setAnioEpi(anioEpi);
+        maeEncuesta.setMesEpi(mesEpi);
+        maeEncuesta.setSemanaEpi(semanaEpi);
         maeEncuesta.setCodDistrito(strCodDistrito);
         maeEncuesta.setCodArea(strCodArea);
         return maeEncuesta;

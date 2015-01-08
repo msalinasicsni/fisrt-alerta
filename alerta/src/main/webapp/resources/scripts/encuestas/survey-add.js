@@ -476,9 +476,6 @@ var AddAedesSurvey = function () {
                     fecInicioEncuesta: {
                         required: true
                     },
-                    fecFinEncuesta: {
-                        required: true
-                    },
                     codOrdinal: {
                         required: true
                     },
@@ -1125,14 +1122,6 @@ var AddLarvariaSurvey = function () {
                     },
                     fecInicioEncuesta: {
                         required: true
-                        //dpDate: true,
-                        //dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechahoy ]
-                    },
-                    fecFinEncuesta: {
-                        required: true
-                        //dpDate: true,
-                        //dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechahoy}
-
                     },
                     codOrdinal: {
                         required: true
@@ -1642,14 +1631,6 @@ var AddDepositoSurvey = function(){
                     },
                     fecInicioEncuesta: {
                         required: true
-                        //dpDate: true,
-                        //dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechaHoy ]
-                    },
-                    fecFinEncuesta: {
-                        required: true
-                        //dpDate: true,
-                        //dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechaHoy}
-
                     },
                     codOrdinal: {
                         required: true
