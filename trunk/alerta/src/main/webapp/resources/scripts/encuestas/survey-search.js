@@ -40,13 +40,13 @@ var SearchSurvey = function () {
                         required: true
                     },
                     mesEpi: {
-                        required: true,
+                        required:function(){return $('#anioEpi').val().length>0;},
                         digits: true,
                         maxlength: 2,
                         range: [1, 12]
                     },
                     anioEpi: {
-                        required: true,
+                        required:function(){return $('#mesEpi').val().length>0;},
                         digits: true,
                         maxlength: 4
                     }

@@ -101,20 +101,27 @@ public class DaMaeEncuestaService {
                     "inner join ma.procedencia as pr " +
                     "inner join ma.modeloEncuesta as mo " +
                     "where en.codigo =:codSilais and mu.codigoNacional=:municipio " +
-                    "and un.codigo=:unidadSalud and ma.anioEpi=:anioEpi and ordi.codigo=:ordinalEncu and pr.codigo=:procedencia " +
-                    "and mo.codigo=:modelo and ma.feInicioEncuesta = :fecInicio and ma.feFinEncuesta =:fecFin";
+                    "and un.codigo=:unidadSalud and ordi.codigo=:ordinalEncu and pr.codigo=:procedencia " +
+                    "and mo.codigo=:modelo and ma.feInicioEncuesta = :fecInicio";
+            if (maeEncuesta.getAnioEpi()!=null)
+                query = query + " and ma.anioEpi=:anioEpi ";
+            if(maeEncuesta.getFeFinEncuesta()!=null)
+                query = query + " and ma.feFinEncuesta =:fecFin";
 
             Session session = sessionFactory.getCurrentSession();
             Query q = session.createQuery(query);
             q.setLong("codSilais", maeEncuesta.getEntidadesAdtva().getCodigo());
             q.setString("municipio", maeEncuesta.getMunicipio().getCodigoNacional());
             q.setLong("unidadSalud",maeEncuesta.getUnidadSalud().getCodigo());
-            q.setInteger("anioEpi",maeEncuesta.getAnioEpi());
+            if (maeEncuesta.getAnioEpi()!=null)
+                q.setInteger("anioEpi",maeEncuesta.getAnioEpi());
             q.setString("ordinalEncu", maeEncuesta.getOrdinalEncuesta().getCodigo());
             q.setString("procedencia", maeEncuesta.getProcedencia().getCodigo());
             q.setString("modelo", maeEncuesta.getModeloEncuesta().getCodigo());
             q.setTimestamp("fecInicio", tsFechaIni);
-            q.setTimestamp("fecFin", tsFechaFin);
+
+            if(maeEncuesta.getFeFinEncuesta()!=null)
+                q.setTimestamp("fecFin", tsFechaFin);
             result = q.list();
 
         } catch (Exception ex) {
@@ -136,13 +143,19 @@ public class DaMaeEncuestaService {
             String query = "select a from DaMaeEncuesta as a join a.entidadesAdtva as b " +
                     "join a.unidadSalud as c " +
                     "join a.modeloEncuesta as d " +
-                    "where b.codigo =:codSilais and c.codigo =:unidadSalud and a.anioEpi=:anioEpi and a.mesEpi=:mesEpi and d.codigo =:modelo";//" and feFinEncuesta =: fecInicio and feFinEncuesta =: fecFin";
+                    "where b.codigo =:codSilais and c.codigo =:unidadSalud and d.codigo =:modelo";//" and feFinEncuesta =: fecInicio and feFinEncuesta =: fecFin";
+            if (anioEpi!=null )
+               query = query + " and a.anioEpi=:anioEpi";
+            if (mesEpi!=null)
+                query = query + " and a.mesEpi=:mesEpi";
             Session session = sessionFactory.getCurrentSession();
             Query q = session.createQuery(query);
             q.setInteger("codSilais", codSilais);
             q.setInteger("unidadSalud",codUnidadSalud);
-            q.setInteger("anioEpi", anioEpi);
-            q.setInteger("mesEpi", mesEpi);
+            if (anioEpi!=null )
+                q.setInteger("anioEpi", anioEpi);
+            if (mesEpi!=null )
+                q.setInteger("mesEpi", mesEpi);
             q.setString("modelo", codModeloEncu);
             aux = q.list();
 

@@ -29,9 +29,9 @@ public class DaMaeEncuesta {
     private Date feFinEncuesta;
     private Ordinal ordinalEncuesta;
     private ModeloEncuesta modeloEncuesta;
-    private int semanaEpi;
-    private int mesEpi;
-    private int anioEpi;
+    private Integer semanaEpi;
+    private Integer mesEpi;
+    private Integer anioEpi;
     private Timestamp fechaRegistro;
     private EntidadesAdtvas entidadesAdtva;
     private Usuarios usuario;
@@ -88,30 +88,30 @@ public class DaMaeEncuesta {
     }
 
     @Basic
-    @Column(name = "SEMANA_EPI", nullable = false, insertable = true, updatable = true, precision = 0)
-    public int getSemanaEpi() {
+    @Column(name = "SEMANA_EPI", nullable = true, insertable = true, updatable = true, precision = 0)
+    public Integer getSemanaEpi() {
         return semanaEpi;
     }
-    public void setSemanaEpi(int semanaEpi) {
+    public void setSemanaEpi(Integer semanaEpi) {
         this.semanaEpi = semanaEpi;
     }
 
     @Basic
-    @Column(name = "MES_EPI", nullable = false, insertable = true, updatable = true, precision = 0)
-    public int getMesEpi() {
+    @Column(name = "MES_EPI", nullable = true, insertable = true, updatable = true, precision = 0)
+    public Integer getMesEpi() {
         return mesEpi;
     }
-    public void setMesEpi(int mesEpi) {
+    public void setMesEpi(Integer mesEpi) {
         this.mesEpi = mesEpi;
     }
 
 
     @Basic
-    @Column(name = "ANIO_EPI", nullable = false, insertable = true, updatable = true, precision = 0)
-    public int getAnioEpi() {
+    @Column(name = "ANIO_EPI", nullable = true, insertable = true, updatable = true, precision = 0)
+    public Integer getAnioEpi() {
         return anioEpi;
     }
-    public void setAnioEpi(int anioEpi) {
+    public void setAnioEpi(Integer anioEpi) {
         this.anioEpi = anioEpi;
     }
 

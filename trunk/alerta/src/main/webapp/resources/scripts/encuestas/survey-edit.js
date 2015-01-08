@@ -580,12 +580,6 @@ var EditAedesSurvey = function () {
                         dpDate: true,
                         dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechaHoy ]*/
                     },
-                    fecFinEncuesta: {
-                        required: true/*,
-                        dpDate: true,
-                        dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechaHoy}*/
-
-                    },
                     codOrdinal: {
                         required: true
                     },
@@ -1414,11 +1408,6 @@ var EditLarvariaSurvey = function () {
                         dpDate: true,
                         dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechahoy ]*/
                     },
-                    fecFinEncuesta: {
-                        required: true/*,
-                        dpDate: true,
-                        dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechahoy}*/
-                    },
                     codOrdinal: {
                         required: true
                     },
@@ -2164,11 +2153,6 @@ var EditDepositoSurvey = function(){
                         required: true/*,
                         dpDate: true,
                         dpCompareDate: ['before', '#fecFinEncuesta', 'notAfter', parametros.dFechaHoy ]*/
-                    },
-                    fecFinEncuesta: {
-                        required: true/*,
-                        dpDate: true,
-                        dpCompareDate: {after: '#fecInicioEncuesta', 'notAfter': parametros.dFechaHoy}*/
                     },
                     codOrdinal: {
                         required: true

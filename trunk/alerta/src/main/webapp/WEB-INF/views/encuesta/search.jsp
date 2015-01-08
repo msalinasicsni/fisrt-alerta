@@ -176,7 +176,7 @@
                                     <section class="col col-xs-6 col-sm-6 col-md-3 col-lg-3">
                                         <section class="col col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <label class="text-left txt-color-blue font-md">
-                                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.month" />
+                                                <spring:message code="lbl.month" />
                                             </label>
                                             <div class="">
                                                 <label class="input">
@@ -188,7 +188,7 @@
                                         </section>
                                         <section class="col col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <label class="text-left txt-color-blue font-md">
-                                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.year" />
+                                                <spring:message code="lbl.year" />
                                             </label>
                                             <div class="">
                                                 <label class="input">
