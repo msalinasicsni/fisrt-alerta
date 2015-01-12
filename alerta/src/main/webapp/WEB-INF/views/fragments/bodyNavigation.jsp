@@ -107,7 +107,7 @@
 							class="menu-item-parent"><fmt:message key="descriptive" /></span>
 					</a>
 						<ul>
-							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="agesex" /></span></a>
+							<li class = "agesex"><a href="<spring:url value="/analisis/agesex/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="agesex" /></span></a>
 							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="sex" /></span></a>
 							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="pato" /></span></a>
 						</ul>
