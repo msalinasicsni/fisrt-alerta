@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.domain.sive;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -15,8 +16,12 @@ import ni.gob.minsa.alerta.domain.estructura.Unidades;
 
 @Entity
 @Table(name = "sive_informe_diario", schema = "alerta")
-public class SiveInformeDiario {
+public class SiveInformeDiario implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String id;
 	private String silais;
 	private String municipio;
