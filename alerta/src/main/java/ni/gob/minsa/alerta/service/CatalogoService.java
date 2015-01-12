@@ -1,5 +1,8 @@
 package ni.gob.minsa.alerta.service;
 
+import ni.gob.minsa.alerta.domain.catalogos.Anios;
+import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
+import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.irag.*;
 import ni.gob.minsa.alerta.domain.muestra.EstadoMx;
@@ -929,6 +932,36 @@ public class CatalogoService {
         Query query = session.getNamedQuery("getEstadoOrdenExByCodigo").setString("pCodigo", est);
         //Retrieve all
         return (EstadoOrdenEx) query.uniqueResult();
+    }
+   
+    @SuppressWarnings("unchecked")
+    public List<AreaRep> getAreaRep(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM AreaRep where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<Semanas> getSemanas(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Semanas where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<Anios> getAnios(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM Anios where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
     }
 
 }

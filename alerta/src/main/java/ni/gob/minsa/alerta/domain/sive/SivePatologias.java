@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.domain.sive;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,8 +11,12 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "sive_patologias_vig", schema = "alerta", uniqueConstraints = @UniqueConstraint(columnNames = "CODIGO"))
-public class SivePatologias {
+public class SivePatologias implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private String codigo;
 	private String nombre;
