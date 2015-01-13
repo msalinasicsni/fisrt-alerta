@@ -200,7 +200,7 @@
                                             		<spring:message code="week1" />
                                             	</label>
 	                                        	<div class="input-group">
-													<span class="input-group-addon"> <i class="fa fa-calendar"></i></span>
+													<span class="input-group-addon"></span>
 													<select name="semI" id="semI" class="select2">
 														<option value=""></option>
 														<c:forEach items="${semanas}" var="semana">
@@ -214,7 +214,7 @@
                                             		<spring:message code="week2" />
                                             	</label>
 	                                        	<div class="input-group">
-													<span class="input-group-addon"> <i class="fa fa-calendar"></i></span>
+													<span class="input-group-addon"></span>
 													<select name="semF" id="semF" class="select2">
 														<option value=""></option>
 														<c:forEach items="${semanas}" var="semana">
@@ -228,7 +228,7 @@
                                             		<spring:message code="year1" />
                                             	</label>
 	                                        	<div class="input-group">
-													<span class="input-group-addon"> <i class="fa fa-calendar"></i></span>
+													<span class="input-group-addon"></span>
 													<select name="anioI" id="anioI" class="select2">
 														<option value=""></option>
 														<c:forEach items="${anios}" var="anio">
@@ -242,7 +242,7 @@
                                             		<spring:message code="year2" />
                                             	</label>
 	                                        	<div class="input-group">
-													<span class="input-group-addon"> <i class="fa fa-calendar"></i></span>
+													<span class="input-group-addon"></span>
 													<select name="anioF" id="anioF" class="select2">
 														<option value=""></option>
 														<c:forEach items="${anios}" var="anio">
@@ -283,7 +283,7 @@
 							-->
 							<header>
 								<span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-								<h2><spring:message code="lbl.widgettitle" /> </h2>				
+								<h2>Distribucion por sexo </h2>				
 							</header>
 							<!-- widget div-->
 							<div>
@@ -328,7 +328,7 @@
 							-->
 							<header>
 								<span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-								<h2><spring:message code="lbl.widgettitle" /> </h2>				
+								<h2>Distribucion por edad </h2>				
 							</header>
 							<!-- widget div-->
 							<div>
@@ -374,7 +374,7 @@
 							-->
 							<header>
 								<span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-								<h2><spring:message code="lbl.widgettitle" /> </h2>				
+								<h2>Distribucion por edad y sexo </h2>				
 							</header>
 							<!-- widget div-->
 							<div>
