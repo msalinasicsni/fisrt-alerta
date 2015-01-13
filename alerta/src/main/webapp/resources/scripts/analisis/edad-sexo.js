@@ -92,6 +92,7 @@ var ViewReport = function () {
     				submitHandler: function (form) {
                         table1.fnClearTable();
                         table2.fnClearTable();
+                        lineChart();
                         //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
                         getData();
                     }
@@ -108,9 +109,17 @@ var ViewReport = function () {
     							 data[row][8], data[row][9], data[row][10], data[row][11], data[row][12], data[row][13], data[row][14],
     							 data[row][15], data[row][16], data[row][17], data[row][18], data[row][19], data[row][20], data[row][21],
     							 data[row][22], data[row][23], data[row][24], data[row][25], data[row][26], data[row][27], data[row][28]]);
+    					if (row==0){
+    						values1 = [data[row][1]+ data[row][2], data[row][3]+ data[row][4], data[row][5]+ data[row][6], data[row][7]+data[row][8], data[row][9]+ data[row][10], data[row][11]+ data[row][12], data[row][13]+ data[row][14],data[row][15]+ data[row][16], data[row][17]+ data[row][18], data[row][19]+ data[row][20], data[row][21]+data[row][22], data[row][23]+ data[row][24], data[row][25]+ data[row][26], data[row][27]+ data[row][28]];
+    						series1 = data[row][0];
+    					}
+    					if (row==1){
+    						values2 = [data[row][1]+ data[row][2], data[row][3]+ data[row][4], data[row][5]+ data[row][6], data[row][7]+data[row][8], data[row][9]+ data[row][10], data[row][11]+ data[row][12], data[row][13]+ data[row][14],data[row][15]+ data[row][16], data[row][17]+ data[row][18], data[row][19]+ data[row][20], data[row][21]+data[row][22], data[row][23]+ data[row][24], data[row][25]+ data[row][26], data[row][27]+ data[row][28]];
+    						series2 = data[row][0];
+    					}
             		}
             		pieChart(25,75);
-            		lineChart();
+            		lineChart(values1,values2,series1,series2);
                     setTimeout($.unblockUI, 500);
     			})
     			.fail(function(XMLHttpRequest, textStatus, errorThrown) {
@@ -143,16 +152,16 @@ var ViewReport = function () {
 
 			    pieData = [
 				    {
-				        value: 50,
+				        value: 57,
 				        color: "rgba(151,187,205,1)",
 				        highlight: "rgba(151,187,205,0.8)",
-				        label: "Blue"
+				        label: "Masculino"
 				    },
 				    {
-				        value: 100,
+				        value: 43,
 				        color: "rgba(169, 3, 41, 0.7)",
 				        highlight: "rgba(169, 3, 41, 0.7)",
-				        label: "Red"
+				        label: "Femenino"
 				    }
 			    ];
 
@@ -165,7 +174,7 @@ var ViewReport = function () {
                 legend(document.getElementById("pieLegend"), pieData);
             }
             
-            function lineChart() {
+            function lineChart(values1,values2,series1,series2) {
             	// BAR CHART
 
 			    var barOptions = {
@@ -190,23 +199,23 @@ var ViewReport = function () {
 			    };
 
 			    var barData = {
-			        labels: ["January", "February", "March", "April", "May", "June", "July"],
+			        labels: ["0-6 días", "7-27 días", "28d-11 meses", "1 año", "2-4 años", "5-9 años", "10-14 años","15-19 años","20-34 años","35-49 años","50-59 años","60-64 años","65 y + años","Desc"],
 			         datasets: [
 				        {
-				            label: "My First",
+				            label: series1,
 				            fillColor: "rgba(220,220,220,0.5)",
 				            strokeColor: "rgba(220,220,220,0.8)",
 				            highlightFill: "rgba(220,220,220,0.75)",
 				            highlightStroke: "rgba(220,220,220,1)",
-				            data: [65, 59, 80, 81, 56, 55, 40]
+				            data: values1
 				        },
 				        {
-				            label: "My Second",
+				            label: series2,
 				            fillColor: "rgba(151,187,205,0.5)",
 				            strokeColor: "rgba(151,187,205,0.8)",
 				            highlightFill: "rgba(151,187,205,0.75)",
 				            highlightStroke: "rgba(151,187,205,1)",
-				            data: [28, 48, 40, 19, 86, 27, 90]
+				            data: values2
 				        }
 				    ]
 			    };
