@@ -196,6 +196,27 @@ var CreateIrag = function () {
             }
 
 
+            $('#fechaInicioSintomas').change(function () {
+                var fecha = $('#fechaInicioSintomas').val();
+                var arr = fecha.split('/');
+                $('#mesEpi').val(arr[1]);
+                $('#anioEpi').val(arr[2]);
+                $.ajax({
+                    type: "GET",
+                    url: parametros.sSemanaEpiUrl,
+                    data: {fechaValidar: fecha},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        $('#semanaEpi').val(response.noSemana);
+                    },
+                    error: function (result) {
+                        $('#semanaEpi').val("");
+                    }
+                });
+            });
+
+
             //Validacion del formulario irag
             var $validator = $("#wizard-1").validate({
                 rules: {
