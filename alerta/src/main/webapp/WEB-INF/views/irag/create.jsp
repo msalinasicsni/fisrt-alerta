@@ -792,7 +792,6 @@
 
     <legend class="text-left txt-color-blue font-md">
         <spring:message code="lbl.preexisting.conditions"/>
-
     </legend>
 
     <section class="col col-6">
@@ -846,9 +845,6 @@
             </b>
         </div>
     </section>
-
-
-
 </fieldset>
 
 </div>
@@ -875,6 +871,47 @@
             </div>
         </section>
 
+        <section class="col col-2">
+            <label class="text-left txt-color-blue font-md">
+                <spring:message code="lbl.month" />
+            </label>
+            <div class="">
+
+                <label class="input">
+                    <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                    <input type="text" id="mesEpi" name="mesEpi" readonly placeholder="<spring:message code="lbl.month"/>" class="form-control">
+                </label>
+
+            </div>
+        </section>
+        <section class="col col-2">
+            <label class="text-left txt-color-blue font-md">
+                <spring:message code="lbl.year" />
+            </label>
+            <div class="">
+                <label class="input">
+                    <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                    <input type="text" id="anioEpi" name="anioEpi" readonly placeholder="<spring:message code="lbl.year"/>" class="form-control">
+                </label>
+
+            </div>
+        </section>
+
+        <section class="col col-2">
+            <label class="text-left txt-color-blue font-md">
+                <spring:message code="lbl.ew" />
+            </label>
+            <div class="">
+
+                <label class="input" >
+                    <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-numeric-asc fa-fw"></i>
+                    <input type="text" id="semanaEpi" name="semanaEpi" readonly placeholder="<spring:message code="lbl.ew"/>" class="form-control">
+                </label>
+
+            </div>
+        </section>
+    </div>
+        <div class="row">
         <section class="col col-6">
             <label class="text-left txt-color-blue font-md">
                     <spring:message code="lbl.clinical.manifestations"/>
@@ -1831,6 +1868,7 @@
 <spring:url value="/irag/search" var="searchIragUrl"/>
 <spring:url value="/irag/overrideVaccine" var="overrideVaccineUrl"/>
 <spring:url value="/irag/enfermedades" var="enfermedadUrl"/>
+<c:url var="semanaEpidemiologicaURL" value="/api/v1/semanaEpidemiologica"/>
 
 <script type="text/javascript">
 
@@ -1850,7 +1888,8 @@
             searchIragUrl: "${searchIragUrl}",
             overrideVaccineUrl: "${overrideVaccineUrl}",
             blockMess:"${blockMess}",
-            enfermedadUrl:"${enfermedadUrl}"
+            enfermedadUrl:"${enfermedadUrl}",
+            sSemanaEpiUrl : "${semanaEpidemiologicaURL}"
 
 
         };

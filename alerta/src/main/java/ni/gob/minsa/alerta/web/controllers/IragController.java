@@ -578,7 +578,8 @@ public class IragController {
         DaNotificacion noti = new DaNotificacion();
 
         if(personaId != 0){
-            noti.setPersona(personaService.getPersona(personaId));
+            SisPersona persona = personaService.getPersona(personaId);
+            noti.setPersona(persona);
             noti.setFechaRegistro(new Timestamp(new Date().getTime()));
             noti.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(silais));
             noti.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(unidad));
@@ -586,6 +587,8 @@ public class IragController {
             //  noti.setUsuarioRegistro(usuarioService.getUsuarioById((int)idUsuario));
             noti.setUsuarioRegistro(usuarioService.getUsuarioById(1));
             noti.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|IRAG"));
+            noti.setComunidadResidencia(persona.getComunidadResidencia());
+            noti.setDireccionResidencia(persona.getDireccionResidencia());
             daNotificacionService.addNotification(noti);
             return noti;
         }else{
@@ -649,6 +652,7 @@ public class IragController {
             , @RequestParam(value = "direccionResidencia", required = false) String direccionResidencia
             , @RequestParam(value = "telefonoResidencia", required = false) String telefonoResidencia
             , @RequestParam(value = "personaId", required = false) Integer personaId
+            , @RequestParam(value = "idNotificacion", required = false) String idNotificacion
 
     ) throws Exception {
 
@@ -662,6 +666,7 @@ public class IragController {
             pers.setDireccionResidencia(direccionResidencia);
             pers.setTelefonoResidencia(telefonoResidencia);
             personaService.saveOrUpdatePerson(pers);
+            updateNotificacion(idNotificacion, pers);
 
         }
         return createJsonResponse(pers);
@@ -674,6 +679,29 @@ public class IragController {
         Gson gson = new Gson();
         String json = gson.toJson(o);
         return new ResponseEntity<>(json, headers, HttpStatus.CREATED);
+    }
+
+    /**
+     * Override form
+     *
+     * @param idNotificacion the ID of the form
+     *
+     */
+    @RequestMapping(value = "update/{idNotificacion}")
+    public void updateNotificacion(String idNotificacion, SisPersona persona ) throws Exception {
+        DaIrag irag = null;
+        DaNotificacion noti = null;
+
+        if (idNotificacion != null) {
+            irag = daIragService.getFormById(idNotificacion);
+
+            //DaNotificacion
+            noti = daNotificacionService.getNotifById(idNotificacion);
+            noti.setComunidadResidencia(persona.getComunidadResidencia());
+            noti.setDireccionResidencia(persona.getDireccionResidencia());
+            daNotificacionService.updateNotificacion(noti);
+        }
+
     }
 
     /**

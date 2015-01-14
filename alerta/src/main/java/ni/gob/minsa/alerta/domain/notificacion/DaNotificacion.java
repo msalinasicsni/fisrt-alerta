@@ -4,6 +4,7 @@ import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
+import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
@@ -27,6 +28,8 @@ public class DaNotificacion {
     private Usuarios usuarioRegistro;
     private Timestamp fechaAnulacion;
     private Timestamp fechaRegistro;
+    private Comunidades comunidadResidencia;
+    private String direccionResidencia;
 
 
     @Id
@@ -125,5 +128,24 @@ public class DaNotificacion {
 
     public void setFechaAnulacion(Timestamp fechaAnulacion) {
         this.fechaAnulacion = fechaAnulacion;
+    }
+
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Comunidades.class)
+    @JoinColumn(name="CODIGO_COMUNIDAD_RESIDENCIA", referencedColumnName="CODIGO", nullable=true)
+    public Comunidades getComunidadResidencia() {
+        return comunidadResidencia;
+    }
+
+    public void setComunidadResidencia(Comunidades comunidadResidencia) {
+        this.comunidadResidencia = comunidadResidencia;
+    }
+
+    @Column(name="DIRECCION_RESIDENCIA", length=100)
+    public String getDireccionResidencia() {
+        return direccionResidencia;
+    }
+
+    public void setDireccionResidencia(String direccionResidencia) {
+        this.direccionResidencia = direccionResidencia;
     }
 }
