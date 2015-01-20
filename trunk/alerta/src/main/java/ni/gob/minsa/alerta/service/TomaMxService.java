@@ -22,15 +22,15 @@ public class TomaMxService {
     private SessionFactory sessionFactory;
 
 
-    public DaOrdenExamen getOrdenExamenById(String idOrden){
-        String query = "from DaOrdenExamen where idOrdenExamen = :idOrden ";
+    public DaSolicitudDx getSolicitudDxById(String id){
+        String query = "from DaSolicitudDx where idSolicitudDx = :id ";
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
-        q.setString("idOrden", idOrden);
-        return (DaOrdenExamen)q.uniqueResult();
+        q.setString("id", id);
+        return (DaSolicitudDx)q.uniqueResult();
     }
 
-    public void updateOrdenExamen(DaOrdenExamen dto) throws Exception {
+    public void updateSolicitudDx(DaSolicitudDx dto) throws Exception {
         try {
             if (dto != null) {
                 Session session = sessionFactory.getCurrentSession();
@@ -61,6 +61,24 @@ public class TomaMxService {
         return q.list();
     }
 
+
+
+    /**
+     *Retorna una lista de dx segun tipoMx y tipo Notificacion
+     * @param codMx tipo de Mx
+     * @param tipoNoti tipo Notificacion
+     *
+     */
+    @SuppressWarnings("unchecked")
+    public List<Dx_TipoMx_TipoNoti> getDx(String codMx, String tipoNoti) throws Exception {
+        String query = "select dx from Dx_TipoMx_TipoNoti dx where dx.tipoMx_tipoNotificacion.tipoMx.idTipoMx = :codMx and dx.tipoMx_tipoNotificacion.tipoNotificacion.codigo = :tipoNoti" ;
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("codMx", codMx);
+        q.setString("tipoNoti", tipoNoti);
+        return q.list();
+    }
+
     @SuppressWarnings("unchecked")
     public List<CatalogoExamenes> getCatalogoExamenes(){
         //Retrieve session Hibernate
@@ -83,7 +101,7 @@ public class TomaMxService {
     /**
      * Agrega Orden
      */
-    public void addOrdenExamen(DaOrdenExamen orden) {
+    public void addSolicitudDx(DaSolicitudDx orden) {
         Session session = sessionFactory.getCurrentSession();
         session.save(orden);
     }
@@ -99,6 +117,18 @@ public class TomaMxService {
         Query q = session.createQuery(query);
         q.setString("id", id);
         return (CatalogoExamenes)q.uniqueResult();
+    }
+
+    /**
+     * Retorna examen
+     * @param id
+     */
+    public Catalogo_Dx getDxById(String id){
+        String query = "from Catalogo_Dx where idDiagnostico = :id";
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("id", id);
+        return (Catalogo_Dx)q.uniqueResult();
     }
 
     /**
@@ -147,6 +177,15 @@ public class TomaMxService {
         //retrieve all
         return query.list();
 
+    }
+
+    public DaTomaMx getTomaMxByCodUnicoMx(String codigoUnicoMx){
+        String query = "from DaTomaMx as a where codigoUnicoMx= :codigoUnicoMx";
+
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("codigoUnicoMx", codigoUnicoMx);
+        return  (DaTomaMx)q.uniqueResult();
     }
 
 }

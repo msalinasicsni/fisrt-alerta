@@ -32,7 +32,7 @@
 			</span>
 			<!-- breadcrumb -->
 			<ol class="breadcrumb">
-				<li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/envioOrdenMx/create" htmlEscape="true "/>"><spring:message code="menu.send.test.orders" /></a></li>
+				<li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/envioOrdenMx/create" htmlEscape="true "/>"><spring:message code="menu.send.dx.orders" /></a></li>
 			</ol>
 			<!-- end breadcrumb -->
 			<jsp:include page="../fragments/layoutOptions.jsp" />
@@ -47,7 +47,7 @@
 					<h1 class="page-title txt-color-blueDark">
 						<!-- PAGE HEADER -->
 						<i class="fa-fw fa fa-group"></i> 
-							<spring:message code="lbl.send.test.orders" />
+							<spring:message code="lbl.send.dx.orders" />
 						<span> <i class="fa fa-angle-right"></i>  
 							<spring:message code="lbl.send.orders" />
 						</span>
@@ -236,7 +236,6 @@
                                             <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.send.dateTime"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.sampling.datetime"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.send.symptoms.start.date"/></th>
-                                            <th data-hide="phone"><spring:message code="lbl.send.state"/></th>
                                             <th data-hide="phone"><spring:message code="lbl.send.separation"/></th>
                                             <th data-hide="phone"><spring:message code="lbl.silais"/></th>
                                             <th data-hide="phone"><spring:message code="lbl.health.unit"/></th>
