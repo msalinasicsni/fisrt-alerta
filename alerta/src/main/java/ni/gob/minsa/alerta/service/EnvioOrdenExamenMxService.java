@@ -1,8 +1,8 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.irag.DaIrag;
-import ni.gob.minsa.alerta.domain.muestra.DaEnvioOrden;
-import ni.gob.minsa.alerta.domain.muestra.DaOrdenExamen;
+import ni.gob.minsa.alerta.domain.muestra.DaEnvioSolicitudDx;
+import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.FiltroOrdenExamen;
 import ni.gob.minsa.alerta.domain.muestra.Laboratorio;
 import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.DaSindFebril;
@@ -30,7 +30,7 @@ public class EnvioOrdenExamenMxService {
     @Resource(name="sessionFactory")
     private SessionFactory sessionFactory;
 
-    public String addEnvioOrden(DaEnvioOrden dto) throws Exception {
+    public String addEnvioOrden(DaEnvioSolicitudDx dto) throws Exception {
         String idEnvio;
         try {
             if (dto != null) {
@@ -46,19 +46,19 @@ public class EnvioOrdenExamenMxService {
         return idEnvio;
     }
 
-    public List<DaOrdenExamen> getOrdenesExamenPendiente(FiltroOrdenExamen filtro){
+    public List<DaSolicitudDx> getOrdenesExamenPendiente(FiltroOrdenExamen filtro){
         Session session = sessionFactory.getCurrentSession();
         Soundex varSoundex = new Soundex();
-        Criteria crit = session.createCriteria(DaOrdenExamen.class, "orden");
-        crit.createAlias("orden.codEstado","estado");
+        Criteria crit = session.createCriteria(DaSolicitudDx.class, "orden");
+      //  crit.createAlias("orden.codEstado","estado");
         crit.createAlias("orden.idTomaMx", "tomaMx");
         crit.createAlias("tomaMx.idNotificacion", "notifi");
         //siempre se tomam las muestras que no estan anuladas
         crit.add( Restrictions.and(
                         Restrictions.eq("tomaMx.anulada", false))
         );//y las ordenes en estado 'PENDIENTE'
-        crit.add( Restrictions.and(
-                Restrictions.eq("estado.codigo", "ESTORDEN|PEND").ignoreCase()));
+       /* crit.add( Restrictions.and(
+                Restrictions.eq("estado.codigo", "ESTORDEN|PEND").ignoreCase()));*/
 
         // se filtra por nombre y apellido persona
         if (filtro.getNombreApellido()!=null) {

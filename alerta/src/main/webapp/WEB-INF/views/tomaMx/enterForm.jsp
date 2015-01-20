@@ -321,7 +321,7 @@
                                         </section>
 
                                         <section class="col col-5">
-                                            <spring:message var="testSampleType" code="lbl.test.sample.type"/>
+                                            <spring:message var="testSampleType" code="lbl.dx.sample.type"/>
                                             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
                                             <label class="text-left txt-color-blue font-md">
                                             ${testSampleType}
@@ -331,11 +331,10 @@
 
 
                                             <div class="input-group">
-                                                <spring:message code="msj.select.test" var="selectTests" />
+                                                <spring:message code="msj.select.dx" var="selectDx" />
                                                 <span class="input-group-addon"> <i class="fa fa-file-text-o"></i></span>
-                                                <form:select name="examenes" placeholder="${selectTests}" path="examenes" id="examenes" multiple="true" style="width:100%" class="select2">
-
-                                                </form:select>
+                                                <select name="dx" data-placeholder="${selectDx}" id="dx" multiple style="width:100%" class="select2">
+                                                </select>
                                             </div>
                                         </section>
                                     </div>
@@ -505,14 +504,14 @@
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<!-- PARAMETROS LENGUAJE -->
 	<c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
-    <spring:url value="/tomaMx/examenesByMuestra" var="examenesUrl"/>
+    <spring:url value="/tomaMx/dxByMx" var="dxUrl"/>
     <spring:url value="/tomaMx/saveToma" var="saveTomaUrl"/>
     <spring:url value="/tomaMx/search" var="searchUrl"/>
     <script type="text/javascript">
         $(document).ready(function() {
             pageSetUp();
             var parametros = {blockMess: "${blockMess}",
-                             examenesUrl: "${examenesUrl}",
+                             dxUrl: "${dxUrl}",
                               saveTomaUrl: "${saveTomaUrl}",
                               searchUrl: "${searchUrl}"
 

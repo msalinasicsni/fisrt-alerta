@@ -1,11 +1,11 @@
 package ni.gob.minsa.alerta.web.controllers;
 
 import com.google.gson.Gson;
-import ni.gob.minsa.alerta.domain.examen.CatalogoExamenes;
 import ni.gob.minsa.alerta.domain.muestra.*;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
+import ni.gob.minsa.alerta.utilities.typeAdapter.StringUtil;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,17 +146,15 @@ public class TomaMxController {
     }
 
     /**
-     * Retorna una lista de examenes
-     * @return Un arreglo JSON de examenes
+     * Retorna una lista de dx
+     * @return Un arreglo JSON de dx
      */
-    @RequestMapping(value = "examenesByMuestra", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "dxByMx", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    List<Examen_TipoMxTipoNoti> getTestBySample(@RequestParam(value = "codMx", required = true) String codMx, @RequestParam(value = "tipoNoti", required = true) String tipoNoti) throws Exception {
-        logger.info("Obteniendo los examenes segun muestra en JSON");
-
-        return tomaMxService.getExamenes(codMx, tipoNoti);
-
+    List<Dx_TipoMx_TipoNoti> getDxBySample(@RequestParam(value = "codMx", required = true) String codMx, @RequestParam(value = "tipoNoti", required = true) String tipoNoti) throws Exception {
+        logger.info("Obteniendo los diagnósticos segun muestra y tipo de Notificacion en JSON");
+        return tomaMxService.getDx(codMx, tipoNoti);
     }
 
 
@@ -172,7 +170,7 @@ public class TomaMxController {
 
     @RequestMapping(value = "/saveToma", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveTomaMx(HttpServletRequest request,
-              @RequestParam(value = "examenes", required = false) String examenes
+              @RequestParam(value = "dx", required = false) String dx
             , @RequestParam(value = "fechaHTomaMx", required = false) String fechaHTomaMx
             , @RequestParam(value = "codTipoMx", required = false) String codTipoMx
             , @RequestParam(value = "canTubos", required = false) Integer canTubos
@@ -187,7 +185,6 @@ public class TomaMxController {
         DaTomaMx tomaMx = new DaTomaMx();
 
         tomaMx.setIdNotificacion(daNotificacionService.getNotifById(idNotificacion));
-        tomaMx.setExamenes(examenes);
         if(fechaHTomaMx != null){
             tomaMx.setFechaHTomaMx(StringToTimestamp(fechaHTomaMx));
         }
@@ -214,25 +211,25 @@ public class TomaMxController {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         tomaMx.setUsuario(usuarioService.getUsuarioById((int)idUsuario));
         tomaMx.setEstadoMx(catalogoService.getEstadoMx("ESTDMX|PEND"));
+        String codigo = generarCodigoUnicoMx();
+        tomaMx.setCodigoUnicoMx(codigo);
         tomaMxService.addTomaMx(tomaMx);
-        saveOrder(tomaMx.getIdTomaMx(), tomaMx.getExamenes(), request);
+        saveDxRequest(tomaMx.getIdTomaMx(), dx, request);
         return createJsonResponse(tomaMx);
     }
 
-    private void saveOrder(String idTomaMx, String examenes, HttpServletRequest request) throws Exception {
+    private void saveDxRequest(String idTomaMx, String dx, HttpServletRequest request) throws Exception {
 
-        DaOrdenExamen orden = new DaOrdenExamen();
-        String[] arrayExa = examenes.split(",");
+        DaSolicitudDx soli = new DaSolicitudDx();
+        String[] arrayDx = dx.split(",");
 
-        for (String anArrayExa : arrayExa) {
-            orden.setCodEstado(catalogoService.getEstadoOrdenEx("ESTORDEN|PEND"));
-            orden.setCodExamen(tomaMxService.getExamById(anArrayExa));
-            orden.setFechaHOrden(new Timestamp(new Date().getTime()));
+        for (String anArrayDx : arrayDx) {
+            soli.setCodDx(tomaMxService.getDxById(anArrayDx));
+            soli.setFechaHSolicitud(new Timestamp(new Date().getTime()));
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            orden.setUsarioRegistro(usuarioService.getUsuarioById((int) idUsuario));
-            orden.setIdTomaMx(tomaMxService.getTomaMxById(idTomaMx));
-
-            tomaMxService.addOrdenExamen(orden);
+            soli.setUsarioRegistro(usuarioService.getUsuarioById((int) idUsuario));
+            soli.setIdTomaMx(tomaMxService.getTomaMxById(idTomaMx));
+            tomaMxService.addSolicitudDx(soli);
         }
 
     }
@@ -251,6 +248,24 @@ public class TomaMxController {
         Gson gson = new Gson();
         String json = gson.toJson(o);
         return new ResponseEntity<>(json, headers, HttpStatus.CREATED);
+    }
+
+    /**
+     * Método para generar un string alfanumérico de 8 caracteres, que se usará como código único de muestra
+     * @return String codigoUnicoMx
+     */
+    private String generarCodigoUnicoMx(){
+        DaTomaMx validaC;
+        //Se genera el código
+        String codigoUnicoMx = StringUtil.getCadenaAlfanumAleatoria(8);
+        //Se consulta BD para ver si existe toma de Mx que tenga mismo código
+        validaC = tomaMxService.getTomaMxByCodUnicoMx(codigoUnicoMx);
+        //si existe, de manera recursiva se solicita un nuevo código
+        if (validaC!=null){
+            codigoUnicoMx = generarCodigoUnicoMx();
+        }
+        //si no existe se retorna el último código generado
+        return codigoUnicoMx;
     }
 
 

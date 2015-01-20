@@ -6,7 +6,6 @@ import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.irag.*;
 import ni.gob.minsa.alerta.domain.muestra.EstadoMx;
-import ni.gob.minsa.alerta.domain.muestra.EstadoOrdenEx;
 import ni.gob.minsa.alerta.domain.muestra.TipoMx;
 import ni.gob.minsa.alerta.domain.notificacion.TipoNotificacion;
 import ni.gob.minsa.alerta.domain.persona.*;
@@ -342,18 +341,6 @@ public class CatalogoService {
         return query.list();
 
     }
-
-    @SuppressWarnings("unchecked")
-    public List<EstadoOrdenEx> getEstadoOrdenEx(){
-        //Retrieve session Hibernate
-        Session session = sessionFactory.getCurrentSession();
-        //Create a hibernate query (HQL)
-        Query query = session.createQuery("FROM EstadoOrdenEx est where est.pasivo = false order by orden");
-        //retrieve all
-        return query.list();
-
-    }
-
 
     public ModeloEncuesta getModeloEncuesta(String mencuesta) {
         // Retrieve session from Hibernate
@@ -922,16 +909,6 @@ public class CatalogoService {
         Query query = session.getNamedQuery("getTipoNotifCodigo").setString("pCodigo", tpNoti);
         //Retrieve all
         return (TipoNotificacion) query.uniqueResult();
-    }
-
-
-    public EstadoOrdenEx getEstadoOrdenEx(String est){
-        //Retrieve session from hibernated
-        Session session = sessionFactory.getCurrentSession();
-        //Create a hibernate query (HQL)
-        Query query = session.getNamedQuery("getEstadoOrdenExByCodigo").setString("pCodigo", est);
-        //Retrieve all
-        return (EstadoOrdenEx) query.uniqueResult();
     }
    
     @SuppressWarnings("unchecked")

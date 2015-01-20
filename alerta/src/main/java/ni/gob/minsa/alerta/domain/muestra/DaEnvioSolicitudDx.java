@@ -11,9 +11,9 @@ import java.sql.Timestamp;
  * Created by FIRSTICT on 11/21/2014.
  */
 @Entity
-@Table(name = "da_envio_orden_examen", schema = "alerta")
-public class DaEnvioOrden {
-    private String idEnvioOrden;
+@Table(name = "da_envio_solicitud_dx", schema = "alerta")
+public class DaEnvioSolicitudDx {
+    private String idEnvio;
     private String nombreTransporta;
     private Float temperaturaTermo;
     private Timestamp fechaHoraEnvio;
@@ -21,16 +21,17 @@ public class DaEnvioOrden {
     private Laboratorio laboratorioProcedencia;
     private Usuarios usarioRegistro;
 
+
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    @Column(name = "ID_ENVIO_ORDEN", nullable = false, insertable = true, updatable = true, length = 36)
-    public String getIdEnvioOrden() {
-        return idEnvioOrden;
+    @Column(name = "ID_ENVIO", nullable = false, insertable = true, updatable = true, length = 36)
+    public String getIdEnvio() {
+        return idEnvio;
     }
 
-    public void setIdEnvioOrden(String idEnvioOrden) {
-        this.idEnvioOrden = idEnvioOrden;
+    public void setIdEnvio(String idEnvio) {
+        this.idEnvio = idEnvio;
     }
 
     @Basic

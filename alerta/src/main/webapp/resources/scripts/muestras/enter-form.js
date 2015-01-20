@@ -18,7 +18,7 @@ var EnterFormTomaMx = function () {
             });
 
             $('#codTipoMx').change(function() {
-                $.getJSON(parametros.examenesUrl, {
+                $.getJSON(parametros.dxUrl, {
                     codMx: $('#codTipoMx').val(),
                     tipoNoti: $('#tipoNoti').val(),
                     ajax: 'true'
@@ -26,12 +26,13 @@ var EnterFormTomaMx = function () {
                     var len = data.length;
                     var html = null;
                     for (var i = 0; i < len; i++) {
-                       html += '<option value="' + data[i].examen.idExamen + '">'
-                            + data[i].examen.nombre
+                        console.log(data[i]);
+                       html += '<option value="' + data[i].diagnostico.idDiagnostico + '">'
+                            + data[i].diagnostico.nombre
                             + '</option>';
                     }
 
-                    $('#examenes').html(html);
+                    $('#dx').html(html);
                 });
             });
 
@@ -47,7 +48,7 @@ var EnterFormTomaMx = function () {
                         required:true
                     },
 
-                    examenes:{
+                    dx:{
                         required:true
                     }
 

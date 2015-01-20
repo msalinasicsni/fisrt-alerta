@@ -7,7 +7,6 @@ import ni.gob.minsa.alerta.domain.muestra.*;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
-import ni.gob.minsa.ciportal.dto.InfoResultado;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +102,7 @@ public class EnvioOrdenExamenMxController {
     String fetchOrdersJson(@RequestParam(value = "strFilter", required = true) String filtro) throws Exception{
         logger.info("Obteniendo las ordenes de examen pendienetes según filtros en JSON");
         FiltroOrdenExamen filtroOrdenExamen= jsonToFiltroOrdenExamen(filtro);
-        List<DaOrdenExamen> ordenExamenList = envioOrdenExamenMxService.getOrdenesExamenPendiente(filtroOrdenExamen);
+        List<DaSolicitudDx> ordenExamenList = envioOrdenExamenMxService.getOrdenesExamenPendiente(filtroOrdenExamen);
         return OrdenesExamenToJson(ordenExamenList);
     }
 
@@ -129,10 +128,9 @@ public class EnvioOrdenExamenMxController {
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             Usuarios usuario = usuarioService.getUsuarioById((int)idUsuario);
             //Se obtiene estado enviado a laboratorio
-            EstadoOrdenEx estadoOrdenEx = catalogosService.getEstadoOrdenEx("ESTORDEN|ENV");
             Laboratorio labProcedencia = envioOrdenExamenMxService.getLaboratorio(laboratorioProcedencia);
 
-            DaEnvioOrden envioOrden = new DaEnvioOrden();
+            DaEnvioSolicitudDx envioOrden = new DaEnvioSolicitudDx();
 
             envioOrden.setUsarioRegistro(usuario);
             envioOrden.setFechaHoraEnvio(new Timestamp(new Date().getTime()));
@@ -149,15 +147,14 @@ public class EnvioOrdenExamenMxController {
                 ex.printStackTrace();
             }
             if (!idEnvio.isEmpty()) {
-                envioOrden.setIdEnvioOrden(idEnvio);
+                envioOrden.setIdEnvio(idEnvio);
 
                 JsonObject jObjectOrdenes = new Gson().fromJson(strOrdenes, JsonObject.class);
                 for (int i = 0; i < cantOrdenes; i++) {
-                    String idOrden = jObjectOrdenes.get(String.valueOf(i)).getAsString();
-                    DaOrdenExamen ordenExamen = tomaMxService.getOrdenExamenById(idOrden);
-                    ordenExamen.setEnvio(envioOrden);
-                    ordenExamen.setCodEstado(estadoOrdenEx);
-                    tomaMxService.updateOrdenExamen(ordenExamen);
+                    String idSoli = jObjectOrdenes.get(String.valueOf(i)).getAsString();
+                    DaSolicitudDx soli = tomaMxService.getSolicitudDxById(idSoli);
+                    soli.setEnvio(envioOrden);
+                    tomaMxService.updateSolicitudDx(soli);
                     cantOrdenesProc++;
                 }
             }
@@ -180,22 +177,21 @@ public class EnvioOrdenExamenMxController {
         }
     }
 
-    private String OrdenesExamenToJson(List<DaOrdenExamen> ordenExamenList){
+    private String OrdenesExamenToJson(List<DaSolicitudDx> ordenExamenList){
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
         Integer indice=0;
-        for(DaOrdenExamen orden:ordenExamenList){
+        for(DaSolicitudDx orden:ordenExamenList){
             Map<String, String> map = new HashMap<String, String>();
-            map.put("idOrdenExamen",orden.getIdOrdenExamen());
+            map.put("idOrdenExamen",orden.getIdSolicitudDx());
             map.put("idTomaMx",orden.getIdTomaMx().getIdTomaMx());
-            map.put("fechaHoraOrden",DateToString(orden.getFechaHOrden(),"dd/MM/yyyy hh:mm:ss a"));
+            map.put("fechaHoraOrden",DateToString(orden.getFechaHSolicitud(),"dd/MM/yyyy hh:mm:ss a"));
             map.put("fechaTomaMx",DateToString(orden.getIdTomaMx().getFechaHTomaMx(),"dd/MM/yyyy hh:mm:ss a"));
             map.put("codSilais",orden.getIdTomaMx().getIdNotificacion().getCodSilaisAtencion().getNombre());
             map.put("codUnidadSalud",orden.getIdTomaMx().getIdNotificacion().getCodUnidadAtencion().getNombre());
-            map.put("estadoOrden",orden.getCodEstado().getValor());
             map.put("separadaMx",(orden.getIdTomaMx().getMxSeparada()!=null?(orden.getIdTomaMx().getMxSeparada()?"Si":"No"):""));
             map.put("tipoMuestra",orden.getIdTomaMx().getCodTipoMx().getNombre());
-            map.put("tipoExamen",orden.getCodExamen().getNombre());
+            map.put("tipoExamen",orden.getCodDx().getNombre());
             //Si hay fecha de inicio de sintomas se muestra
             Date fechaInicioSintomas = envioOrdenExamenMxService.getFechaInicioSintomas(orden.getIdTomaMx().getIdNotificacion().getIdNotificacion());
             if (fechaInicioSintomas!=null)

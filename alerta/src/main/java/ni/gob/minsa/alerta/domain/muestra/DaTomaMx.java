@@ -18,7 +18,6 @@ public class DaTomaMx {
     private String idTomaMx;
     private DaNotificacion idNotificacion;
     private TipoMx codTipoMx;
-    private String examenes;
     private Timestamp fechaHTomaMx;
     private String horaRefrigeracion;
     private Integer canTubos;
@@ -29,6 +28,7 @@ public class DaTomaMx {
     private Timestamp fechaRegistro;
     private boolean anulada;
     private Timestamp fechaAnulacion;
+    private String codigoUnicoMx;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -63,16 +63,6 @@ public class DaTomaMx {
 
     public void setCodTipoMx(TipoMx codTipoMx) {
         this.codTipoMx = codTipoMx;
-    }
-
-    @Basic
-    @Column(name = "EXAMENES", nullable = false, insertable = true, updatable = true, length = 100)
-    public String getExamenes() {
-        return examenes;
-    }
-
-    public void setExamenes(String examenes) {
-        this.examenes = examenes;
     }
 
     @Basic
@@ -176,5 +166,15 @@ public class DaTomaMx {
 
     public void setHoraRefrigeracion(String horaRefrigeracion) {
         this.horaRefrigeracion = horaRefrigeracion;
+    }
+
+    @Basic
+    @Column(name = "CODUNICOMX", nullable = true, insertable = true, updatable = true, length = 12)
+    public String getCodigoUnicoMx() {
+        return codigoUnicoMx;
+    }
+
+    public void setCodigoUnicoMx(String codigoUnicoMx) {
+        this.codigoUnicoMx = codigoUnicoMx;
     }
 }
