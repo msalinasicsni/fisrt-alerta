@@ -18,7 +18,7 @@ import java.util.Date;
 public class DaVacunasIrag implements Serializable {
 
 
-
+    private static final long serialVersionUID = -6541039785829475122L;
     private Integer idVacuna;
     private DaIrag idNotificacion;
     private Vacuna codVacuna;
@@ -80,7 +80,7 @@ public class DaVacunasIrag implements Serializable {
     }
 
     @Basic
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @Temporal(TemporalType.DATE)
     @Column(name = "FECHA_ULTIMA_DOSIS", nullable = true, insertable = true, updatable = true)
     public Date getFechaUltimaDosis() {
         return fechaUltimaDosis;
