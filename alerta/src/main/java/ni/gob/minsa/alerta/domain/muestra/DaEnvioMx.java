@@ -11,8 +11,8 @@ import java.sql.Timestamp;
  * Created by FIRSTICT on 11/21/2014.
  */
 @Entity
-@Table(name = "da_envio_solicitud_dx", schema = "alerta")
-public class DaEnvioSolicitudDx {
+@Table(name = "da_envio_mx", schema = "alerta")
+public class DaEnvioMx {
     private String idEnvio;
     private String nombreTransporta;
     private Float temperaturaTermo;
@@ -20,7 +20,6 @@ public class DaEnvioSolicitudDx {
     private long tiempoEspera;
     private Laboratorio laboratorioProcedencia;
     private Usuarios usarioRegistro;
-
 
     @Id
     @GeneratedValue(generator = "system-uuid")

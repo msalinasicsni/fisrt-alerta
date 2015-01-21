@@ -8,9 +8,18 @@
 <!-- BEGIN HEAD -->
 <head>
 	<jsp:include page="../fragments/headTag.jsp" />
+    <spring:url value="/resources/img/plus.png" var="plus"/>
+    <spring:url value="/resources/img/minus.png" var="minus"/>
     <style>
         textarea {
             resize: none;
+        }
+        td.details-control {
+            background: url("${plus}") no-repeat center center;
+            cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url("${minus}") no-repeat center center;
         }
     </style>
 </head>
@@ -32,7 +41,7 @@
 			</span>
 			<!-- breadcrumb -->
 			<ol class="breadcrumb">
-				<li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/envioOrdenMx/create" htmlEscape="true "/>"><spring:message code="menu.send.dx.orders" /></a></li>
+				<li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/envioMx/create" htmlEscape="true "/>"><spring:message code="menu.send.dx.orders" /></a></li>
 			</ol>
 			<!-- end breadcrumb -->
 			<jsp:include page="../fragments/layoutOptions.jsp" />
@@ -117,6 +126,8 @@
                                     <input id="msg_no_results_found" type="hidden" value="<spring:message code="msg.ento.no.results.found"/>"/>
                                     <input id="text_selected_all" type="hidden" value="<spring:message code="lbl.selected.all"/>"/>
                                     <input id="text_selected_none" type="hidden" value="<spring:message code="lbl.selected.none"/>"/>
+                                    <input id="text_dx" type="hidden" value="<spring:message code="lbl.send.dx"/>"/>
+                                    <input id="text_dx_date" type="hidden" value="<spring:message code="lbl.send.dx.date"/>"/>
 
                                     <form id="searchOrders-form" class="smart-form" autocomplete="off">
                                         <fieldset>
@@ -232,9 +243,10 @@
                                         <thead>
                                         <tr>
                                             <th data-class="expand"><i class="fa fa-fw fa-list text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.sample.type"/></th>
-                                            <th data-hide="phone"><i class="fa fa-fw fa-list text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.send.test"/></th>
-                                            <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.send.dateTime"/></th>
+                                            <!--<th data-hide="phone"><i class="fa fa-fw fa-list text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.send.test"/></th>-->
+                                            <!--<th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.send.dateTime"/></th>-->
                                             <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.sampling.datetime"/></th>
+                                            <th data-hide="phone"><spring:message code="lbl.send.state"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.send.symptoms.start.date"/></th>
                                             <th data-hide="phone"><spring:message code="lbl.send.separation"/></th>
                                             <th data-hide="phone"><spring:message code="lbl.silais"/></th>
@@ -243,6 +255,8 @@
                                             <th data-hide="phone,tablet"><i class="fa fa-user fa-fw text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.age"/></th>
                                             <th data-hide="phone,tablet"><i class="fa fa-user fa-fw text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="person.sexo"/></th>
                                             <th data-hide="phone,tablet"><i class="fa fa-user fa-fw text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.send.pregnancy"/></th>
+                                            <th></th>
+                                            <th data-hide="always"></th>
                                             <!--<th data-hide="always"></th>-->
                                         </tr>
                                         </thead>
@@ -372,10 +386,10 @@
     <!-- END PAGE LEVEL SCRIPTS -->
 	<spring:url value="/personas/search" var="sPersonUrl"/>
     <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
-    <c:url var="ordersUrl" value="/envioOrdenMx/orders"/>
+    <c:url var="ordersUrl" value="/envioMx/orders"/>
 
     <c:url var="unidadesURL" value="/api/v1/unidadesPrimariasHospSilais"/>
-    <c:url var="sAgregarEnvioUrl" value="/envioOrdenMx/agregarEnvioOrdenes"/>
+    <c:url var="sAgregarEnvioUrl" value="/envioMx/agregarEnvioOrdenes"/>
     <script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
@@ -391,9 +405,9 @@
             handleDatePickers("${pageContext.request.locale.language}");
             handleInputMasks();
 	    	$("li.samples").addClass("open");
-	    	$("li.envioOrdenMx").addClass("active");
+	    	$("li.envioMx").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
-	    		$("li.envioOrdenMx").parents("ul").slideDown(200);
+	    		$("li.envioMx").parents("ul").slideDown(200);
 	    	}
 
             //$("#envioMasivo").hide();

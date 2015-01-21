@@ -22,15 +22,15 @@ public class TomaMxService {
     private SessionFactory sessionFactory;
 
 
-    public DaSolicitudDx getSolicitudDxById(String id){
-        String query = "from DaSolicitudDx where idSolicitudDx = :id ";
+    public DaTomaMx getSolicitudDxById(String id){
+        String query = "from DaTomaMx where idTomaMx = :id ";
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
         q.setString("id", id);
-        return (DaSolicitudDx)q.uniqueResult();
+        return (DaTomaMx)q.uniqueResult();
     }
 
-    public void updateSolicitudDx(DaSolicitudDx dto) throws Exception {
+    public void updateTomaMx(DaTomaMx dto) throws Exception {
         try {
             if (dto != null) {
                 Session session = sessionFactory.getCurrentSession();

@@ -35,6 +35,15 @@ var SendOrders = function () {
                     "t"+
 					"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
 				"autoWidth" : true, //"T<'clear'>"+
+                "columns": [
+                    null,null,null,null,null,null,null,null,null,null,null,
+                    {
+                        "className":      'details-control',
+                        "orderable":      false,
+                        "data":           null,
+                        "defaultContent": ''
+                    }
+                    ],
                 "preDrawCallback" : function() {
 					// Initialize the responsive datatables helper once.
 					if (!responsiveHelper_dt_basic) {
@@ -116,6 +125,37 @@ var SendOrders = function () {
                 setTimeout($.unblockUI, 500);
             }
 
+            function format ( d ) {
+                // `d` is the original data object for the row
+                var diagnosticos = d[12];
+                var json =JSON.parse(diagnosticos);
+                var len = Object.keys(json).length;
+                var childTable = '<table style="padding-left:50px;">'+
+                    '<tr><td style="font-weight: bold">'+$('#text_dx').val()+'</td><td style="font-weight: bold">'+$('#text_dx_date').val()+'</td></tr>';
+                for (var i = 1; i <= len; i++) {
+                    childTable =childTable +
+                        '<tr></tr><td>'+json[i].nombre+'</td>'+
+                        '<td>'+json[i].fechaSolicitud+'</td></tr>';
+                }
+                childTable = childTable + '</table>';
+                return childTable;
+            }
+
+            $('#orders_result tbody').on('click', 'td.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table1.api().row(tr);
+                if ( row.child.isShown() ) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    // Open this row
+                    row.child( format(row.data()) ).show();
+                    tr.addClass('shown');
+                }
+            } );
+
             function getOrders(showAll) {
                 var encuestaFiltros = {};
                 if (showAll){
@@ -142,14 +182,11 @@ var SendOrders = function () {
                     var len = Object.keys(dataToLoad).length;
                     if (len > 0) {
                         for (var i = 0; i < len; i++) {
-                            //var surveyUrl = parametros.sSurveyEditUrl + '?idMaestro=' + dataToLoad['encu'+i].encuestaId;
                             table1.fnAddData(
-                                [dataToLoad[i].tipoMuestra +" <input type='hidden' value='"+dataToLoad[i].idOrdenExamen+"'/>",dataToLoad[i].tipoExamen,dataToLoad[i].fechaHoraOrden, dataToLoad[i].fechaTomaMx, dataToLoad[i].fechaInicioSintomas,dataToLoad[i].separadaMx, dataToLoad[i].codSilais, dataToLoad[i].codUnidadSalud,dataToLoad[i].persona, dataToLoad[i].edad,dataToLoad[i].sexo,
-                                    dataToLoad[i].embarazada]);
-                            /*table1.fnAddData(
-                                [dataToLoad[i].fechaHOrden, '', dataToLoad[i].idTomaMx.fechaHTomaMx, dataToLoad[i].idTomaMx.idNotificacion.codSilaisAtencion.nombre, dataToLoad[i].idTomaMx.idNotificacion.codUnidadAtencion.nombre,
-                                    dataToLoad[i].idTomaMx.idNotificacion.persona.primerNombre, dataToLoad[i].codEstado.valor, "<input type='hidden' id='idOrden"+i+"' value='"+dataToLoad[i].idOrdenExamen+"'/>"]);
-                            */
+                                [dataToLoad[i].tipoMuestra +" <input type='hidden' value='"+dataToLoad[i].idTomaMx+"'/>", dataToLoad[i].fechaTomaMx, dataToLoad[i].estadoMx, dataToLoad[i].fechaInicioSintomas,dataToLoad[i].separadaMx, dataToLoad[i].codSilais, dataToLoad[i].codUnidadSalud,dataToLoad[i].persona, dataToLoad[i].edad,dataToLoad[i].sexo,dataToLoad[i].embarazada,
+                                    '',dataToLoad[i].diagnosticos]);                            /*table1.fnAddData(
+                                [dataToLoad[i].tipoMuestra +" <input type='hidden' value='"+dataToLoad[i].idTomaMx+"'/>",dataToLoad[i].tipoExamen,dataToLoad[i].fechaHoraOrden, dataToLoad[i].fechaTomaMx, dataToLoad[i].fechaInicioSintomas,dataToLoad[i].separadaMx, dataToLoad[i].codSilais, dataToLoad[i].codUnidadSalud,dataToLoad[i].persona, dataToLoad[i].edad,dataToLoad[i].sexo,
+                                    dataToLoad[i].embarazada]);*/
                         }
                     }else{
                         $.smallBox({
