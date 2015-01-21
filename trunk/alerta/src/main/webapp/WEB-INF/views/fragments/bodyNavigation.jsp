@@ -74,8 +74,8 @@
                     <li class="tomaMx">
                         <a href="<spring:url value="/tomaMx/search" htmlEscape="true "/>" title="<spring:message code="menu.taking.sample" />"><i class="fa fa-lg fa-fw fa-eyedropper"></i> <spring:message code="menu.taking.sample" /></a>
                     </li>
-                    <li class="envioOrdenMx">
-                        <a href="<spring:url value="/envioOrdenMx/create" htmlEscape="true "/>" title="<spring:message code="menu.send.dx.orders" />"><i class="fa fa-lg fa-fw fa-send-o"></i> <spring:message code="menu.send.dx.orders" /></a>
+                    <li class="envioMx">
+                        <a href="<spring:url value="/envioMx/create" htmlEscape="true "/>" title="<spring:message code="menu.send.dx.orders" />"><i class="fa fa-lg fa-fw fa-send-o"></i> <spring:message code="menu.send.dx.orders" /></a>
                     </li>
                 </ul>
             </li>

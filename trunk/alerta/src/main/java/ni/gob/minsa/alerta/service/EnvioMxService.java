@@ -1,10 +1,7 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.irag.DaIrag;
-import ni.gob.minsa.alerta.domain.muestra.DaEnvioSolicitudDx;
-import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
-import ni.gob.minsa.alerta.domain.muestra.FiltroOrdenExamen;
-import ni.gob.minsa.alerta.domain.muestra.Laboratorio;
+import ni.gob.minsa.alerta.domain.muestra.*;
 import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.DaSindFebril;
 import org.apache.commons.codec.language.Soundex;
 import org.hibernate.Criteria;
@@ -23,14 +20,14 @@ import java.util.List;
 /**
  * Created by FIRSTICT on 11/21/2014.
  */
-@Service("envioOrdenExamenMxService")
+@Service("envioMxService")
 @Transactional
-public class EnvioOrdenExamenMxService {
+public class EnvioMxService {
 
     @Resource(name="sessionFactory")
     private SessionFactory sessionFactory;
 
-    public String addEnvioOrden(DaEnvioSolicitudDx dto) throws Exception {
+    public String addEnvioOrden(DaEnvioMx dto) throws Exception {
         String idEnvio;
         try {
             if (dto != null) {
@@ -46,19 +43,18 @@ public class EnvioOrdenExamenMxService {
         return idEnvio;
     }
 
-    public List<DaSolicitudDx> getOrdenesExamenPendiente(FiltroOrdenExamen filtro){
+    public List<DaTomaMx> getMxPendientes(FiltroMx filtro){
         Session session = sessionFactory.getCurrentSession();
         Soundex varSoundex = new Soundex();
-        Criteria crit = session.createCriteria(DaSolicitudDx.class, "orden");
-      //  crit.createAlias("orden.codEstado","estado");
-        crit.createAlias("orden.idTomaMx", "tomaMx");
+        Criteria crit = session.createCriteria(DaTomaMx.class, "tomaMx");
+        crit.createAlias("tomaMx.estadoMx","estado");
         crit.createAlias("tomaMx.idNotificacion", "notifi");
         //siempre se tomam las muestras que no estan anuladas
         crit.add( Restrictions.and(
                         Restrictions.eq("tomaMx.anulada", false))
-        );//y las ordenes en estado 'PENDIENTE'
-       /* crit.add( Restrictions.and(
-                Restrictions.eq("estado.codigo", "ESTORDEN|PEND").ignoreCase()));*/
+        );//y las muestras en estado 'PENDIENTE'
+        crit.add( Restrictions.and(
+                Restrictions.eq("estado.codigo", "ESTDMX|PEND").ignoreCase()));
 
         // se filtra por nombre y apellido persona
         if (filtro.getNombreApellido()!=null) {
@@ -179,5 +175,12 @@ public class EnvioOrdenExamenMxService {
         Query q = sessionFactory.getCurrentSession().createQuery(query);
         q.setParameter("codigo",codigo);
         return (Laboratorio)q.uniqueResult();
+    }
+
+    public List<DaSolicitudDx> getSolicitudesDxByIdTomaMx(String idTomaMx){
+        String query = "from DaSolicitudDx where idTomaMx.idTomaMx = :idTomaMx ORDER BY fechaHSolicitud";
+        Query q = sessionFactory.getCurrentSession().createQuery(query);
+        q.setParameter("idTomaMx",idTomaMx);
+        return q.list();
     }
 }

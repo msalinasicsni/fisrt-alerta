@@ -12,7 +12,7 @@ import java.sql.Timestamp;
  * Created by souyen-ics on 11-05-14.
  */
 @Entity
-@Table(name = "da_tomamx", schema = "alerta")
+@Table(name = "da_tomamx", schema = "alerta", uniqueConstraints = @UniqueConstraint(columnNames = "CODUNICOMX"))
 public class DaTomaMx {
 
     private String idTomaMx;
@@ -29,6 +29,8 @@ public class DaTomaMx {
     private boolean anulada;
     private Timestamp fechaAnulacion;
     private String codigoUnicoMx;
+    private DaEnvioMx envio;
+
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -176,5 +178,16 @@ public class DaTomaMx {
 
     public void setCodigoUnicoMx(String codigoUnicoMx) {
         this.codigoUnicoMx = codigoUnicoMx;
+    }
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "ID_ENVIO", referencedColumnName = "ID_ENVIO")
+    @ForeignKey(name = "ENVIOMX_MX_FK")
+    public DaEnvioMx getEnvio() {
+        return envio;
+    }
+
+    public void setEnvio(DaEnvioMx envio) {
+        this.envio = envio;
     }
 }

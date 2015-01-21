@@ -1,6 +1,5 @@
 package ni.gob.minsa.alerta.domain.muestra;
 
-import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
@@ -19,7 +18,6 @@ public class DaSolicitudDx {
     private DaTomaMx idTomaMx;
     private Timestamp fechaHSolicitud;
     private Catalogo_Dx codDx;
-    private DaEnvioSolicitudDx envio;
     private Usuarios usarioRegistro;
 
 
@@ -67,17 +65,6 @@ public class DaSolicitudDx {
 
     public void setCodDx(Catalogo_Dx codDx) {
         this.codDx = codDx;
-    }
-
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "ID_ENVIO", referencedColumnName = "ID_ENVIO")
-    @ForeignKey(name = "ENVIOSOLI_FK")
-    public DaEnvioSolicitudDx getEnvio() {
-        return envio;
-    }
-
-    public void setEnvio(DaEnvioSolicitudDx envio) {
-        this.envio = envio;
     }
 
     @ManyToOne(optional = false)
