@@ -158,7 +158,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                        <a href="${createVIH}" <a class="btn btn-primary btn-lg pull-right header-btn hidden-mobile" id="btnNuevoRegistro"><i class="fa fa-circle-arrow-up fa-lg"></i><spring:message code="act.add" /></a></a>
+                                        <a href="${createVIH}" class="btn btn-primary btn-lg pull-right header-btn hidden-mobile" id="btnNuevoRegistro"><i class="fa fa-circle-arrow-up fa-lg"></i><spring:message code="act.add" /></a>
                                     </div>
                                     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                         <!--<a href="#" id="buscarEncuesta" data-toggle="modal" class="btn btn-primary btn-lg pull-right header-btn hidden-mobile">
