@@ -8,8 +8,6 @@ import com.google.gson.JsonObject;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
-import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.DaMaeEncuesta;
-import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.ModeloEncuesta;
 import ni.gob.minsa.alerta.domain.vih.VihFicha;
 import ni.gob.minsa.alerta.service.*;
 //import ni.gob.minsa.alerta.utilities.typeAdapter.MaestroEncuestaTypeAdapter;
@@ -41,7 +39,7 @@ public class VihFichaController {
 
     //Declaraciones
 
-    private static final Logger logger = LoggerFactory.getLogger(entomologiaController.class);
+    private static final Logger logger = LoggerFactory.getLogger(VihFichaController.class);
 
     @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
