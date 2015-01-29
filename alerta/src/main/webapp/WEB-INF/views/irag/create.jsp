@@ -503,7 +503,7 @@
 
     <div class="row">
 
-        <section class="col col-4">
+        <section class="col col-3">
             <label class="text-left txt-color-blue font-md">
                 <spring:message code="person.depa.resi"/>
             </label>
@@ -554,7 +554,7 @@
         </section>
 
 
-        <section class="col col-4">
+        <section class="col col-5">
             <label class="text-left txt-color-blue font-md">
                 <spring:message code="person.com.res"/>
             </label>
@@ -567,10 +567,10 @@
                     <c:forEach items="${comunidades}" var="comu">
                         <c:choose>
                             <c:when test="${comu.codigo eq irag.idNotificacion.persona.comunidadResidencia.codigo}">
-                                <option selected value="${comu.codigo}">${comu.nombre}</option>
+                                <option selected value="${comu.codigo}">${comu.nombre}-${comu.sector.unidad.nombre}</option>
                             </c:when>
                             <c:otherwise>
-                                <option value="${comu.codigo}">${comu.nombre}</option>
+                                <option value="${comu.codigo}">${comu.nombre}-${comu.sector.unidad.nombre}</option>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>

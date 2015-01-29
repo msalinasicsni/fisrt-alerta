@@ -100,9 +100,16 @@ var SeleccionUnidad = function () {
                     var html = '<option value=""></option>';
                     var len = data.length;
                     for (var i = 0; i < len; i++) {
-                        html += '<option value="' + data[i].codigo + '">'
-                            + data[i].nombre
-                            + '</option>';
+                        if(data[i].sector.unidad != null){
+                            html += '<option value="' + data[i].codigo +  '">'
+                                + data[i].nombre + "-"+ data[i].sector.unidad.nombre
+                                + '</option>';
+                        }else{
+                            html += '<option value="' + data[i].codigo +  '">'
+                                + data[i].nombre + "-"+ data[i].sector.nombre
+                                + '</option>';
+                        }
+
                     }
                     html += '</option>';
                     $('#comunidadResidencia').html(html);
