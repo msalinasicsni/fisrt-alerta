@@ -56,6 +56,25 @@
 			<artifactId>spring-orm</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
+		
+		<!-- MINSA -->
+		<dependency>
+        	<groupId>minsa</groupId>
+        	<artifactId>sis-portal-cliente</artifactId>
+        	<version>1.0.2</version>
+    	</dependency>
+    	
+		<dependency>
+        	<groupId>minsa</groupId>
+        	<artifactId>sis-minsa</artifactId>
+        	<version>1.0.4</version>
+    	</dependency>
+    	
+		<dependency>
+        	<groupId>minsa</groupId>
+        	<artifactId>sis-persona-cliente</artifactId>
+        	<version>1.0.3</version>
+    	</dependency>
 
 		<!-- AspectJ -->
 		<dependency>
