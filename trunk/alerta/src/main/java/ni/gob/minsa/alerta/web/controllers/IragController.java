@@ -351,11 +351,19 @@ public class IragController {
                         autorizado = seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, irag.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, irag.getIdNotificacion().getCodUnidadAtencion().getCodigo());
                     }
 
-                    entidades = entidadAdmonService.getAllEntidadesAdtvas();
+                    entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario, ConstantsSecurity.SYSTEM_CODE);
+
+                    if(entidades.size() <=0){
+                        entidades.add(irag.getIdNotificacion().getCodSilaisAtencion());
+                    }
 
                     Divisionpolitica municipio = divisionPoliticaService.getMunicipiosByUnidadSalud(irag.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional());
                     List<Divisionpolitica> munic = divisionPoliticaService.getMunicipiosBySilais(irag.getIdNotificacion().getCodSilaisAtencion().getCodigo());
-                    List<Unidades> uni = unidadesService.getPUnitsHospByMuniAndSilais(municipio.getCodigoNacional(), HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), irag.getIdNotificacion().getCodSilaisAtencion().getCodigo());
+                    List<Unidades> uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int)idUsuario,irag.getIdNotificacion().getCodSilaisAtencion().getCodigo(), irag.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+
+                    if(uni.size() <=0){
+                        uni.add(irag.getIdNotificacion().getCodUnidadAtencion());
+                    }
 
                     //datos persona
                     Divisionpolitica departamentoProce;
@@ -459,7 +467,7 @@ public class IragController {
         irag.setUsuario(usuarioService.getUsuarioById((int)idUsuario));
 
 
-       // if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, codSilaisAtencion) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, codUnidadAtencion)) {
+        if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, codSilaisAtencion) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, codUnidadAtencion)) {
 
 
             if (!codClasificacion.isEmpty()) {
@@ -564,9 +572,9 @@ public class IragController {
                 daIragService.updateIrag(irag);
             }
             return createJsonResponse(irag);
-      /*  }else{
+        }else{
            throw new Exception();
-        }*/
+        }
 
     }
 
@@ -584,8 +592,8 @@ public class IragController {
             noti.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(silais));
             noti.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(unidad));
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            //  noti.setUsuarioRegistro(usuarioService.getUsuarioById((int)idUsuario));
-            noti.setUsuarioRegistro(usuarioService.getUsuarioById(1));
+            noti.setUsuarioRegistro(usuarioService.getUsuarioById((int)idUsuario));
+           // noti.setUsuarioRegistro(usuarioService.getUsuarioById(1));
             noti.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|IRAG"));
             noti.setComunidadResidencia(persona.getComunidadResidencia());
             noti.setDireccionResidencia(persona.getDireccionResidencia());
