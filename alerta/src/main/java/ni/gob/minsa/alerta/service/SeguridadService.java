@@ -10,6 +10,8 @@ import ni.gob.minsa.ciportal.servicios.PortalService;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,7 @@ public class SeguridadService {
 
     UtilityProperties utilityProperties = new UtilityProperties();
 
+
     /**
      * Retorna valor de constante que indica que se habilita o no la seguridad en el sistema
      * @return True: seguridad habilitada, False: Seguridad deshabilitada
@@ -56,17 +59,17 @@ public class SeguridadService {
 
             PortalService portalService = (PortalService)ctx.lookup(ConstantsSecurity.EJB_BIN);
             InfoResultado infoResultado = portalService.obtenerInfoSesion(pBdSessionId);
-
             if(infoResultado!=null){
                 if(infoResultado.isOk()){
                     infoSesion = (InfoSesion) infoResultado.getObjeto();
                 }
             }
-            infoSesion = new InfoSesion();
+
+         /* infoSesion = new InfoSesion();
             infoSesion.setUsuarioId(25);
             infoSesion.setNombre("usuariosis1");
             infoSesion.setUsername("usuariosis1");
-            infoSesion.setSistemaSesion("ALERTA");
+            infoSesion.setSistemaSesion("ALERTA");*/
             ctx.close();
         }catch(Exception e){
             System.out.println("---- EXCEPTION");
@@ -225,12 +228,18 @@ public class SeguridadService {
      * @return long con Id del usuario almacenado en sesión o O si no se encontró
      */
     public long obtenerIdUsuario(HttpServletRequest request){
-        long idUsuario=1L;
-        InfoSesion infoSesion = (InfoSesion) request.getSession().getAttribute("infoSesionActual");
+        long idUsuario;
 
-        if (infoSesion != null) {
-            idUsuario = infoSesion.getUsuarioId();
+        if(ConstantsSecurity.ENABLE_SECURITY){
+            InfoSesion infoSesion = (InfoSesion) request.getSession().getAttribute("infoSesionActual");
+
+            if (infoSesion != null) {
+                idUsuario = infoSesion.getUsuarioId();
+            }
+        }else{
+            idUsuario= 1L;
         }
+
         return idUsuario;
     }
 
@@ -298,7 +307,7 @@ public class SeguridadService {
             String nombreOpcionMenu;
             String urlOpcionMenu;
             boolean esItem = hijo.tieneHijos();
-
+            boolean padreSinHijo = false;
             if (hijo.getDatoNodo() instanceof NodoSubmenu){
                 NodoSubmenu data = (NodoSubmenu)hijo.getDatoNodo();
                 nombreOpcionMenu = data.getNombre();
@@ -307,15 +316,24 @@ public class SeguridadService {
             }
             else{
                 NodoItem data = (NodoItem)hijo.getDatoNodo();
-                nombreOpcionMenu = data.getNombre();
-                urlOpcionMenu = data.getUrl();
+                if (data==null){
+                    padreSinHijo = true;
+                    urlOpcionMenu = null;
+                    nombreOpcionMenu = "";
+                }else {
+                    nombreOpcionMenu = data.getNombre();
+                    urlOpcionMenu = data.getUrl();
+                }
             }
-            String[] dataOpcionMenu = nombreOpcionMenu.split(",");
+            if (!padreSinHijo) {
+                String[] dataOpcionMenu = nombreOpcionMenu.split(",");
 
-            String desCodeMessage = utilityProperties.getPropertie(dataOpcionMenu[1]);
-            menu = menu + "<li class=\""+dataOpcionMenu[0]+"\">\n";
-            menu = menu + " <a href=\""+(urlOpcionMenu!=null?contextPath+urlOpcionMenu:"#")+"\" title=\""+desCodeMessage+"\"><i class=\"fa fa-lg fa-fw "+dataOpcionMenu[2]+"\"></i>"+(!esItem?"":"<span class=\"menu-item-parent\">")+desCodeMessage+(!esItem?"":"</span>")+"</a>\n";
-
+                String desCodeMessage = utilityProperties.getPropertie(dataOpcionMenu[1]);
+                if (urlOpcionMenu != null || esItem) {
+                    menu = menu + "<li class=\"" + dataOpcionMenu[0] + "\">\n";
+                    menu = menu + " <a href=\"" + (urlOpcionMenu!=null?contextPath + urlOpcionMenu:"#") + "\" title=\"" + desCodeMessage + "\"><i class=\"fa fa-lg fa-fw " + (dataOpcionMenu.length > 2 ? dataOpcionMenu[2] : "") + "\"></i>" + (!esItem ? "" : "<span class=\"menu-item-parent\">") + desCodeMessage + (!esItem ? "" : "</span>") + "</a>\n";
+                }
+            }
             if (hijo.tieneHijos()){
                 menu = menu + "<ul>\n";
                 menu = menu + armarOpcionesMenu(hijo, contextPath);
