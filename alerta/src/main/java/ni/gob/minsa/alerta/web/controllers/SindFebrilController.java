@@ -121,7 +121,7 @@ public class SindFebrilController {
             urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validaciÃ³n del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
@@ -200,7 +200,7 @@ public class SindFebrilController {
     /**
      * Handler for edit reports.
      *
-     * @param idFicha the ID of the report
+     * @param idNotificacion the ID of the report
      * @return a ModelMap with the model attributes for the respective view
      */
     @RequestMapping("edit/{idNotificacion}")
@@ -210,7 +210,7 @@ public class SindFebrilController {
             urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
@@ -226,9 +226,20 @@ public class SindFebrilController {
                     entidades = entidadAdmonService.getAllEntidadesAdtvas();
                 }else {
                     entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+                    if (entidades.size()<=0){
+                        entidades.add(daSindFeb.getIdNotificacion().getCodSilaisAtencion());
+                    }
                 }
                 List<Divisionpolitica> munic = divisionPoliticaService.getMunicipiosBySilais(daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo());
-                List<Unidades> uni = unidadesService.getPUnitsHospByMuniAndSilais(daSindFeb.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo());
+                List<Unidades> uni = null;
+                if (seguridadService.esUsuarioNivelCentral(idUsuario,ConstantsSecurity.SYSTEM_CODE)) {
+                     uni = unidadesService.getPUnitsHospByMuniAndSilais(daSindFeb.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo());
+                }else{
+                    uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int)idUsuario,daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo(),daSindFeb.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(),ConstantsSecurity.SYSTEM_CODE,HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+                    if (uni.size()<=0){
+                        uni.add(daSindFeb.getIdNotificacion().getCodUnidadAtencion());
+                    }
+                }
 	        	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
 	        	List<Divisionpolitica> municipiosResi = null;
         		List<Comunidades> comunidades = null;
@@ -319,7 +330,7 @@ public class SindFebrilController {
 			, @RequestParam( value="dxFinal", required=true) String dxFinal
 			, @RequestParam( value="nombreLlenoFicha", required=true) String nombreLlenoFicha
 			, @RequestParam( value="fechaFicha", required=true) String fechaFicha
-			, @RequestParam( value="fechaInicioSintomas", required=true) String fechaInicioSintomas) throws Exception 
+			, @RequestParam( value="fechaInicioSintomas", required=true) String fechaInicioSintomas, HttpServletRequest request) throws Exception
 	{
     	DaSindFebril daSindFeb = new DaSindFebril();
     	DaNotificacion daNotificacion = new DaNotificacion();
@@ -327,7 +338,9 @@ public class SindFebrilController {
     	daNotificacion.setFechaRegistro(new Timestamp(new Date().getTime()));
     	daNotificacion.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
 		daNotificacion.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
-		daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById(1));
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById((int)idUsuario));
+	//	daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById(1));
 		daNotificacion.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|SINFEB"));
     	if (!idNotificacion.equals("")){
     		daNotificacion.setIdNotificacion(idNotificacion);
@@ -387,7 +400,7 @@ public class SindFebrilController {
     /**
      * Custom handler for voiding a notificacion.
      *
-     * @param idPersona the ID of the chs to avoid
+     * @param idNotificacion the ID of the chs to avoid
      * @return a String
      */
     @RequestMapping("/delete/{idNotificacion}")
@@ -398,7 +411,7 @@ public class SindFebrilController {
             urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "redirect:/404";
@@ -432,7 +445,7 @@ public class SindFebrilController {
             urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validaciÃ³n del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
