@@ -145,6 +145,7 @@
 															<i class="icon-prepend fa fa-folder fa-fw"></i> 
 															<input value="${daSindFeb.idNotificacion.idNotificacion}" type="text" id="idNotificacion" name="idNotificacion" />
 														</label>
+                                                        <input type="hidden" id="autorizado" value="${autorizado}" >
 													</div>
 													<!-- START ROW -->
                                       				<div class="row">
@@ -1156,7 +1157,7 @@
 	<script src="${jqueryValidate}"></script>
 	<spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
 	<spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>				
-	<script src="${jQValidationLoc}"/></script>
+	<script src="${jQValidationLoc}"></script>
 	<!-- jQuery Select2 Input -->
 	<spring:url value="/resources/js/plugin/select2/select2.min.js" var="selectPlugin"/>
 	<script src="${selectPlugin}"></script>
@@ -1192,6 +1193,7 @@
 	<spring:url var="municipioByDepaUrl" value="/api/v1/municipio" />
 	<spring:url var="comunidadUrl" value="/api/v1/comunidad"/>
 	<spring:url var="sAddFebrilUrl" value="/febriles/save"/>
+    <spring:url var="sFebrilSearchUrl" value="/febriles/search"/>
 	<!-- PARAMETROS LENGUAJE -->
 	<c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
 	<script type="text/javascript">
@@ -1202,6 +1204,7 @@
                     municipiosUrl:"${municipiosURL}",
                     unidadesUrl: "${unidadesUrl}",municipioByDepaUrl: "${municipioByDepaUrl}",comunidadUrl: "${comunidadUrl}",
                     sAddFebrilUrl: "${sAddFebrilUrl}",
+                    sFebrilSearchUrl: "${sFebrilSearchUrl}",
                     blockMess:"${blockMess}"
  			 };
 			EnterFormSindFeb.init(parametros);

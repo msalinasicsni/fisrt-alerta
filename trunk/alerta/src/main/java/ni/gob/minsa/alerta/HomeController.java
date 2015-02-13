@@ -51,8 +51,8 @@ public class HomeController {
 	}
 
     @RequestMapping(value="/logout", method = RequestMethod.GET)
-    public String salir(HttpSession session) {
-        seguridadService.logOut(session);
+    public String salir(HttpServletRequest request) {
+        seguridadService.logOut(request.getSession());
         return "redirect:"+seguridadService.obtenerUrlPortal();
     }
     

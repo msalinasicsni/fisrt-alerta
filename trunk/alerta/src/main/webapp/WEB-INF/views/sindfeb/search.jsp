@@ -194,7 +194,7 @@
 	<script src="${jqueryValidate}"></script>
 	<spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
 	<spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>				
-	<script src="${jQValidationLoc}"/></script>
+	<script src="${jQValidationLoc}"></script>
 	<!-- JQUERY BLOCK UI -->
 	<spring:url value="/resources/js/plugin/jquery-blockui/jquery.blockUI.js" var="jqueryBlockUi" />
 	<script src="${jqueryBlockUi}"></script>

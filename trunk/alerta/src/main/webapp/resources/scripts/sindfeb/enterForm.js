@@ -62,7 +62,7 @@ var EnterFormSindFeb = function () {
 	                    	required: true
 	                    },
 	                    fuenteAgua:{
-	                    	required: true,
+	                    	required: true
 	                    },
 	                    otraFuenteAgua:{
 	                    	required: true
@@ -163,23 +163,28 @@ var EnterFormSindFeb = function () {
 	    	
 	    	function guardarFicha()
 	    	{
-	    		$.post( parametros.sAddFebrilUrl
-	    				, form.serialize()
-	    				, function(data)
-	    				{
-	    			if (data == ""){
-	    				showMessage("Error","Error desconocido","#C46A69","fa fa-warning",4000);
-	    			}
-	    			else{
-	    				ficha = JSON.parse(data);
-	    				$('#idNotificacion').val(ficha.idNotificacion.idNotificacion);
-	    				showMessage("Proceso completo!!",ficha.idNotificacion.persona.primerNombre + ' ' +ficha.idNotificacion.persona.primerApellido,"#5F895F","fa fa-check-square-o bounce animated",4000);
-	    			}
-	    				}
-	    		, 'text' )
-	    		.fail(function(XMLHttpRequest, textStatus, errorThrown) {
-	    			showMessage("FAIL",parametros.processError+" "+errorThrown,"#C46A69","fa fa-warning",8000);	    			
-	    		});
+                if ($("#autorizado").val()=='true') {
+                    $.post(parametros.sAddFebrilUrl
+                        , form.serialize()
+                        , function (data) {
+                            if (data == "") {
+                                showMessage("Error", "Error desconocido", "#C46A69", "fa fa-warning", 4000);
+                            }
+                            else {
+                                ficha = JSON.parse(data);
+                                $('#idNotificacion').val(ficha.idNotificacion.idNotificacion);
+                                showMessage("Proceso completo!!", ficha.idNotificacion.persona.primerNombre + ' ' + ficha.idNotificacion.persona.primerApellido, "#5F895F", "fa fa-check-square-o bounce animated", 4000);
+                                setTimeout(function(){window.location.href = parametros.sFebrilSearchUrl + '/' + ficha.idNotificacion.persona.personaId;},3000);
+
+                            }
+                        }
+                        , 'text')
+                        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                            showMessage("FAIL", parametros.processError + " " + errorThrown, "#C46A69", "fa fa-warning", 8000);
+                        });
+                }else{
+                    showMessage("Error", "No esta autorizado para actualizar la notificación", "#C46A69", "fa fa-warning", 4000);
+                }
 	    	}
 	    	
 	    	
