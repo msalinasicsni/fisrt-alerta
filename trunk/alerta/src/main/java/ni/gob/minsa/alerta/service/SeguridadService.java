@@ -10,8 +10,6 @@ import ni.gob.minsa.ciportal.servicios.PortalService;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +34,6 @@ public class SeguridadService {
 
     UtilityProperties utilityProperties = new UtilityProperties();
 
-
     /**
      * Retorna valor de constante que indica que se habilita o no la seguridad en el sistema
      * @return True: seguridad habilitada, False: Seguridad deshabilitada
@@ -59,17 +56,21 @@ public class SeguridadService {
 
             PortalService portalService = (PortalService)ctx.lookup(ConstantsSecurity.EJB_BIN);
             InfoResultado infoResultado = portalService.obtenerInfoSesion(pBdSessionId);
+
             if(infoResultado!=null){
                 if(infoResultado.isOk()){
                     infoSesion = (InfoSesion) infoResultado.getObjeto();
                 }
             }
 
-         /* infoSesion = new InfoSesion();
-            infoSesion.setUsuarioId(25);
+          infoSesion = new InfoSesion();
+            /*infoSesion.setUsuarioId(25);
             infoSesion.setNombre("usuariosis1");
-            infoSesion.setUsername("usuariosis1");
-            infoSesion.setSistemaSesion("ALERTA");*/
+            infoSesion.setUsername("usuariosis1");*/
+            infoSesion.setUsuarioId(170);
+            infoSesion.setNombre("Adm Alerta");
+            infoSesion.setUsername("alerta");
+            infoSesion.setSistemaSesion("ALERTA");
             ctx.close();
         }catch(Exception e){
             System.out.println("---- EXCEPTION");
@@ -91,11 +92,12 @@ public class SeguridadService {
 
             PortalService portalService = (PortalService)ctx.lookup(ConstantsSecurity.EJB_BIN);
             urlPortal = portalService.obtenerUrlLogin();
+            urlPortal = "404";
 
             ctx.close();
         }catch(NamingException e){
             //urlPortal = "/errorPage.xhtml?faces-redirect=true";
-            urlPortal = "redirect:/403";
+            urlPortal = "404";
         }
 
         return urlPortal;
@@ -228,7 +230,7 @@ public class SeguridadService {
      * @return long con Id del usuario almacenado en sesión o O si no se encontró
      */
     public long obtenerIdUsuario(HttpServletRequest request){
-        long idUsuario;
+        long idUsuario =0 ;
 
         if(ConstantsSecurity.ENABLE_SECURITY){
             InfoSesion infoSesion = (InfoSesion) request.getSession().getAttribute("infoSesionActual");
