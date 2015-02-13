@@ -92,11 +92,8 @@ public class SeguridadService {
 
             PortalService portalService = (PortalService)ctx.lookup(ConstantsSecurity.EJB_BIN);
             urlPortal = portalService.obtenerUrlLogin();
-            urlPortal = "404";
-
             ctx.close();
         }catch(NamingException e){
-            //urlPortal = "/errorPage.xhtml?faces-redirect=true";
             urlPortal = "404";
         }
 
@@ -351,6 +348,8 @@ public class SeguridadService {
      * @param session sesión actual para limpiarla
      */
     public void logOut(HttpSession session) {
+        //session.setAttribute("infoSesionActual", null);
+        //session.setAttribute("menuSistema", null);
         session.removeAttribute("infoSesionActual");
         session.removeAttribute("menuSistema");
         session.invalidate();

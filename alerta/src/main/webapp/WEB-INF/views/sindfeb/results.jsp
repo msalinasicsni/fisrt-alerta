@@ -136,7 +136,23 @@
 													<spring:param name="idPersona" value="${ficha.idNotificacion.persona.personaId}" />
 												</spring:url>
 												<td><c:if test="${ficha.idNotificacion.pasivo==false}"><a href="${fn:escapeXml(editUrl)}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a></c:if></td>
-												<td><c:if test="${ficha.idNotificacion.pasivo==false}"><a href="${fn:escapeXml(deleteUrl)}" class="btn btn-default btn-xs"><i class="fa fa-times"></i></a></c:if></td>
+                                                <c:choose>
+                                                    <c:when test="${not empty fichasAutorizadas}">
+                                                        <c:forEach items="${fichasAutorizadas}" var="fichaAutorizada">
+                                                            <c:choose>
+                                                                <c:when test="${ficha.idNotificacion.idNotificacion==fichaAutorizada.idNotificacion.idNotificacion}">
+                                                                    <td><c:if test="${ficha.idNotificacion.pasivo==false}"><a href="${fn:escapeXml(deleteUrl)}" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></a></c:if></td>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <td><button disabled class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button></td>
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:forEach>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <td><button disabled class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button></td>
+                                                    </c:otherwise>
+                                                </c:choose>
 											</tr>
 										</c:forEach>
 										</tbody>
