@@ -29,13 +29,13 @@ public class DaIragService {
      * Retorna las fichas activas
      *
      */
-    @SuppressWarnings("unchecked")
+  /*  @SuppressWarnings("unchecked")
     public List<DaIrag> getAllFormActivos() {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("FROM DaIrag vi where vi.anulada = false ");
         return query.list();
 
-    }
+    }*/
 
 
     /**
@@ -52,24 +52,21 @@ public class DaIragService {
     }
 
 
-
     /**
-     * Agrega Notificacion irag
+     * Guarda o actualiza una notificacion irag
      */
-    public void addNotificationIrag(DaIrag irag) {
+    public void saveOrUpdateIrag(DaIrag irag) {
         Session session = sessionFactory.getCurrentSession();
-        session.save(irag);
-    }
-    /**
-     * Actualiza Ficha Vigilancia Integrada
-     *
-     */
-
-    public void updateIrag(DaIrag vigIntegrada){
-        Session session = sessionFactory.getCurrentSession();
-        session.update(vigIntegrada);
+        session.saveOrUpdate(irag);
     }
 
+
+    public List<DaIrag> getDaIragPersona(long idPerson){
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("From DaIrag irag where irag.idNotificacion.persona.personaId =:idPerson");
+        query.setParameter("idPerson", idPerson);
+        return query.list();
+    }
 
 
 

@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.web.controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import ni.gob.minsa.alerta.domain.estructura.Cie10;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
@@ -28,17 +29,20 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by souyen-ics
@@ -206,10 +210,12 @@ public class IragController {
             e.printStackTrace();
             urlValidacion = "404";
         }
-        List<DaNotificacion> results = daNotificacionService.getDaNotPersona(idPerson, "TPNOTI|IRAG");
+        List<DaIrag> results = daIragService.getDaIragPersona(idPerson);
         ModelAndView mav = new ModelAndView();
 
         if(urlValidacion.isEmpty()){
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+
             if (results.size() == 0) {
                 boolean autorizado = true;
                 DaIrag irag = new DaIrag();
@@ -217,7 +223,6 @@ public class IragController {
                 Initialize();
                 SisPersona persona = personaService.getPersona(idPerson);
 
-                long idUsuario = seguridadService.obtenerIdUsuario(request);
                 //Si es usuario a nivel central se cargan todas las unidades asociados al SILAIS y municipio
                 if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
                     entidades = entidadAdmonService.getAllEntidadesAdtvas();
@@ -245,7 +250,16 @@ public class IragController {
                     mav.setViewName("404");
                 }
             } else {
+                List<DaIrag> iragAutorizados = new ArrayList<>();
+                for (DaIrag ira : results) {
+                    if (idUsuario != 0) {
+                        if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
+                            iragAutorizados.add(ira);
+                        }
+                    }
+                }
                 mav.addObject("records", results);
+                mav.addObject("iragAutorizadas", iragAutorizados);
                 mav.setViewName("irag/results");
             }
         }else{
@@ -564,16 +578,13 @@ public class IragController {
             irag.setOtraManifestacion(otraManifestacion);
             irag.setSemanasEmbarazo(semanasEmbarazo);
 
-            if (irag.getIdNotificacion() == null) {
-              DaNotificacion noti =  guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion);
-                irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
-                 daIragService.addNotificationIrag(irag);
-            } else {
-                daIragService.updateIrag(irag);
-            }
+            DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion);
+            irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
+            daIragService.saveOrUpdateIrag(irag);
+
             return createJsonResponse(irag);
-        }else{
-           throw new Exception();
+        } else {
+            throw new Exception();
         }
 
     }
@@ -642,7 +653,7 @@ public class IragController {
                 irag.setAgenteEtiologico(agenteEtiologico);
                 irag.setFichaCompleta(true);
                 irag.setFechaRegistro(new Timestamp(new Date().getTime()));
-                daIragService.updateIrag(irag);
+                daIragService.saveOrUpdateIrag(irag);
 
             }
             return createJsonResponse(irag);
@@ -712,28 +723,39 @@ public class IragController {
 
     }
 
+
     /**
-     * Override form
+     * Custom handler for voiding a notificacion.
      *
-     * @param idNotificacion the ID of the form
-     *
+     * @param idNotificacion the ID of the chs to avoid
+     * @return a String
      */
-    @RequestMapping(value = "override/{idNotificacion}")
-    public ModelAndView overrideForm(@PathVariable("idNotificacion") String idNotificacion, HttpServletRequest request) throws Exception {
-        DaIrag irag = null;
-        DaNotificacion noti = null;
-
-        if (idNotificacion != null) {
-            irag = daIragService.getFormById(idNotificacion);
-
-            //DaNotificacion
-            noti = daNotificacionService.getNotifById(idNotificacion);
-            noti.setPasivo(true);
-            noti.setFechaAnulacion(new Timestamp(new Date().getTime()));
-            daNotificacionService.updateNotificacion(noti);
-
+    @RequestMapping("/override/{idNotificacion}")
+    public String overrideNoti(@PathVariable("idNotificacion") String idNotificacion,
+                           RedirectAttributes redirectAttributes, HttpServletRequest request) {
+        String urlValidacion= "";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "redirect:/404";
         }
-        return showPersonReport(noti != null ? noti.getPersona().getPersonaId() : 0, request);
+        if(urlValidacion.isEmpty()){
+            DaIrag irag = daIragService.getFormById(idNotificacion);
+            if (irag!=null){
+                irag.getIdNotificacion().setPasivo(true);
+                daIragService.saveOrUpdateIrag(irag);
+                return "redirect:/irag/search/"+irag.getIdNotificacion().getPersona().getPersonaId();
+            }
+            else{
+                return "redirect:/404";
+            }
+        }else{
+            return "redirect:"+urlValidacion;
+        }
     }
 
     @RequestMapping(value = "newVaccine", method = RequestMethod.GET, produces = "application/json")
