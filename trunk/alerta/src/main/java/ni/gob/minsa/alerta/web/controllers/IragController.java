@@ -14,6 +14,8 @@ import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
+import ni.gob.minsa.ciportal.dto.InfoResultado;
+import ni.gob.minsa.ejbPersona.dto.Persona;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.springframework.context.MessageSource;
@@ -578,9 +580,15 @@ public class IragController {
             irag.setOtraManifestacion(otraManifestacion);
             irag.setSemanasEmbarazo(semanasEmbarazo);
 
-            DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion);
+            /*DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion);
             irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
-            daIragService.saveOrUpdateIrag(irag);
+            daIragService.saveOrUpdateIrag(irag);*/
+            if (irag.getIdNotificacion() == null) {
+                DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion);
+                irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
+            }else{
+                daIragService.saveOrUpdateIrag(irag);
+            }
 
             return createJsonResponse(irag);
         } else {
@@ -671,22 +679,43 @@ public class IragController {
             , @RequestParam(value = "direccionResidencia", required = false) String direccionResidencia
             , @RequestParam(value = "telefonoResidencia", required = false) String telefonoResidencia
             , @RequestParam(value = "personaId", required = false) Integer personaId
-            , @RequestParam(value = "idNotificacion", required = false) String idNotificacion
+            , @RequestParam(value = "idNotificacion", required = false) String idNotificacion, HttpServletRequest request
 
     ) throws Exception {
 
         logger.debug("Actualizando datos persona");
         SisPersona pers = new SisPersona();
-
+        InfoResultado infoResultado;
         if (personaId != null) {
             pers = personaService.getPersona(personaId);
             pers.setMunicipioResidencia(divisionPoliticaService.getDivisionPolitiacaByCodNacional(municipioResidencia));
             pers.setComunidadResidencia(comunidadesService.getComunidad(comunidadResidencia));
             pers.setDireccionResidencia(direccionResidencia);
             pers.setTelefonoResidencia(telefonoResidencia);
-            personaService.saveOrUpdatePerson(pers);
-            updateNotificacion(idNotificacion, pers);
+            Persona persona = personaService.ensamblarObjetoPersona(pers);
+            try{
+                personaService.iniciarTransaccion();
 
+                infoResultado =  personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
+                if (infoResultado.isOk() && infoResultado.getObjeto() != null ){
+                    updateNotificacion(idNotificacion, pers);
+                }
+                personaService.commitTransaccion();
+            } catch (Exception ex) {
+                logger.error(ex.getMessage(),ex);
+                ex.printStackTrace();
+                try {
+                    personaService.rollbackTransaccion();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }finally {
+                try {
+                    personaService.remover();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return createJsonResponse(pers);
     }
@@ -754,7 +783,7 @@ public class IragController {
                 return "redirect:/404";
             }
         }else{
-            return "redirect:"+urlValidacion;
+            return "redirect:/"+urlValidacion;
         }
     }
 

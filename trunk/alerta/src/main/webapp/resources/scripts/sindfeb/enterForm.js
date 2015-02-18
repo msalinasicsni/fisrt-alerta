@@ -1,5 +1,25 @@
 var EnterFormSindFeb = function () {
-	
+    var bloquearUI = function(mensaje){
+        var loc = window.location;
+        var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
+        var mess = '<img src=' + pathName + 'resources/img/ajax-loading.gif>' + mensaje;
+        $.blockUI({ message: mess,
+            css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .5,
+                color: '#fff'
+            }
+        });
+    };
+
+    var desbloquearUI = function() {
+        setTimeout($.unblockUI, 500);
+    };
+
 	return {
 		//main function to initiate the module
         init: function (parametros) {
@@ -164,13 +184,16 @@ var EnterFormSindFeb = function () {
 	    	function guardarFicha()
 	    	{
                 if ($("#autorizado").val()=='true') {
+                    bloquearUI(parametros.blockMess);
                     $.post(parametros.sAddFebrilUrl
                         , form.serialize()
                         , function (data) {
                             if (data == "") {
+                                desbloquearUI();
                                 showMessage("Error", "Error desconocido", "#C46A69", "fa fa-warning", 4000);
                             }
                             else {
+                                desbloquearUI();
                                 ficha = JSON.parse(data);
                                 $('#idNotificacion').val(ficha.idNotificacion.idNotificacion);
                                 showMessage("Proceso completo!!", ficha.idNotificacion.persona.primerNombre + ' ' + ficha.idNotificacion.persona.primerApellido, "#5F895F", "fa fa-check-square-o bounce animated", 4000);
@@ -180,6 +203,7 @@ var EnterFormSindFeb = function () {
                         }
                         , 'text')
                         .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                            desbloquearUI();
                             showMessage("FAIL", parametros.processError + " " + errorThrown, "#C46A69", "fa fa-warning", 8000);
                         });
                 }else{

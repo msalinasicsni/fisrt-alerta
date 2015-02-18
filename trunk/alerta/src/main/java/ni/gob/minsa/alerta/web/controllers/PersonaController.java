@@ -91,11 +91,11 @@ public class PersonaController {
         if (personas == null){
         	logger.debug("Nulo");
         }
-        else{
+        /*else{
         	for (SisPersona persona : personas) {
         		if(persona.getOcupacion()!=null) persona.getOcupacion().setRelacionGrupoOcupacion(null);
         	}
-        }
+        }*/
         return personas;
     }
 
@@ -156,7 +156,7 @@ public class PersonaController {
             urlValidacion = seguridadService.validarLogin(request);
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";

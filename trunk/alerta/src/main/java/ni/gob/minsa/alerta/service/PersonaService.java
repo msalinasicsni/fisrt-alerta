@@ -298,7 +298,7 @@ public class PersonaService {
             persona.setTelefonoResi(pPersona.getTelefonoResidencia());
             persona.setTelefonoMovil(pPersona.getTelefonoMovil());
             persona.setSexoCodigo(pPersona.getSexo()!=null ? pPersona.getSexo().getCodigo() : null);
-            persona.setEtniaCodigo(pPersona.getEtnia().getCodigo());
+            persona.setEtniaCodigo(pPersona.getEtnia()!=null ?pPersona.getEtnia().getCodigo() : null);
             persona.setOcupacionCodigo(pPersona.getOcupacion()!=null ? pPersona.getOcupacion().getCodigo() : null);
             persona.setTipoAsegCodigo(pPersona.getTipoAsegurado()!=null? pPersona.getTipoAsegurado().getCodigo() : null);
             persona.setIdentCodigo(pPersona.getTipoIdentificacion()!=null ? pPersona.getTipoIdentificacion().getCodigo() : null);

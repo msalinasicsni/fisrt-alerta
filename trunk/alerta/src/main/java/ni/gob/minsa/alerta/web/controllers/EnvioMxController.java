@@ -8,6 +8,7 @@ import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.typeAdapter.DateUtil;
+import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -243,7 +244,8 @@ public class EnvioMxController {
             indice ++;
         }
         jsonResponse = new Gson().toJson(mapResponse);
-        return jsonResponse;
+        UnicodeEscaper escaper     = UnicodeEscaper.above(127);
+        return escaper.translate(jsonResponse);
     }
 
 

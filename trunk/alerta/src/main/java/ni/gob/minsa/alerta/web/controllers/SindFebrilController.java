@@ -41,6 +41,8 @@ import ni.gob.minsa.alerta.service.UnidadesService;
 import ni.gob.minsa.alerta.service.UsuarioService;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
+import ni.gob.minsa.ciportal.dto.InfoResultado;
+import ni.gob.minsa.ejbPersona.dto.Persona;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -346,70 +348,107 @@ public class SindFebrilController {
 			, @RequestParam( value="dxFinal", required=true) String dxFinal
 			, @RequestParam( value="nombreLlenoFicha", required=true) String nombreLlenoFicha
 			, @RequestParam( value="fechaFicha", required=true) String fechaFicha
-			, @RequestParam( value="fechaInicioSintomas", required=true) String fechaInicioSintomas, HttpServletRequest request) throws Exception
+			, @RequestParam( value="fechaInicioSintomas", required=true) String fechaInicioSintomas
+            , @RequestParam(value = "municipioResidencia", required = false) String municipioResidencia
+            , @RequestParam(value = "comunidadResidencia", required = false) String comunidadResidencia
+            , @RequestParam(value = "direccionResidencia", required = false) String direccionResidencia
+            , @RequestParam(value = "ocupacion", required = false) String ocupacion
+                                                                 ,HttpServletRequest request) throws Exception
 	{
     	DaSindFebril daSindFeb = new DaSindFebril();
     	DaNotificacion daNotificacion = new DaNotificacion();
     	daNotificacion.setPersona(personaService.getPersona(personaId));
-    	daNotificacion.setFechaRegistro(new Timestamp(new Date().getTime()));
-    	daNotificacion.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
-		daNotificacion.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById((int)idUsuario));
-	//	daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById(1));
-		daNotificacion.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|SINFEB"));
-    	if (!idNotificacion.equals("")){
-    		daNotificacion.setIdNotificacion(idNotificacion);
-		}
-    	daSindFeb.setIdNotificacion(daNotificacion);
-    	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-		Date dateFicha = formatter.parse(fechaFicha);
-		daSindFeb.setFechaFicha(dateFicha);
-		daSindFeb.setCodExpediente(codExpediente);
-		daSindFeb.setNumFicha(numFicha);
-		daSindFeb.setNombPadre(nombPadre);
-		daSindFeb.setCodProcedencia(catalogoService.getProcedencia(codProcedencia));
-		daSindFeb.setViaje(catalogoService.getRespuesta(viaje));
-		daSindFeb.setDondeViaje(dondeViaje);
-		daSindFeb.setEmbarazo(catalogoService.getRespuesta(embarazo));
-		daSindFeb.setMesesEmbarazo(mesesEmbarazo);
-		daSindFeb.setEnfCronica(enfCronica);
-		daSindFeb.setOtraCronica(otraCronica);
-		daSindFeb.setEnfAgudaAdicional(enfAgudaAdicional);
-		daSindFeb.setOtraAgudaAdicional(otraAgudaAdicional);
-		daSindFeb.setFuenteAgua(fuenteAgua);
-		daSindFeb.setOtraFuenteAgua(otraFuenteAgua);
-		daSindFeb.setAnimales(animales);
-		daSindFeb.setOtrosAnimales(otrosAnimales);
-		Date dateFIS = formatter.parse(fechaInicioSintomas);
-		daSindFeb.setFechaInicioSintomas(dateFIS);
-		if (!fechaTomaMuestra.equals("")){
-			Date dateFTM = formatter.parse(fechaTomaMuestra);
-			daSindFeb.setFechaTomaMuestra(dateFTM);
-		}
-		daSindFeb.setTemperatura(temperatura);
-		daSindFeb.setPas(pas);
-		daSindFeb.setPad(pad);
-		daSindFeb.setSsCK(ssCK);
-		daSindFeb.setSsDCA(ssDCA);
-		daSindFeb.setSsDS(ssDS);
-		daSindFeb.setSsDSA(ssDSA);
-		daSindFeb.setSsHV(ssHV);
-		daSindFeb.setSsLepto(ssLepto);
-		daSindFeb.setHosp(catalogoService.getRespuesta(hosp));
-		if (!fechaIngreso.equals("")){
-			Date dateIngreso = formatter.parse(fechaIngreso);
-			daSindFeb.setFechaIngreso(dateIngreso);
-		}
-		daSindFeb.setFallecido(catalogoService.getRespuesta(fallecido));
-		if (!fechaFallecido.equals("")){
-			Date dateFallecido = formatter.parse(fechaFallecido);
-			daSindFeb.setFechaFallecido(dateFallecido);
-		}
-		daSindFeb.setDxPresuntivo(dxPresuntivo);
-		daSindFeb.setDxFinal(dxFinal);
-		daSindFeb.setNombreLlenoFicha(nombreLlenoFicha);
-    	sindFebrilService.saveSindFebril(daSindFeb);
+        //antes actualizar a la persona
+        InfoResultado infoResultado;
+        SisPersona pers = daNotificacion.getPersona();
+        pers.setMunicipioResidencia(divisionPoliticaService.getDivisionPolitiacaByCodNacional(municipioResidencia));
+        pers.setComunidadResidencia(comunidadesService.getComunidad(comunidadResidencia));
+        pers.setDireccionResidencia(direccionResidencia);
+        pers.setOcupacion(catalogoService.getOcupacion(ocupacion));
+        Persona persona = personaService.ensamblarObjetoPersona(pers);
+        try{
+            personaService.iniciarTransaccion();
+
+            infoResultado =  personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
+            //si se actualizó la persona se registra la notificación
+            if (infoResultado.isOk() && infoResultado.getObjeto() != null ){
+                daNotificacion.setFechaRegistro(new Timestamp(new Date().getTime()));
+                daNotificacion.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
+                daNotificacion.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
+                long idUsuario = seguridadService.obtenerIdUsuario(request);
+                daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById((int)idUsuario));
+                //	daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById(1));
+                daNotificacion.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|SINFEB"));
+                if (!idNotificacion.equals("")){
+                    daNotificacion.setIdNotificacion(idNotificacion);
+                }
+                daSindFeb.setIdNotificacion(daNotificacion);
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                Date dateFicha = formatter.parse(fechaFicha);
+                daSindFeb.setFechaFicha(dateFicha);
+                daSindFeb.setCodExpediente(codExpediente);
+                daSindFeb.setNumFicha(numFicha);
+                daSindFeb.setNombPadre(nombPadre);
+                daSindFeb.setCodProcedencia(catalogoService.getProcedencia(codProcedencia));
+                daSindFeb.setViaje(catalogoService.getRespuesta(viaje));
+                daSindFeb.setDondeViaje(dondeViaje);
+                daSindFeb.setEmbarazo(catalogoService.getRespuesta(embarazo));
+                daSindFeb.setMesesEmbarazo(mesesEmbarazo);
+                daSindFeb.setEnfCronica(enfCronica);
+                daSindFeb.setOtraCronica(otraCronica);
+                daSindFeb.setEnfAgudaAdicional(enfAgudaAdicional);
+                daSindFeb.setOtraAgudaAdicional(otraAgudaAdicional);
+                daSindFeb.setFuenteAgua(fuenteAgua);
+                daSindFeb.setOtraFuenteAgua(otraFuenteAgua);
+                daSindFeb.setAnimales(animales);
+                daSindFeb.setOtrosAnimales(otrosAnimales);
+                Date dateFIS = formatter.parse(fechaInicioSintomas);
+                daSindFeb.setFechaInicioSintomas(dateFIS);
+                if (!fechaTomaMuestra.equals("")){
+                    Date dateFTM = formatter.parse(fechaTomaMuestra);
+                    daSindFeb.setFechaTomaMuestra(dateFTM);
+                }
+                daSindFeb.setTemperatura(temperatura);
+                daSindFeb.setPas(pas);
+                daSindFeb.setPad(pad);
+                daSindFeb.setSsCK(ssCK);
+                daSindFeb.setSsDCA(ssDCA);
+                daSindFeb.setSsDS(ssDS);
+                daSindFeb.setSsDSA(ssDSA);
+                daSindFeb.setSsHV(ssHV);
+                daSindFeb.setSsLepto(ssLepto);
+                daSindFeb.setHosp(catalogoService.getRespuesta(hosp));
+                if (!fechaIngreso.equals("")){
+                    Date dateIngreso = formatter.parse(fechaIngreso);
+                    daSindFeb.setFechaIngreso(dateIngreso);
+                }
+                daSindFeb.setFallecido(catalogoService.getRespuesta(fallecido));
+                if (!fechaFallecido.equals("")){
+                    Date dateFallecido = formatter.parse(fechaFallecido);
+                    daSindFeb.setFechaFallecido(dateFallecido);
+                }
+                daSindFeb.setDxPresuntivo(dxPresuntivo);
+                daSindFeb.setDxFinal(dxFinal);
+                daSindFeb.setNombreLlenoFicha(nombreLlenoFicha);
+                sindFebrilService.saveSindFebril(daSindFeb);
+            }
+            personaService.commitTransaccion();
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(),ex);
+            ex.printStackTrace();
+            try {
+                personaService.rollbackTransaccion();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }finally {
+            try {
+                personaService.remover();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     	return createJsonResponse(daSindFeb);
 	}
     
@@ -443,7 +482,7 @@ public class SindFebrilController {
 	        	return "redirect:/404";
 	        }
         }else{
-        	return "redirect:"+urlValidacion;
+        	return "redirect:/"+urlValidacion;
         }
     }
     
@@ -519,6 +558,7 @@ public class SindFebrilController {
 	        	mav.addObject("sintDssa", sintDssa);
 	        	mav.addObject("sintHant", sintHant);
 	        	mav.addObject("sintLept", sintLept);
+                mav.addObject("autorizado",true);
 	        	mav.setViewName("sindfeb/enterForm");
         	}
         	else{
