@@ -3,7 +3,26 @@
  */
 
 var EnterFormTomaMx = function () {
+    var bloquearUI = function(mensaje){
+        var loc = window.location;
+        var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
+        var mess = '<img src=' + pathName + 'resources/img/ajax-loading.gif>' + mensaje;
+        $.blockUI({ message: mess,
+            css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .5,
+                color: '#fff'
+            }
+        });
+    };
 
+    var desbloquearUI = function() {
+        setTimeout($.unblockUI, 500);
+    };
     return {
         init: function (parametros) {
 
@@ -18,10 +37,11 @@ var EnterFormTomaMx = function () {
             });
 
             $('#codTipoMx').change(function() {
+                bloquearUI(parametros.blockMess);
                 $.getJSON(parametros.dxUrl, {
                     codMx: $('#codTipoMx').val(),
                     tipoNoti: $('#tipoNoti').val(),
-                    ajax: 'true'
+                    ajax: 'false'
                 }, function (data) {
                     var len = data.length;
                     var html = null;
@@ -31,8 +51,8 @@ var EnterFormTomaMx = function () {
                             + data[i].diagnostico.nombre
                             + '</option>';
                     }
-
                     $('#dx').html(html);
+                    desbloquearUI();
                 });
             });
 
@@ -80,6 +100,7 @@ var EnterFormTomaMx = function () {
 
             function save() {
                 var datos_form = $('#registroMx').serialize();
+                bloquearUI(parametros.blockMess);
                 $.ajax({
                     type: "GET",
                     url: parametros.saveTomaUrl,
@@ -94,11 +115,12 @@ var EnterFormTomaMx = function () {
                             iconSmall: "fa fa-check-circle",
                             timeout: 2000
                         });
-
+                        desbloquearUI();
                         window.location.href = parametros.searchUrl;
 
                     },
                     error: function () {
+                        desbloquearUI();
                         $.smallBox({
                             title: $('#msjErrorSaving').val(),
                             content:  $('#disappear').val(),

@@ -141,17 +141,22 @@
                                                         <c:forEach items="${fichasAutorizadas}" var="fichaAutorizada">
                                                             <c:choose>
                                                                 <c:when test="${ficha.idNotificacion.idNotificacion==fichaAutorizada.idNotificacion.idNotificacion}">
+                                                                    <c:set var="encontrada" value="1"/>
                                                                     <td><c:if test="${ficha.idNotificacion.pasivo==false}"><a href="${fn:escapeXml(deleteUrl)}" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></a></c:if></td>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <td><button disabled class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button></td>
+                                                                    <c:set var="encontrada" value="0"/>
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </c:forEach>
+                                                        <c:if test="${encontrada < 1}">
+                                                            <td><button disabled class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button></td>
+                                                        </c:if>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <td><button disabled class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button></td>
                                                     </c:otherwise>
+
                                                 </c:choose>
 											</tr>
 										</c:forEach>

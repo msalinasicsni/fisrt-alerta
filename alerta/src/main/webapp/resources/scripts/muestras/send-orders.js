@@ -222,16 +222,12 @@ var SendOrders = function () {
                         buttons: '['+opcSi+']['+opcNo+']'
                     }, function (ButtonPressed) {
                         if (ButtonPressed === opcSi) {
-                            //bloquearUI(parametros.blockMess);
+                            bloquearUI(parametros.blockMess);
                             var idOrdenes = {};
                             //el input hidden debe estar siempre en la primera columna
                             for (var i = 0; i < len; i++) {
-                                //var texto = aSelectedTrs[i].cells[7].innerHTML;
                                 var texto = aSelectedTrs[i].firstChild.innerHTML;
-                                //console.log(texto);
                                 var input = texto.substring(texto.indexOf("<"),texto.length);
-                                //console.log(input);
-                                //console.log($(input).val());
                                 idOrdenes[i]=$(input).val();
                             }
                             var ordenesObj = {};

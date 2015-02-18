@@ -120,13 +120,13 @@
                                             <tr>
 
                                                 <td><c:out value="${record.fechaRegistro}"/></td>
-                                                <td><c:out value="${record.persona.primerNombre}"/></td>
-                                                <td><c:out value="${record.persona.segundoNombre}"/></td>
-                                                <td><c:out value="${record.persona.primerApellido}"/></td>
-                                                <td><c:out value="${record.persona.segundoApellido}"/></td>
+                                                <td><c:out value="${record.idNotificacion.persona.primerNombre}"/></td>
+                                                <td><c:out value="${record.idNotificacion.persona.segundoNombre}"/></td>
+                                                <td><c:out value="${record.idNotificacion.persona.primerApellido}"/></td>
+                                                <td><c:out value="${record.idNotificacion.persona.segundoApellido}"/></td>
                                                 <td>
                                                     <c:choose>
-                                                        <c:when test="${record.pasivo==true}">
+                                                        <c:when test="${record.idNotificacion.pasivo==true}">
                                                             <spring:message code="lbl.yes"/>
                                                         </c:when>
                                                         <c:otherwise>
@@ -136,17 +136,17 @@
 
                                                 </td>
                                                 <spring:url value="/irag/edit/{idIrag}" var="editUrl">
-                                                    <spring:param name="idIrag" value="${record.idNotificacion}"/>
+                                                    <spring:param name="idIrag" value="${record.idNotificacion.idNotificacion}"/>
                                                 </spring:url>
                                                 <spring:url value="/irag/override/{idIrag}" var="overrideUrl">
-                                                    <spring:param name="idIrag" value="${record.idNotificacion}"/>
+                                                    <spring:param name="idIrag" value="${record.idNotificacion.idNotificacion}"/>
                                                 </spring:url>
                                                 <spring:url value="/irag/new/{personaId}" var="newUrl">
-                                                    <spring:param name="personaId" value="${record.persona.personaId}"/>
+                                                    <spring:param name="personaId" value="${record.idNotificacion.persona.personaId}"/>
                                                 </spring:url>
                                                 <td>
                                                     <c:choose>
-                                                        <c:when test="${record.pasivo==true}">
+                                                        <c:when test="${record.idNotificacion.pasivo==true}">
                                                             <button class="btn btn-xs" disabled>
                                                                 <i class="fa fa-edit fa-fw"></i>
                                                             </button>
@@ -161,7 +161,7 @@
                                                 </td>
                                                 <td>
                                                     <c:choose>
-                                                        <c:when test="${record.pasivo==true}">
+                                                        <c:when test="${record.idNotificacion.pasivo==true}">
                                                             <button class="btn btn-xs btn-danger override" disabled>
                                                                 <i class="fa fa-times fa-fw"></i>
                                                             </button>
@@ -173,19 +173,23 @@
                                                                     <c:forEach items="${iragAutorizadas}" var="ira">
                                                                         <c:choose>
                                                                             <c:when test="${record.idNotificacion.idNotificacion==ira.idNotificacion.idNotificacion}">
+                                                                                <c:set var="encontrada" value="1"/>
                                                                                 <a data-toggle="modal"
                                                                                    data-id="${fn:escapeXml(overrideUrl)}"
                                                                                    class="btn btn-xs btn-danger override"><i
                                                                                         class="fa fa-times fa-fw"></i></a>
                                                                             </c:when>
                                                                             <c:otherwise>
-                                                                                <button class="btn btn-xs btn-danger override"
-                                                                                        disabled>
-                                                                                    <i class="fa fa-times fa-fw"></i>
-                                                                                </button>
+                                                                                <c:set var="encontrada" value="0"/>
                                                                             </c:otherwise>
                                                                         </c:choose>
                                                                     </c:forEach>
+                                                                    <c:if test="${encontrada < 1}">
+                                                                        <button class="btn btn-xs btn-danger override"
+                                                                                disabled>
+                                                                            <i class="fa fa-times fa-fw"></i>
+                                                                        </button>
+                                                                    </c:if>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <button class="btn btn-xs btn-danger override"
