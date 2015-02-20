@@ -171,18 +171,14 @@
                                                             <c:choose>
                                                                 <c:when test="${not empty iragAutorizadas}">
                                                                     <c:forEach items="${iragAutorizadas}" var="ira">
-                                                                        <c:choose>
-                                                                            <c:when test="${record.idNotificacion.idNotificacion==ira.idNotificacion.idNotificacion}">
+                                                                        <c:set var="encontrada" value="0"/>
+                                                                            <c:if test="${record.idNotificacion.idNotificacion==ira.idNotificacion.idNotificacion}">
                                                                                 <c:set var="encontrada" value="1"/>
                                                                                 <a data-toggle="modal"
                                                                                    data-id="${fn:escapeXml(overrideUrl)}"
                                                                                    class="btn btn-xs btn-danger override"><i
                                                                                         class="fa fa-times fa-fw"></i></a>
-                                                                            </c:when>
-                                                                            <c:otherwise>
-                                                                                <c:set var="encontrada" value="0"/>
-                                                                            </c:otherwise>
-                                                                        </c:choose>
+                                                                            </c:if>
                                                                     </c:forEach>
                                                                     <c:if test="${encontrada < 1}">
                                                                         <button class="btn btn-xs btn-danger override"

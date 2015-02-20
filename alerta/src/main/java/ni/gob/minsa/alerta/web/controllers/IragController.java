@@ -699,7 +699,8 @@ public class IragController {
                 infoResultado =  personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
                 if (infoResultado.isOk() && infoResultado.getObjeto() != null ){
                     updateNotificacion(idNotificacion, pers);
-                }
+                }else
+                 throw new Exception(infoResultado.getMensaje()+"----"+infoResultado.getMensajeDetalle());
                 personaService.commitTransaccion();
             } catch (Exception ex) {
                 logger.error(ex.getMessage(),ex);
@@ -709,6 +710,7 @@ public class IragController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                throw new Exception(ex);
             }finally {
                 try {
                     personaService.remover();
