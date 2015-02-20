@@ -360,13 +360,14 @@ public class SindFebrilController {
     	daNotificacion.setPersona(personaService.getPersona(personaId));
         //antes actualizar a la persona
         InfoResultado infoResultado;
-        SisPersona pers = daNotificacion.getPersona();
-        pers.setMunicipioResidencia(divisionPoliticaService.getDivisionPolitiacaByCodNacional(municipioResidencia));
-        pers.setComunidadResidencia(comunidadesService.getComunidad(comunidadResidencia));
-        pers.setDireccionResidencia(direccionResidencia);
-        pers.setOcupacion(catalogoService.getOcupacion(ocupacion));
-        Persona persona = personaService.ensamblarObjetoPersona(pers);
         try{
+            SisPersona pers = daNotificacion.getPersona();
+            pers.setMunicipioResidencia(divisionPoliticaService.getDivisionPolitiacaByCodNacional(municipioResidencia));
+            pers.setComunidadResidencia(comunidadesService.getComunidad(comunidadResidencia));
+            pers.setDireccionResidencia(direccionResidencia);
+            pers.setOcupacion(catalogoService.getOcupacion(ocupacion));
+            Persona persona = personaService.ensamblarObjetoPersona(pers);
+
             personaService.iniciarTransaccion();
 
             infoResultado =  personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
@@ -431,7 +432,8 @@ public class SindFebrilController {
                 daSindFeb.setDxFinal(dxFinal);
                 daSindFeb.setNombreLlenoFicha(nombreLlenoFicha);
                 sindFebrilService.saveSindFebril(daSindFeb);
-            }
+            }else
+                throw new Exception(infoResultado.getMensaje()+"----"+infoResultado.getMensajeDetalle());
             personaService.commitTransaccion();
         } catch (Exception ex) {
             logger.error(ex.getMessage(),ex);
@@ -441,6 +443,7 @@ public class SindFebrilController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            throw new Exception(ex);
         }finally {
             try {
                 personaService.remover();
