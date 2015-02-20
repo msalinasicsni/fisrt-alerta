@@ -348,8 +348,8 @@ public class SeguridadService {
      * @param session sesión actual para limpiarla
      */
     public void logOut(HttpSession session) {
-        //session.setAttribute("infoSesionActual", null);
-        //session.setAttribute("menuSistema", null);
+        session.setAttribute("infoSesionActual", null);
+        session.setAttribute("menuSistema", null);
         session.removeAttribute("infoSesionActual");
         session.removeAttribute("menuSistema");
         session.invalidate();

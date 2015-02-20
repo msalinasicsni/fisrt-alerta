@@ -185,6 +185,7 @@ public class SindFebrilController {
 		        	mav.addObject("sintDssa", sintDssa);
 		        	mav.addObject("sintHant", sintHant);
 		        	mav.addObject("sintLept", sintLept);
+                    mav.addObject("autorizado",true);
 		        	mav.setViewName("sindfeb/enterForm");
 	        	}
 	        	else{
@@ -245,7 +246,9 @@ public class SindFebrilController {
                     }
                 }
                 if (idUsuario != 0) {
-                    autorizado = seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodUnidadAtencion().getCodigo());
+                      autorizado = seguridadService.esUsuarioNivelCentral(idUsuario,ConstantsSecurity.SYSTEM_CODE) ||
+                        seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodUnidadAtencion().getCodigo());
+
                 }
                 List<Divisionpolitica> munic = divisionPoliticaService.getMunicipiosBySilais(daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo());
                 List<Unidades> uni = null;
@@ -361,16 +364,22 @@ public class SindFebrilController {
         //antes actualizar a la persona
         InfoResultado infoResultado;
         try{
-            SisPersona pers = daNotificacion.getPersona();
-            pers.setMunicipioResidencia(divisionPoliticaService.getDivisionPolitiacaByCodNacional(municipioResidencia));
-            pers.setComunidadResidencia(comunidadesService.getComunidad(comunidadResidencia));
-            pers.setDireccionResidencia(direccionResidencia);
-            pers.setOcupacion(catalogoService.getOcupacion(ocupacion));
-            Persona persona = personaService.ensamblarObjetoPersona(pers);
+            if (ConstantsSecurity.ENABLE_PERSON_COMPONENT) {
+                SisPersona pers = daNotificacion.getPersona();
+                pers.setMunicipioResidencia(divisionPoliticaService.getDivisionPolitiacaByCodNacional(municipioResidencia));
+                pers.setComunidadResidencia(comunidadesService.getComunidad(comunidadResidencia));
+                pers.setDireccionResidencia(direccionResidencia);
+                pers.setOcupacion(catalogoService.getOcupacion(ocupacion));
+                Persona persona = personaService.ensamblarObjetoPersona(pers);
 
-            personaService.iniciarTransaccion();
+                personaService.iniciarTransaccion();
 
-            infoResultado =  personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
+                infoResultado = personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
+            }else{
+                infoResultado = new InfoResultado();
+                infoResultado.setOk(true);
+                infoResultado.setObjeto(daNotificacion);
+            }
             //si se actualizó la persona se registra la notificación
             if (infoResultado.isOk() && infoResultado.getObjeto() != null ){
                 daNotificacion.setFechaRegistro(new Timestamp(new Date().getTime()));
@@ -434,19 +443,22 @@ public class SindFebrilController {
                 sindFebrilService.saveSindFebril(daSindFeb);
             }else
                 throw new Exception(infoResultado.getMensaje()+"----"+infoResultado.getMensajeDetalle());
-            personaService.commitTransaccion();
+            if (ConstantsSecurity.ENABLE_PERSON_COMPONENT)
+                personaService.commitTransaccion();
         } catch (Exception ex) {
             logger.error(ex.getMessage(),ex);
             ex.printStackTrace();
             try {
-                personaService.rollbackTransaccion();
+                if (ConstantsSecurity.ENABLE_PERSON_COMPONENT)
+                    personaService.rollbackTransaccion();
             } catch (Exception e) {
                 e.printStackTrace();
             }
             throw new Exception(ex);
         }finally {
             try {
-                personaService.remover();
+                if (ConstantsSecurity.ENABLE_PERSON_COMPONENT)
+                    personaService.remover();
             } catch (Exception e) {
                 e.printStackTrace();
             }
