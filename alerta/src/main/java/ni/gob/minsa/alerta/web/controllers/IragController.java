@@ -586,9 +586,9 @@ public class IragController {
             if (irag.getIdNotificacion() == null) {
                 DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion);
                 irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
-            }else{
-                daIragService.saveOrUpdateIrag(irag);
             }
+            daIragService.saveOrUpdateIrag(irag);
+
 
             return createJsonResponse(irag);
         } else {
@@ -687,36 +687,40 @@ public class IragController {
         SisPersona pers = new SisPersona();
         InfoResultado infoResultado;
         if (personaId != null) {
-            pers = personaService.getPersona(personaId);
-            pers.setMunicipioResidencia(divisionPoliticaService.getDivisionPolitiacaByCodNacional(municipioResidencia));
-            pers.setComunidadResidencia(comunidadesService.getComunidad(comunidadResidencia));
-            pers.setDireccionResidencia(direccionResidencia);
-            pers.setTelefonoResidencia(telefonoResidencia);
-            Persona persona = personaService.ensamblarObjetoPersona(pers);
-            try{
-                personaService.iniciarTransaccion();
+                pers = personaService.getPersona(personaId);
+                pers.setMunicipioResidencia(divisionPoliticaService.getDivisionPolitiacaByCodNacional(municipioResidencia));
+                pers.setComunidadResidencia(comunidadesService.getComunidad(comunidadResidencia));
+                pers.setDireccionResidencia(direccionResidencia);
+                pers.setTelefonoResidencia(telefonoResidencia);
+            if (ConstantsSecurity.ENABLE_PERSON_COMPONENT) {
+                Persona persona = personaService.ensamblarObjetoPersona(pers);
+                try {
+                    personaService.iniciarTransaccion();
 
-                infoResultado =  personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
-                if (infoResultado.isOk() && infoResultado.getObjeto() != null ){
-                    updateNotificacion(idNotificacion, pers);
-                }else
-                 throw new Exception(infoResultado.getMensaje()+"----"+infoResultado.getMensajeDetalle());
-                personaService.commitTransaccion();
-            } catch (Exception ex) {
-                logger.error(ex.getMessage(),ex);
-                ex.printStackTrace();
-                try {
-                    personaService.rollbackTransaccion();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    infoResultado = personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
+                    if (infoResultado.isOk() && infoResultado.getObjeto() != null) {
+                        updateNotificacion(idNotificacion, pers);
+                    } else
+                        throw new Exception(infoResultado.getMensaje() + "----" + infoResultado.getMensajeDetalle());
+                    personaService.commitTransaccion();
+                } catch (Exception ex) {
+                    logger.error(ex.getMessage(), ex);
+                    ex.printStackTrace();
+                    try {
+                        personaService.rollbackTransaccion();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    throw new Exception(ex);
+                } finally {
+                    try {
+                        personaService.remover();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-                throw new Exception(ex);
-            }finally {
-                try {
-                    personaService.remover();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            }else{
+                updateNotificacion(idNotificacion, pers);
             }
         }
         return createJsonResponse(pers);

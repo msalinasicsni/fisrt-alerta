@@ -170,8 +170,8 @@
                                                         <c:otherwise>
                                                             <c:choose>
                                                                 <c:when test="${not empty iragAutorizadas}">
+                                                                    <c:set var="encontrada" value="0"/>
                                                                     <c:forEach items="${iragAutorizadas}" var="ira">
-                                                                        <c:set var="encontrada" value="0"/>
                                                                             <c:if test="${record.idNotificacion.idNotificacion==ira.idNotificacion.idNotificacion}">
                                                                                 <c:set var="encontrada" value="1"/>
                                                                                 <a data-toggle="modal"
