@@ -98,6 +98,14 @@
 								<!-- widget content -->
 								<div class="widget-body no-padding">
 									<form id="search-notices" class="smart-form" autocomplete="off">
+                                        <c:choose>
+                                            <c:when test="${not empty esEstudio}">
+                                                <input type="hidden" id="esEstudio" value="true">
+                                            </c:when>
+                                            <c:otherwise>
+                                                <input type="hidden" id="esEstudio" value="false">
+                                            </c:otherwise>
+                                        </c:choose>
 										<fieldset>
 											<section>
 												<label class="input"> <i class="icon-append fa fa-check"></i>
@@ -217,6 +225,7 @@
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<spring:url value="/tomaMx/notices" var="noticesUrl"/>
     <spring:url value="/tomaMx/create" var="actionUrl"/>
+    <spring:url value="/tomaMx/createStudy" var="createStudyUrl"/>
     <spring:url value="/tomaMx/tomaMxByIdNoti" var="tomaMxUrl"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -224,14 +233,22 @@
 			var parametros = {noticesUrl: "${noticesUrl}",
                               blockMess: "${blockMess}",
                               actionUrl: "${actionUrl}",
-                              tomaMxUrl: "${tomaMxUrl}"
+                              tomaMxUrl: "${tomaMxUrl}",
+                              createStudyUrl : "${createStudyUrl}"
             };
 			SearchNotices.init(parametros);
 	    	$("li.samples").addClass("open");
-	    	$("li.tomaMx").addClass("active");
-	    	if("top"!=localStorage.getItem("sm-setmenu")){
-	    		$("li.tomaMx").parents("ul").slideDown(200);
-	    	}
+            if ($("#esEstudio").val()=='true'){
+                $("li.tomaMxEstudio").addClass("active");
+                if ("top" != localStorage.getItem("sm-setmenu")) {
+                    $("li.tomaMxEstudio").parents("ul").slideDown(200);
+                }
+            }else {
+                $("li.tomaMx").addClass("active");
+                if ("top" != localStorage.getItem("sm-setmenu")) {
+                    $("li.tomaMx").parents("ul").slideDown(200);
+                }
+            }
 		});
 	</script>
 	<!-- END JAVASCRIPTS -->

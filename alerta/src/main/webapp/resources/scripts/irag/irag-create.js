@@ -337,7 +337,7 @@ var CreateIrag = function () {
                     error.insertAfter(element.parent());
 
                 }
-            });;
+            });
 
             //mostrar tipo de vacuna segun seleccion
             $('#codVacuna').change(function () {

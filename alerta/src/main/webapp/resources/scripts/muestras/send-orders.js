@@ -125,17 +125,19 @@ var SendOrders = function () {
                 setTimeout($.unblockUI, 500);
             }
 
-            function format ( d ) {
+            function format ( d, indice ) {
                 // `d` is the original data object for the row
-                var diagnosticos = d[12];
+                var texto = d[indice];//indice donde esta el input hidden
+                var diagnosticos = $(texto).val();
                 var json =JSON.parse(diagnosticos);
                 var len = Object.keys(json).length;
-                var childTable = '<table style="padding-left:50px;">'+
-                    '<tr><td style="font-weight: bold">'+$('#text_dx').val()+'</td><td style="font-weight: bold">'+$('#text_dx_date').val()+'</td></tr>';
+                var childTable = '<table style="padding-left:20px;border-collapse: separate;border-spacing:  10px 3px;">'+
+                    '<tr><td style="font-weight: bold">'+$('#text_request').val()+'</td><td style="font-weight: bold">'+$('#text_request_date').val()+'</td><td style="font-weight: bold">'+$('#text_request_type').val()+'</td></tr>';
                 for (var i = 1; i <= len; i++) {
                     childTable =childTable +
-                        '<tr></tr><td>'+json[i].nombre+'</td>'+
-                        '<td>'+json[i].fechaSolicitud+'</td></tr>';
+                        '<tr><td>'+json[i].nombre+'</td>'+
+                        '<td>'+json[i].fechaSolicitud+'</td>' +
+                        '<td>'+json[i].tipo+'</td></tr>';
                 }
                 childTable = childTable + '</table>';
                 return childTable;
@@ -151,7 +153,7 @@ var SendOrders = function () {
                 }
                 else {
                     // Open this row
-                    row.child( format(row.data()) ).show();
+                    row.child(format(row.data(),11)).show();
                     tr.addClass('shown');
                 }
             } );
@@ -184,9 +186,8 @@ var SendOrders = function () {
                         for (var i = 0; i < len; i++) {
                             table1.fnAddData(
                                 [dataToLoad[i].tipoMuestra +" <input type='hidden' value='"+dataToLoad[i].idTomaMx+"'/>", dataToLoad[i].fechaTomaMx, dataToLoad[i].estadoMx, dataToLoad[i].fechaInicioSintomas,dataToLoad[i].separadaMx, dataToLoad[i].codSilais, dataToLoad[i].codUnidadSalud,dataToLoad[i].persona, dataToLoad[i].edad,dataToLoad[i].sexo,dataToLoad[i].embarazada,
-                                    '',dataToLoad[i].diagnosticos]);                            /*table1.fnAddData(
-                                [dataToLoad[i].tipoMuestra +" <input type='hidden' value='"+dataToLoad[i].idTomaMx+"'/>",dataToLoad[i].tipoExamen,dataToLoad[i].fechaHoraOrden, dataToLoad[i].fechaTomaMx, dataToLoad[i].fechaInicioSintomas,dataToLoad[i].separadaMx, dataToLoad[i].codSilais, dataToLoad[i].codUnidadSalud,dataToLoad[i].persona, dataToLoad[i].edad,dataToLoad[i].sexo,
-                                    dataToLoad[i].embarazada]);*/
+                                        "<input type='hidden' value='"+dataToLoad[i].solicitudes+"'/>"]);
+
                         }
                     }else{
                         $.smallBox({

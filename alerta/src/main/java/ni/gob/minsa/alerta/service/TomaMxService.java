@@ -188,4 +188,48 @@ public class TomaMxService {
         return  (DaTomaMx)q.uniqueResult();
     }
 
+    /*********************************************************/
+    // ESTUDIOS
+    /*********************************************************/
+    /**
+     *Retorna una lista de estudios segun tipoMx y tipo Notificacion
+     * @param codTipoMx código del tipo de Mx
+     * @param codTipoNoti código del tipo Notificacion
+     *
+     */
+    @SuppressWarnings("unchecked")
+    public List<Estudio_TipoMx_TipoNoti> getEstudiosByTipoMxTipoNoti(String codTipoMx, String codTipoNoti) throws Exception {
+        String query = "select est from Estudio_TipoMx_TipoNoti est " +
+                "where est.tipoMx_tipoNotificacion.tipoMx.idTipoMx = :codTipoMx " +
+                "and est.tipoMx_tipoNotificacion.tipoNotificacion.codigo = :codTipoNoti" ;
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("codTipoMx", codTipoMx);
+        q.setString("codTipoNoti", codTipoNoti);
+        return q.list();
+    }
+
+    /**
+     * Obtiene un estudio
+     * @param id del estudio a buscar
+     * @return Catalogo_Estudio
+     */
+    public Catalogo_Estudio getEstudioById(String id){
+        String query = "from Catalogo_Estudio where idEstudio = :id";
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("id", id);
+        return (Catalogo_Estudio)q.uniqueResult();
+    }
+
+    /**
+     * Agregar solicitud de estudio, para la toma de muestra
+     * @param solicitud objeto a guardra
+     */
+    public void addSolicitudEstudio(DaSolicitudEstudio solicitud) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(solicitud);
+    }
+
+
 }

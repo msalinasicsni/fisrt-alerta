@@ -21,6 +21,9 @@
         tr.shown td.details-control {
             background: url("${minus}") no-repeat center center;
         }
+        tr.active {
+            color: #3276B1!important;
+        }
     </style>
 </head>
 <!-- END HEAD -->
@@ -126,8 +129,9 @@
                                     <input id="msg_no_results_found" type="hidden" value="<spring:message code="msg.ento.no.results.found"/>"/>
                                     <input id="text_selected_all" type="hidden" value="<spring:message code="lbl.selected.all"/>"/>
                                     <input id="text_selected_none" type="hidden" value="<spring:message code="lbl.selected.none"/>"/>
-                                    <input id="text_dx" type="hidden" value="<spring:message code="lbl.send.dx"/>"/>
-                                    <input id="text_dx_date" type="hidden" value="<spring:message code="lbl.send.dx.date"/>"/>
+                                    <input id="text_request" type="hidden" value="<spring:message code="lbl.send.request"/>"/>
+                                    <input id="text_request_date" type="hidden" value="<spring:message code="lbl.send.request.date"/>"/>
+                                    <input id="text_request_type" type="hidden" value="<spring:message code="lbl.send.request.type"/>"/>
 
                                     <form id="searchOrders-form" class="smart-form" autocomplete="off">
                                         <fieldset>
@@ -256,8 +260,6 @@
                                             <th data-hide="phone,tablet"><i class="fa fa-user fa-fw text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="person.sexo"/></th>
                                             <th data-hide="phone,tablet"><i class="fa fa-user fa-fw text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.send.pregnancy"/></th>
                                             <th></th>
-                                            <th data-hide="always"></th>
-                                            <!--<th data-hide="always"></th>-->
                                         </tr>
                                         </thead>
                                     </table>
