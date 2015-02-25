@@ -183,4 +183,11 @@ public class EnvioMxService {
         q.setParameter("idTomaMx",idTomaMx);
         return q.list();
     }
+
+    public List<DaSolicitudEstudio> getSolicitudesEstudioByIdTomaMx(String idTomaMx){
+        String query = "from DaSolicitudEstudio where idTomaMx.idTomaMx = :idTomaMx ORDER BY fechaHSolicitud";
+        Query q = sessionFactory.getCurrentSession().createQuery(query);
+        q.setParameter("idTomaMx",idTomaMx);
+        return q.list();
+    }
 }

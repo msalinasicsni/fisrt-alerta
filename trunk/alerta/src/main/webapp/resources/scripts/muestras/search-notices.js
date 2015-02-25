@@ -73,8 +73,6 @@ var SearchNotices = function () {
     				var len = data.length;
     				for ( var i = 0; i < len; i++) {
 
-						var actionUrl = parametros.actionUrl + '/'+data[i].idNotificacion;
-
 						table1.fnAddData(
     							[data[i].persona.primerNombre, data[i].persona.segundoNombre, data[i].persona.primerApellido, data[i].persona.segundoApellido, data[i].persona.fechaNacimiento,data[i].persona.municipioResidencia.nombre, data[i].codTipoNotificacion.valor, '<a data-toggle="modal" class="btn btn-default btn-xs search" data-id='+data[i].idNotificacion+'><i class="fa fa-edit fa-fw"></i></a>']);
     				}
@@ -105,7 +103,12 @@ var SearchNotices = function () {
                     idNotificacion: idNotificacion,
                     ajax: 'true'
                 }, function (data) {
-
+                    var actionUrl;
+                    if ($("#esEstudio").val()=='true'){
+                        actionUrl = parametros.createStudyUrl + '/' + idNotificacion;
+                    }else {
+                        actionUrl = parametros.actionUrl + '/' + idNotificacion;
+                    }
                     if(data.length > 0){
                         var opcSi = $("#inYes").val();
                         var opcNo = $("#inNo").val();
@@ -116,7 +119,8 @@ var SearchNotices = function () {
                             buttons: '['+opcSi+']['+opcNo+']'
                         }, function (ButtonPressed) {
                             if (ButtonPressed === opcSi) {
-                                window.location.href = parametros.actionUrl + '/'+idNotificacion;
+                                window.location.href = actionUrl;
+
                             }
                             if (ButtonPressed === opcNo) {
                                 $.smallBox({
@@ -130,7 +134,7 @@ var SearchNotices = function () {
 
                         });
                     }else{
-                        window.location.href =  parametros.actionUrl + '/'+idNotificacion;
+                        window.location.href =  actionUrl;
                     }
 
                 });
