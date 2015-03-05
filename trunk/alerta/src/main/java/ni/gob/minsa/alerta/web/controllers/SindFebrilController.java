@@ -373,8 +373,14 @@ public class SindFebrilController {
                 Persona persona = personaService.ensamblarObjetoPersona(pers);
 
                 personaService.iniciarTransaccion();
-
+                logger.info("NombrePersona:"+persona.getPrimerNombre());
+                logger.info("IdPersona:"+persona.getPersonaId());
+                logger.info("ApellidoPersona:"+persona.getPrimerApellido());
+                logger.info("FechaNacPersona:"+persona.getFechaNacimiento());
+                logger.info("SexoPersona:"+persona.getSexoCodigo());
+                logger.info("GUARDAR PERSONA");
                 infoResultado = personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
+                logger.info("FIN GUARDAR PERSONA");
             }else{
                 infoResultado = new InfoResultado();
                 infoResultado.setOk(true);

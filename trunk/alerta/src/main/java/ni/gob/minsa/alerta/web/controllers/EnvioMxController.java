@@ -228,7 +228,7 @@ public class EnvioMxController {
                 map.put("sexo"," ");
                 map.put("embarazada"," ");
             }
-            //se arma estructura de diagnósticos
+            //se arma estructura de diagnósticos o estudios
             List<DaSolicitudDx> solicitudDxList = envioMxService.getSolicitudesDxByIdTomaMx(tomaMx.getIdTomaMx());
             Map<Integer, Object> mapSolicitudesList = new HashMap<Integer, Object>();
             Map<String, String> mapSolicitud = new HashMap<String, String>();

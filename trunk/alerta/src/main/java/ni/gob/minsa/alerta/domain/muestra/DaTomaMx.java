@@ -30,7 +30,6 @@ public class DaTomaMx {
     private Timestamp fechaAnulacion;
     private String codigoUnicoMx;
     private DaEnvioMx envio;
-    private Catalogo_Estudio tipoEstudio;
 
 
     @Id
@@ -192,14 +191,4 @@ public class DaTomaMx {
         this.envio = envio;
     }
 
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "ID_ESTUDIO", referencedColumnName = "ID_ESTUDIO")
-    @ForeignKey(name = "TOMAMX_ESTUDIO_FK")
-    public Catalogo_Estudio getTipoEstudio() {
-        return tipoEstudio;
-    }
-
-    public void setTipoEstudio(Catalogo_Estudio tipoEstudio) {
-        this.tipoEstudio = tipoEstudio;
-    }
 }
