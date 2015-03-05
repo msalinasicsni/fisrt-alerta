@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import com.sun.media.jfxmedia.logging.Logger;
 import ni.gob.minsa.alerta.domain.persona.*;
 
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
@@ -24,6 +25,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +35,7 @@ public class PersonaService {
 	
 	@Resource(name="sessionFactory")
 	private SessionFactory sessionFactory;
-
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(PersonaService.class);
     private PersonaUTMService personaUTMService;
     private InitialContext initialContext;
 
@@ -120,6 +122,7 @@ public class PersonaService {
         this.initialContext = new InitialContext();
         this.personaUTMService = (PersonaUTMService) initialContext.lookup(ConstantsSecurity.EJB_BIN_PERSON_UTM);
         this.personaUTMService.iniciarTransaccion();
+        logger.info("Se inicia transacción personaUTMService");
     }
 
     public void commitTransaccion() throws Exception {
@@ -128,14 +131,17 @@ public class PersonaService {
 
     public void rollbackTransaccion() throws Exception {
         this.personaUTMService.rollbackTransaccion();
+        logger.info("Se hiso rollback personaUTMService");
     }
 
     public void remover() throws Exception {
         this.personaUTMService.remover();
         this.initialContext.close();
+        logger.info("Se cierra conexión personaUTMService");
     }
 
     public InfoResultado guardarPersona(Persona pPersona, String pUsuarioRegistra) {
+        logger.info("Se guardar persona mediante componente");
         return this.personaUTMService.guardarPersona(pPersona, pUsuarioRegistra);
     }
 
@@ -151,11 +157,13 @@ public class PersonaService {
             infoResultado = servicio.obtenerPorId(pIdPersona);
             if(infoResultado.isOk() && infoResultado.getObjeto()!=null){
                 persona = (Persona) infoResultado.getObjeto();
+            }else{
+                throw new Exception("No se encontro persona"+infoResultado.getMensaje()+infoResultado.getMensajeDetalle());
             }
             ctx.close();
         }catch(Exception e){
             e.printStackTrace();
-            throw e;
+            throw new Exception(e);
         }
 
         return persona;

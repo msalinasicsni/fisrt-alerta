@@ -63,14 +63,14 @@ public class SeguridadService {
                 }
             }
 
-          infoSesion = new InfoSesion();
-            /*infoSesion.setUsuarioId(25);
+          /*infoSesion = new InfoSesion();
+            infoSesion.setUsuarioId(25);
             infoSesion.setNombre("usuariosis1");
-            infoSesion.setUsername("usuariosis1");*/
+            infoSesion.setUsername("usuariosis1");
             infoSesion.setUsuarioId(170);
             infoSesion.setNombre("Adm Alerta");
             infoSesion.setUsername("alerta");
-            infoSesion.setSistemaSesion("ALERTA");
+            infoSesion.setSistemaSesion("ALERTA");*/
             ctx.close();
         }catch(Exception e){
             System.out.println("---- EXCEPTION");
@@ -109,7 +109,7 @@ public class SeguridadService {
         String urlRetorno="";
         if (seguridadHabilitada()) { //Si es false no se realiza ninguna validación
             if (!esUsuarioAutenticado(request.getSession())) {
-                String bdSessionId = "a";  // esta variable dejarla en blanco par activar la seguridad
+                String bdSessionId = "";  // esta variable dejarla en blanco par activar la seguridad
                 Cookie[] cookies = request.getCookies();
                 if (cookies != null) {
                     for (int i = 0; i < cookies.length; i++) {
@@ -245,7 +245,7 @@ public class SeguridadService {
     /**
      *  Método que consulta la sessión con información del usuario y obtiene el nombre el usuario auntenticado
      * @param request petición actual
-     * @return String con el nombre del usuario auntenticado, "" si no se encontró
+     * @return String con el nombre del usuario auntenticado, "" si no se encontró, por defecto alerta
      */
     public String obtenerNombreUsuario(HttpServletRequest request){
         String nombreUsuario="";
@@ -255,7 +255,7 @@ public class SeguridadService {
             nombreUsuario = infoSesion.getNombre();
         }else {
             if (!seguridadHabilitada())
-                nombreUsuario = "system";
+                nombreUsuario = "alerta";
         }
 
         return nombreUsuario;

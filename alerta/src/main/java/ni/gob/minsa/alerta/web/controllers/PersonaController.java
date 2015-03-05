@@ -173,23 +173,34 @@ public class PersonaController {
             List <Ocupacion> ocupacionList = ocupacionService.getAllOcupaciones();
             List <Identificacion> identificacionList = catalogosService.getListaTipoIdentificacion();
             List <TipoAsegurado> tipoAseguradoList = catalogosService.getTiposAsegurados();
-            Persona persona = personaService.buscarPorId(idPerson);
+            Persona persona = null;
+            try {
+                SisPersona sisPersona = personaService.getPersona(idPerson);
+                 persona = personaService.ensamblarObjetoPersona(sisPersona);//.buscarPorId(idPerson);
+                logger.info("NombrePersona:"+persona.getPrimerNombre());
+                logger.info("IdPersona:"+persona.getPersonaId());
+                logger.info("ApellidoPersona:"+persona.getPrimerApellido());
+                logger.info("FechaNacPersona:"+persona.getFechaNacimiento());
+                logger.info("SexoPersona:"+persona.getSexoCodigo());
+            }catch (Exception ex){
+                logger.error(ex.getMessage());
+            }
             String depaNac = "";
             String depaResi = "";
             List<Divisionpolitica> municipiosNac = null;
-            if (persona.getMuniNacCodigoNac()!=null) {
+            if (persona !=null && persona.getMuniNacCodigoNac()!=null) {
                 Divisionpolitica departamentoNac = divisionPoliticaService.getDepartamentoByMunicipi(persona.getMuniNacCodigoNac());
                 depaNac = departamentoNac.getCodigoNacional();
                 municipiosNac = divisionPoliticaService.getMunicipiosFromDepartamento(depaNac);
             }
             List<Divisionpolitica> municipiosResi = null;
-            if (persona.getMuniResiCodigoNac()!=null) {
+            if (persona !=null && persona.getMuniResiCodigoNac()!=null) {
                 Divisionpolitica departamentoResi = divisionPoliticaService.getDepartamentoByMunicipi(persona.getMuniResiCodigoNac());
                 depaResi = departamentoResi.getCodigoNacional();
                 municipiosResi = divisionPoliticaService.getMunicipiosFromDepartamento(depaResi);
             }
             List<Comunidades> comunidadesesRes = null;
-            if (persona.getComuResiCodigo()!=null && persona.getMuniResiCodigoNac()!=null){
+            if (persona !=null && persona.getComuResiCodigo()!=null && persona.getMuniResiCodigoNac()!=null){
                 comunidadesesRes = comunidadesService.getComunidades(persona.getMuniResiCodigoNac());
             }
             mav.addObject("persona",persona);
@@ -230,17 +241,18 @@ public class PersonaController {
             Persona persona = jsonToSisPersona(strPersona);
 
             personaService.iniciarTransaccion();
-
-            infoResultado =  personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
+            logger.info("GUARDAR PERSONSA");
+            String usuarioRegistra = seguridadService.obtenerNombreUsuario(request);
+            infoResultado =  personaService.guardarPersona(persona, usuarioRegistra );
             if (infoResultado.isOk() && infoResultado.getObjeto() != null ){
                 idPersona = String.valueOf(((Persona) (infoResultado.getObjeto())).getPersonaId());
             }else
                 resultado = infoResultado.getMensaje();
-
+            logger.info("FIN GUARDAR PERSONSA");
             personaService.commitTransaccion();
 
         } catch (Exception ex) {
-            logger.error(ex.getMessage(),ex);
+            logger.error("Error guardar persona",ex);
             ex.printStackTrace();
             resultado = messageSource.getMessage("msg.person.error.add",null,null);
             resultado=resultado+". \n "+ex.getMessage();
@@ -248,6 +260,7 @@ public class PersonaController {
                 personaService.rollbackTransaccion();
             } catch (Exception e) {
                 e.printStackTrace();
+                logger.error("Rollback error",e);
                 //resultado = messageSource.getMessage("msg.person.error.unhandled",null,null);
                 //resultado=resultado+". \n "+(e.getMessage()!=null?e.getMessage():"");
             }
@@ -257,6 +270,7 @@ public class PersonaController {
                 personaService.remover();
             } catch (Exception e) {
                 e.printStackTrace();
+                logger.error("Cerrar conexión error",e);
                 //resultado = messageSource.getMessage("msg.person.error.unhandled",null,null);
                 //resultado=resultado+". \n "+(e.getMessage()!=null?e.getMessage():"");
             }
@@ -273,7 +287,7 @@ public class PersonaController {
     private Persona jsonToSisPersona(String strJsonPersona) throws Exception{
         JsonObject jObjectPerson = new Gson().fromJson(strJsonPersona, JsonObject.class);
         Persona persona = new Persona();
-        Long idPersona = -1L; //-1 indica que es nuevo registro
+        Long idPersona = 0L; //-1 indica que es nuevo registro
         if (jObjectPerson.get("idPersona")!=null && !jObjectPerson.get("idPersona").getAsString().isEmpty())
             idPersona = jObjectPerson.get("idPersona").getAsLong();
 
@@ -317,7 +331,7 @@ public class PersonaController {
         persona.setEstadoCivilCodigo(codEstadoCivil.trim().isEmpty() ? null : codEstadoCivil);
         persona.setIdentCodigo(codTipIdent.trim().isEmpty() ? null : codTipIdent);
         persona.setTipoAsegCodigo(codTipoAseg.trim().isEmpty() ? null : codTipoAseg);
-        persona.setOcupacionCodigo(codOcupacion!=null ? codOcupacion : null);
+        persona.setOcupacionCodigo((codOcupacion!=null && !codOcupacion.isEmpty())? codOcupacion : null);
         persona.setPaisNacCodigoAlfados(codPaisNac.trim().isEmpty() ? null : codPaisNac);
         persona.setMuniNacCodigoNac(codMuniNac.trim().isEmpty() ? null : codMuniNac);
         persona.setMuniResiCodigoNac(codMuniRes.trim().isEmpty() ? null : codMuniRes);
