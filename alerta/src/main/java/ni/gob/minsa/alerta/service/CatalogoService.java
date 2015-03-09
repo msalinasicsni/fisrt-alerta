@@ -5,6 +5,7 @@ import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.irag.*;
+import ni.gob.minsa.alerta.domain.muestra.CategoriaMx;
 import ni.gob.minsa.alerta.domain.muestra.EstadoMx;
 import ni.gob.minsa.alerta.domain.muestra.TipoMx;
 import ni.gob.minsa.alerta.domain.notificacion.TipoNotificacion;
@@ -937,6 +938,24 @@ public class CatalogoService {
         Session session = sessionFactory.getCurrentSession();
         //Create a hibernate query (HQL)
         Query query = session.createQuery("FROM Anios where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public CategoriaMx getCategoriaMx (String cmx){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getCategoriaMxByCodigo").setString("pCodigo", cmx);
+        //Retrieve all
+        return (CategoriaMx) query.uniqueResult();
+    }
+
+    public List<CategoriaMx> getCategoriasMx(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM CategoriaMx where pasivo = false order by orden");
         //retrieve all
         return query.list();
     }

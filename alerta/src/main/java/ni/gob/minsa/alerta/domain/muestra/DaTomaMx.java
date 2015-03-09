@@ -30,7 +30,7 @@ public class DaTomaMx {
     private Timestamp fechaAnulacion;
     private String codigoUnicoMx;
     private DaEnvioMx envio;
-
+    private CategoriaMx categoriaMx;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -191,4 +191,14 @@ public class DaTomaMx {
         this.envio = envio;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Catalogo.class, optional = true)
+    @JoinColumn(name = "COD_CATEGORIA", referencedColumnName = "CODIGO",nullable = true)
+    @ForeignKey(name = "CATEGORIAMX_MX_FK")
+    public CategoriaMx getCategoriaMx() {
+        return categoriaMx;
+    }
+
+    public void setCategoriaMx(CategoriaMx categoriaMx) {
+        this.categoriaMx = categoriaMx;
+    }
 }

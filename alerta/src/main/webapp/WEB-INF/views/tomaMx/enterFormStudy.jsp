@@ -247,8 +247,6 @@
                                                 </label>
                                             </div>
                                         </section>
-                                    </div>
-                                    <div class="row">
                                         <section class="col col-3">
                                             <label  class="text-left txt-color-blue font-md">
                                                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.sampling.datetime" />
@@ -263,7 +261,7 @@
                                                 </label>
                                             </div>
                                         </section>
-                                        <section class="col col-4">
+                                        <section class="col col-6">
                                             <label class="text-left txt-color-blue font-md">
                                                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.sample.type"/>
                                             </label>
@@ -280,7 +278,9 @@
                                                 </select>
                                             </div>
                                         </section>
-                                        <section class="col col-5">
+                                    </div>
+                                    <div class="row">
+                                        <section class="col col-6">
                                             <label class="text-left txt-color-blue font-md">
                                                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.study.sample.type"/>
                                             </label>
@@ -292,6 +292,23 @@
                                                 </select>
                                             </div>
                                         </section>
+                                        <div class="col col-3" id="divCategoriaMx">
+                                            <label class="text-left txt-color-blue font-md">
+                                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.sample.category"/>
+                                            </label>
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-list fa-fw"></i>
+                                                    </span>
+                                                <label for="codCategoriaMx"></label>
+                                                <select  id="codCategoriaMx" name="codCategoriaMx" class="select2">
+                                                    <option value=""><spring:message code="lbl.select" />...</option>
+                                                    <c:forEach items="${categMxList}" var="catTipoMx">
+                                                        <option value="${catTipoMx.codigo}">${catTipoMx.valor}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <section class="col col-3">
@@ -452,6 +469,7 @@
             if("top"!=localStorage.getItem("sm-setmenu")){
                 $("li.tomaMxEstudio").parents("ul").slideDown(200);
             }
+            $("#divCategoriaMx").hide();
         });
     </script>
 	<!-- END JAVASCRIPTS -->

@@ -129,7 +129,7 @@
                                     <input id="msg_no_results_found" type="hidden" value="<spring:message code="msg.ento.no.results.found"/>"/>
                                     <input id="text_selected_all" type="hidden" value="<spring:message code="lbl.selected.all"/>"/>
                                     <input id="text_selected_none" type="hidden" value="<spring:message code="lbl.selected.none"/>"/>
-                                    <input id="text_request" type="hidden" value="<spring:message code="lbl.send.request"/>"/>
+                                    <input id="text_request" type="hidden" value="<spring:message code="lbl.send.request.desc"/>"/>
                                     <input id="text_request_date" type="hidden" value="<spring:message code="lbl.send.request.date"/>"/>
                                     <input id="text_request_type" type="hidden" value="<spring:message code="lbl.send.request.type"/>"/>
 

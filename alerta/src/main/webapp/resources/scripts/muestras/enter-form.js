@@ -178,21 +178,25 @@ var EnterFormTomaMxStudies = function () {
 
             $('#codTipoMx').change(function() {
                 bloquearUI(parametros.blockMess);
-                $.getJSON(parametros.sStudiesUrl, {
-                    codMx: $('#codTipoMx').val(),
-                    tipoNoti: $('#tipoNoti').val(),
-                    ajax: 'false'
-                }, function (data) {
-                    var len = data.length;
-                    var html = null;
-                    for (var i = 0; i < len; i++) {
-                        html += '<option value="' + data[i].estudio.idEstudio + '">'
-                            + data[i].estudio.nombre
-                            + '</option>';
-                    }
-                    $('#idEstudio').html(html);
-                    desbloquearUI();
-                });
+                if ($(this).val()!="") {
+                    $.getJSON(parametros.sStudiesUrl, {
+                        codMx: $(this).val(),
+                        tipoNoti: $('#tipoNoti').val(),
+                        ajax: 'false'
+                    }, function (data) {
+                        var len = data.length;
+                        var html = null;
+                        for (var i = 0; i < len; i++) {
+                            html += '<option value="' + data[i].estudio.idEstudio + '">'
+                                + data[i].estudio.nombre
+                                + '</option>';
+                        }
+                        $('#idEstudio').html(html);
+                        desbloquearUI();
+                    });
+                }else{
+                    $('#idEstudio').html("").change("");
+                }
             });
 
 
@@ -201,7 +205,8 @@ var EnterFormTomaMxStudies = function () {
                     fechaHTomaMx : { required: true },
                     codTipoMx :{ required:true },
                     idEstudio : { required:true },
-                    codigoUnicoMx : { required:true }
+                    codigoUnicoMx : { required:true },
+                    codCategoriaMx :{ required:true}
 
                 },
                 errorPlacement: function (error, element) {
@@ -239,6 +244,7 @@ var EnterFormTomaMxStudies = function () {
                 objetoTomaMx['codigoUnicoMx'] = $("#codigoUnicoMx").val();
                 objetoTomaMx['mxSeparada'] = $('input[name="mxSeparada"]:checked', '#registroMx').val();
                 objetoTomaMx['estudios'] = $('#idEstudio').val();
+                objetoTomaMx['categoriaMx'] = $('#codCategoriaMx option:selected').val();
                 objetoTomaMx['mensaje']='';
 
                 bloquearUI(parametros.blockMess);
@@ -282,12 +288,21 @@ var EnterFormTomaMxStudies = function () {
                         });
                     }
                 });
-
             }
 
-
-
-
+            $('#idEstudio').change(function () {
+                var estudio = $('#idEstudio').val();
+                var cd = "1"; //Se asume que el id del estudio cohorte dengue es el 1
+                if (estudio != "") {
+                    if ($.inArray(cd, estudio) !== -1) {
+                        $("#divCategoriaMx").fadeIn('slow');
+                    } else {
+                        $("#divCategoriaMx").fadeOut('slow');
+                    }
+                }else{
+                    $("#divCategoriaMx").fadeOut('slow');
+                }
+            });
         }
     }
 

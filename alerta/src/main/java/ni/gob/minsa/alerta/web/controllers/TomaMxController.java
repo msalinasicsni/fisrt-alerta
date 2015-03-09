@@ -335,10 +335,11 @@ public class TomaMxController {
 
             if (noti != null) {
                 catTipoMx = tomaMxService.getTipoMxByTipoNoti(noti.getCodTipoNotificacion().getCodigo());
-
+                List<CategoriaMx> categoriasMx = catalogoService.getCategoriasMx();
                 mav.addObject("noti", noti);
                 mav.addObject("tomaMx", tomaMx);
                 mav.addObject("catTipoMx", catTipoMx);
+                mav.addObject("categMxList",categoriasMx);
                 mav.addAllObjects(mapModel);
                 mav.setViewName("tomaMx/enterFormStudy");
             } else {
@@ -375,6 +376,7 @@ public class TomaMxController {
         String horaRefrigeracion="";
         Integer  mxSeparada=null;
         String estudios="";
+        String categoriaMx="";
         try {
             logger.debug("Guardando datos de Toma de Muestra");
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
@@ -393,6 +395,8 @@ public class TomaMxController {
                 volumen = jsonpObject.get("volumen").getAsString();
             if (jsonpObject.get("mxSeparada")!=null && !jsonpObject.get("mxSeparada").getAsString().isEmpty())
                 mxSeparada = jsonpObject.get("mxSeparada").getAsInt();
+            if (jsonpObject.get("categoriaMx")!=null && !jsonpObject.get("categoriaMx").getAsString().isEmpty())
+                categoriaMx = jsonpObject.get("categoriaMx").getAsString();
 
             horaRefrigeracion = jsonpObject.get("horaRefrigeracion").getAsString();
 
@@ -427,6 +431,7 @@ public class TomaMxController {
             tomaMx.setUsuario(usuarioService.getUsuarioById((int)idUsuario));
             tomaMx.setEstadoMx(catalogoService.getEstadoMx("ESTDMX|PEND"));
             tomaMx.setCodigoUnicoMx(codigoUnicoMx);
+            tomaMx.setCategoriaMx(catalogoService.getCategoriaMx(categoriaMx));
             tomaMxService.addTomaMx(tomaMx);
             saveSolicitudesEstudio(tomaMx.getIdTomaMx(), jsonArray, request);
         } catch (Exception ex) {
