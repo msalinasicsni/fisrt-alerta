@@ -243,7 +243,7 @@ var EnterFormTomaMxStudies = function () {
                 objetoTomaMx['codTipoMx'] = $('#codTipoMx option:selected').val();
                 objetoTomaMx['codigoUnicoMx'] = $("#codigoUnicoMx").val();
                 objetoTomaMx['mxSeparada'] = $('input[name="mxSeparada"]:checked', '#registroMx').val();
-                objetoTomaMx['estudios'] = $('#idEstudio').val();
+                objetoTomaMx['estudio'] = $('#idEstudio').val();
                 objetoTomaMx['categoriaMx'] = $('#codCategoriaMx option:selected').val();
                 objetoTomaMx['mensaje']='';
 
@@ -294,9 +294,14 @@ var EnterFormTomaMxStudies = function () {
                 var estudio = $('#idEstudio').val();
                 var cd = "1"; //Se asume que el id del estudio cohorte dengue es el 1
                 if (estudio != "") {
-                    if ($.inArray(cd, estudio) !== -1) {
+                    /*if ($.inArray(cd, estudio) !== -1) {
                         $("#divCategoriaMx").fadeIn('slow');
                     } else {
+                        $("#divCategoriaMx").fadeOut('slow');
+                    }*/
+                    if (estudio == cd){
+                        $("#divCategoriaMx").fadeIn('slow');
+                    }else{
                         $("#divCategoriaMx").fadeOut('slow');
                     }
                 }else{
