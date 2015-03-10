@@ -305,6 +305,8 @@ public class EnvioMxController {
         String codSilais = null;
         String codUnidadSalud = null;
         String codTipoMx = null;
+        String codTipoSolicitud = null;
+        String nombreSolicitud = null;
 
         if (jObjectFiltro.get("nombreApellido") != null && !jObjectFiltro.get("nombreApellido").getAsString().isEmpty())
             nombreApellido = jObjectFiltro.get("nombreApellido").getAsString();
@@ -318,6 +320,10 @@ public class EnvioMxController {
             codUnidadSalud = jObjectFiltro.get("codUnidadSalud").getAsString();
         if (jObjectFiltro.get("codTipoMx") != null && !jObjectFiltro.get("codTipoMx").getAsString().isEmpty())
             codTipoMx = jObjectFiltro.get("codTipoMx").getAsString();
+        if (jObjectFiltro.get("codTipoSolicitud") != null && !jObjectFiltro.get("codTipoSolicitud").getAsString().isEmpty())
+            codTipoSolicitud = jObjectFiltro.get("codTipoSolicitud").getAsString();
+        if (jObjectFiltro.get("nombreSolicitud") != null && !jObjectFiltro.get("nombreSolicitud").getAsString().isEmpty())
+            nombreSolicitud = jObjectFiltro.get("nombreSolicitud").getAsString();
 
         filtroMx.setCodSilais(codSilais);
         filtroMx.setCodUnidadSalud(codUnidadSalud);
@@ -325,6 +331,8 @@ public class EnvioMxController {
         filtroMx.setFechaFinTomaMx(fechaFinTomaMx);
         filtroMx.setNombreApellido(nombreApellido);
         filtroMx.setCodTipoMx(codTipoMx);
+        filtroMx.setCodTipoSolicitud(codTipoSolicitud);
+        filtroMx.setNombreSolicitud(nombreSolicitud);
 
         return filtroMx;
     }
