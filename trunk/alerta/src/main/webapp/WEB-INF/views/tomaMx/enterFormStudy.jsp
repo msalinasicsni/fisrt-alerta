@@ -288,7 +288,7 @@
                                                 <spring:message code="msj.select.study" var="selectStudy" />
                                                 <span class="input-group-addon"> <i class="fa fa-file-text-o"></i></span>
                                                 <label for="idEstudio"></label>
-                                                <select name="idEstudio" id="idEstudio" multiple style="width:100%" class="select2">
+                                                <select name="idEstudio" id="idEstudio" style="width:100%" class="select2">
                                                 </select>
                                             </div>
                                         </section>
