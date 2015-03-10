@@ -12,6 +12,8 @@ public class FiltroMx {
     String codSilais;
     String codUnidadSalud;
     String codTipoMx;
+    String codTipoSolicitud;
+    String nombreSolicitud;
 
     public String getNombreApellido() {
         return nombreApellido;
@@ -60,4 +62,12 @@ public class FiltroMx {
     public void setCodTipoMx(String codTipoMx) {
         this.codTipoMx = codTipoMx;
     }
+
+    public String getCodTipoSolicitud() { return codTipoSolicitud; }
+
+    public void setCodTipoSolicitud(String codTipoSolicitud) { this.codTipoSolicitud = codTipoSolicitud; }
+
+    public String getNombreSolicitud() { return nombreSolicitud; }
+
+    public void setNombreSolicitud(String nombreSolicitud) { this.nombreSolicitud = nombreSolicitud; }
 }

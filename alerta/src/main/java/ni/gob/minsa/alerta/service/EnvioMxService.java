@@ -8,8 +8,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Junction;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +48,7 @@ public class EnvioMxService {
         Criteria crit = session.createCriteria(DaTomaMx.class, "tomaMx");
         crit.createAlias("tomaMx.estadoMx","estado");
         crit.createAlias("tomaMx.idNotificacion", "notifi");
+
         //siempre se tomam las muestras que no estan anuladas
         crit.add( Restrictions.and(
                         Restrictions.eq("tomaMx.anulada", false))
@@ -104,6 +104,52 @@ public class EnvioMxService {
             crit.add( Restrictions.and(
                             Restrictions.eq("tomaMx.codTipoMx.idTipoMx", Integer.valueOf(filtro.getCodTipoMx())))
             );
+        }
+
+        //se filtra por tipo de solicitud
+       if(filtro.getCodTipoSolicitud()!=null){
+            if(filtro.getCodTipoSolicitud().equals("Estudio")){
+                crit.add(Subqueries.propertyIn("idTomaMx", DetachedCriteria.forClass(DaSolicitudEstudio.class)
+                        .createAlias("idTomaMx", "idTomaMx")
+                        .setProjection(Property.forName("idTomaMx.idTomaMx"))));
+            }else{
+                crit.add(Subqueries.propertyIn("idTomaMx", DetachedCriteria.forClass(DaSolicitudDx.class)
+                        .createAlias("idTomaMx", "idTomaMx")
+                        .setProjection(Property.forName("idTomaMx.idTomaMx"))));
+            }
+
+        }
+
+        //nombre solicitud
+        if(filtro.getNombreSolicitud()!=null){
+            if(filtro.getCodTipoSolicitud()!= null){
+                if(filtro.getCodTipoSolicitud().equals("Estudio")){
+                    crit.add(Subqueries.propertyIn("idTomaMx", DetachedCriteria.forClass(DaSolicitudEstudio.class)
+                            .createAlias("tipoEstudio", "estudio")
+                            .add(Restrictions.ilike("estudio.nombre","%" + filtro.getNombreSolicitud() + "%" ))
+                            .setProjection(Property.forName("idTomaMx.idTomaMx"))));
+                }else{
+                    crit.add(Subqueries.propertyIn("idTomaMx", DetachedCriteria.forClass(DaSolicitudDx.class)
+                            .createAlias("codDx", "dx")
+                            .add(Restrictions.ilike("dx.nombre","%" + filtro.getNombreSolicitud() + "%" ))
+                            .setProjection(Property.forName("idTomaMx.idTomaMx"))));
+                }
+            }else{
+
+                Junction conditGroup = Restrictions.disjunction();
+                conditGroup.add(Subqueries.propertyIn("idTomaMx", DetachedCriteria.forClass(DaSolicitudEstudio.class)
+                        .createAlias("tipoEstudio", "estudio")
+                        .add(Restrictions.ilike("estudio.nombre","%" + filtro.getNombreSolicitud() + "%" ))
+                        .setProjection(Property.forName("idTomaMx.idTomaMx"))))
+                        .add(Subqueries.propertyIn("idTomaMx", DetachedCriteria.forClass(DaSolicitudDx.class)
+                        .createAlias("codDx", "dx")
+                        .add(Restrictions.ilike("dx.nombre","%" + filtro.getNombreSolicitud() + "%" ))
+                        .setProjection(Property.forName("idTomaMx.idTomaMx"))));
+
+                crit.add(conditGroup);
+
+            }
+
         }
 
         return crit.list();
