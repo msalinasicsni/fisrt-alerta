@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ni.gob.minsa.alerta.domain.muestra.*;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
+import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.typeAdapter.StringUtil;
@@ -400,7 +401,7 @@ public class TomaMxController {
 
             horaRefrigeracion = jsonpObject.get("horaRefrigeracion").getAsString();
 
-            JsonArray jsonArray = jsonpObject.get("estudios").getAsJsonArray();
+            String idEstudio = jsonpObject.get("estudio").getAsString();
 
             DaTomaMx tomaMx = new DaTomaMx();
 
@@ -428,12 +429,20 @@ public class TomaMxController {
 
             tomaMx.setFechaRegistro(new Timestamp(new Date().getTime()));
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            tomaMx.setUsuario(usuarioService.getUsuarioById((int)idUsuario));
+            Usuarios usuarioRegistro = usuarioService.getUsuarioById((int)idUsuario);
+            tomaMx.setUsuario(usuarioRegistro);
             tomaMx.setEstadoMx(catalogoService.getEstadoMx("ESTDMX|PEND"));
             tomaMx.setCodigoUnicoMx(codigoUnicoMx);
             tomaMx.setCategoriaMx(catalogoService.getCategoriaMx(categoriaMx));
             tomaMxService.addTomaMx(tomaMx);
-            saveSolicitudesEstudio(tomaMx.getIdTomaMx(), jsonArray, request);
+            DaSolicitudEstudio soli = new DaSolicitudEstudio();
+            soli.setTipoEstudio(tomaMxService.getEstudioById(idEstudio));
+            soli.setFechaHSolicitud(new Timestamp(new Date().getTime()));
+            soli.setUsarioRegistro(usuarioRegistro);
+            soli.setIdTomaMx(tomaMx);
+            tomaMxService.addSolicitudEstudio(soli);
+
+            //saveSolicitudesEstudio(tomaMx.getIdTomaMx(), jsonArray, request);
         } catch (Exception ex) {
             logger.error(ex.getMessage(),ex);
             ex.printStackTrace();
@@ -468,7 +477,6 @@ public class TomaMxController {
             soli.setIdTomaMx(tomaMxService.getTomaMxById(idTomaMx));
             tomaMxService.addSolicitudEstudio(soli);
         }
-
     }
 
 }
