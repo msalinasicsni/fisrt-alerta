@@ -178,6 +178,7 @@ var EnterFormTomaMxStudies = function () {
 
             $('#codTipoMx').change(function() {
                 bloquearUI(parametros.blockMess);
+                var html = '<option value="">' + $("#text_opt_select").val() + '...</option>';
                 if ($(this).val()!="") {
                     $.getJSON(parametros.sStudiesUrl, {
                         codMx: $(this).val(),
@@ -185,7 +186,6 @@ var EnterFormTomaMxStudies = function () {
                         ajax: 'false'
                     }, function (data) {
                         var len = data.length;
-                        var html = null;
                         for (var i = 0; i < len; i++) {
                             html += '<option value="' + data[i].estudio.idEstudio + '">'
                                 + data[i].estudio.nombre
@@ -195,10 +195,24 @@ var EnterFormTomaMxStudies = function () {
                         desbloquearUI();
                     });
                 }else{
-                    $('#idEstudio').html("").change("");
+                    desbloquearUI();
+                    $('#idEstudio').html(html).change("");
                 }
             });
 
+            $('#idEstudio').change(function () {
+                var estudio = $(this).val();
+                var cd = "1"; //Se asume que el id del estudio cohorte dengue es el 1
+                if (estudio != "") {
+                    if (estudio == cd){
+                        $("#divCategoriaMx").fadeIn('slow');
+                    }else{
+                        $("#divCategoriaMx").fadeOut('slow');
+                    }
+                }else{
+                    $("#divCategoriaMx").fadeOut('slow');
+                }
+            });
 
             var $validator = $("#registroMx").validate({
                 rules: {
@@ -290,24 +304,6 @@ var EnterFormTomaMxStudies = function () {
                 });
             }
 
-            $('#idEstudio').change(function () {
-                var estudio = $('#idEstudio').val();
-                var cd = "1"; //Se asume que el id del estudio cohorte dengue es el 1
-                if (estudio != "") {
-                    /*if ($.inArray(cd, estudio) !== -1) {
-                        $("#divCategoriaMx").fadeIn('slow');
-                    } else {
-                        $("#divCategoriaMx").fadeOut('slow');
-                    }*/
-                    if (estudio == cd){
-                        $("#divCategoriaMx").fadeIn('slow');
-                    }else{
-                        $("#divCategoriaMx").fadeOut('slow');
-                    }
-                }else{
-                    $("#divCategoriaMx").fadeOut('slow');
-                }
-            });
         }
     }
 
