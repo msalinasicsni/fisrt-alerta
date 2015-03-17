@@ -288,7 +288,7 @@
                                                 <spring:message code="msj.select.study" var="selectStudy" />
                                                 <span class="input-group-addon"> <i class="fa fa-file-text-o"></i></span>
                                                 <label for="idEstudio"></label>
-                                                <select name="idEstudio" id="idEstudio" style="width:100%" class="select2">
+                                                <select name="idEstudio" id="idEstudio" class="select2">
                                                 </select>
                                             </div>
                                         </section>
@@ -377,6 +377,7 @@
                                     <input type="hidden" id="msjError"  value="<spring:message code="lbl.messagebox.error.completing"/>"/>
                                     <input type="hidden" id="msjErrorSaving"  value="<spring:message code="lbl.messagebox.error.saving"/>"/>
                                     <input type="hidden" id="msjSuccessful"  value="<spring:message code="lbl.messagebox.successful.saved"/>"/>
+                                    <input id="text_opt_select" type="hidden" value="<spring:message code="lbl.select"/>"/>
                                 </form>
 								</div>
 								<!-- end widget content -->
