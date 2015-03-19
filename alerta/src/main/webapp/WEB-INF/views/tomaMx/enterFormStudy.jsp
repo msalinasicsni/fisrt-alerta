@@ -378,6 +378,8 @@
                                     <input type="hidden" id="msjErrorSaving"  value="<spring:message code="lbl.messagebox.error.saving"/>"/>
                                     <input type="hidden" id="msjSuccessful"  value="<spring:message code="lbl.messagebox.successful.saved"/>"/>
                                     <input id="text_opt_select" type="hidden" value="<spring:message code="lbl.select"/>"/>
+                                    <input type="hidden" id="msjInvalidCodMxChd"  value="<spring:message code="msg.invalid.code.mx.study.chd"/>"/>
+                                    <input type="hidden" id="msjInvalidCodMxCnd"  value="<spring:message code="msg.invalid.code.mx.study.cnd"/>"/>
                                 </form>
 								</div>
 								<!-- end widget content -->

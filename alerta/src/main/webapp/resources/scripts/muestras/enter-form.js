@@ -200,15 +200,44 @@ var EnterFormTomaMxStudies = function () {
                 }
             });
 
+            function validarFormatoCodigoUnicoMx (estudio) {
+                var pattern;
+                var valid;
+                var msgErrorValid;
+                if (estudio == "1"){ //cohorte dengue
+                    pattern = /^\d*[\.]\d*[\.][A-Z][\.][1-2]$/;
+                    valid = pattern.test($("#codigoUnicoMx").val());
+                    msgErrorValid = $("#msjInvalidCodMxChd").val();
+                }else{ //clínico dengue
+                    pattern = /^\d*[\.]\d{2}$/;
+                    valid = pattern.test($("#codigoUnicoMx").val());
+                    msgErrorValid = $("#msjInvalidCodMxCnd").val();
+                }
+                if(!valid){
+                    $.smallBox({
+                        title: msgErrorValid,
+                        content:  $('#disappear').val(),
+                        color: "#C79121",
+                        iconSmall: "fa fa-warning",
+                        timeout: 4000
+                    });
+                }
+
+                return valid;
+            }
+
             $('#idEstudio').change(function () {
+
                 var estudio = $(this).val();
                 var cd = "1"; //Se asume que el id del estudio cohorte dengue es el 1
                 if (estudio != "") {
-                    if (estudio == cd){
-                        $("#divCategoriaMx").fadeIn('slow');
-                    }else{
-                        $("#divCategoriaMx").fadeOut('slow');
-                    }
+                    validarFormatoCodigoUnicoMx(estudio);
+                        if (estudio == cd) {
+                            $("#divCategoriaMx").fadeIn('slow');
+                        } else {
+                            $("#divCategoriaMx").fadeOut('slow');
+                        }
+
                 }else{
                     $("#divCategoriaMx").fadeOut('slow');
                 }
@@ -241,8 +270,9 @@ var EnterFormTomaMxStudies = function () {
                     $validator.focusInvalid();
                     return false;
                 }else{
-                    save();
-
+                    if (validarFormatoCodigoUnicoMx($('#idEstudio').val())) {
+                        save();
+                    }
                 }
 
             });
@@ -259,8 +289,7 @@ var EnterFormTomaMxStudies = function () {
                 objetoTomaMx['mxSeparada'] = $('input[name="mxSeparada"]:checked', '#registroMx').val();
                 objetoTomaMx['estudio'] = $('#idEstudio').val();
                 objetoTomaMx['categoriaMx'] = $('#codCategoriaMx option:selected').val();
-                objetoTomaMx['mensaje']='';
-
+                objetoTomaMx['mensaje'] = '';
                 bloquearUI(parametros.blockMess);
                 $.ajax({
                     url: parametros.saveTomaMxStudy,
@@ -271,15 +300,15 @@ var EnterFormTomaMxStudies = function () {
                     mimeType: 'application/json',
                     success: function (data) {
                         desbloquearUI();
-                        if (data.mensaje.length > 0){
+                        if (data.mensaje.length > 0) {
                             $.smallBox({
-                                title: data.mensaje ,
+                                title: data.mensaje,
                                 content: $("#disappear").val(),
                                 color: "#C46A69",
                                 iconSmall: "fa fa-warning",
                                 timeout: 4000
                             });
-                        }else {
+                        } else {
                             $.smallBox({
                                 title: $('#msjSuccessful').val(),
                                 content: $('#disappear').val(),
@@ -287,15 +316,17 @@ var EnterFormTomaMxStudies = function () {
                                 iconSmall: "fa fa-check-circle",
                                 timeout: 4000
                             });
-                            setTimeout(function(){window.location.href = parametros.searchUrl;},4000);
+                            setTimeout(function () {
+                                window.location.href = parametros.searchUrl;
+                            }, 4000);
                         }
 
                     },
                     error: function (data, status, er) {
                         desbloquearUI();
                         $.smallBox({
-                            title: $('#msjErrorSaving').val()+ " error: " + data + " status: " + status + " er:" + er,
-                            content:  $('#disappear').val(),
+                            title: $('#msjErrorSaving').val() + " error: " + data + " status: " + status + " er:" + er,
+                            content: $('#disappear').val(),
                             color: "#C46A69",
                             iconSmall: "fa fa-warning",
                             timeout: 5000
@@ -303,7 +334,6 @@ var EnterFormTomaMxStudies = function () {
                     }
                 });
             }
-
         }
     }
 
