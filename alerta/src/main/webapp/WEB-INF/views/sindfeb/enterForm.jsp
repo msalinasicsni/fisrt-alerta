@@ -8,6 +8,24 @@
 <!-- BEGIN HEAD -->
 <head>
 	<jsp:include page="../fragments/headTag.jsp" />
+    <spring:url value="/resources/img/plus.png" var="plus"/>
+    <spring:url value="/resources/img/minus.png" var="minus"/>
+    <style>
+        td.details-control {
+        background: url("${plus}") no-repeat center center;
+        cursor: pointer;
+        }
+        tr.shown td.details-control {
+        background: url("${minus}") no-repeat center center;
+        }
+        ul.pagination.pagination-sm{
+            width: 50%!important;
+        }
+        .dataTables_paginate.paging_simple_numbers{
+            width: 75%!important;
+        }
+
+    </style>
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
@@ -1105,17 +1123,23 @@
 												</fieldset>
 											</div>
 											<div class="step-pane" id="step5">
+                                                <input id="text_value" type="hidden" value="<spring:message code="lbl.result.value"/>"/>
+                                                <input id="text_date" type="hidden" value="<spring:message code="lbl.result.date"/>"/>
+                                                <input id="text_response" type="hidden" value="<spring:message code="lbl.result.response"/>"/>
 												<h3><spring:message code="sindfeb.step5.long" /></h3>
 												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
 												<fieldset>
-											        <div class="table-responsive">
-											            <table class="table table-striped table-hover table-bordered" id="lista_resultados">
+                                                    <div class="widget-body no-padding"><!--<div class="table-responsive">-->
+											            <table class="table table-striped table-hover table-bordered"  width="100%" id="lista_resultados">
 											                <thead>
 											                <tr>
-											                    <th><spring:message code="lbl.test"/></th>
-											                    <th><spring:message code="lbl.result"/></th>
-											                    <th><spring:message code="lbl.laboratory"/></th>
-											                    <th><spring:message code="lbl.result.date"/></th>
+                                                                <th><spring:message code="lbl.request.type"/></th>
+											                    <th><spring:message code="lbl.desc.request"/></th>
+											                    <th><spring:message code="lbl.send.request.date"/></th>
+											                    <th><spring:message code="lbl.result.date.approve"/></th>
+											                    <th><spring:message code="lbl.unique.code.mx"/></th>
+                                                                <th><spring:message code="lbl.result.mx.type"/></th>
+                                                                <th><spring:message code="lbl.final.result"/></th>
 											                </tr>
 											                </thead>
 											            </table>
@@ -1152,6 +1176,17 @@
 	<!-- JQUERY FUELUX WIZARD -->
 	<spring:url value="/resources/js/plugin/fuelux/wizard/wizard.min.js" var="jQueryFueWiz" />
 	<script src="${jQueryFueWiz}"></script>
+    <!--DATA TABLE -->
+    <spring:url value="/resources/js/plugin/datatables/jquery.dataTables.min.js" var="dataTables" />
+    <script src="${dataTables}"></script>
+    <spring:url value="/resources/js/plugin/datatables/dataTables.colVis.min.js" var="dataTablesColVis" />
+    <script src="${dataTablesColVis}"></script>
+    <spring:url value="/resources/js/plugin/datatables/dataTables.tableTools.min.js" var="dataTablesTableTools" />
+    <script src="${dataTablesTableTools}"></script>
+    <spring:url value="/resources/js/plugin/datatables/dataTables.bootstrap.min.js" var="dataTablesBootstrap" />
+    <script src="${dataTablesBootstrap}"></script>
+    <spring:url value="/resources/js/plugin/datatable-responsive/datatables.responsive.min.js" var="dataTablesResponsive" />
+    <script src="${dataTablesResponsive}"></script>
 	<!-- JQUERY VALIDATE -->
 	<spring:url value="/resources/js/plugin/jquery-validate/jquery.validate.min.js" var="jqueryValidate" />
 	<script src="${jqueryValidate}"></script>
@@ -1194,6 +1229,7 @@
 	<spring:url var="comunidadUrl" value="/api/v1/comunidad"/>
 	<spring:url var="sAddFebrilUrl" value="/febriles/save"/>
     <spring:url var="sFebrilSearchUrl" value="/febriles/search"/>
+    <spring:url var="sFebrilResultsUrl" value="/api/v1/searchApproveResultsNoti"/>
 	<!-- PARAMETROS LENGUAJE -->
 	<c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
 	<script type="text/javascript">
@@ -1205,7 +1241,8 @@
                     unidadesUrl: "${unidadesUrl}",municipioByDepaUrl: "${municipioByDepaUrl}",comunidadUrl: "${comunidadUrl}",
                     sAddFebrilUrl: "${sAddFebrilUrl}",
                     sFebrilSearchUrl: "${sFebrilSearchUrl}",
-                    blockMess:"${blockMess}"
+                    blockMess:"${blockMess}",
+                    sFebrilResultsUrl : "${sFebrilResultsUrl}"
  			 };
 			EnterFormSindFeb.init(parametros);
 			SeleccionUnidad.init(parametros);
