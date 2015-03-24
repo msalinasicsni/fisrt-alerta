@@ -13,6 +13,8 @@
 <!-- BEGIN HEAD -->
 <head>
     <jsp:include page="../fragments/headTag.jsp"/>
+    <spring:url value="/resources/img/plus.png" var="plus"/>
+    <spring:url value="/resources/img/minus.png" var="minus"/>
     <style>
 
         .styleButton {
@@ -36,6 +38,13 @@
 
         .datepicker {
             z-index: 1065 !important;
+        }
+        td.details-control {
+            background: url("${plus}") no-repeat center center;
+            cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url("${minus}") no-repeat center center;
         }
 
     </style>
@@ -210,7 +219,7 @@
             </label>
 
             <label class="input"> <i
-                    class="icon-prepend fa fa-male fa-fw"></i> <input type="text" id="idNotificacion" name="idNotificacion"
+                    class="icon-prepend fa fa-male fa-fw"></i> <input type="text" id="idNotificacion" name="idNotificacion" value="${irag.idNotificacion.idNotificacion}"
                                                                            />
             </label>
         </div>
@@ -1253,11 +1262,13 @@
             <table class="table table-striped table-hover table-bordered" id="lista_resultados">
                 <thead>
                 <tr>
-                    <th><spring:message code="lbl.test"/></th>
-                    <th><spring:message code="lbl.result"/></th>
-                    <th><spring:message code="lbl.laboratory"/></th>
-                    <th><spring:message code="lbl.result.date"/></th>
-
+                    <th><spring:message code="lbl.request.type"/></th>
+                    <th><spring:message code="lbl.desc.request"/></th>
+                    <th><spring:message code="lbl.send.request.date"/></th>
+                    <th><spring:message code="lbl.result.date.approve"/></th>
+                    <th><spring:message code="lbl.unique.code.mx"/></th>
+                    <th><spring:message code="lbl.result.mx.type"/></th>
+                    <th><spring:message code="lbl.final.result"/></th>
                 </tr>
                 </thead>
 
@@ -1789,7 +1800,9 @@
 <input type="hidden" id="msjErrorSaving"  value="<spring:message code="lbl.messagebox.error.saving"/>"/>
 <input type="hidden" id="msjSuccessful"  value="<spring:message code="lbl.messagebox.successful.saved"/>"/>
 <input type="hidden" id="msjSelect"  value="<spring:message code="lbl.select"/>"/>
-
+<input id="text_value" type="hidden" value="<spring:message code="lbl.result.value"/>"/>
+<input id="text_date" type="hidden" value="<spring:message code="lbl.result.date"/>"/>
+<input id="text_response" type="hidden" value="<spring:message code="lbl.result.response"/>"/>
 </div>
 
 
@@ -1869,6 +1882,7 @@
 <spring:url value="/irag/overrideVaccine" var="overrideVaccineUrl"/>
 <spring:url value="/irag/enfermedades" var="enfermedadUrl"/>
 <c:url var="semanaEpidemiologicaURL" value="/api/v1/semanaEpidemiologica"/>
+<spring:url var="sResultsUrl" value="/api/v1/searchApproveResultsNoti"/>
 
 <script type="text/javascript">
 
@@ -1889,8 +1903,8 @@
             overrideVaccineUrl: "${overrideVaccineUrl}",
             blockMess:"${blockMess}",
             enfermedadUrl:"${enfermedadUrl}",
-            sSemanaEpiUrl : "${semanaEpidemiologicaURL}"
-
+            sSemanaEpiUrl : "${semanaEpidemiologicaURL}",
+            sResultsUrl : "${sResultsUrl}"
 
         };
 

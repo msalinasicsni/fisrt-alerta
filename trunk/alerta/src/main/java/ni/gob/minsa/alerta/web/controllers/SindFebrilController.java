@@ -88,8 +88,8 @@ public class SindFebrilController {
     public ComunidadesService comunidadesService;
 	@Resource(name = "usuarioService")
 	public UsuarioService usuarioService;
-          
-	
+
+
 	@RequestMapping(value = "create", method = RequestMethod.GET)
     public String initSearchForm(Model model, HttpServletRequest request) throws ParseException {
 		logger.debug("Crear/Buscar una ficha de sindromes febriles");

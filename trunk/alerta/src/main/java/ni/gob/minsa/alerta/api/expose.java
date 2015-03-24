@@ -1,19 +1,27 @@
 package ni.gob.minsa.alerta.api;
 
+import com.google.gson.Gson;
 import ni.gob.minsa.alerta.domain.estructura.CalendarioEpi;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
+import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
+import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.poblacion.Sectores;
+import ni.gob.minsa.alerta.domain.resultados.Catalogo_Lista;
+import ni.gob.minsa.alerta.domain.resultados.DetalleResultadoFinal;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Distritos;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Areas;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
+import ni.gob.minsa.alerta.utilities.typeAdapter.DateUtil;
+import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +29,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Herrold on 08/06/14 22:13
@@ -64,6 +75,12 @@ public class expose {
     @Autowired
     @Qualifier(value = "sectoresService")
     private SectoresService sectoresService;
+
+    @Resource(name = "resultadoFinalService")
+    public ResultadoFinalService resultadoFinalService;
+
+    @Autowired
+    MessageSource messageSource;
 
     @RequestMapping(value = "unidades", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
@@ -221,6 +238,124 @@ public class expose {
         List<Sectores> sectoresList = new ArrayList<Sectores>();
         sectoresList = sectoresService.getSectoresByUnidad(codUnidad);
         return sectoresList;
+    }
+
+    @RequestMapping(value = "searchApproveResultsNoti", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String fetchApproveResultsJson(@RequestParam(value = "strIdNotificacion", required = true) String strIdNotificacion) throws Exception{
+        logger.info("Obteniendo los diagnósticos con examenes realizados");
+        List<DaSolicitudDx> diagnosticosList = resultadoFinalService.getSolicitudesDxByIdNotificacion(strIdNotificacion);
+        List<DaSolicitudEstudio> estudiosList = resultadoFinalService.getSolicitudesEstByIdNotificacion(strIdNotificacion);
+        return resultadoSolicitudToJson(diagnosticosList,estudiosList);
+    }
+
+    private  String resultadoSolicitudToJson(List<DaSolicitudDx> diagnosticosList, List<DaSolicitudEstudio> estudiosList){
+        String jsonResponse="";
+        Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
+        Integer indice=0;
+        String idSolicitud="";
+        for(DaSolicitudDx diagnostico: diagnosticosList){
+            Map<String, String> map = new HashMap<String, String>();
+            idSolicitud = diagnostico.getIdSolicitudDx();
+            map.put("tipoSolicitud",messageSource.getMessage("lbl.routine",null,null));
+            map.put("nombreSolicitud",diagnostico.getCodDx().getNombre());
+            map.put("fechaSolicitud", DateUtil.DateToString(diagnostico.getFechaHSolicitud(), "dd/MM/yyyy hh:mm:ss a"));
+            map.put("fechaAprobacion",DateUtil.DateToString(diagnostico.getFechaAprobacion(),"dd/MM/yyyy hh:mm:ss a"));
+            map.put("codigoUnicoMx", diagnostico.getIdTomaMx().getCodigoUnicoMx());
+            map.put("tipoMx", diagnostico.getIdTomaMx().getCodTipoMx().getNombre());
+            //detalle resultado solicitud
+            List<DetalleResultadoFinal> resultList = resultadoFinalService.getDetResActivosBySolicitud(idSolicitud);
+            Map<Integer, Object> mapResList = new HashMap<Integer, Object>();
+            int subIndice = 0;
+            Map<String, String> mapRes = new HashMap<String, String>();
+            for(DetalleResultadoFinal res: resultList){
+                if (res.getRespuesta()!=null) {
+                    if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                        Catalogo_Lista cat_lista = resultadoFinalService.getCatalogoLista(res.getValor());
+                        mapRes.put("valor", cat_lista.getValor());
+                    }else if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LOG")) {
+                        String valorBoleano = (Boolean.valueOf(res.getValor())?"lbl.yes":"lbl.no");
+                        mapRes.put("valor", messageSource.getMessage(valorBoleano, null, null));
+                    } else {
+                        mapRes.put("valor", res.getValor());
+                    }
+                    mapRes.put("respuesta", res.getRespuesta().getNombre());
+
+                }else if (res.getRespuestaExamen()!=null){
+                    if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                        Catalogo_Lista cat_lista = resultadoFinalService.getCatalogoLista(res.getValor());
+                        mapRes.put("valor", cat_lista.getValor());
+                    } else if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LOG")) {
+                        String valorBoleano = (Boolean.valueOf(res.getValor())?"lbl.yes":"lbl.no");
+                        mapRes.put("valor", messageSource.getMessage(valorBoleano, null, null));
+                    }else {
+                        mapRes.put("valor", res.getValor());
+                    }
+                    mapRes.put("respuesta", res.getRespuestaExamen().getNombre());
+                }
+                mapRes.put("fechaResultado", DateUtil.DateToString(res.getFechahRegistro(), "dd/MM/yyyy hh:mm:ss a"));
+                mapResList.put(subIndice, mapRes);
+                subIndice++;
+                mapRes = new HashMap<String, String>();
+            }
+            map.put("resultado", new Gson().toJson(mapResList));
+
+            mapResponse.put(indice, map);
+            indice++;
+        }
+        for(DaSolicitudEstudio estudio: estudiosList){
+            Map<String, String> map = new HashMap<String, String>();
+            idSolicitud = estudio.getIdSolicitudEstudio();
+            map.put("tipoSolicitud",messageSource.getMessage("lbl.research",null,null));
+            map.put("nombreSolicitud",estudio.getTipoEstudio().getNombre());
+            map.put("fechaSolicitud",DateUtil.DateToString(estudio.getFechaHSolicitud(),"dd/MM/yyyy hh:mm:ss a"));
+            map.put("fechaAprobacion",DateUtil.DateToString(estudio.getFechaAprobacion(),"dd/MM/yyyy hh:mm:ss a"));
+            map.put("codigoUnicoMx", estudio.getIdTomaMx().getCodigoUnicoMx());
+            map.put("tipoMx", estudio.getIdTomaMx().getCodTipoMx().getNombre());
+            //detalle resultado solicitud
+            List<DetalleResultadoFinal> resultList = resultadoFinalService.getDetResActivosBySolicitud(idSolicitud);
+            Map<Integer, Object> mapResList = new HashMap<Integer, Object>();
+            Map<String, String> mapRes = new HashMap<String, String>();
+            int subIndice = 0;
+            for(DetalleResultadoFinal res: resultList){
+                if (res.getRespuesta()!=null) {
+                    if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                        Catalogo_Lista cat_lista = resultadoFinalService.getCatalogoLista(res.getValor());
+                        mapRes.put("valor", cat_lista.getValor());
+                    }else if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LOG")) {
+                        String valorBoleano = (Boolean.valueOf(res.getValor())?"lbl.yes":"lbl.no");
+                        mapRes.put("valor", messageSource.getMessage(valorBoleano, null, null));
+                    } else {
+                        mapRes.put("valor", res.getValor());
+                    }
+                    mapRes.put("respuesta", res.getRespuesta().getNombre());
+
+                }else if (res.getRespuestaExamen()!=null){
+                    if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                        Catalogo_Lista cat_lista = resultadoFinalService.getCatalogoLista(res.getValor());
+                        mapRes.put("valor", cat_lista.getValor());
+                    } else if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LOG")) {
+                        String valorBoleano = (Boolean.valueOf(res.getValor())?"lbl.yes":"lbl.no");
+                        mapRes.put("valor", messageSource.getMessage(valorBoleano, null, null));
+                    }else {
+                        mapRes.put("valor", res.getValor());
+                    }
+                    mapRes.put("respuesta", res.getRespuestaExamen().getNombre());
+                }
+                mapRes.put("fechaResultado", DateUtil.DateToString(res.getFechahRegistro(), "dd/MM/yyyy hh:mm:ss a"));
+                mapResList.put(subIndice, mapRes);
+                subIndice++;
+                mapRes = new HashMap<String, String>();
+            }
+            map.put("resultado", new Gson().toJson(mapResList));
+
+            mapResponse.put(indice, map);
+            indice++;
+        }
+
+        jsonResponse = new Gson().toJson(mapResponse);
+        UnicodeEscaper escaper     = UnicodeEscaper.above(127);
+        return escaper.translate(jsonResponse);
     }
 
 }
