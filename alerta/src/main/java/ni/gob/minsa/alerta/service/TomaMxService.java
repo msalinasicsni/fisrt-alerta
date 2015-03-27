@@ -148,7 +148,7 @@ public class TomaMxService {
         //Retrieve session Hibernate
         Session session = sessionFactory.getCurrentSession();
         //Create a hibernate query (HQL)
-        Query query = session.createQuery("FROM TipoMx_TipoNotificacion tmx where tmx.tipoNotificacion = :codigo");
+        Query query = session.createQuery("FROM TipoMx_TipoNotificacion tmx where tmx.tipoNotificacion = :codigo and tmx.pasivo= false");
         query.setString("codigo", codigo);
         //retrieve all
         return query.list();
