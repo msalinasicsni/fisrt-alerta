@@ -209,7 +209,7 @@ var EnterFormTomaMxStudies = function () {
                     valid = pattern.test($("#codigoUnicoMx").val());
                     msgErrorValid = $("#msjInvalidCodMxChd").val();
                 }else{ //clínico dengue
-                    pattern = /^\d*[\.]\d{2}$/;
+                    pattern = /^\d*[\.][1-9]$/;
                     valid = pattern.test($("#codigoUnicoMx").val());
                     msgErrorValid = $("#msjInvalidCodMxCnd").val();
                 }
