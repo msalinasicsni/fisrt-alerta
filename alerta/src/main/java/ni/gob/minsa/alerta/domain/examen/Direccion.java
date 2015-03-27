@@ -1,16 +1,21 @@
 package ni.gob.minsa.alerta.domain.examen;
 
+import ni.gob.minsa.alerta.domain.muestra.Laboratorio;
+import org.hibernate.annotations.ForeignKey;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by FIRSTICT on 12/2/2014.
  */
 @Entity
 @Table(name = "catalogo_direccion", schema = "alerta")
-public class Direccion {
+public class Direccion implements Serializable {
 
     Integer idDireccion;
     String nombre;
+    Laboratorio laboratorio;
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -33,4 +38,14 @@ public class Direccion {
         this.nombre = nombre;
     }
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "CODIGO_LAB", referencedColumnName = "CODIGO", nullable = false, insertable = true, updatable = true)
+    @ForeignKey(name = "DIRECCION_LABPERTENECE_FK")
+    public Laboratorio getLaboratorio() {
+        return laboratorio;
+    }
+
+    public void setLaboratorio(Laboratorio laboratorio) {
+        this.laboratorio = laboratorio;
+    }
 }
