@@ -129,7 +129,7 @@ public class EnvioMxController {
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             Usuarios usuario = usuarioService.getUsuarioById((int)idUsuario);
             //Se obtiene estado enviado a laboratorio
-            Laboratorio labProcedencia = envioMxService.getLaboratorio(laboratorioProcedencia);
+            Laboratorio labDestino = envioMxService.getLaboratorio(laboratorioProcedencia);
 
             DaEnvioMx envioOrden = new DaEnvioMx();
 
@@ -138,7 +138,7 @@ public class EnvioMxController {
             envioOrden.setNombreTransporta(nombreTransporta);
             envioOrden.setTemperaturaTermo(temperaturaTermo);
             //envioOrden.setTiempoEspera(CalcularDiferenciaHorasFechas());
-            envioOrden.setLaboratorioProcedencia(labProcedencia);
+            envioOrden.setLaboratorioDestino(labDestino);
 
             EstadoMx estadoMx = catalogosService.getEstadoMx("ESTDMX|ENV");
 
