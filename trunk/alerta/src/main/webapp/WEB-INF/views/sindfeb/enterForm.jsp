@@ -501,10 +501,10 @@
 																<c:forEach items="${comunidades}" var="comunid">
 																	<c:choose> 
 																		<c:when test="${comunid.codigo eq daSindFeb.idNotificacion.persona.comunidadResidencia.codigo}">
-																			<option selected value="${comunid.codigo}">${comunid.nombre}</option>
+																			<option selected value="${comunid.codigo}">${comunid.nombre}-${comunid.sector.unidad.nombre}</option>
 																		</c:when>
 																		<c:otherwise>
-																			<option value="${comunid.codigo}">${comunid.nombre}</option>
+																			<option value="${comunid.codigo}">${comunid.nombre}-${comunid.sector.unidad.nombre}</option>
 																		</c:otherwise>
 																	</c:choose> 
 																</c:forEach>
