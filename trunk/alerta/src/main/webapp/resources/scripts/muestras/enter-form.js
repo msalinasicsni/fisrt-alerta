@@ -209,14 +209,12 @@ var EnterFormTomaMxStudies = function () {
                     valid = pattern.test($("#codigoUnicoMx").val());
                     msgErrorValid = $("#msjInvalidCodMxChd").val();
                 }
-                  if(estudio == "2"){
+                  if(estudio == "2"){ //clínico dengue
                     pattern = /^\d*[\.][1-9]$/;
                     valid = pattern.test($("#codigoUnicoMx").val());
                     msgErrorValid = $("#msjInvalidCodMxCnd").val();
                 }
-
                 if(!valid){
-
                     $.smallBox({
                         title: msgErrorValid,
                         content:  $('#disappear').val(),
@@ -224,9 +222,8 @@ var EnterFormTomaMxStudies = function () {
                         iconSmall: "fa fa-warning",
                         timeout: 4000
                     });
-                    return valid;
                 }
-
+                return valid;
             }
 
             $('#idEstudio').change(function () {
