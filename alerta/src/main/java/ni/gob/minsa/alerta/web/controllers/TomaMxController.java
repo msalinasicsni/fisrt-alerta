@@ -242,6 +242,7 @@ public class TomaMxController {
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             soli.setUsarioRegistro(usuarioService.getUsuarioById((int) idUsuario));
             soli.setIdTomaMx(tomaMxService.getTomaMxById(idTomaMx));
+            soli.setAprobada(false);
             tomaMxService.addSolicitudDx(soli);
         }
 
@@ -440,6 +441,7 @@ public class TomaMxController {
             soli.setFechaHSolicitud(new Timestamp(new Date().getTime()));
             soli.setUsarioRegistro(usuarioRegistro);
             soli.setIdTomaMx(tomaMx);
+            soli.setAprobada(false);
             tomaMxService.addSolicitudEstudio(soli);
 
             //saveSolicitudesEstudio(tomaMx.getIdTomaMx(), jsonArray, request);
