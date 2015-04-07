@@ -202,18 +202,21 @@ var EnterFormTomaMxStudies = function () {
 
             function validarFormatoCodigoUnicoMx (estudio) {
                 var pattern;
-                var valid;
+                var valid = true ;
                 var msgErrorValid;
                 if (estudio == "1"){ //cohorte dengue
                     pattern = /^\d*[\.]\d*[\.][A-Z][\.][1-2]$/;
                     valid = pattern.test($("#codigoUnicoMx").val());
                     msgErrorValid = $("#msjInvalidCodMxChd").val();
-                }else{ //clínico dengue
+                }
+                  if(estudio == "2"){
                     pattern = /^\d*[\.][1-9]$/;
                     valid = pattern.test($("#codigoUnicoMx").val());
                     msgErrorValid = $("#msjInvalidCodMxCnd").val();
                 }
+
                 if(!valid){
+
                     $.smallBox({
                         title: msgErrorValid,
                         content:  $('#disappear').val(),
@@ -221,9 +224,9 @@ var EnterFormTomaMxStudies = function () {
                         iconSmall: "fa fa-warning",
                         timeout: 4000
                     });
+                    return valid;
                 }
 
-                return valid;
             }
 
             $('#idEstudio').change(function () {
