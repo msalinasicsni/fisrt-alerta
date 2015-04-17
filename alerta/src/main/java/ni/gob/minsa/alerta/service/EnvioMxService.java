@@ -55,6 +55,9 @@ public class EnvioMxService {
         );//y las muestras en estado 'PENDIENTE'
         crit.add( Restrictions.and(
                 Restrictions.eq("estado.codigo", "ESTDMX|PEND").ignoreCase()));
+        //no mostrar las muestras de notificaciones 'CASOS ESPECIALES'
+        crit.add( Restrictions.and(
+                Restrictions.ne("notifi.codTipoNotificacion.codigo", "TPNOTI|CAESP").ignoreCase()));
 
         // se filtra por nombre y apellido persona
         if (filtro.getNombreApellido()!=null) {
@@ -153,32 +156,6 @@ public class EnvioMxService {
         }
 
         return crit.list();
-    }
-
-    /**
-     * Obtiene fecha de Inicio de síntomas, según id de notificación.. Si se agregan nuevas fichas, se debe agregar la consulta a dicha ficha
-     * @param strIdNotificacion id de la notificación a filtrar
-     * @return Date
-     */
-    public Date getFechaInicioSintomas(String strIdNotificacion){
-        Date fecInicioSintomas = null;
-        String query = "from DaIrag where idNotificacion.idNotificacion = :idNotificacion";
-        String query2 = "from DaSindFebril where idNotificacion.idNotificacion = :idNotificacion";
-
-        Session session = sessionFactory.getCurrentSession();
-        Query q = session.createQuery(query);
-        q.setParameter("idNotificacion", strIdNotificacion);
-        Query q2 = session.createQuery(query2);
-        q2.setParameter("idNotificacion", strIdNotificacion);
-
-        DaIrag iragNoti= (DaIrag)q.uniqueResult();
-        DaSindFebril sinFebNoti= (DaSindFebril)q2.uniqueResult();
-        if(iragNoti!=null)
-            fecInicioSintomas = iragNoti.getFechaInicioSintomas();
-        else if(sinFebNoti!=null)
-            fecInicioSintomas = sinFebNoti.getFechaInicioSintomas();
-
-        return fecInicioSintomas;
     }
 
     public String estaEmbarazada(String strIdNotificacion){

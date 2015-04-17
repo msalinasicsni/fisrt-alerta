@@ -177,11 +177,6 @@ public class PersonaController {
             try {
                 SisPersona sisPersona = personaService.getPersona(idPerson);
                  persona = personaService.ensamblarObjetoPersona(sisPersona);//.buscarPorId(idPerson);
-                logger.info("NombrePersona:"+persona.getPrimerNombre());
-                logger.info("IdPersona:"+persona.getPersonaId());
-                logger.info("ApellidoPersona:"+persona.getPrimerApellido());
-                logger.info("FechaNacPersona:"+persona.getFechaNacimiento());
-                logger.info("SexoPersona:"+persona.getSexoCodigo());
             }catch (Exception ex){
                 logger.error(ex.getMessage());
             }

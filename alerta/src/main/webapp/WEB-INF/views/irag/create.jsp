@@ -873,7 +873,7 @@
             <div class="input">
                 <i class="icon-prepend fa fa-pencil"></i>  <i class="icon-append fa fa-calendar fa-fw"></i>
                 <form:input type="text" name="fechaInicioSintomas"
-                            path="fechaInicioSintomas"
+                            path="idNotificacion.fechaInicioSintomas"
                             class="form-control date-picker"
                             data-dateformat="dd/mm/yy" placeholder="${symptomsDate}"/>
                 <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.sym.date" /></b>

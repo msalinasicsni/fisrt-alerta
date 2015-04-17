@@ -786,7 +786,7 @@
 															<label class="input">
 																<i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
 																<input class="form-control date-picker" data-date-end-date="+0d" data-date-start-date="-30d" 
-																	type="text" name="fechaInicioSintomas" id="fechaInicioSintomas" value="<fmt:formatDate value="${daSindFeb.fechaInicioSintomas}" pattern="dd/MM/yyyy" />"
+																	type="text" name="fechaInicioSintomas" id="fechaInicioSintomas" value="<fmt:formatDate value="${daSindFeb.idNotificacion.fechaInicioSintomas}" pattern="dd/MM/yyyy" />"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.dos" />">
 																	<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.dos" /></b>
 															</label>

@@ -197,7 +197,7 @@ public class EnvioMxController {
             map.put("tipoMuestra",tomaMx.getCodTipoMx().getNombre());
             //map.put("tipoExamen",orden.getCodDx().getNombre());
             //Si hay fecha de inicio de sintomas se muestra
-            Date fechaInicioSintomas = envioMxService.getFechaInicioSintomas(tomaMx.getIdNotificacion().getIdNotificacion());
+            Date fechaInicioSintomas =  tomaMx.getIdNotificacion().getFechaInicioSintomas();//envioMxService.getFechaInicioSintomas(tomaMx.getIdNotificacion().getIdNotificacion());
             if (fechaInicioSintomas!=null)
                 map.put("fechaInicioSintomas",DateUtil.DateToString(fechaInicioSintomas, "dd/MM/yyyy"));
             else

@@ -435,7 +435,7 @@ public class IragController {
             , @RequestParam(value = "codCaptacion", required = false) String codCaptacion
             , @RequestParam(value = "diagnostico", required = false) String diagnostico
             , @RequestParam(value = "tarjetaVacuna", required = false) Integer tarjetaVacuna
-            , @RequestParam(value = "fechaInicioSintomas", required = false) String fechaInicioSintomas
+            , @RequestParam(value = "idNotificacion.fechaInicioSintomas", required = false) String fechaInicioSintomas
             , @RequestParam(value = "codAntbUlSem", required = false) String codAntbUlSem
             , @RequestParam(value = "cantidadAntib", required = false) Integer cantidadAntib
             , @RequestParam(value = "nombreAntibiotico", required = false) String nombreAntibiotico
@@ -511,9 +511,9 @@ public class IragController {
                 irag.setTarjetaVacuna(tarjetaVacuna);
             }
 
-            if (!fechaInicioSintomas.equals("")) {
+            /*if (!fechaInicioSintomas.equals("")) {
                 irag.setFechaInicioSintomas(StringToDate(fechaInicioSintomas));
-            }
+            }*/
 
             if (!codAntbUlSem.isEmpty()) {
                 irag.setCodAntbUlSem(catalogoService.getRespuesta(codAntbUlSem));
@@ -586,6 +586,11 @@ public class IragController {
             if (irag.getIdNotificacion() == null) {
                 DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion);
                 irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
+            }else {
+                if (fechaInicioSintomas!=null && !fechaInicioSintomas.equals("")) {
+                    irag.getIdNotificacion().setFechaInicioSintomas(StringToDate(fechaInicioSintomas));
+                    daNotificacionService.updateNotificacion(irag.getIdNotificacion());
+                }
             }
             daIragService.saveOrUpdateIrag(irag);
 
@@ -616,6 +621,7 @@ public class IragController {
             noti.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|IRAG"));
             noti.setComunidadResidencia(persona.getComunidadResidencia());
             noti.setDireccionResidencia(persona.getDireccionResidencia());
+
             daNotificacionService.addNotification(noti);
             return noti;
         }else{
