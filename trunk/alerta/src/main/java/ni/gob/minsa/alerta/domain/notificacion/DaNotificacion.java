@@ -8,8 +8,11 @@ import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 
 
 /**
@@ -30,7 +33,7 @@ public class DaNotificacion {
     private Timestamp fechaRegistro;
     private Comunidades comunidadResidencia;
     private String direccionResidencia;
-
+    private Date fechaInicioSintomas;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -98,8 +101,8 @@ public class DaNotificacion {
     }
 
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "COD_SILAIS_ATENCION", referencedColumnName = "CODIGO")
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "COD_SILAIS_ATENCION", referencedColumnName = "CODIGO", nullable = true)
     @ForeignKey(name = "COD_SILAIS_FK")
     public EntidadesAdtvas getCodSilaisAtencion() {
         return codSilaisAtencion;
@@ -109,8 +112,8 @@ public class DaNotificacion {
         this.codSilaisAtencion = codSilaisAtencion;
     }
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "COD_UNIDAD_ATENCION", referencedColumnName = "CODIGO")
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "COD_UNIDAD_ATENCION", referencedColumnName = "CODIGO", nullable = true)
     @ForeignKey(name = "COD_UNIDAD_FK")
     public Unidades getCodUnidadAtencion() {
         return codUnidadAtencion;
@@ -147,5 +150,15 @@ public class DaNotificacion {
 
     public void setDireccionResidencia(String direccionResidencia) {
         this.direccionResidencia = direccionResidencia;
+    }
+
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "FECHA_INICIO_SINTOMAS", nullable = true)
+    public Date getFechaInicioSintomas() {
+        return fechaInicioSintomas;
+    }
+
+    public void setFechaInicioSintomas(Date fechaInicioSintomas) {
+        this.fechaInicioSintomas = fechaInicioSintomas;
     }
 }

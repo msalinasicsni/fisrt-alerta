@@ -388,6 +388,7 @@ public class SindFebrilController {
             }
             //si se actualizó la persona se registra la notificación
             if (infoResultado.isOk() && infoResultado.getObjeto() != null ){
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                 daNotificacion.setFechaRegistro(new Timestamp(new Date().getTime()));
                 daNotificacion.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
                 daNotificacion.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
@@ -395,11 +396,12 @@ public class SindFebrilController {
                 daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById((int)idUsuario));
                 //	daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById(1));
                 daNotificacion.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|SINFEB"));
+                Date dateFIS = formatter.parse(fechaInicioSintomas);
+                daNotificacion.setFechaInicioSintomas(dateFIS);
                 if (!idNotificacion.equals("")){
                     daNotificacion.setIdNotificacion(idNotificacion);
                 }
                 daSindFeb.setIdNotificacion(daNotificacion);
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                 Date dateFicha = formatter.parse(fechaFicha);
                 daSindFeb.setFechaFicha(dateFicha);
                 daSindFeb.setCodExpediente(codExpediente);
@@ -418,8 +420,7 @@ public class SindFebrilController {
                 daSindFeb.setOtraFuenteAgua(otraFuenteAgua);
                 daSindFeb.setAnimales(animales);
                 daSindFeb.setOtrosAnimales(otrosAnimales);
-                Date dateFIS = formatter.parse(fechaInicioSintomas);
-                daSindFeb.setFechaInicioSintomas(dateFIS);
+
                 if (!fechaTomaMuestra.equals("")){
                     Date dateFTM = formatter.parse(fechaTomaMuestra);
                     daSindFeb.setFechaTomaMuestra(dateFTM);
