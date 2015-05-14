@@ -21,15 +21,6 @@ public class TomaMxService {
     @Resource(name="sessionFactory")
     private SessionFactory sessionFactory;
 
-
-    public DaTomaMx getSolicitudDxById(String id){
-        String query = "from DaTomaMx where idTomaMx = :id ";
-        Session session = sessionFactory.getCurrentSession();
-        Query q = session.createQuery(query);
-        q.setString("id", id);
-        return (DaTomaMx)q.uniqueResult();
-    }
-
     public void updateTomaMx(DaTomaMx dto) throws Exception {
         try {
             if (dto != null) {
@@ -231,5 +222,31 @@ public class TomaMxService {
         session.save(solicitud);
     }
 
+    /**
+     * Obtiene un estudio
+     * @param id del estudio a buscar
+     * @return Catalogo_Estudio
+     */
+    public List<DaSolicitudDx> getRutinasByIdMX(String id){
+        String query = "select sdx from DaSolicitudDx sdx inner join sdx.idTomaMx mx where sdx.labProcesa is null and mx.idTomaMx  = :id";
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("id", id);
+        return q.list();
+    }
+
+    public void updateSolicitudDx(DaSolicitudDx dto) throws Exception {
+        try {
+            if (dto != null) {
+                Session session = sessionFactory.getCurrentSession();
+                session.update(dto);
+            }
+            else
+                throw new Exception("Objeto Solicitud Dx es NULL");
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
 
 }
