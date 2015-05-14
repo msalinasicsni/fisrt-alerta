@@ -242,6 +242,7 @@ public class TomaMxController {
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             soli.setUsarioRegistro(usuarioService.getUsuarioById((int) idUsuario));
             soli.setIdTomaMx(tomaMxService.getTomaMxById(idTomaMx));
+            soli.setControlCalidad(false);
             soli.setAprobada(false);
             tomaMxService.addSolicitudDx(soli);
         }

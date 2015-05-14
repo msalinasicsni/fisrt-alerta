@@ -155,10 +155,15 @@ public class EnvioMxController {
                 JsonObject jObjectOrdenes = new Gson().fromJson(strOrdenes, JsonObject.class);
                 for (int i = 0; i < cantOrdenes; i++) {
                     String idSoli = jObjectOrdenes.get(String.valueOf(i)).getAsString();
-                    DaTomaMx tomaMxUpd = tomaMxService.getSolicitudDxById(idSoli);
+                    DaTomaMx tomaMxUpd = tomaMxService.getTomaMxById(idSoli);
                     tomaMxUpd.setEnvio(envioOrden);
                     tomaMxUpd.setEstadoMx(estadoMx);
                     tomaMxService.updateTomaMx(tomaMxUpd);
+                    List<DaSolicitudDx> solicitudDxList = tomaMxService.getRutinasByIdMX(tomaMxUpd.getIdTomaMx());
+                    for (DaSolicitudDx solicitudDx : solicitudDxList){
+                        solicitudDx.setLabProcesa(envioOrden.getLaboratorioDestino());
+                        tomaMxService.updateSolicitudDx(solicitudDx);
+                    }
                     cantOrdenesProc++;
                 }
             }
