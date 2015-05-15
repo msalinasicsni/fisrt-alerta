@@ -39,6 +39,10 @@ public class ResultadoFinalService {
         crit.add( Restrictions.and(
                         Restrictions.eq("tomaMx.anulada", false))
         );
+        //siempre se tomam las rutinas que no son control de calidad
+        crit.add( Restrictions.and(
+                        Restrictions.eq("diagnostico.controlCalidad", false))
+        );
         crit.add( Restrictions.and(
                         Restrictions.eq("noti.idNotificacion", idNotificacion))
         );
