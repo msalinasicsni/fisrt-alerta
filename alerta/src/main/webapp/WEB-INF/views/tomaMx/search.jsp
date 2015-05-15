@@ -153,6 +153,7 @@
 												<th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.fecnac"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-map-marker text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.mun.res"/></th>
                                                 <th data-hide="phone"><i class="fa fa-fw fa-file-text-o text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.notification.type"/></th>
+                                                <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.notification.date"/></th>
                                                 <th></th>
 											</tr>
 										</thead>

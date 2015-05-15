@@ -104,7 +104,7 @@ public class DaNotificacionService {
                         .add(Restrictions.ilike("persona.sndNombre", "%"+partesSnd[i]+"%"));
                 crit.add(conditionGroup);
             }
-
+            crit.add( Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|CAESP")));
             return crit.list();
         }
         else{
@@ -114,6 +114,7 @@ public class DaNotificacionService {
                                     Restrictions.eq("persona.identificacionHse", filtro).ignoreCase(),
                                     Restrictions.eq("persona.identificacion", filtro).ignoreCase())
                     )
+                    .add( Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|CAESP")))
                     .list();
         }
     }

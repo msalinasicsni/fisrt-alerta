@@ -72,9 +72,12 @@ var SearchNotices = function () {
     			}, function(data) {
     				var len = data.length;
     				for ( var i = 0; i < len; i++) {
-
+                        var date = new Date(data[i].fechaRegistro);
+                        var dia = function (date){ if (date.getDate() >= 10) return date.getDate(); else return "0"+date.getDate() };
+                        var mes = function (date){ if ((date.getMonth() + 1) >= 10) return (date.getMonth() + 1); else return "0"+(date.getMonth() + 1) };
+                        var dateFormat = dia(date) + "-" + mes(date) + "-" + date.getFullYear();
 						table1.fnAddData(
-    							[data[i].persona.primerNombre, data[i].persona.segundoNombre, data[i].persona.primerApellido, data[i].persona.segundoApellido, data[i].persona.fechaNacimiento,data[i].persona.municipioResidencia.nombre, data[i].codTipoNotificacion.valor, '<a data-toggle="modal" class="btn btn-default btn-xs search" data-id='+data[i].idNotificacion+'><i class="fa fa-edit fa-fw"></i></a>']);
+    							[data[i].persona.primerNombre, data[i].persona.segundoNombre, data[i].persona.primerApellido, data[i].persona.segundoApellido, data[i].persona.fechaNacimiento,data[i].persona.municipioResidencia.nombre, data[i].codTipoNotificacion.valor, dateFormat, '<a data-toggle="modal" class="btn btn-default btn-xs search" data-id='+data[i].idNotificacion+'><i class="fa fa-edit fa-fw"></i></a>']);
     				}
 
                     $(".search").on('click', function(){
