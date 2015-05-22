@@ -573,42 +573,44 @@
 															</label>
 														</div>
                                             		</section>
-                                            		<section class="col col-3">
-                                                		<i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
-                                                		<label class="text-left txt-color-blue font-md hidden-xs">
-                                                    		<spring:message code="sindfeb.pregnancy" />
-                                                    	</label>
-                                                    	<div class="input-group">
-                                                    		<span class="input-group-addon"> <i class="fa fa-child fa-fw"></i></span>
-	                                                    	<select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.pregnancy" />" name="embarazo" id="embarazo" class="select2">
-																<option value=""></option>
-																<c:forEach items="${catResp}" var="cresp">
-																	<c:choose> 
-																		<c:when test="${cresp.codigo eq daSindFeb.embarazo.codigo}">
-																			<option selected value="${cresp.codigo}">${cresp.valor}</option>
-																		</c:when>
-																		<c:otherwise>
-																			<option value="${cresp.codigo}">${cresp.valor}</option>
-																		</c:otherwise>
-																	</c:choose> 
-																</c:forEach>
-															</select>
-														</div>
-                                            		</section>
-                                            		<section id="sihayemb" hidden="hidden" class="col col-3">
-                                            			<label class="text-left txt-color-blue font-md hidden-xs">
-                                            				<spring:message code="sindfeb.pregnancy.time" />
-                                            			</label>
-                                            			<div>
-															<label class="input">
-																<i class="icon-prepend fa fa-child"></i> <i class="icon-append fa fa-calendar"></i>
-																<input class="form-control" type="text" name="mesesEmbarazo" id="mesesEmbarazo" 
-																	value="${daSindFeb.mesesEmbarazo}" 
-																	placeholder=" <spring:message code="sindfeb.pregnancy.time" />">
-																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.pregnancy.time" /></b>
-															</label>
-														</div>
-                                            		</section>
+                                                        <c:if test="${daSindFeb.idNotificacion.persona.sexo.codigo eq 'SEXO|F'}">
+                                                            <section id="datoEmbarazo" class="col col-3">
+                                                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
+                                                                <label class="text-left txt-color-blue font-md hidden-xs">
+                                                                    <spring:message code="sindfeb.pregnancy" />
+                                                                </label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"> <i class="fa fa-child fa-fw"></i></span>
+                                                                    <select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.pregnancy" />" name="embarazo" id="embarazo" class="select2">
+                                                                        <option value=""></option>
+                                                                        <c:forEach items="${catResp}" var="cresp">
+                                                                            <c:choose>
+                                                                                <c:when test="${cresp.codigo eq daSindFeb.embarazo.codigo}">
+                                                                                    <option selected value="${cresp.codigo}">${cresp.valor}</option>
+                                                                                </c:when>
+                                                                                <c:otherwise>
+                                                                                    <option value="${cresp.codigo}">${cresp.valor}</option>
+                                                                                </c:otherwise>
+                                                                            </c:choose>
+                                                                        </c:forEach>
+                                                                    </select>
+                                                                </div>
+                                                            </section>
+                                                            <section id="sihayemb" hidden="hidden" class="col col-3">
+                                                                <label class="text-left txt-color-blue font-md hidden-xs">
+                                                                    <spring:message code="sindfeb.pregnancy.time" />
+                                                                </label>
+                                                                <div>
+                                                                    <label class="input">
+                                                                        <i class="icon-prepend fa fa-child"></i> <i class="icon-append fa fa-calendar"></i>
+                                                                        <input class="form-control" type="text" name="mesesEmbarazo" id="mesesEmbarazo"
+                                                                               value="${daSindFeb.mesesEmbarazo}"
+                                                                               placeholder=" <spring:message code="sindfeb.pregnancy.time" />">
+                                                                        <b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.pregnancy.time" /></b>
+                                                                    </label>
+                                                                </div>
+                                                            </section>
+                                                        </c:if>
                                             		</div>
                                             		<!-- END ROW -->
                                             		<!-- START ROW -->
