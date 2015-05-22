@@ -105,7 +105,7 @@
 											<tr>
 												<th data-class="expand"><i class="fa fa-fw fa-key text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.numFicha"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.date"/></th>
-												<th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.ento.elimi"/></th>
+												<th data-hide="phone"><i class="fa fa-fw fa-times txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.canceled"/></th>
 												<th data-hide="phone, tablet"><i class="fa fa-fw fa-folder-o txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.exp"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-stethoscope txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.unidad"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
@@ -120,7 +120,16 @@
 											<tr>
 												<td><c:out value="${ficha.numFicha}" /></td>
 												<td><c:out value="${ficha.fechaFicha}" /></td>
-												<td><c:out value="${ficha.idNotificacion.pasivo}" /></td>
+												<td>
+                                                    <c:choose>
+                                                        <c:when test="${ficha.idNotificacion.pasivo}">
+                                                            <spring:message code="lbl.yes"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <spring:message code="lbl.no"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
 												<td><c:out value="${ficha.codExpediente}" /></td>
 												<td><c:out value="${ficha.idNotificacion.codUnidadAtencion.nombre}" /></td>
 												<td><c:out value="${ficha.idNotificacion.persona.primerNombre}" /></td>
@@ -135,25 +144,48 @@
 												<spring:url value="/febriles/new/{idPersona}" var="newUrl">
 													<spring:param name="idPersona" value="${ficha.idNotificacion.persona.personaId}" />
 												</spring:url>
-												<td><c:if test="${ficha.idNotificacion.pasivo==false}"><a href="${fn:escapeXml(editUrl)}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a></c:if></td>
+												<td>
+                                                    <c:choose>
+                                                        <c:when test="${ficha.idNotificacion.pasivo}">
+                                                            <button class="btn btn-default btn-xs" disabled>
+                                                                <i class="fa fa-edit"></i>
+                                                            </button>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <a href="${fn:escapeXml(editUrl)}"
+                                                               class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td>
                                                 <c:choose>
-                                                    <c:when test="${not empty fichasAutorizadas}">
-                                                        <c:set var="encontrada" value="0"/>
-                                                        <c:forEach items="${fichasAutorizadas}" var="fichaAutorizada">
-                                                                <c:if test="${ficha.idNotificacion.idNotificacion==fichaAutorizada.idNotificacion.idNotificacion}">
-                                                                    <c:set var="encontrada" value="1"/>
-                                                                    <td><c:if test="${ficha.idNotificacion.pasivo==false}"><a href="${fn:escapeXml(deleteUrl)}" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></a></c:if></td>
-                                                                </c:if>
-                                                        </c:forEach>
-                                                        <c:if test="${encontrada < 1}">
-                                                            <td><button disabled class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button></td>
-                                                        </c:if>
+                                                    <c:when test="${ficha.idNotificacion.pasivo}">
+                                                    <button class="btn btn-xs btn-danger" disabled>
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <td><button disabled class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button></td>
-                                                    </c:otherwise>
+                                                        <c:choose>
+                                                            <c:when test="${not empty fichasAutorizadas}">
+                                                                <c:set var="encontrada" value="0"/>
+                                                                <c:forEach items="${fichasAutorizadas}" var="fichaAutorizada">
+                                                                        <c:if test="${ficha.idNotificacion.idNotificacion==fichaAutorizada.idNotificacion.idNotificacion}">
+                                                                            <c:set var="encontrada" value="1"/>
+                                                                            <c:if test="${ficha.idNotificacion.pasivo==false}"><a href="${fn:escapeXml(deleteUrl)}" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></a></c:if>
+                                                                        </c:if>
+                                                                </c:forEach>
+                                                                <c:if test="${encontrada < 1}">
+                                                                    <button disabled class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button>
+                                                                </c:if>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <button disabled class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button>
+                                                            </c:otherwise>
 
+                                                        </c:choose>
+                                                    </c:otherwise>
                                                 </c:choose>
+                                                </td>
 											</tr>
 										</c:forEach>
 										</tbody>
