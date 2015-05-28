@@ -155,7 +155,12 @@ var EnterFormSindFeb = function () {
 						error.insertAfter(element.parent());
 					}
 				});
-        	
+
+            if ($("#codigoSexo").val()!=null && $("#codigoSexo").val()!='SEXO|F'){
+                $("#datoEmbarazo").hide();
+                $("#sihayemb").hide();
+            }
+
         	// fuelux wizard
 	    	var wizard = $('.wizard').wizard();
 	    	
