@@ -31,6 +31,7 @@ public class DaTomaMx {
     private String codigoUnicoMx;
     private DaEnvioMx envio;
     private CategoriaMx categoriaMx;
+    private String codigoLab;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -200,5 +201,15 @@ public class DaTomaMx {
 
     public void setCategoriaMx(CategoriaMx categoriaMx) {
         this.categoriaMx = categoriaMx;
+    }
+
+    @Basic
+    @Column(name = "CODIGO_LAB", nullable = true, insertable = true, updatable = true, length = 16, unique=true)
+    public String getCodigoLab() {
+        return codigoLab;
+    }
+
+    public void setCodigoLab(String codigoLab) {
+        this.codigoLab = codigoLab;
     }
 }
