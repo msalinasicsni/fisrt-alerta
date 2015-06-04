@@ -252,6 +252,19 @@
                                             </div>
                                         </section>
 
+                                        <section class="col col-3">
+                                            <label class="text-left txt-color-blue font-md hidden-xs">
+                                                <spring:message code="sindfeb.urgent" />
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                <label class="input">
+                                                    <input style="background-color: #f0fff0" disabled class="form-control" value="${noti.urgente}" type="text"/>
+                                                </label>
+                                                <span class="input-group-addon"><i class="fa fa-chevron-down fa-fw"></i></span>
+                                            </div>
+                                        </section>
+
 
                                     </div>
 
@@ -264,6 +277,94 @@
                                 <fieldset>
                                     <legend class="text-left txt-color-blue font-md"> <spring:message
                                             code="lbl.taking.sample.data"/></legend>
+
+                                    <div class="row">
+                                        <section class="col col-sm-12 col-md-6 col-lg-3">
+                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
+                                            <label class="text-left txt-color-blue font-md hidden-xs">
+                                                <spring:message code="sindfeb.silais" />
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-addon"> <i class="fa fa-list fa-fw"></i></span>
+
+                                                <spring:message var="selectSilais" code="msg.select.silais" />
+
+                                                <form:select name="codSilaisAtencion" id="codSilaisAtencion" data-placeholder="${selectSilais} " cssClass="select2" path="codSilaisAtencion">
+                                                    <option value=""></option>
+                                                    <form:options items="${entidades}" itemValue="codigo" itemLabel="nombre"/>
+                                                </form:select>
+
+                                            </div>
+                                             </section>
+
+                                            <%--<div class="input-group">
+                                                <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.silais" />" name="codSilaisAtencion" id="codSilaisAtencion" class="select2">
+                                                    <option value=""></option>
+                                                    <c:forEach items="${entidades}" var="entidad">
+                                                        <c:choose>
+                                                            <c:when test="${entidad.codigo eq tomaMx.codSilaisAtencion.codigo}">
+                                                                <option selected value="${entidad.codigo}">${entidad.nombre}</option>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <option value="${entidad.codigo}">${entidad.nombre}</option>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>--%>
+
+                                       <section class="col col-sm-12 col-md-6 col-lg-4">
+                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
+                                            <label class="text-left txt-color-blue font-md hidden-xs">
+                                                <spring:message code="sindfeb.muni" />
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.muni" />" name="codMunicipio" id="codMunicipio" class="select2">
+                                                    <option value=""></option>
+                                                </select>
+                                            </div>
+                                        </section>
+                                        <section class="col col-sm-12 col-md-6 col-lg-5">
+                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
+                                            <label class="text-left txt-color-blue font-md hidden-xs">
+                                                <spring:message code="sindfeb.unidad" />
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-addon"> <i class="fa fa-list fa-fw"></i></span>
+
+                                                <spring:message var="selectUS" code="msg.select.hu" />
+
+                                                <form:select name="codUnidadAtencion" id="codUnidadAtencion" data-placeholder="${selectUS} " cssClass="select2" path="codUnidadAtencion">
+                                                    <option value=""></option>
+
+                                                </form:select>
+
+                                            </div>
+
+                                        </section>
+                                       <%--     <div class="input-group">
+                                                <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.unidad" />" name="codUnidadAtencion" id="codUnidadAtencion" class="select2">
+                                                    <option value=""></option>
+                                                    <c:forEach items="${uni}" var="us">
+                                                        <c:choose>
+                                                            <c:when test="${us.codigo eq  tomaMx.codUnidadAtencion.codigo}">
+                                                                <option selected value="${us.codigo}">${us.nombre}</option>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <option value="${us.codigo}">${us.nombre}</option>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>--%>
+
+                                    </div>
+
                                     <div class="row">
                                         <input value="${noti.idNotificacion}" hidden="hidden" type="text" id="idNotificacion" name="idNotificacion"/>
 
@@ -507,16 +608,22 @@
     <spring:url value="/tomaMx/dxByMx" var="dxUrl"/>
     <spring:url value="/tomaMx/saveToma" var="saveTomaUrl"/>
     <spring:url value="/tomaMx/search" var="searchUrl"/>
+    <spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
+    <spring:url var="unidadesUrl"   value="/api/v1/unidadesPrimHosp"  />
+
     <script type="text/javascript">
         $(document).ready(function() {
             pageSetUp();
             var parametros = {blockMess: "${blockMess}",
                              dxUrl: "${dxUrl}",
                               saveTomaUrl: "${saveTomaUrl}",
-                              searchUrl: "${searchUrl}"
+                              searchUrl: "${searchUrl}",
+                              municipiosUrl:"${municipiosURL}",
+                              unidadesUrl: "${unidadesUrl}"
 
             };
             EnterFormTomaMx.init(parametros);
+            SeleccionUnidad.init(parametros);
             handleInputMasks();
             $("li.samples").addClass("open");
             $("li.tomaMx").addClass("active");

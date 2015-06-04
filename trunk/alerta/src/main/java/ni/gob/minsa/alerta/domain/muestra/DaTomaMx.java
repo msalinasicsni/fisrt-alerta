@@ -1,6 +1,8 @@
 package ni.gob.minsa.alerta.domain.muestra;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
+import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
+import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
@@ -32,6 +34,8 @@ public class DaTomaMx {
     private DaEnvioMx envio;
     private CategoriaMx categoriaMx;
     private String codigoLab;
+    private EntidadesAdtvas codSilaisAtencion;
+    private Unidades codUnidadAtencion;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -211,5 +215,27 @@ public class DaTomaMx {
 
     public void setCodigoLab(String codigoLab) {
         this.codigoLab = codigoLab;
+    }
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "COD_SILAIS_ATENCION", referencedColumnName = "CODIGO", nullable = true)
+    @ForeignKey(name = "COD_SILAIS_FK")
+    public EntidadesAdtvas getCodSilaisAtencion() {
+        return codSilaisAtencion;
+    }
+
+    public void setCodSilaisAtencion(EntidadesAdtvas codSilaisAtencion) {
+        this.codSilaisAtencion = codSilaisAtencion;
+    }
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "COD_UNIDAD_ATENCION", referencedColumnName = "CODIGO", nullable = true)
+    @ForeignKey(name = "COD_UNIDAD_FK")
+    public Unidades getCodUnidadAtencion() {
+        return codUnidadAtencion;
+    }
+
+    public void setCodUnidadAtencion(Unidades codUnidadAtencion) {
+        this.codUnidadAtencion = codUnidadAtencion;
     }
 }

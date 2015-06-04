@@ -1,7 +1,6 @@
 package ni.gob.minsa.alerta.web.controllers;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import ni.gob.minsa.alerta.domain.estructura.Cie10;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
@@ -18,10 +17,10 @@ import ni.gob.minsa.ciportal.dto.InfoResultado;
 import ni.gob.minsa.ejbPersona.dto.Persona;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
-import org.springframework.context.MessageSource;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,12 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -464,6 +458,7 @@ public class IragController {
             , @RequestParam(value = "condiciones", required = false) String condiciones
             , @RequestParam(value = "otraCondicion", required = false) String otraCondicion
             , @RequestParam(value = "semanasEmbarazo", required = false) Integer semanasEmbarazo
+            , @RequestParam(value = "urgente", required = false) String urgente
             ,HttpServletRequest request
 
 
@@ -584,7 +579,7 @@ public class IragController {
             irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
             daIragService.saveOrUpdateIrag(irag);*/
             if (irag.getIdNotificacion() == null) {
-                DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion);
+                DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion, urgente);
                 irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
             }else {
                 if (fechaInicioSintomas!=null && !fechaInicioSintomas.equals("")) {
@@ -604,7 +599,7 @@ public class IragController {
 
 
     @RequestMapping(value = "saveNotification", method = RequestMethod.GET)
-    public DaNotificacion guardarNotificacion(@PathVariable("personaId") Integer personaId, HttpServletRequest request, Integer silais, Integer unidad) throws Exception {
+    public DaNotificacion guardarNotificacion(@PathVariable("personaId") Integer personaId, HttpServletRequest request, Integer silais, Integer unidad, String urgente) throws Exception {
 
         logger.debug("Guardando Notificacion");
         DaNotificacion noti = new DaNotificacion();
@@ -621,6 +616,7 @@ public class IragController {
             noti.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|IRAG"));
             noti.setComunidadResidencia(persona.getComunidadResidencia());
             noti.setDireccionResidencia(persona.getDireccionResidencia());
+            noti.setUrgente(catalogoService.getRespuesta(urgente));
 
             daNotificacionService.addNotification(noti);
             return noti;

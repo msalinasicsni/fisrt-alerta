@@ -696,7 +696,7 @@
 												<fieldset>
 													<!-- START ROW -->
                                       				<div class="row">
-                                      				<section class="col col-3">
+                                      				<section class="col col-sm-6 col-md-6 col-lg-5">
                                                 		<i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
                                                 		<label class="text-left txt-color-blue font-md hidden-xs">
                                                     		<spring:message code="sindfeb.water" />
@@ -718,7 +718,7 @@
 															</select>
 														</div>
                                             		</section>
-                                            		<section id="sihayotrafuente" hidden="hidden" class="col col-3">
+                                            		<section id="sihayotrafuente" hidden="hidden" class="col col-sm-6 col-md-6 col-lg-4">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.water.other" />
                                             			</label>
@@ -732,7 +732,10 @@
 															</label>
 														</div>
                                             		</section>
-                                            		<section class="col col-3">
+                                                    </div>
+
+                                                    <div class="row">
+                                            		<section class="col col-sm-6 col-md-6 col-lg-5">
                                                 		<i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
                                                 		<label class="text-left txt-color-blue font-md hidden-xs">
                                                     		<spring:message code="sindfeb.animals" />
@@ -754,7 +757,7 @@
 															</select>
 														</div>
                                             		</section>
-                                            		<section id="sihayotroanimal" hidden="hidden" class="col col-3">
+                                            		<section id="sihayotroanimal" hidden="hidden" class="col col-sm-6 col-md-6 col-lg-4">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.animals.other" />
                                             			</label>
@@ -793,7 +796,7 @@
 															</label>
 														</div>
                                             		</section>
-                                            		<section class="col col-4">
+                                            		<%--<section class="col col-4">
                                             			<label class="text-left txt-color-blue font-md hidden-xs">
                                             				<spring:message code="sindfeb.dst" />
                                             			</label>
@@ -805,7 +808,29 @@
 																	<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.dst" /></b>
 															</label>
 														</div>
-                                            		</section>
+                                            		</section>--%>
+
+                                                        <section class="col col-3">
+                                                            <label class="text-left txt-color-blue font-md hidden-xs">
+                                                                <spring:message code="sindfeb.urgent" />
+                                                            </label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon"> <i class="fa fa-exclamation-triangle fa-fw"></i></span>
+                                                                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.urgent" />" name="urgente" id="urgente" class="select2">
+                                                                    <option value=""></option>
+                                                                    <c:forEach items="${catResp}" var="cresp">
+                                                                        <c:choose>
+                                                                            <c:when test="${cresp.codigo eq  daSindFeb.idNotificacion.urgente.codigo}">
+                                                                                <option selected value="${cresp.codigo}">${cresp.valor}</option>
+                                                                            </c:when>
+                                                                            <c:otherwise>
+                                                                                <option value="${cresp.codigo}">${cresp.valor}</option>
+                                                                            </c:otherwise>
+                                                                        </c:choose>
+                                                                    </c:forEach>
+                                                                </select>
+                                                            </div>
+                                                        </section>
                                       				</div>
                                       				<!-- END ROW -->
                                       				<!-- START ROW -->

@@ -200,6 +200,13 @@ public class EnvioMxController {
             map.put("codUnidadSalud",tomaMx.getIdNotificacion().getCodUnidadAtencion().getNombre());
             map.put("separadaMx",(tomaMx.getMxSeparada()!=null?(tomaMx.getMxSeparada()?"Si":"No"):""));
             map.put("tipoMuestra",tomaMx.getCodTipoMx().getNombre());
+
+            if(tomaMx.getIdNotificacion().getUrgente()!= null){
+                map.put("urgente", tomaMx.getIdNotificacion().getUrgente().getValor());
+            }else{
+                map.put("urgente", " ");
+            }
+
             //map.put("tipoExamen",orden.getCodDx().getNombre());
             //Si hay fecha de inicio de sintomas se muestra
             Date fechaInicioSintomas =  tomaMx.getIdNotificacion().getFechaInicioSintomas();//envioMxService.getFechaInicioSintomas(tomaMx.getIdNotificacion().getIdNotificacion());
@@ -207,6 +214,24 @@ public class EnvioMxController {
                 map.put("fechaInicioSintomas",DateUtil.DateToString(fechaInicioSintomas, "dd/MM/yyyy"));
             else
                 map.put("fechaInicioSintomas"," ");
+
+            //hospitalizado
+            String[] arrayHosp =  {"13", "17", "11", "16", "10", "12"};
+            boolean hosp = false;
+
+            if(tomaMx.getCodUnidadAtencion() != null){
+                int h =  Arrays.binarySearch(arrayHosp, String.valueOf(tomaMx.getCodUnidadAtencion().getTipoUnidad()));
+                hosp = h > 0;
+
+            }
+
+            if(hosp){
+                map.put("hospitalizado", messageSource.getMessage("lbl.yes",null,null));
+            }else{
+                map.put("hospitalizado", messageSource.getMessage("lbl.no",null,null));
+            }
+
+
             //Si hay persona
             if (tomaMx.getIdNotificacion().getPersona()!=null){
                 /// se obtiene el nombre de la persona asociada a la ficha
