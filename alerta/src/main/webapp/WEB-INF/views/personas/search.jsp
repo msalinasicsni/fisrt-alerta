@@ -225,6 +225,7 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
+
 			var parametros = {sPersonUrl: "${sPersonUrl}", sActionUrl: "${sActionUrl}",
                 sCreatePersonUrl: "${sCreatePersonUrl}", blockMess : $("#blockUI_message").val()};
 			SearchPerson.init(parametros);

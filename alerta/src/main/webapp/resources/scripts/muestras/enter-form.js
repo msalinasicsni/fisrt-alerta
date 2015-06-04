@@ -69,6 +69,17 @@ var EnterFormTomaMx = function () {
 
                     dx:{
                         required:true
+                    },
+                    codUnidadAtencion:{
+                        required:true
+                    },
+
+                    codSilaisAtencion:{
+                        required:true
+                    },
+
+                    codMunicipio:{
+                        required:true
                     }
 
                 },

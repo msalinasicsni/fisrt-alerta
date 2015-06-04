@@ -1,14 +1,6 @@
 package ni.gob.minsa.alerta.web.controllers;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.gson.Gson;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.irag.Respuesta;
@@ -18,27 +10,8 @@ import ni.gob.minsa.alerta.domain.persona.SisPersona;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.Animales;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.DaSindFebril;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.EnfAgudas;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.EnfCronicas;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.FuenteAgua;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.SintomasCHIK;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.SintomasDCSA;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.SintomasDGRA;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.SintomasDSSA;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.SintomasHANT;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.SintomasLEPT;
-import ni.gob.minsa.alerta.service.CatalogoService;
-import ni.gob.minsa.alerta.service.ComunidadesService;
-import ni.gob.minsa.alerta.service.DivisionPoliticaService;
-import ni.gob.minsa.alerta.service.EntidadAdmonService;
-import ni.gob.minsa.alerta.service.OcupacionService;
-import ni.gob.minsa.alerta.service.PersonaService;
-import ni.gob.minsa.alerta.service.SeguridadService;
-import ni.gob.minsa.alerta.service.SindFebrilService;
-import ni.gob.minsa.alerta.service.UnidadesService;
-import ni.gob.minsa.alerta.service.UsuarioService;
+import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.*;
+import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import ni.gob.minsa.ciportal.dto.InfoResultado;
@@ -57,7 +30,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.google.gson.Gson;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Controlador web de peticiones relacionadas a DaSindFebril
@@ -356,6 +336,7 @@ public class SindFebrilController {
             , @RequestParam(value = "comunidadResidencia", required = false) String comunidadResidencia
             , @RequestParam(value = "direccionResidencia", required = false) String direccionResidencia
             , @RequestParam(value = "ocupacion", required = false) String ocupacion
+            , @RequestParam(value = "urgente", required = false) String urgente
                                                                  ,HttpServletRequest request) throws Exception
 	{
     	DaSindFebril daSindFeb = new DaSindFebril();
@@ -393,6 +374,7 @@ public class SindFebrilController {
                 daNotificacion.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
                 daNotificacion.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
                 long idUsuario = seguridadService.obtenerIdUsuario(request);
+                daNotificacion.setUrgente(catalogoService.getRespuesta(urgente));
                 daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById((int)idUsuario));
                 //	daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById(1));
                 daNotificacion.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|SINFEB"));
@@ -420,6 +402,7 @@ public class SindFebrilController {
                 daSindFeb.setOtraFuenteAgua(otraFuenteAgua);
                 daSindFeb.setAnimales(animales);
                 daSindFeb.setOtrosAnimales(otrosAnimales);
+
 
                 if (!fechaTomaMuestra.equals("")){
                     Date dateFTM = formatter.parse(fechaTomaMuestra);

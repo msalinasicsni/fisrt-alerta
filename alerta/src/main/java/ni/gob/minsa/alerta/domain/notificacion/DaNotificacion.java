@@ -3,6 +3,7 @@ package ni.gob.minsa.alerta.domain.notificacion;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
+import ni.gob.minsa.alerta.domain.irag.Respuesta;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
@@ -34,6 +35,7 @@ public class DaNotificacion {
     private Comunidades comunidadResidencia;
     private String direccionResidencia;
     private Date fechaInicioSintomas;
+    private Respuesta urgente;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -133,8 +135,8 @@ public class DaNotificacion {
         this.fechaAnulacion = fechaAnulacion;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Comunidades.class)
-    @JoinColumn(name="CODIGO_COMUNIDAD_RESIDENCIA", referencedColumnName="CODIGO", nullable=true)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Comunidades.class)
+    @JoinColumn(name = "CODIGO_COMUNIDAD_RESIDENCIA", referencedColumnName = "CODIGO", nullable = true)
     public Comunidades getComunidadResidencia() {
         return comunidadResidencia;
     }
@@ -143,7 +145,7 @@ public class DaNotificacion {
         this.comunidadResidencia = comunidadResidencia;
     }
 
-    @Column(name="DIRECCION_RESIDENCIA", length=100)
+    @Column(name = "DIRECCION_RESIDENCIA", length = 100)
     public String getDireccionResidencia() {
         return direccionResidencia;
     }
@@ -161,4 +163,13 @@ public class DaNotificacion {
     public void setFechaInicioSintomas(Date fechaInicioSintomas) {
         this.fechaInicioSintomas = fechaInicioSintomas;
     }
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Catalogo.class, optional = true)
+    @JoinColumn(name = "URGENTE", referencedColumnName = "CODIGO", nullable = true)
+    @ForeignKey(name = "SF_URGENTE_FK")
+    public Respuesta getUrgente() { return urgente; }
+
+    public void setUrgente(Respuesta urgente) { this.urgente = urgente; }
+
+
 }

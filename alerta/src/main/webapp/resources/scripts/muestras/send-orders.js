@@ -188,11 +188,11 @@ var SendOrders = function () {
                     var len = Object.keys(dataToLoad).length;
                     if (len > 0) {
                         for (var i = 0; i < len; i++) {
-                            table1.fnAddData(
-                                [dataToLoad[i].tipoMuestra +" <input type='hidden' value='"+dataToLoad[i].idTomaMx+"'/>", dataToLoad[i].fechaTomaMx, dataToLoad[i].estadoMx, dataToLoad[i].fechaInicioSintomas,dataToLoad[i].separadaMx, dataToLoad[i].codSilais, dataToLoad[i].codUnidadSalud,dataToLoad[i].persona, dataToLoad[i].edad,dataToLoad[i].sexo,dataToLoad[i].embarazada,
-                                        "<input type='hidden' value='"+dataToLoad[i].solicitudes+"'/>"]);
 
-                        }
+                            table1.fnAddData(
+                                [dataToLoad[i].tipoMuestra +" <input type='hidden' value='"+dataToLoad[i].idTomaMx+"'/>", dataToLoad[i].fechaTomaMx, dataToLoad[i].fechaInicioSintomas, dataToLoad[i].codSilais, dataToLoad[i].codUnidadSalud,dataToLoad[i].persona, dataToLoad[i].edad,dataToLoad[i].sexo,dataToLoad[i].embarazada, dataToLoad[i].hospitalizado, dataToLoad[i].urgente,
+                                        "<input type='hidden' value='"+dataToLoad[i].solicitudes+"'/>"]);
+                          }
                     }else{
                         $.smallBox({
                             title: $("#msg_no_results_found").val() ,

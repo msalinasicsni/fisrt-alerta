@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.muestra.*;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
@@ -69,6 +70,15 @@ public class TomaMxController {
 
     @Resource(name = "daNotificacionService")
     public DaNotificacionService daNotificacionService;
+
+    @Resource(name="entidadAdmonService")
+    private EntidadAdmonService entidadAdmonService;
+
+    @Resource(name="divisionPoliticaService")
+    private DivisionPoliticaService divisionPoliticaService;
+
+    @Resource(name = "unidadesService")
+    public UnidadesService unidadesService;
 
     @Autowired
     MessageSource messageSource;
@@ -139,12 +149,25 @@ public class TomaMxController {
             DaTomaMx tomaMx = new DaTomaMx();
             DaNotificacion noti = daNotificacionService.getNotifById(idNotificacion);
 
+            //entidades admon
+            List<EntidadesAdtvas> entidades = null;
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+
+            //Si es usuario a nivel central se cargan todas las unidades asociados al SILAIS y municipio
+            if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
+
             if (noti != null) {
                 catTipoMx = tomaMxService.getTipoMxByTipoNoti(noti.getCodTipoNotificacion().getCodigo());
 
                 mav.addObject("noti", noti);
                 mav.addObject("tomaMx", tomaMx);
                 mav.addObject("catTipoMx", catTipoMx);
+                mav.addObject("entidades", entidades);
+
                 mav.addAllObjects(mapModel);
                 mav.setViewName("tomaMx/enterForm");
             } else {
@@ -191,6 +214,8 @@ public class TomaMxController {
             , @RequestParam(value = "horaRefrigeracion", required = false) String horaRefrigeracion
             , @RequestParam(value = "mxSeparada", required = false) Integer  mxSeparada
             , @RequestParam(value = "idNotificacion", required = false) String idNotificacion
+            , @RequestParam(value = "codUnidadAtencion", required = false) Integer codUnidadAtencion
+            , @RequestParam(value = "codSilaisAtencion", required = false) Integer codSilaisAtencion
 
     ) throws Exception {
         logger.debug("Guardando datos de Toma de Muestra");
@@ -224,6 +249,8 @@ public class TomaMxController {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         tomaMx.setUsuario(usuarioService.getUsuarioById((int)idUsuario));
         tomaMx.setEstadoMx(catalogoService.getEstadoMx("ESTDMX|PEND"));
+        tomaMx.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
+        tomaMx.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
         String codigo = generarCodigoUnicoMx();
         tomaMx.setCodigoUnicoMx(codigo);
         tomaMx.setCodigoLab(null);
