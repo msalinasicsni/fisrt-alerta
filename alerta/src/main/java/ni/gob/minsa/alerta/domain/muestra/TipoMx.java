@@ -1,6 +1,12 @@
 package ni.gob.minsa.alerta.domain.muestra;
 
+import ni.gob.minsa.alerta.domain.seguridadLab.User;
+import org.hibernate.annotations.ForeignKey;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by souyen-ics on 11-13-14.
@@ -8,11 +14,13 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tipo_muestra", schema = "alerta")
-    public class TipoMx {
+    public class TipoMx implements Serializable {
 
     Integer idTipoMx;
     String nombre;
     boolean pasivo;
+    private Date fechaRegistro;
+    private User usuarioRegistro;
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -44,6 +52,28 @@ import javax.persistence.*;
     public void setPasivo(boolean pasivo) {
         this.pasivo = pasivo;
     }
+
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "FECHA_REGISTRO", nullable = false)
+    public Date getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    @ManyToOne()
+    @JoinColumn(name="USUARIO_REGISTRO", referencedColumnName="username", nullable=false)
+    @ForeignKey(name = "fk_tipoMx_usuarioregistro")
+    public User getUsuarioRegistro() {
+        return usuarioRegistro;
+    }
+
+    public void setUsuarioRegistro(User usuarioRegistro) {
+        this.usuarioRegistro = usuarioRegistro;
+    }
+
 }
 
 
