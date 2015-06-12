@@ -204,7 +204,7 @@ public class EnvioMxController {
             if(tomaMx.getIdNotificacion().getUrgente()!= null){
                 map.put("urgente", tomaMx.getIdNotificacion().getUrgente().getValor());
             }else{
-                map.put("urgente", " ");
+                map.put("urgente", "--");
             }
 
             //map.put("tipoExamen",orden.getCodDx().getNombre());
@@ -251,12 +251,12 @@ public class EnvioMxController {
                 if(edad > 12 && tomaMx.getIdNotificacion().getPersona().isSexoFemenino()){
                     map.put("embarazada", envioMxService.estaEmbarazada(tomaMx.getIdNotificacion().getIdNotificacion()));
                 }else
-                    map.put("embarazada"," ");
+                    map.put("embarazada","--");
             }else{
                 map.put("persona"," ");
                 map.put("edad"," ");
                 map.put("sexo"," ");
-                map.put("embarazada"," ");
+                map.put("embarazada","--");
             }
             //se arma estructura de diagnósticos o estudios
             List<DaSolicitudDx> solicitudDxList = envioMxService.getSolicitudesDxByIdTomaMx(tomaMx.getIdTomaMx());
