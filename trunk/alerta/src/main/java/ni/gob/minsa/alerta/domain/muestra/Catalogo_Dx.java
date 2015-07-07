@@ -4,19 +4,21 @@ import ni.gob.minsa.alerta.domain.examen.Area;
 import org.hibernate.annotations.ForeignKey;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by souyen-ics.
  */
 @Entity
 @Table(name = "catalogo_dx", schema = "alerta")
-public class Catalogo_Dx {
+public class Catalogo_Dx implements Serializable {
 
+    private static final long serialVersionUID = 7177495708144097064L;
     private Integer idDiagnostico;
     private String nombre;
     private boolean pasivo;
     private Area area;
-
+    private int prioridad; //indica la prioridad de recepción respecto a otros dx de la misma mx
 
     @Id
     @Column(name = "ID_DIAGNOSTICO", nullable = false, insertable = true, updatable = true, length = 10)
@@ -58,5 +60,15 @@ public class Catalogo_Dx {
 
     public void setArea(Area area) {
         this.area = area;
+    }
+
+    @Basic
+    @Column(name = "PRIORIDAD", nullable = true, insertable = true, updatable = true)
+    public int getPrioridad() {
+        return prioridad;
+    }
+
+    public void setPrioridad(int prioridad) {
+        this.prioridad = prioridad;
     }
 }
