@@ -21,7 +21,6 @@ public class Estudio_TipoMx_TipoNoti {
     Date fechaRegistro;
     User usuarioRegistro;
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "ID_EST_TPMX_NOTI", nullable = false, insertable = true, updatable = false)
@@ -55,6 +54,7 @@ public class Estudio_TipoMx_TipoNoti {
     public void setTipoMx_tipoNotificacion(TipoMx_TipoNotificacion tipoMx_tipoNotificacion) {
         this.tipoMx_tipoNotificacion = tipoMx_tipoNotificacion;
     }
+
 
     @Basic
     @Column(name = "PASIVO", nullable = true, insertable = true, updatable = true)

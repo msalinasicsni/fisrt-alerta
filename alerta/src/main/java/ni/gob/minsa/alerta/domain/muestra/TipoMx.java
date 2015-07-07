@@ -16,6 +16,7 @@ import java.util.Date;
 @Table(name = "tipo_muestra", schema = "alerta")
     public class TipoMx implements Serializable {
 
+    private static final long serialVersionUID = 6373407114599760842L;
     Integer idTipoMx;
     String nombre;
     boolean pasivo;
@@ -23,7 +24,7 @@ import java.util.Date;
     private User usuarioRegistro;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "ID_TIPOMX", nullable = false, insertable = true, updatable = true)
     public Integer getIdTipoMx() {
         return idTipoMx;

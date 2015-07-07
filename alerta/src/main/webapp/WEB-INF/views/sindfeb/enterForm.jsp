@@ -1154,8 +1154,10 @@
                                                 <input id="text_response" type="hidden" value="<spring:message code="lbl.result.response"/>"/>
 												<h3><spring:message code="sindfeb.step5.long" /></h3>
 												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
-												<fieldset>
-                                                    <div class="widget-body no-padding"><!--<div class="table-responsive">-->
+                                                <br/><br/>
+                                                <div class="widget-body no-padding">
+                                                    <div class="row">
+                                                        <section class="col col-sm-12 col-md-12 col-lg-12">
 											            <table class="table table-striped table-hover table-bordered"  width="100%" id="lista_resultados">
 											                <thead>
 											                <tr>
@@ -1169,8 +1171,9 @@
 											                </tr>
 											                </thead>
 											            </table>
-											        </div>
-											    </fieldset>
+                                                        </section>
+                                                    </div>
+                                                </div>
 											</div>
 										</form>
 									</div>
