@@ -1,7 +1,7 @@
 package ni.gob.minsa.alerta.domain.examen;
 
 
-import ni.gob.minsa.alerta.domain.portal.Usuarios;
+import ni.gob.minsa.alerta.domain.seguridadLab.User;
 import org.hibernate.annotations.ForeignKey;
 
 import javax.persistence.*;
@@ -11,7 +11,7 @@ import java.sql.Timestamp;
  * Created by souyen-ics on 11-27-14.
  */
 @Entity
-@Table(name = "catalogo_examenes", schema = "alerta")
+@Table(name = "catalogo_examenes", schema = "laboratorio")
 public class CatalogoExamenes {
 
     private Integer idExamen;
@@ -19,11 +19,11 @@ public class CatalogoExamenes {
     private Float precio;
     private boolean pasivo;
     private Timestamp fechaRegistro;
-    private Usuarios usuarioRegistro;
+    private User usuarioRegistro;
     private Area area;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "ID_EXAMEN", nullable = false, updatable = true, insertable = true, precision = 0)
     public Integer getIdExamen() {
         return idExamen;
@@ -34,7 +34,7 @@ public class CatalogoExamenes {
     }
 
     @Basic
-    @Column(name = "NOMBRE", nullable = false, insertable = true, updatable = true, length = 100)
+    @Column(name = "NOMBRE", nullable = false, insertable = true, updatable = true, length = 100, unique = true)
     public String getNombre() {
         return nombre;
     }
@@ -73,14 +73,14 @@ public class CatalogoExamenes {
     }
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "USUARIO_REGISTRO", referencedColumnName = "USUARIO_ID")
+    @JoinColumn(name = "USUARIO_REGISTRO", referencedColumnName = "username")
     @ForeignKey(name = "USUARIO_REG_FK")
 
-    public Usuarios getUsuarioRegistro() {
+    public User getUsuarioRegistro() {
         return usuarioRegistro;
     }
 
-    public void setUsuarioRegistro(Usuarios usuarioRegistro) {
+    public void setUsuarioRegistro(User usuarioRegistro) {
         this.usuarioRegistro = usuarioRegistro;
     }
 

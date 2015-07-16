@@ -358,7 +358,6 @@ var EnterFormSindFeb = function () {
                 var resultado = $(texto).val();
                 var json =JSON.parse(resultado);
                 var len = Object.keys(json).length;
-                console.log(json);
                 var childTable = '<table style="padding-left:20px;border-collapse: separate;border-spacing:  10px 3px;">'+
                     '<tr><td style="font-weight: bold">'+$('#text_response').val()+'</td><td style="font-weight: bold">'+$('#text_value').val()+'</td><td style="font-weight: bold">'+$('#text_date').val()+'</td></tr>';
                 for (var i = 0; i < len; i++) {
