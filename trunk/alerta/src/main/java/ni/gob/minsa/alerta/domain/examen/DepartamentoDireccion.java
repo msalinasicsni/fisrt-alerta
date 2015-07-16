@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.domain.examen;
 
+import ni.gob.minsa.alerta.domain.muestra.Laboratorio;
 import ni.gob.minsa.alerta.domain.seguridadLab.User;
 import org.hibernate.annotations.ForeignKey;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,34 +12,48 @@ import java.util.Date;
  * Created by FIRSTICT on 12/2/2014.
  */
 @Entity
-@Table(name = "catalogo_departamento", schema = "laboratorio")
-public class Departamento {
+@Table(name = "departamento_direccion", schema = "laboratorio")
+public class DepartamentoDireccion {
 
-    Integer idDepartamento;
-    String nombre;
+    Integer idDepartDireccion;
+    Departamento departamento;
+    Direccion direccion;
     private boolean pasivo;
     Date fechaRegistro;
     User usuarioRegistro;
 
+
     @Id
     @GeneratedValue(strategy= GenerationType.TABLE)
-    @Column(name = "ID_DEPARTAMENTO", nullable = false, insertable = true, updatable = true, precision = 0)
-    public Integer getIdDepartamento() {
-        return idDepartamento;
+    @Column(name = "ID_DEPART_DIRECCION", nullable = false, insertable = true, updatable = true)
+    public Integer getIdDepartDireccion() {
+        return idDepartDireccion;
     }
 
-    public void setIdDepartamento(Integer idDepartamento) {
-        this.idDepartamento = idDepartamento;
+    public void setIdDepartDireccion(Integer idDepartDireccion) {
+        this.idDepartDireccion = idDepartDireccion;
     }
 
-    @Basic
-    @Column(name = "NOMBRE", nullable = false, insertable = true, updatable = true, length = 100)
-    public String getNombre() {
-        return nombre;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "ID_DEPARTAMENTO", referencedColumnName = "ID_DEPARTAMENTO",nullable = false)
+    @ForeignKey(name="DEPARTADIRECCION_DEPA_FK")
+    public Departamento getDepartamento() {
+        return departamento;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "ID_DIRECCION", referencedColumnName = "ID_DIRECCION",nullable = false)
+    @ForeignKey(name="DEPARTADIRECCION_DIRECCION_FK")
+    public Direccion getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(Direccion direccion) {
+        this.direccion = direccion;
     }
 
     @Basic
@@ -63,7 +78,7 @@ public class Departamento {
 
     @ManyToOne()
     @JoinColumn(name="USUARIO_REGISTRO", referencedColumnName="username", nullable=false)
-    @ForeignKey(name = "departamento_usuario_fk")
+    @ForeignKey(name = "DEPARTADIRECCION_USUARIO_FK")
     public User getUsuarioRegistro() {
         return usuarioRegistro;
     }
@@ -71,4 +86,6 @@ public class Departamento {
     public void setUsuarioRegistro(User usuarioRegistro) {
         this.usuarioRegistro = usuarioRegistro;
     }
+
+
 }

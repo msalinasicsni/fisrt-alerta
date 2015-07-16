@@ -1,24 +1,28 @@
 package ni.gob.minsa.alerta.domain.examen;
 
 import ni.gob.minsa.alerta.domain.muestra.Laboratorio;
+import ni.gob.minsa.alerta.domain.seguridadLab.User;
 import org.hibernate.annotations.ForeignKey;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by FIRSTICT on 12/2/2014.
  */
 @Entity
-@Table(name = "catalogo_direccion", schema = "alerta")
-public class Direccion implements Serializable {
+@Table(name = "catalogo_direccion", schema = "laboratorio")
+public class Direccion {
 
     Integer idDireccion;
     String nombre;
-    Laboratorio laboratorio;
+    private boolean pasivo;
+    Date fechaRegistro;
+    User usuarioRegistro;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.TABLE)
     @Column(name = "ID_DIRECCION", nullable = false, insertable = true, updatable = true)
     public Integer getIdDireccion() {
         return idDireccion;
@@ -38,14 +42,34 @@ public class Direccion implements Serializable {
         this.nombre = nombre;
     }
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "CODIGO_LAB", referencedColumnName = "CODIGO", nullable = false, insertable = true, updatable = true)
-    @ForeignKey(name = "DIRECCION_LABPERTENECE_FK")
-    public Laboratorio getLaboratorio() {
-        return laboratorio;
+    @Basic
+    @Column(name = "PASIVO", nullable = false, insertable = true, updatable = true)
+    public boolean isPasivo() {
+        return pasivo;
     }
 
-    public void setLaboratorio(Laboratorio laboratorio) {
-        this.laboratorio = laboratorio;
+    public void setPasivo(boolean pasivo) {
+        this.pasivo = pasivo;
+    }
+
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "FECHA_REGISTRO", nullable = false)
+    public Date getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    @ManyToOne()
+    @JoinColumn(name="USUARIO_REGISTRO", referencedColumnName="username", nullable=false)
+    @ForeignKey(name = "direccion_usuario_fk")
+    public User getUsuarioRegistro() {
+        return usuarioRegistro;
+    }
+
+    public void setUsuarioRegistro(User usuarioRegistro) {
+        this.usuarioRegistro = usuarioRegistro;
     }
 }
