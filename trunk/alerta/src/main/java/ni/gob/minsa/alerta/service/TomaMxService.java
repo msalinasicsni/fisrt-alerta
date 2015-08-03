@@ -36,25 +36,6 @@ public class TomaMxService {
     }
 
     /**
-     *
-     *
-     * @param codMx
-     * @return
-     * @throws Exception
-     */
-    @SuppressWarnings("unchecked")
-    public List<Examen_TipoMxTipoNoti> getExamenes(String codMx, String tipoNoti) throws Exception {
-        String query = "select ex from Examen_TipoMxTipoNoti ex where ex.tipoMxTipoNotificacion.tipoMx.idTipoMx = :codMx and ex.tipoMxTipoNotificacion.tipoNotificacion.codigo = :tipoNoti" ;
-        Session session = sessionFactory.getCurrentSession();
-        Query q = session.createQuery(query);
-         q.setString("codMx", codMx);
-        q.setString("tipoNoti", tipoNoti);
-        return q.list();
-    }
-
-
-
-    /**
      *Retorna una lista de dx segun tipoMx y tipo Notificacion
      * @param codMx tipo de Mx
      * @param tipoNoti tipo Notificacion
