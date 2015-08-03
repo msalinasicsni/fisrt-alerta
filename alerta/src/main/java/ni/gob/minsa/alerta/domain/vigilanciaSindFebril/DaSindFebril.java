@@ -1,22 +1,15 @@
 package ni.gob.minsa.alerta.domain.vigilanciaSindFebril;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.ForeignKey;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.irag.Respuesta;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
+import org.hibernate.annotations.ForeignKey;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+
 @Entity
 @Table(name = "da_ficha_sindfeb", schema = "alerta")
 public class DaSindFebril implements Serializable{
@@ -119,7 +112,8 @@ public class DaSindFebril implements Serializable{
 		this.idLab = idLab;
 	}
 
-	@Column(name = "FECHA_FICHA", nullable = false)
+    @Temporal(TemporalType.DATE)
+    @Column(name = "FECHA_FICHA", nullable = false)
 	public Date getFechaFicha() {
 		return fechaFicha;
 	}

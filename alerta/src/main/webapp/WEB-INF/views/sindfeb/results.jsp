@@ -95,13 +95,38 @@
 								<!-- widget edit box -->
 								<div class="jarviswidget-editbox">
 									<!-- This area used as dropdown edit box -->
-									<input class="form-control" type="text">	
+									<input class="form-control" type="text">
+
 								</div>
 								<!-- end widget edit box -->
 								<!-- widget content -->
 								<div class="widget-body no-padding">
-									<table id="fichas_result" class="table table-striped table-bordered table-hover" width="100%">
-										<thead>			                
+                                    <input id="idPerson" hidden="hidden" value="${idPerson}" type="text" name="idPerson"/>
+
+
+                                    <table id="fichas_result" class="table table-striped table-bordered table-hover" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th data-class="expand"><i class="fa fa-fw fa-key text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.numFicha"/></th>
+                                            <th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.date"/></th>
+                                            <th data-hide="phone"><i class="fa fa-fw fa-times txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.canceled"/></th>
+                                            <th data-hide="phone, tablet"><i class="fa fa-fw fa-folder-o txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.exp"/></th>
+                                            <th data-hide="phone"><i class="fa fa-fw fa-stethoscope txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.unidad"/></th>
+                                            <th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
+                                            <th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
+                                            <th data-hide="phone,tablet"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
+                                            <th><spring:message code="act.edit"/></th>
+                                            <th><spring:message code="act.export.pdf"/></th>
+                                            <th><spring:message code="act.override"/></th>
+
+                                        </tr>
+                                        </thead>
+                                    </table>
+
+                                    <%--<table id="fichas_result" class="table table-striped table-bordered table-hover" width="100%">
+
+
+                                        <thead>
 											<tr>
 												<th data-class="expand"><i class="fa fa-fw fa-key text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.numFicha"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.date"/></th>
@@ -111,8 +136,9 @@
 												<th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
 												<th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
 												<th data-hide="phone,tablet"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
-												<th></th>
-												<th></th>
+												<th><spring:message code="act.edit"/></th>
+                                                <th><spring:message code="act.export.pdf"/></th>
+                                                <th><spring:message code="act.override"/></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -138,24 +164,32 @@
 												<spring:url value="/febriles/edit/{idNotificacion}" var="editUrl">
 													<spring:param name="idNotificacion" value="${ficha.idNotificacion.idNotificacion}" />
 												</spring:url>
+                                                <spring:url value="/febriles/pdf/{idNotificacion}" var="pdfUrl">
+                                                    <spring:param name="idNotificacion" value="${ficha.idNotificacion.idNotificacion}" />
+                                                </spring:url>
 												<spring:url value="/febriles/delete/{idNotificacion}" var="deleteUrl">
 													<spring:param name="idNotificacion" value="${ficha.idNotificacion.idNotificacion}" />
 												</spring:url>
 												<spring:url value="/febriles/new/{idPersona}" var="newUrl">
 													<spring:param name="idPersona" value="${ficha.idNotificacion.persona.personaId}" />
 												</spring:url>
-												<td>
+
+                                                <td>
                                                     <c:choose>
                                                         <c:when test="${ficha.idNotificacion.pasivo}">
-                                                            <button class="btn btn-default btn-xs" disabled>
+                                                            <button class="btn btn-primary btn-xs" disabled>
                                                                 <i class="fa fa-edit"></i>
                                                             </button>
                                                         </c:when>
                                                         <c:otherwise>
                                                             <a href="${fn:escapeXml(editUrl)}"
-                                                               class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                                                               class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>
                                                         </c:otherwise>
                                                     </c:choose>
+                                                </td>
+                                                <td>
+                                                    <a href="${fn:escapeXml(pdfUrl)}"
+                                                       class="btn btn-success btn-xs"><i class="fa fa-file-pdf-o"></i></a>
                                                 </td>
                                                 <td>
                                                 <c:choose>
@@ -189,7 +223,7 @@
 											</tr>
 										</c:forEach>
 										</tbody>
-									</table>
+									</table>--%>
 								</div>
 								<!-- end widget content -->
 							</div>
@@ -228,41 +262,42 @@
 	<script src="${dataTablesBootstrap}"></script>
 	<spring:url value="/resources/js/plugin/datatable-responsive/datatables.responsive.min.js" var="dataTablesResponsive" />
 	<script src="${dataTablesResponsive}"></script>
-	<!-- END PAGE LEVEL PLUGINS -->
+    <spring:url value="/resources/scripts/sindfeb/results.js" var="resultsJS" />
+    <script src="${resultsJS}"></script>
+    <spring:url value="/resources/scripts/utilidades/generarReporte.js" var="generarReporte" />
+    <script src="${generarReporte}"></script>
+
+    <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
+    <c:url var="getResults" value="/febriles/getResults"/>
+    <c:url var="editUrl" value="/febriles/edit/"/>
+    <c:url var="pdfUrl" value="/febriles/getPDF"/>
+
+
+
+    <!-- END PAGE LEVEL PLUGINS -->
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
+
+            var parametros = {blockMess: "${blockMess}",
+                getResultsUrl : "${getResults}",
+                editUrl : "${editUrl}",
+                pdfUrl: "${pdfUrl}"
+
+
+
+            };
+
+            Results.init(parametros);
 	    	$("li.notificacion").addClass("open");
 	    	$("li.sindfeb").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
 	    		$("li.sindfeb").parents("ul").slideDown(200);
 	    	}
 		});
-		var responsiveHelper_dt_basic = undefined;
-		var breakpointDefinition = {
-			tablet : 1024,
-			phone : 480
-		};
-		var table1 = $('#fichas_result').dataTable({
-			"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
-				"t"+
-				"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
-			"autoWidth" : true,
-			"preDrawCallback" : function() {
-				// Initialize the responsive datatables helper once.
-				if (!responsiveHelper_dt_basic) {
-					responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#fichas_result'), breakpointDefinition);
-				}
-			},
-			"rowCallback" : function(nRow) {
-				responsiveHelper_dt_basic.createExpandIcon(nRow);
-			},
-			"drawCallback" : function(oSettings) {
-				responsiveHelper_dt_basic.respond();
-			}
-		});
+
 	</script>
 	<!-- END JAVASCRIPTS -->
 </body>
