@@ -123,6 +123,10 @@
                                         </thead>
                                     </table>
 
+                                    <spring:url value="/febriles/new/{idPersona}" var="newUrl">
+                                        <spring:param name="idPersona" value="${idPerson}" />
+                                    </spring:url>
+
                                     <%--<table id="fichas_result" class="table table-striped table-bordered table-hover" width="100%">
 
 
@@ -170,9 +174,7 @@
 												<spring:url value="/febriles/delete/{idNotificacion}" var="deleteUrl">
 													<spring:param name="idNotificacion" value="${ficha.idNotificacion.idNotificacion}" />
 												</spring:url>
-												<spring:url value="/febriles/new/{idPersona}" var="newUrl">
-													<spring:param name="idPersona" value="${ficha.idNotificacion.persona.personaId}" />
-												</spring:url>
+
 
                                                 <td>
                                                     <c:choose>
@@ -271,6 +273,7 @@
     <c:url var="getResults" value="/febriles/getResults"/>
     <c:url var="editUrl" value="/febriles/edit/"/>
     <c:url var="pdfUrl" value="/febriles/getPDF"/>
+    <c:url var="overrideUrl" value="/febriles/delete/"/>
 
 
 
@@ -284,7 +287,8 @@
             var parametros = {blockMess: "${blockMess}",
                 getResultsUrl : "${getResults}",
                 editUrl : "${editUrl}",
-                pdfUrl: "${pdfUrl}"
+                pdfUrl: "${pdfUrl}",
+                overrideUrl: "${overrideUrl}"
 
 
 

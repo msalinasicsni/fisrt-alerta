@@ -4,18 +4,26 @@ import com.google.gson.Gson;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.irag.Respuesta;
+import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
+import ni.gob.minsa.alerta.domain.muestra.OrdenExamen;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.persona.Ocupacion;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
+import ni.gob.minsa.alerta.domain.resultados.Catalogo_Lista;
+import ni.gob.minsa.alerta.domain.resultados.DetalleResultado;
+import ni.gob.minsa.alerta.domain.resultados.DetalleResultadoFinal;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
 import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.*;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.DateUtil;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
+import ni.gob.minsa.alerta.utilities.pdfUtils.BaseTable;
+import ni.gob.minsa.alerta.utilities.pdfUtils.Cell;
 import ni.gob.minsa.alerta.utilities.pdfUtils.GeneralUtils;
+import ni.gob.minsa.alerta.utilities.pdfUtils.Row;
 import ni.gob.minsa.ciportal.dto.InfoResultado;
 import ni.gob.minsa.ejbPersona.dto.Persona;
 import org.apache.commons.codec.binary.Base64;
@@ -39,9 +47,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -80,6 +90,15 @@ public class SindFebrilController {
 	public UsuarioService usuarioService;
     @Resource(name = "daNotificacionService")
     public DaNotificacionService daNotificacionService;
+    @Resource(name = "resultadoFinalService")
+    public ResultadoFinalService resultadoFinalService;
+    @Resource(name = "respuestasExamenService")
+    private RespuestasExamenService respuestasExamenService;
+    @Resource(name = "ordenExamenMxService")
+    private OrdenExamenMxService ordenExamenMxService;
+    @Resource(name = "resultadosService")
+    private ResultadosService resultadosService;
+
     @Autowired
     MessageSource messageSource;
 
@@ -488,7 +507,7 @@ public class SindFebrilController {
      * @param idNotificacion the ID of the chs to avoid
      * @return a String
      */
-    @RequestMapping("/delete/{idNotificacion}")
+    @RequestMapping("delete/{idNotificacion}")
     public String voidNoti(@PathVariable("idNotificacion") String idNotificacion, 
     		RedirectAttributes redirectAttributes, HttpServletRequest request) {
     	String urlValidacion= "";
@@ -636,7 +655,7 @@ public class SindFebrilController {
 
                     BufferedImage image = ImageIO.read(new File(workingDir + "/fichaFebril.png"));
 
-                    GeneralUtils.drawObject(stream,doc,image,20,50,545,750);
+                    GeneralUtils.drawObject(stream,doc,image,20,85,545,745);
                     String silais = febril.getIdNotificacion().getCodSilaisAtencion().getNombre();
 
                     String nombreS = silais != null ? silais.replace("SILAIS", ""): "----";
@@ -1059,172 +1078,172 @@ public class SindFebrilController {
 
                     String dxFinal = febril.getDxFinal() != null ? febril.getDxFinal() :"----------";
 
+                    String personFilledTab = febril.getNombreLlenoFicha() != null? febril.getNombreLlenoFicha(): "----------";
 
 
-
-                    float y = 693;
+                    float y = 723;
                     float m = 11;
                     float m1 = 29;
                     float x = 86;
                     float x1 =86 ;
-                    GeneralUtils.drawTEXT(nombreS, y, x, stream,7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(nombreS, y, x, stream,7, PDType1Font.TIMES_ROMAN);
                     x1+= 122;
-                    GeneralUtils.drawTEXT(municipio,y,x1,stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(municipio,y,x1,stream, 7, PDType1Font.TIMES_ROMAN);
                     x1+= 160;
-                    GeneralUtils.drawTEXT(us,y,x1,stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(us,y,x1,stream, 7, PDType1Font.TIMES_ROMAN);
                     y-= m;
                     x1 = x + 45;
-                    GeneralUtils.drawTEXT(nExp,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(nExp,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     x1 += 199;
-                    GeneralUtils.drawTEXT(dia,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(dia,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1+= 23;
-                    GeneralUtils.drawTEXT(mes,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(mes,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1+= 25;
-                    GeneralUtils.drawTEXT(anio,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(anio,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
-                    y-= m1;
+                    y-=28;
                     x1 = x + 55;
-                    GeneralUtils.drawTEXT(nombrePersona,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(nombrePersona,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     y-= 9;
                     x1 = x - 3;
-                    GeneralUtils.drawTEXT(anios,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(anios,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1 += 16;
-                    GeneralUtils.drawTEXT(meses,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(meses,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     x1 += 102;
-                    GeneralUtils.drawTEXT(diaNac,y, x1, stream, 6, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(diaNac,y, x1, stream, 6, PDType1Font.TIMES_ROMAN);
                     x1 += 15;
-                    GeneralUtils.drawTEXT(mesNac,y, x1, stream, 6, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(mesNac,y, x1, stream, 6, PDType1Font.TIMES_ROMAN);
                     x1 += 13;
-                    GeneralUtils.drawTEXT(anioNac,y, x1, stream, 6, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(anioNac,y, x1, stream, 6, PDType1Font.TIMES_ROMAN);
 
                     if(sexo != null){
                         if(sexo.equals("Hombre")){
                             x1 += 78;
-                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null),y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null),y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                         }else if(sexo.equals("Mujer")){
                             x1 += 58;
-                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null),y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null),y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
                         }
                     }
 
                     x1 = x +290;
-                    GeneralUtils.drawTEXT(ocupacion,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(ocupacion,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     y-= m;
                     x1 = x + 75;
-                    GeneralUtils.drawTEXT(tutor,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(tutor,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     y-= 9;
                     x1 = x+15;
-                    GeneralUtils.drawTEXT(direccion,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(direccion,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     if (procedencia != null) {
                         y -= 9;
                         if (procedencia.equals("Urbano")) {
 
                             x1 = x+55;
-                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                         } else if (procedencia.equals("Rural")) {
                             x1 = x+98;
-                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                         }
 
                     }
 
                     x1 = x +210;
-                    GeneralUtils.drawTEXT(viaje,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(viaje,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     x1 += 58;
-                    GeneralUtils.drawTEXT(donde,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(donde,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
 
                     y-= 9;
                     x1 = x+25;
-                    GeneralUtils.drawTEXT(emb,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(emb,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     x1 += 100;
                     GeneralUtils.drawTEXT(mesesEmb,y, x1, stream, 7, PDType1Font.COURIER);
 
                     if (ninguna) {
                         x1 +=  150;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.none", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.none", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     if(asma){
                         x1 = x+350;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     y-= 9;
                     if(alergiaR){
                         x1 = x+15;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     if(alergiaD){
                         x1 = x+117;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     if(diab){
                         x1 = x+175;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     if(otra){
                         x1+= 110;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     if(neumonia){
                         x1 = x+420;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     y-= 9;
                     if(malaria){
                         x1 = x+8;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     if(infeccionV){
                         x1 = x+115;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     if(otraAguda){
                         x1 = x+175;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     y-= 28;
 
                     if(aguaP){
                         x1 = x+143;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
                     }else{
                         x1 = x+171;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     if(puestoP){
                         x1 = x+260;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     if(pozo){
                         x1 = x+318;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     if(rio){
                         x1 = x+370;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
 
@@ -1232,136 +1251,136 @@ public class SindFebrilController {
 
                     if(perros){
                         x1 = x+130;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
                     }
 
                     if(gatos){
                         x1 = x+172;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
                     }
 
                     if(cerdos){
                         x1 = x+220;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
                     }
 
                     if(ganado){
                         x1 = x+272;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     if(ratones){
                         x1 = x+323;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
                     }
 
                     if(ratas){
                         x1 = x+365;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     if(otrosAnim){
                         x1 = x+405;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
                     }
 
                     y-= 37;
                     x1 = x + 88;
-                    GeneralUtils.drawTEXT(diaFis,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(diaFis,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1 = x + 115;
-                    GeneralUtils.drawTEXT(mesFis,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(mesFis,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1 = x + 150;
-                    GeneralUtils.drawTEXT(anioFis,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(anioFis,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     y-= 22;
                     x1 = x + 25;
-                    GeneralUtils.drawTEXT(temp,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(temp,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1 = x + 140;
-                    GeneralUtils.drawTEXT(pas,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(pas,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1 = x + 170;
-                    GeneralUtils.drawTEXT(pad,y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(pad,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
-                    y-= 48;
+                    y-= 47;
                     if(fiebre){
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(dolorAbd){
                         x1 = x+275;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+275;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
                     if(pinzamiento){
                         x1 = x+388;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+388;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     y-= 9;
                     if(cefalea){
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(vomitos){
                         x1 = x+275;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+275;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
                     if(hipotension){
                         x1 = x+388;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+388;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     y-= 10;
                     if(mialgias){
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
                     if(hemorragias){
                         x1 = x+275;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+275;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
                     if(shock){
                         x1 = x+388;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+388;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
@@ -1369,53 +1388,53 @@ public class SindFebrilController {
                     y-= 10;
                     if(artralgias){
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(letargia){
                         x1 = x+275;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+275;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
                     if(distres){
                         x1 = x+388;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+388;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     y-= 9;
                     if(dolorRetro){
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(hepatomegalia){
                         x1 = x+275;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+275;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
                     if(fallaOrg){
                         x1 = x+388;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+388;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
@@ -1423,18 +1442,18 @@ public class SindFebrilController {
                     y-= 9;
                     if(nauseas){
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(acumulacion){
                         x1 = x+275;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+275;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
@@ -1442,47 +1461,47 @@ public class SindFebrilController {
                     y-= 10;
                     if(rash){
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
                     y-= 9;
                     if(pruebaTorn){
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+90;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
-                    y-=39;
+                    y-=37;
 
                     if(cefaleaIn){
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(difResp){
                         x1 = x+264;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+264;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(fiebreChik){
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
@@ -1490,27 +1509,27 @@ public class SindFebrilController {
 
                     if(tos){
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
                     if(hip2){
                         x1 = x+264;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+264;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(artritisChik){
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
@@ -1519,27 +1538,27 @@ public class SindFebrilController {
 
                     if(ictericia){
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
                     if(dAbdIn){
                         x1 = x+264;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+264;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(artralgiasChik){
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
@@ -1548,27 +1567,27 @@ public class SindFebrilController {
 
                     if(oliguria){
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
                     if(dLumbar){
                         x1 = x+264;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+264;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(edemaChik){
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
@@ -1577,27 +1596,27 @@ public class SindFebrilController {
 
                     if(escalofrio){
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
                     if(oliguria2){
                         x1 = x+264;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+264;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(maniChik){
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
@@ -1606,18 +1625,18 @@ public class SindFebrilController {
 
                     if(dolorPant){
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(mialgiaCHik){
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
@@ -1625,18 +1644,18 @@ public class SindFebrilController {
 
                     if(hematuria){
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(dEspChik){
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
@@ -1644,62 +1663,273 @@ public class SindFebrilController {
 
                     if(congestion){
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+127;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     if(cefaleaChik){
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
                     y-=10;
 
                     if(meninChik){
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.yes", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }else{
                         x1 = x+410;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.COURIER_BOLD);
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.abbreviation.no", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                     }
 
 
 
                     y-=27;
                     x1 = x+ 35;
-                    GeneralUtils.drawTEXT(hospitalizado, y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(hospitalizado, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1 += 83;
-                    GeneralUtils.drawTEXT(diaIn, y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(diaIn, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1 += 35;
-                    GeneralUtils.drawTEXT(mesIn, y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(mesIn, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1 += 30;
-                    GeneralUtils.drawTEXT(anioIn, y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(anioIn, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     x1 = x+ 240;
-                    GeneralUtils.drawTEXT(fallecido, y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(fallecido, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     x1 += 88;
-                    GeneralUtils.drawTEXT(diaFa, y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(diaFa, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1 += 21;
-                    GeneralUtils.drawTEXT(mesFa, y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(mesFa, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1 += 20;
-                    GeneralUtils.drawTEXT(anioFa, y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(anioFa, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     y-=20;
                     x1 = x+ 70;
-                    GeneralUtils.drawTEXT(dxPresuntivo, y, x1, stream, 7, PDType1Font.COURIER);
+                    GeneralUtils.drawTEXT(dxPresuntivo, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+
+                    y-=26;
+
+                    //load all the request by notification
+
+                    List<DaSolicitudDx> diagnosticosList = resultadoFinalService.getSolicitudesDxByIdNotificacion(febril.getIdNotificacion().getIdNotificacion());
+
+                    float y1 = 0;
+
+
+                    if (!diagnosticosList.isEmpty()) {
+                        int con = 0;
+                        for (DaSolicitudDx soli : diagnosticosList) {
+                            List<String[]> reqList = new ArrayList<String[]>();
+                            List<String[]> dxList = new ArrayList<String[]>();
+                            con++;
+                            if(con >=2){
+                            y = y1;
+                            }
+                            String[] content = new String[5];
+                            List<OrdenExamen> ordenes = ordenExamenMxService.getOrdenesExamenNoAnuladasByIdSolicitud(soli.getIdSolicitudDx());
+                            List<DetalleResultadoFinal> resul = resultadoFinalService.getDetResActivosBySolicitud(soli.getIdSolicitudDx());
+
+                            content[0] = soli.getCodDx().getNombre() != null ? soli.getCodDx().getNombre() : "";
+                            content[1] = soli.getFechaHSolicitud() != null ? DateUtil.DateToString(soli.getFechaHSolicitud(), "dd/MM/yyyy HH:mm:ss") : "";
+                            content[2] = soli.getIdTomaMx().getFechaHTomaMx() != null ?DateUtil.DateToString(soli.getIdTomaMx().getFechaHTomaMx(), "dd/MM/yyyy HH:mm:ss") : "";
+                            content[3] = soli.getIdTomaMx().getCodTipoMx() != null ? soli.getIdTomaMx().getCodTipoMx().getNombre() : "";
+
+                            int cont = 0;
+                            String rFinal = null;
+                            for (DetalleResultadoFinal det : resul) {
+                                cont++;
+
+                                if (cont == 1) {
+                                    if (cont == resul.size()) {
+
+                                        if(det.getRespuesta() != null){
+                                            if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal = det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+
+                                            } else {
+                                                rFinal = det.getRespuesta().getNombre() + ":" + " " + det.getValor();
+                                            }
+                                        }else{
+                                            if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal = det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
+
+                                            } else {
+                                                rFinal = det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
+                                            }
+                                        }
+
+                                    } else {
+                                        if(det.getRespuesta() != null){
+                                            if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal = "," +" "+ det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+
+                                            } else {
+                                                rFinal = "," +" "+ det.getRespuesta().getNombre() + ":" + " " + det.getValor();
+                                            }
+                                        }else{
+                                            if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal = "," +" "+ det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
+
+                                            } else {
+                                                rFinal = "," +" "+ det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
+                                            }
+                                        }
+
+                                    }
+                                } else {
+                                    if (cont == resul.size()) {
+                                        if(det.getRespuesta() != null){
+                                            if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal += det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+
+                                            } else {
+                                                rFinal += det.getRespuesta().getNombre() + ":" + " " + det.getValor();
+                                            }
+                                        }else{
+                                            if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal += det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
+
+                                            } else {
+                                                rFinal += det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
+                                            }
+                                        }
+
+                                    } else {
+                                        if(det.getRespuesta() != null){
+                                            if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal += "," +" "+ det.getRespuesta().getNombre() + ":" + " " + valor.getValor() ;
+
+                                            } else {
+                                                rFinal += "," +" "+ det.getRespuesta().getNombre() + ":" + " " + det.getValor() ;
+                                            }
+                                        }else{
+                                            if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal += "," +" "+ det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor() ;
+
+                                            } else {
+                                                rFinal += "," +" "+ det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor() ;
+                                            }
+                                        }
+
+                                    }
+                                }
+
+                            }
+
+                            content[4] = rFinal;
+                            reqList.add(content);
+
+
+
+                            if(!ordenes.isEmpty()){
+
+                                String rExamen = null;
+                                String fechaProcesamiento = null;
+                                for(OrdenExamen ex: ordenes){
+                                    String[] examen = new String[3];
+                                    List<DetalleResultado> results = resultadosService.getDetallesResultadoActivosByExamen(ex.getIdOrdenExamen());
+
+                                    examen[0] = ex.getCodExamen() != null ? ex.getCodExamen().getNombre() : "";
+
+
+                                    int cont1 = 0;
+                                    for (DetalleResultado resExamen: results){
+                                        cont1++;
+
+                                        if(cont1 ==1){
+
+                                            if(cont1 == resul.size()){
+                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy HH:mm:ss");
+                                                if(resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")){
+                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
+                                                    rExamen= resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+
+                                                }else{
+                                                    rExamen = resExamen.getRespuesta().getNombre() + ":"+ " "  + resExamen.getValor();
+                                                }
+                                            }else{
+                                                if(resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")){
+                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
+                                                    rExamen = "," +" " + resExamen.getRespuesta().getNombre() + ":"  + " " + valor.getValor()  ;
+
+                                                }else{
+                                                    rExamen = ","+ " " + resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor() ;
+                                                }
+                                            }
+                                        }else{
+                                            if(cont1 == resul.size()){
+                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy HH:mm:ss");
+
+                                                if(resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")){
+                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
+                                                    rExamen += resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+
+                                                }else{
+                                                    rExamen += resExamen.getRespuesta().getNombre() + ":"+ " "  + resExamen.getValor();
+                                                }
+                                            }else{
+                                                if(resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")){
+                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
+                                                    rExamen +=  "," +" "+ resExamen.getRespuesta().getNombre() + ":"  + " " + valor.getValor();
+
+                                                }else{
+                                                    rExamen +=  ","+ " " +resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor()  ;
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                    examen[1] = fechaProcesamiento;
+                                    examen[2] = rExamen != null? rExamen:"";
+                                    dxList.add(examen);
+
+
+                                }
+
+
+                            }
+                            drawTable(reqList, doc, page, y);
+                            y-= 20;
+                            drawTable1(dxList,doc,page,y);
+                            y1 = y - ((dxList.size() +2) * 10);
+
+
+                        }
+
+                        //dx final
+                        y= y1 -5;
+                        x1 = x-25;
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.final.dx", null, null), y, x1, stream, 8, PDType1Font.TIMES_ROMAN);
+                        x1 += 70;
+                        GeneralUtils.drawTEXT(dxFinal, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+
+                    }
+
+                    y-= 10;
+                    x1 = x-25;
+                    GeneralUtils.drawTEXT(messageSource.getMessage("lbl.person.who.filled.tab", null, null), y, x1, stream, 8, PDType1Font.TIMES_ROMAN);
+                    x1 += 180;
+                    GeneralUtils.drawTEXT(personFilledTab, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
 
 
 
-                    y-=102;
-                    x1 = x+ 50;
-                    GeneralUtils.drawTEXT(dxFinal, y, x1, stream, 7, PDType1Font.COURIER);
+
+
 
 
 
@@ -1732,8 +1962,8 @@ public class SindFebrilController {
 
 
                     //fecha impresión
-                    GeneralUtils.drawTEXT(messageSource.getMessage("lbl.print.datetime", null, null), 100, 605, stream, 10, PDType1Font.HELVETICA_BOLD);
-                    GeneralUtils.drawTEXT(fechaImpresion, 100, 900, stream, 10, PDType1Font.HELVETICA);
+                   /* GeneralUtils.drawTEXT(messageSource.getMessage("lbl.print.datetime", null, null), 100, 605, stream, 10, PDType1Font.HELVETICA_BOLD);
+                    GeneralUtils.drawTEXT(fechaImpresion, 100, 900, stream, 10, PDType1Font.HELVETICA);*/
 
                     stream.close();
 
@@ -1746,6 +1976,276 @@ public class SindFebrilController {
         }
 
         return res;
+    }
+
+    private void drawTable(List<String[]> reqList, PDDocument doc, PDPage page, float y) throws IOException {
+
+        //drawTable
+
+        //Initialize table
+        float margin = 33;
+        float tableWidth = 520;
+        float yStartNewPage = y;
+        float yStart = yStartNewPage;
+        float bottomMargin = 45;
+        BaseTable table = new BaseTable(yStart, yStartNewPage, bottomMargin, tableWidth, margin, doc, page, true, true);
+
+        //Create Header row
+        Row headerRow = table.createRow(10f);
+        table.setHeader(headerRow);
+
+        //Create 2 column row
+
+        Cell cell;
+        Row row;
+
+
+        //Create Fact header row
+        Row factHeaderrow = table.createRow(10f);
+        cell = factHeaderrow.createCell(20, messageSource.getMessage("lbl.request", null, null));
+        cell.setFont(PDType1Font.TIMES_BOLD);
+        cell.setFontSize(7);
+        cell.setFillColor(Color.LIGHT_GRAY);
+
+        cell = factHeaderrow.createCell(20, messageSource.getMessage("lbl.send.request.date", null, null));
+        cell.setFillColor(Color.lightGray);
+        cell.setFont(PDType1Font.TIMES_BOLD);
+        cell.setFontSize(7);
+
+        cell = factHeaderrow.createCell(20, messageSource.getMessage("lbl.sampling.datetime", null, null));
+        cell.setFillColor(Color.lightGray);
+        cell.setFont(PDType1Font.TIMES_BOLD);
+        cell.setFontSize(7);
+
+        cell = factHeaderrow.createCell(20, messageSource.getMessage("lbl.sample.type", null, null));
+        cell.setFillColor(Color.lightGray);
+        cell.setFont(PDType1Font.TIMES_BOLD);
+        cell.setFontSize(7);
+
+        cell = factHeaderrow.createCell(20, messageSource.getMessage("lbl.final.result", null, null));
+        cell.setFillColor(Color.lightGray);
+        cell.setFont(PDType1Font.TIMES_BOLD);
+        cell.setFontSize(7);
+
+        //Add multiple rows with random facts about Belgium
+        for (String[] fact : reqList) {
+
+           /* if (y < 260) {
+                table.draw();
+                stream.close();
+                page = new PDPage(PDPage.PAGE_SIZE_A4);
+                page.setRotation(90);
+                doc.addPage(page);
+                stream = new PDPageContentStream(doc, page);
+                stream.concatenate2CTM(0, 1, -1, 0, page.getMediaBox().getWidth(), 0);
+                y = 470;
+                GeneralUtils.drawHeaderAndFooter(stream, doc, 500, 840, 90, 840, 70);
+                pageNumber = String.valueOf(doc.getNumberOfPages());
+                GeneralUtils.drawTEXT(pageNumber, 15, 800, stream, 10, PDType1Font.HELVETICA_BOLD);
+
+
+                table = new BaseTable(y, y, bottomMargin, tableWidth, margin, doc, page, true, true);
+
+                //Create Header row
+                headerRow = table.createRow(15f);
+                table.setHeader(headerRow);
+
+                //Create Fact header row
+                factHeaderrow = table.createRow(15f);
+                cell = factHeaderrow.createCell(13, messageSource.getMessage("lbl.lab.code.mx", null, null));
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+                cell.setFillColor(Color.LIGHT_GRAY);
+
+                cell = factHeaderrow.createCell(10, messageSource.getMessage("lbl.sample.type", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+
+                cell = factHeaderrow.createCell(9, messageSource.getMessage("lbl.receipt.dateTime", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+
+                cell = factHeaderrow.createCell(11, messageSource.getMessage("lbl.sample.quality", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+
+                cell = factHeaderrow.createCell(16, messageSource.getMessage("lbl.silais", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+
+                cell = factHeaderrow.createCell(16, messageSource.getMessage("lbl.health.unit", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+
+                cell = factHeaderrow.createCell(16, messageSource.getMessage("lbl.receipt.person.name", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+
+                cell = factHeaderrow.createCell(9, messageSource.getMessage("lbl.request.large", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+                y -= 15;
+
+
+            }*/
+
+            row = table.createRow(10);
+            cell = row.createCell(20, fact[0]);
+            cell.setFont(PDType1Font.TIMES_ROMAN);
+            cell.setFontSize(7);
+            y -= 15;
+
+            for (int i = 1; i < fact.length; i++) {
+                    cell = row.createCell(20, fact[i]);
+                    cell.setFont(PDType1Font.TIMES_ROMAN);
+                    cell.setFontSize(7);
+
+
+            }
+        }
+        table.draw();
+    }
+
+
+    private void drawTable1(List<String[]> reqList, PDDocument doc, PDPage page, float y) throws IOException {
+
+        //drawTable
+
+        //Initialize table
+        float margin = 33;
+        float tableWidth = 520;
+        float yStartNewPage = y;
+        float yStart = yStartNewPage;
+        float bottomMargin = 45;
+        BaseTable table = new BaseTable(yStart, yStartNewPage, bottomMargin, tableWidth, margin, doc, page, true, true);
+
+        //Create Header row
+        Row headerRow = table.createRow(10f);
+        table.setHeader(headerRow);
+
+        //Create 2 column row
+
+        Cell cell;
+        Row row;
+
+
+        //Create Fact header row
+        Row factHeaderrow = table.createRow(10f);
+        cell = factHeaderrow.createCell(20, messageSource.getMessage("lbl.test", null, null));
+        cell.setFont(PDType1Font.TIMES_BOLD);
+        cell.setFontSize(7);
+        cell.setFillColor(Color.LIGHT_GRAY);
+
+        cell = factHeaderrow.createCell(20, messageSource.getMessage("lbl.processing.datetime", null, null));
+        cell.setFillColor(Color.lightGray);
+        cell.setFont(PDType1Font.TIMES_BOLD);
+        cell.setFontSize(7);
+
+        cell = factHeaderrow.createCell(60, messageSource.getMessage("lbl.result", null, null));
+        cell.setFillColor(Color.lightGray);
+        cell.setFont(PDType1Font.TIMES_BOLD);
+        cell.setFontSize(7);
+
+
+        //Add multiple rows with random facts about Belgium
+        for (String[] fact : reqList) {
+
+           /* if (y < 260) {
+                table.draw();
+                stream.close();
+                page = new PDPage(PDPage.PAGE_SIZE_A4);
+                page.setRotation(90);
+                doc.addPage(page);
+                stream = new PDPageContentStream(doc, page);
+                stream.concatenate2CTM(0, 1, -1, 0, page.getMediaBox().getWidth(), 0);
+                y = 470;
+                GeneralUtils.drawHeaderAndFooter(stream, doc, 500, 840, 90, 840, 70);
+                pageNumber = String.valueOf(doc.getNumberOfPages());
+                GeneralUtils.drawTEXT(pageNumber, 15, 800, stream, 10, PDType1Font.HELVETICA_BOLD);
+
+
+                table = new BaseTable(y, y, bottomMargin, tableWidth, margin, doc, page, true, true);
+
+                //Create Header row
+                headerRow = table.createRow(15f);
+                table.setHeader(headerRow);
+
+                //Create Fact header row
+                factHeaderrow = table.createRow(15f);
+                cell = factHeaderrow.createCell(13, messageSource.getMessage("lbl.lab.code.mx", null, null));
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+                cell.setFillColor(Color.LIGHT_GRAY);
+
+                cell = factHeaderrow.createCell(10, messageSource.getMessage("lbl.sample.type", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+
+                cell = factHeaderrow.createCell(9, messageSource.getMessage("lbl.receipt.dateTime", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+
+                cell = factHeaderrow.createCell(11, messageSource.getMessage("lbl.sample.quality", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+
+                cell = factHeaderrow.createCell(16, messageSource.getMessage("lbl.silais", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+
+                cell = factHeaderrow.createCell(16, messageSource.getMessage("lbl.health.unit", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+
+                cell = factHeaderrow.createCell(16, messageSource.getMessage("lbl.receipt.person.name", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+
+                cell = factHeaderrow.createCell(9, messageSource.getMessage("lbl.request.large", null, null));
+                cell.setFillColor(Color.lightGray);
+                cell.setFont(PDType1Font.HELVETICA_BOLD);
+                cell.setFontSize(10);
+                y -= 15;
+
+
+            }*/
+
+            row = table.createRow(10);
+            cell = row.createCell(20, fact[0]);
+            cell.setFont(PDType1Font.TIMES_ROMAN);
+            cell.setFontSize(7);
+            y -= 15;
+
+            for (int i = 1; i < fact.length; i++) {
+
+                if (i == 2) {
+                    cell = row.createCell(60, fact[i]);
+                    cell.setFont(PDType1Font.TIMES_ROMAN);
+                    cell.setFontSize(7);
+                }else{
+                    cell = row.createCell(20, fact[i]);
+                    cell.setFont(PDType1Font.TIMES_ROMAN);
+                    cell.setFontSize(7);
+                }
+
+
+
+            }
+        }
+        table.draw();
     }
 
 

@@ -96,14 +96,15 @@ var Results = function () {
 
                         var editUrl = parametros.editUrl +  data[i].idNotificacion.idNotificacion;
                         var btnEdit = '<a href=' + editUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
+                        var overrideUrl = parametros.overrideUrl + data[i].idNotificacion.idNotificacion;
 
 
 
                         var btnPdf = '<button type="button" class="btn btn-success btn-xs" data-id="' + data[i].idNotificacion.idNotificacion +
                             '" > <i class="fa fa-file-pdf-o"></i>';
 
-                        var btnOverride = ' <button type="button" class="btn btn-xs btn-danger" data-id="' + data[i].idNotificacion.idNotificacion +
-                            '"> <i class="fa fa-times"></i>';
+                        var btnOverride = '<a href=' + overrideUrl + ' class="btn btn-xs btn-danger" ><i class="fa fa-times"></i></a>';
+
 
                         var pasivo = '<span class="label label-success"><i class="fa fa-thumbs-up fa-lg"></i></span>';
                         if (data[i].idNotificacion.pasivo == true) {
@@ -149,6 +150,7 @@ var Results = function () {
 
 
             }
+
 
 
         }
