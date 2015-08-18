@@ -186,8 +186,24 @@ public class EnvioMxService {
         return embarazo;
     }
 
-    public List<Laboratorio> getLaboratorios(){
-        String query = "from Laboratorio ORDER BY nombre";
+    public List<Laboratorio> getLaboratorios(Integer pUsuarioId, String pCodigoSis){
+        String query = "select lab from Laboratorio lab, EntidadAdtvaLaboratorio el, EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
+                "where lab.codigo = el.laboratorio.codigo and el.entidadAdtva.codigo = ent.codigo " +
+                "and ent.id = usuent.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuent.usuario.usuarioId and usuent.sistema.id = sis.id " +
+                "and el.pasivo = false " +
+                "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo order by ent.nombre";
+        Query qr = sessionFactory.getCurrentSession().createQuery(query);
+        qr.setParameter("pUsuarioId", pUsuarioId);
+        qr.setParameter("pCodigoSis", pCodigoSis);
+        qr.setParameter("pasivo", '0');
+
+        return qr.list();
+    }
+
+    public List<Laboratorio> getAllLaboratorios(){
+        String query = "from Laboratorio lab " +
+                "ORDER BY nombre";
+
         Query q = sessionFactory.getCurrentSession().createQuery(query);
         return q.list();
     }
