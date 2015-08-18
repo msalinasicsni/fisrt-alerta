@@ -85,10 +85,16 @@ public class EnvioMxController {
         ModelAndView mav = new ModelAndView();
         if (urlValidacion.isEmpty()) {
             mav.setViewName("tomaMx/sendOrders");
-
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
             List<EntidadesAdtvas> entidadesAdtvases =  entidadAdmonService.getAllEntidadesAdtvas();
             List<TipoMx> tipoMxList = catalogosService.getTipoMuestra();
-            List<Laboratorio> laboratorioList = envioMxService.getLaboratorios();
+            List<Laboratorio> laboratorioList;
+            //Si es usuario a nivel central se cargan todas las unidades asociados al SILAIS y municipio
+            if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+                laboratorioList = envioMxService.getAllLaboratorios();
+            }else {
+                 laboratorioList = envioMxService.getLaboratorios((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             mav.addObject("entidades",entidadesAdtvases);
             mav.addObject("tipoMuestra", tipoMxList);
             mav.addObject("laboratorios",laboratorioList);
