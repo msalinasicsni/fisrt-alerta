@@ -1902,16 +1902,17 @@ public class SindFebrilController {
 
 
                             }
-                            drawTable(reqList, doc, page, y);
-                            y-= 20;
-                            drawTable1(dxList,doc,page,y);
-                            y1 = y - ((dxList.size() +2) * 10);
+                          float height1 =  drawTable(reqList, doc, page, y);
+                            y-= height1;
+                           float height2 = drawTable1(dxList,doc,page,y);
+                            y1 = y - height2;
+
 
 
                         }
 
                         //dx final
-                        y= y1 -5;
+                        y= y1 -10;
                         x1 = x-25;
                         GeneralUtils.drawTEXT(messageSource.getMessage("lbl.final.dx", null, null), y, x1, stream, 8, PDType1Font.TIMES_ROMAN);
                         x1 += 70;
@@ -1924,42 +1925,6 @@ public class SindFebrilController {
                     GeneralUtils.drawTEXT(messageSource.getMessage("lbl.person.who.filled.tab", null, null), y, x1, stream, 8, PDType1Font.TIMES_ROMAN);
                     x1 += 180;
                     GeneralUtils.drawTEXT(personFilledTab, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                     //fecha impresión
                    /* GeneralUtils.drawTEXT(messageSource.getMessage("lbl.print.datetime", null, null), 100, 605, stream, 10, PDType1Font.HELVETICA_BOLD);
@@ -1978,11 +1943,12 @@ public class SindFebrilController {
         return res;
     }
 
-    private void drawTable(List<String[]> reqList, PDDocument doc, PDPage page, float y) throws IOException {
+    private float drawTable(List<String[]> reqList, PDDocument doc, PDPage page, float y) throws IOException {
 
         //drawTable
 
         //Initialize table
+        float height = 0;
         float margin = 33;
         float tableWidth = 520;
         float yStartNewPage = y;
@@ -2027,6 +1993,8 @@ public class SindFebrilController {
         cell.setFont(PDType1Font.TIMES_BOLD);
         cell.setFontSize(7);
 
+        height = factHeaderrow.getHeight();
+
         //Add multiple rows with random facts about Belgium
         for (String[] fact : reqList) {
 
@@ -2097,28 +2065,27 @@ public class SindFebrilController {
             }*/
 
             row = table.createRow(10);
-            cell = row.createCell(20, fact[0]);
-            cell.setFont(PDType1Font.TIMES_ROMAN);
-            cell.setFontSize(7);
-            y -= 15;
 
-            for (int i = 1; i < fact.length; i++) {
-                    cell = row.createCell(20, fact[i]);
-                    cell.setFont(PDType1Font.TIMES_ROMAN);
-                    cell.setFontSize(7);
 
+            for (String aFact : fact) {
+                cell = row.createCell(20, aFact);
+                cell.setFont(PDType1Font.TIMES_ROMAN);
+                cell.setFontSize(7);
 
             }
+            height += row.getHeight();
         }
         table.draw();
+        return height;
     }
 
 
-    private void drawTable1(List<String[]> reqList, PDDocument doc, PDPage page, float y) throws IOException {
+    private float drawTable1(List<String[]> reqList, PDDocument doc, PDPage page, float y) throws IOException {
 
         //drawTable
 
         //Initialize table
+        float height = 0;
         float margin = 33;
         float tableWidth = 520;
         float yStartNewPage = y;
@@ -2153,6 +2120,8 @@ public class SindFebrilController {
         cell.setFont(PDType1Font.TIMES_BOLD);
         cell.setFontSize(7);
 
+        height = factHeaderrow.getHeight();
+
 
         //Add multiple rows with random facts about Belgium
         for (String[] fact : reqList) {
@@ -2224,28 +2193,31 @@ public class SindFebrilController {
             }*/
 
             row = table.createRow(10);
-            cell = row.createCell(20, fact[0]);
-            cell.setFont(PDType1Font.TIMES_ROMAN);
-            cell.setFontSize(7);
-            y -= 15;
 
-            for (int i = 1; i < fact.length; i++) {
 
-                if (i == 2) {
-                    cell = row.createCell(60, fact[i]);
-                    cell.setFont(PDType1Font.TIMES_ROMAN);
-                    cell.setFontSize(7);
-                }else{
-                    cell = row.createCell(20, fact[i]);
-                    cell.setFont(PDType1Font.TIMES_ROMAN);
-                    cell.setFontSize(7);
+            for (int i = 0; i < fact.length; i++) {
+
+                switch (i) {
+                    case 2: {
+                        cell = row.createCell(60, fact[i]);
+                        cell.setFont(PDType1Font.TIMES_ROMAN);
+                        cell.setFontSize(7);
+                        break;
+                    }
+                    default: {
+                        cell = row.createCell(20, fact[i]);
+                        cell.setFont(PDType1Font.TIMES_ROMAN);
+                        cell.setFontSize(7);
+                    }
+
                 }
 
 
-
             }
+            height += row.getHeight();
         }
         table.draw();
+        return height;
     }
 
 

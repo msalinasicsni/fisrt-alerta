@@ -53,9 +53,9 @@ public class DaVacunasIragService {
     }
 
 
-    public DaVacunasIrag searchVaccineRecord(String id, String vac, String tipo){
+    public DaVacunasIrag searchVaccineRecord(String id, String vac){
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM DaVacunasIrag vac where vac.idNotificacion ='"+id+"'and vac.codVacuna = '"+vac+"' and vac.codTipoVacuna = '"+tipo+"' and vac.pasivo = false ");
+        Query query = session.createQuery("FROM DaVacunasIrag vac where vac.idNotificacion ='"+id+"'and vac.codVacuna = '"+vac+"' and vac.pasivo = false ");
         return (DaVacunasIrag) query.uniqueResult();
     }
 
