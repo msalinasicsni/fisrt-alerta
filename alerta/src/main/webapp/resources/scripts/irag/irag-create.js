@@ -339,39 +339,45 @@ var CreateIrag = function () {
                 }
             });
 
-            //mostrar tipo de vacuna segun seleccion
-            $('#codVacuna').change(function () {
-                $('#tVacHib').attr("name", "");
-                $('#tVacFlu').attr("name", "");
-                $('#tVacNeumo').attr("name", "");
-                $('#tVacMenin').attr("name", "");
-                $('#tVacHib').find('option:first').prop("selected", true).change();
-                $('#tVacMenin').find('option:first').prop("selected", true).change();
-                $('#tVacNeumo').find('option:first').prop("selected", true).change();
-                $('#tVacFlu').find('option:first').prop("selected", true).change();
+            var codVacuna = $('#codVacuna');
+            var hib = $('#tVacHib');
+            var flu = $('#tVacFlu');
+            var neumo = $('#tVacNeumo');
+            var menin = $('#tVacMenin');
 
-                if ($('#codVacuna').find('option:selected').text() === "Anti Hib") {
-                    $('#tVacHib').attr("name", "codTipoVacuna");
+            //mostrar tipo de vacuna segun seleccion
+            codVacuna.change(function () {
+                hib.attr("name", "");
+                flu.attr("name", "");
+                neumo.attr("name", "");
+                menin.attr("name", "");
+                hib.val('').change();
+                menin.val('').change();
+                neumo.val('').change();
+                flu.val('').change();
+
+                if (codVacuna.find('option:selected').text() === "Anti Hib") {
+                    hib.attr("name", "codTipoVacuna");
                     $('#dVacHib').show();
                     $('#dVacMenin').hide();
                     $('#dVacNeumo').hide();
                     $('#dVacFlu').hide();
 
 
-                } else if ($('#codVacuna').find('option:selected').text() === "Anti meningocócica") {
-                    $('#tVacMenin').attr("name", "codTipoVacuna");
+                } else if (codVacuna.find('option:selected').text() === "Anti meningocócica") {
+                    menin.attr("name", "codTipoVacuna");
                     $('#dVacMenin').show();
                     $('#dVacHib').hide();
                     $('#dVacNeumo').hide();
                     $('#dVacFlu').hide();
-                } else if ($('#codVacuna').find('option:selected').text() === "Anti neumococica") {
-                    $('#tVacNeumo').attr("name", "codTipoVacuna");
+                } else if (codVacuna.find('option:selected').text() === "Anti neumococica") {
+                    neumo.attr("name", "codTipoVacuna");
                     $('#dVacNeumo').show();
                     $('#dVacMenin').hide();
                     $('#dVacHib').hide();
                     $('#dVacFlu').hide();
-                } else if ($('#codVacuna').find('option:selected').text() === "Anti influenza") {
-                    $('#tVacFlu').attr("name", "codTipoVacuna");
+                } else if (codVacuna.find('option:selected').text() === "Anti influenza") {
+                    flu.attr("name", "codTipoVacuna");
                     $('#dVacFlu').show();
                     $('#dVacNeumo').hide();
                     $('#dVacMenin').hide();
@@ -428,15 +434,15 @@ var CreateIrag = function () {
 
                         getVaccines(data.idNotificacion.idNotificacion.idNotificacion);
 
-                        $('#codVacuna').find('option:first').prop("selected", true).change();
-                        $('#tVacHib').find('option:first').prop("selected", true).change();
-                        $("#tVacMenin").find("option:first").prop("selected", true).change();
-                        $('#tVacNeumo').find('option:first').prop("selected", true).change();
-                        $('#tVacFlu').find('option:first').prop("selected", true).change();
-                        $('#tVacNeumo').attr("name", "");
-                        $('#tVacHib').attr("name", "");
-                        $('#tVacMenin').attr("name", "");
-                        $('#tVacFlu').attr("name", "");
+                        codVacuna.val('').change();
+                        hib.val('').change();
+                        menin.val('').change();
+                        neumo.val('').change();
+                        flu.val('').change();
+                        neumo.attr("name", "");
+                        hib.attr("name", "");
+                        menin.attr("name", "");
+                        flu.attr("name", "");
                         $("#dosis").val('');
                         $("#fechaUltimaDosis").val('');
                         $("#btnCancel").click();
@@ -467,11 +473,11 @@ var CreateIrag = function () {
 
                         if (autorizado == "true") {
                             tableVac.fnAddData(
-                                [data[i].codVacuna.valor, data[i].codTipoVacuna.valor, data[i].dosis, data[i].fechaUltimaDosis, '<a href=' + overrideUrl + ' class="btn btn-default btn-xs btn-danger"><i class="fa fa-times"></i></a>']);
+                                [data[i].codVacuna.valor, data[i].codTipoVacuna, data[i].dosis, data[i].fechaUltimaDosis, '<a href=' + overrideUrl + ' class="btn btn-default btn-xs btn-danger"><i class="fa fa-times"></i></a>']);
 
                         } else {
                             tableVac.fnAddData(
-                                [data[i].codVacuna.valor, data[i].codTipoVacuna.valor, data[i].dosis, data[i].fechaUltimaDosis, '<a href=' + overrideUrl + ' class="btn btn-default btn-xs btn-danger disabled" ><i class="fa fa-times"></i></a>' ]);
+                                [data[i].codVacuna.valor, data[i].codTipoVacuna, data[i].dosis, data[i].fechaUltimaDosis, '<a href=' + overrideUrl + ' class="btn btn-default btn-xs btn-danger disabled" ><i class="fa fa-times"></i></a>' ]);
 
                         }
 
@@ -511,6 +517,37 @@ var CreateIrag = function () {
 
             });
 
+            var antib = $('#codAntbUlSem');
+            antib.change(function(){
+                if (antib.find('option:selected').text() === "Si") {
+                    $('#dAntib').fadeIn('slow');
+                }else{
+                    $('#dAntib').fadeOut('slow');
+                    $('#cantidadAntib').val('');
+                    $('#nombreAntibiotico').val('');
+                    $('#fechaPrimDosisAntib').val('');
+                    $('#fechaUltDosisAntib').val('');
+                    $('#noDosisAntib').val('');
+                    $('#codViaAntb').val('').change();
+                }
+
+
+            });
+
+            var antiv = $('#usoAntivirales');
+            antiv.change(function(){
+                if (antiv.find('option:selected').text() === "Si") {
+                $('#dAntiv').fadeIn('slow');
+                }else{
+                    $('#dAntiv').fadeOut('slow');
+                    $('#nombreAntiviral').val('');
+                    $('#fechaPrimDosisAntiviral').val('');
+                    $('#fechaUltDosisAntiviral').val('');
+                    $('#noDosisAntiviral').val('');
+
+                }
+            });
+
 
             $('#manifestaciones').change(function () {
 
@@ -546,10 +583,7 @@ var CreateIrag = function () {
                     } else {
                         $('#sOtroResRadiologia').fadeOut('slow');
                     }
-
                 }
-
-
             });
 
             $('#codClasFCaso').change(function () {
@@ -629,15 +663,45 @@ var CreateIrag = function () {
                 }
             });
 
+            var fechaNacimiento = $('#fechaNacimiento');
 
-            $("#fechaNacimiento").change(
+            fechaNacimiento.change(
                 function () {
-                    if ($("#fechaNacimiento").val() != null && $("#fechaNacimiento").val().length > 0) {
-                        $("#edad").val(getAge($("#fechaNacimiento").val()));
+                    if (fechaNacimiento.val() != null && fechaNacimiento.val().length > 0) {
+                        $("#edad").val(getAge(fechaNacimiento.val()));
                     } else {
                         $("#edad").val('');
                     }
                 });
+
+            var uciS = $('#uciS');
+            var uciN = $('#uciN');
+
+
+            uciS.change(function(){
+               if(uciS.is(":checked")){
+                   $('#dUci').fadeIn('slow');
+               }
+
+            });
+
+            uciN.change(function(){
+                if(uciN.is(":checked") ){
+                    $('#dUci').fadeOut('slow');
+                    $('#noDiasHospitalizado').val('');
+                    $('#ventN').prop('checked', false);
+                    $('#ventS').prop('checked', false);
+                    $('#diagnostico1Egreso').val('').change();
+                    $('#diagnostico2Egreso').val('').change();
+                    $('#fechaEgreso').val('');
+                    $('#codCondEgreso').val('').change();
+                }
+
+            });
+
+
+
+
 
 
 

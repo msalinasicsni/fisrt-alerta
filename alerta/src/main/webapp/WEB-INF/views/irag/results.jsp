@@ -100,7 +100,33 @@
 								<!-- end widget edit box -->
 								<!-- widget content -->
 								<div class="widget-body no-padding">
-									<table id="noti_results" class="table table-striped table-bordered table-hover" data-width="100%">
+                                    <input id="idPerson" hidden="hidden" value="${idPerson}" type="text" name="idPerson"/>
+
+                                    <table id="noti_results" class="table table-striped table-bordered table-hover" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th data-class="expand"><i class="fa fa-fw fa-key text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.consultation.date"/></th>
+                                            <th data-hide="phone"><i class="fa fa-fw fa-times txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.active"/></th>
+                                            <th data-hide="phone, tablet"><i class="fa fa-fw fa-folder-o txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.file.number"/></th>
+                                            <th data-hide="phone"><i class="fa fa-fw fa-stethoscope txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.unidad"/></th>
+                                            <th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
+                                            <th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname1"/></th>
+                                            <th data-hide="phone,tablet"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
+                                            <th><spring:message code="act.edit"/></th>
+                                            <th><spring:message code="act.export.pdf"/></th>
+                                            <th><spring:message code="menu.taking.sample"/></th>
+                                            <th><spring:message code="act.override"/></th>
+
+
+                                        </tr>
+                                        </thead>
+                                    </table>
+
+                                    <spring:url value="/irag/new/{personaId}" var="newUrl">
+                                        <spring:param name="personaId" value="${idPerson}"/>
+                                    </spring:url>
+
+                                   <%-- <table id="noti_results" class="table table-striped table-bordered table-hover" data-width="100%">
 										<thead>			                
 											<tr>
 
@@ -141,9 +167,7 @@
                                                 <spring:url value="/irag/override/{idIrag}" var="overrideUrl">
                                                     <spring:param name="idIrag" value="${record.idNotificacion.idNotificacion}"/>
                                                 </spring:url>
-                                                <spring:url value="/irag/new/{personaId}" var="newUrl">
-                                                    <spring:param name="personaId" value="${record.idNotificacion.persona.personaId}"/>
-                                                </spring:url>
+
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${record.idNotificacion.pasivo==true}">
@@ -201,7 +225,7 @@
                                             </tr>
                                         </c:forEach>
 										</tbody>
-									</table>
+									</table>--%>
 								</div>
 
 
@@ -219,7 +243,6 @@
 						<!-- end widget -->
 
                         <div class="modal fade" id="d_confirmacion"  role="dialog" tabindex="-1" data-aria-hidden="true">
-                            <c:set var="questionOverride"><spring:message code="lbl.question.override" /></c:set>
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header alert-warning">
@@ -232,12 +255,15 @@
                                     <div class="modal-body">
                                         <form method="{method}">
                                             <input type=hidden id="overrideUrl"/>
-                                            <div id="cuerpo"></div>
+                                            <div id="cuerpo">
+                                                <label id="questionOverride"><spring:message code="lbl.question.override" /></label>
+
+                                            </div>
                                         </form>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="act.cancel" /></button>
-                                        <button type="button" class="btn btn-info" onclick="override()"><spring:message code="act.accept" /></button>
+                                        <button id="btnOverride" type="button" class="btn btn-info" ><spring:message code="act.accept" /></button>
                                     </div>
 
                                 </div>
@@ -273,12 +299,37 @@
 	<script src="${dataTablesBootstrap}"></script>
 	<spring:url value="/resources/js/plugin/datatable-responsive/datatables.responsive.min.js" var="dataTablesResponsive" />
 	<script src="${dataTablesResponsive}"></script>
+    <spring:url value="/resources/scripts/irag/results.js" var="iragResultsJS" />
+    <script src="${iragResultsJS}"></script>
+    <spring:url value="/resources/scripts/utilidades/generarReporte.js" var="generarReporte" />
+    <script src="${generarReporte}"></script>
 	<!-- END PAGE LEVEL PLUGINS -->
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
 	<!-- END PAGE LEVEL SCRIPTS -->
+    <c:url var="getResults" value="/irag/getResults"/>
+    <c:url var="editUrl" value="/irag/edit/"/>
+
+    <c:url var="overrideUrl" value="/irag/override/"/>
+    <c:url var="createMxUrl" value="/tomaMx/create/"/>
+    <c:url var="pdfUrl" value="/irag/getPDF"/>
+
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
+
+            var parametros = {getResultsUrl : "${getResults}",
+                editUrl : "${editUrl}",
+                overrideUrl: "${overrideUrl}",
+                createMxUrl: "${createMxUrl}",
+                pdfUrl:"${pdfUrl}"
+
+
+
+            };
+
+            IragResults.init(parametros);
+
+
 	    	$("li.notificacion").addClass("open");
 	    	$("li.irageti").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
@@ -286,41 +337,7 @@
 	    	}
 		});
 
-        var responsiveHelper_dt_basic = undefined;
-        var breakpointDefinition = {
-            tablet : 1024,
-            phone : 480
-        };
-        var table1 = $('#noti_results').dataTable({
-            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
-                    "t"+
-                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
-            "autoWidth" : true,
-            "preDrawCallback" : function() {
-                // Initialize the responsive datatables helper once.
-                if (!responsiveHelper_dt_basic) {
-                    responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#noti_results'), breakpointDefinition);
-                }
-            },
-            "rowCallback" : function(nRow) {
-                responsiveHelper_dt_basic.createExpandIcon(nRow);
-            },
-            "drawCallback" : function(oSettings) {
-                responsiveHelper_dt_basic.respond();
-            }
-        });
 
-        $(".override").click(function(){
-            $('#overrideUrl').val($(this).data('id'));
-            $('#cuerpo').html('<h4 class="modal-title">'+ "${questionOverride}"+'</h4>');
-            $('#d_confirmacion').modal('show');
-        });
-
-        function override() {
-
-            window.location.href = $('#overrideUrl').val();
-
-        }
 
 	</script>
 	<!-- END JAVASCRIPTS -->

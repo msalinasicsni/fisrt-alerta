@@ -109,7 +109,7 @@
                                         <tr>
                                             <th data-class="expand"><i class="fa fa-fw fa-key text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.numFicha"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.date"/></th>
-                                            <th data-hide="phone"><i class="fa fa-fw fa-times txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.canceled"/></th>
+                                            <th data-hide="phone"><i class="fa fa-fw fa-times txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.active"/></th>
                                             <th data-hide="phone, tablet"><i class="fa fa-fw fa-folder-o txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.exp"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-stethoscope txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.unidad"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
@@ -117,7 +117,9 @@
                                             <th data-hide="phone,tablet"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.lastname2"/></th>
                                             <th><spring:message code="act.edit"/></th>
                                             <th><spring:message code="act.export.pdf"/></th>
+                                            <th><spring:message code="menu.taking.sample"/></th>
                                             <th><spring:message code="act.override"/></th>
+
 
                                         </tr>
                                         </thead>
@@ -268,13 +270,12 @@
     <script src="${resultsJS}"></script>
     <spring:url value="/resources/scripts/utilidades/generarReporte.js" var="generarReporte" />
     <script src="${generarReporte}"></script>
-
     <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
     <c:url var="getResults" value="/febriles/getResults"/>
     <c:url var="editUrl" value="/febriles/edit/"/>
     <c:url var="pdfUrl" value="/febriles/getPDF"/>
     <c:url var="overrideUrl" value="/febriles/delete/"/>
-
+    <c:url var="createMxUrl" value="/tomaMx/create/"/>
 
 
     <!-- END PAGE LEVEL PLUGINS -->
@@ -288,7 +289,8 @@
                 getResultsUrl : "${getResults}",
                 editUrl : "${editUrl}",
                 pdfUrl: "${pdfUrl}",
-                overrideUrl: "${overrideUrl}"
+                overrideUrl: "${overrideUrl}",
+                createMxUrl: "${createMxUrl}"
 
 
 

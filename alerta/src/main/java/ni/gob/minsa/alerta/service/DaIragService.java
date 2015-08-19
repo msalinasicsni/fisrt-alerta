@@ -57,6 +57,7 @@ public class DaIragService {
      */
     public void saveOrUpdateIrag(DaIrag irag) {
         Session session = sessionFactory.getCurrentSession();
+        session.saveOrUpdate(irag.getIdNotificacion());
         session.saveOrUpdate(irag);
     }
 

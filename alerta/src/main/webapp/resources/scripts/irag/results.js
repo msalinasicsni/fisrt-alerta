@@ -1,7 +1,7 @@
 /**
- * Created by souyen-ics on 07-29-15.
+ * Created by souyen-ics on 08-13-15.
  */
-var Results = function () {
+var IragResults = function () {
     var bloquearUI = function (mensaje) {
         var loc = window.location;
         var pathName = loc.pathname.substring(0, loc.pathname.indexOf('/', 1) + 1);
@@ -33,13 +33,14 @@ var Results = function () {
                 tablet: 1024,
                 phone: 480
             };
-            var table1 = $('#fichas_result').dataTable({
+            var table1 = $('#noti_results').dataTable({
                 "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>" +
                     "t" +
                     "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
                 "autoWidth": true,
+
                 "columns": [
-                    null, null, null, null, null, null, null, null, null,
+                    null, null, null, null, null, null, null, null,
 
                     {
                         "className": 'fPdf',
@@ -57,7 +58,7 @@ var Results = function () {
                 "preDrawCallback": function () {
                     // Initialize the responsive datatables helper once.
                     if (!responsiveHelper_dt_basic) {
-                        responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#fichas_result'), breakpointDefinition);
+                        responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#noti_results'), breakpointDefinition);
                     }
                 },
                 "rowCallback": function (nRow) {
@@ -72,6 +73,10 @@ var Results = function () {
                         .off("click", pdfHandler)
                         .on("click", pdfHandler);
 
+                    $('.fOverride')
+                        .off("click", overrideHandler)
+                        .on("click", overrideHandler);
+
                 }
 
 
@@ -80,9 +85,21 @@ var Results = function () {
             function pdfHandler(){
                 var id = $(this.innerHTML).data('id');
                 if (id != null) {
-                   exportPDF(id);
+                    exportPDF(id);
                 }
             }
+
+            function overrideHandler(){
+                var id = $(this.innerHTML).data('id');
+                if (id != null) {
+                    $('#overrideUrl').val(id);
+                $('#d_confirmacion').modal('show');
+                }
+            }
+
+            $('#btnOverride').click(function(){
+                window.location.href = parametros.overrideUrl + $('#overrideUrl').val();
+            });
 
 
             function getResults(idPerson) {
@@ -97,14 +114,16 @@ var Results = function () {
 
                         var editUrl = parametros.editUrl +  data[i].idNotificacion.idNotificacion;
                         var btnEdit = '<a href=' + editUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
-                        var overrideUrl = parametros.overrideUrl + data[i].idNotificacion.idNotificacion;
+
 
                         var tomaMxUrl = parametros.createMxUrl + data[i].idNotificacion.idNotificacion;
 
                         var btnPdf = '<button type="button" class="btn btn-success btn-xs" data-id="' + data[i].idNotificacion.idNotificacion +
                             '" > <i class="fa fa-file-pdf-o"></i>';
 
-                        var btnOverride = '<a href=' + overrideUrl + ' class="btn btn-xs btn-danger" ><i class="fa fa-times"></i></a>';
+                        var btnOverride = '<button type="button" class="btn btn-danger btn-xs" data-id="' + data[i].idNotificacion.idNotificacion +
+                            '" > <i class="fa fa-times"></i>';
+
 
                         var btnTomaMx = '<a href=' + tomaMxUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
 
@@ -123,7 +142,7 @@ var Results = function () {
                         }
 
                         table1.fnAddData(
-                            [data[i].numFicha, data[i].fechaFicha, pasivo, data[i].codExpediente, data[i].idNotificacion.codUnidadAtencion.nombre, data[i].idNotificacion.persona.primerNombre, data[i].idNotificacion.persona.primerApellido, data[i].idNotificacion.persona.segundoApellido, btnEdit, btnPdf, btnTomaMx, btnOverride  ]);
+                            [data[i].fechaConsulta, pasivo, data[i].codExpediente, data[i].idNotificacion.codUnidadAtencion.nombre, data[i].idNotificacion.persona.primerNombre, data[i].idNotificacion.persona.primerApellido, data[i].idNotificacion.persona.segundoApellido, btnEdit, btnPdf, btnTomaMx, btnOverride  ]);
 
 
                     }
@@ -144,14 +163,12 @@ var Results = function () {
                             if(data.length != 0){
                                 var blob =   blobData(data, 'application/pdf');
                                 var blobUrl =  showBlob(blob);
-
-
                             }
 
-                           desbloquearUI();
+
                         },
                         error: function (data, status, er) {
-                            desbloquearUI();
+
                             alert("error: " + data + " status: " + status + " er:" + er);
                         }
                     });
