@@ -702,7 +702,6 @@ public class IragController {
                 irag.setAgenteViral(agenteViral);
                 irag.setAgenteEtiologico(agenteEtiologico);
                 irag.setFichaCompleta(true);
-                irag.setFechaRegistro(new Timestamp(new Date().getTime()));
                 daIragService.saveOrUpdateIrag(irag);
 
             }
@@ -1022,8 +1021,6 @@ public class IragController {
 
                     String sexo = irag.getIdNotificacion().getPersona().getSexo() != null ? irag.getIdNotificacion().getPersona().getSexo().getValor() : null;
 
-                    String ocupacion = irag.getIdNotificacion().getPersona().getOcupacion() != null ? irag.getIdNotificacion().getPersona().getOcupacion().getNombre() : "----------";
-
                     String tutor = irag.getNombreMadreTutor() != null ? irag.getNombreMadreTutor() : "----------";
 
                     String procedencia = irag.getCodProcedencia() != null ? irag.getCodProcedencia().getValor() : null;
@@ -1111,6 +1108,8 @@ public class IragController {
 
                     String uci = irag.getUci() != null? irag.getUci().toString():null;
 
+                    Integer diasUci = irag.getNoDiasHospitalizado() != null? irag.getNoDiasHospitalizado(): 0;
+
                     String ventilacion = irag.getVentilacionAsistida()!= null? irag.getVentilacionAsistida().toString(): null;
 
                     String dxEgreso1 = irag.getDiagnostico1Egreso()!= null? irag.getDiagnostico1Egreso().getNombreCie10(): "----------";
@@ -1121,7 +1120,27 @@ public class IragController {
 
                     String condicionEgreso = irag.getCodCondEgreso()!= null? irag.getCodCondEgreso().getCodigo():null;
 
+                    String codEgreso1 = irag.getDiagnostico1Egreso()!= null? irag.getDiagnostico1Egreso().getCodigoCie10():null;
 
+                    String codEgreso2 = irag.getDiagnostico2Egreso()!= null? irag.getDiagnostico2Egreso().getCodigoCie10():null;
+
+                    String clasFinal = irag.getCodClasFCaso()!= null? irag.getCodClasFCaso():null;
+
+                    String nb = irag.getCodClasFDetalleNB()!= null? irag.getCodClasFDetalleNB().getCodigo():null;
+
+                    String nv = irag.getCodClasFDetalleNV()!= null? irag.getCodClasFDetalleNV().getCodigo():null;
+
+                    String etiologicoBacteriano = irag.getAgenteBacteriano()!= null? irag.getAgenteBacteriano(): null;
+
+                    String etiologicoViral = irag.getAgenteViral()!= null? irag.getAgenteViral():null;
+
+                    String agentesEt = irag.getAgenteEtiologico()!= null? irag.getAgenteEtiologico(): null;
+
+                    String seroti = irag.getSerotipificacion()!= null? irag.getSerotipificacion():null;
+
+                    String fechaRegistro = irag.getFechaRegistro()!= null? DateUtil.DateToString(irag.getFechaRegistro(), "dd/MM/yyyy"):"------";
+
+                    String nombreUsuario = irag.getUsuario()!= null? irag.getUsuario().getNombre():null;
 
                     float y = 737;
                     float m = 11;
@@ -2155,9 +2174,9 @@ public class IragController {
 
 
                             }
-                            float height1 = drawTable(reqList, doc, page, y);
+                            float height1 = drawRequestTable(reqList, doc, page, y);
                             y -= height1;
-                            float height2 = drawTable1(dxList, doc, page, y);
+                            float height2 = drawTestTable(dxList, doc, page, y);
                             y1 = y - height2;
 
                         }
@@ -2174,12 +2193,142 @@ public class IragController {
                             x1 = x + 181;
                             GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
+                            if(diasUci != 0){
+                                x1 = x + 232;
+                                GeneralUtils.drawTEXT(diasUci.toString(), y+2, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+                            }
+
+                            if(ventilacion!= null){
+                            if(ventilacion.equals("1")){
+                                x1 = x + 338;
+                                GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
+
+                            }else{
+                                x1 = x + 362;
+                                GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
+                            }
+                            }
+
+                            if(codEgreso1!= null){
+                                x1 = x + 87;
+                                GeneralUtils.drawTEXT(codEgreso1, y-7, x1, stream, 5, PDType1Font.TIMES_ROMAN);
+                                x1 = x + 109;
+                                GeneralUtils.drawTEXT(dxEgreso1, y-7, x1, stream, 5, PDType1Font.TIMES_ROMAN);
+                            }
+
+                            if(codEgreso2!= null){
+                                x1 = x +240;
+                                GeneralUtils.drawTEXT(codEgreso2, y-7, x1, stream, 5, PDType1Font.TIMES_ROMAN);
+                                x1 = x + 264;
+                                GeneralUtils.drawTEXT(dxEgreso2, y-7, x1, stream, 5, PDType1Font.TIMES_ROMAN);
+                            }
+
+                            x1 = x +35;
+                            GeneralUtils.drawTEXT(fechaEgreso, y-17, x1, stream, 5, PDType1Font.TIMES_ROMAN);
+
+                            if(condicionEgreso!= null){
+                                switch (condicionEgreso) {
+                                    case "CONEGRE|ALTA":
+                                        x1 = x + 129;
+                                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y - 30, x1, stream, 7, PDType1Font.TIMES_BOLD);
+                                        break;
+                                    case "CONEGRE|FUGA":
+                                        x1 = x + 206;
+                                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y - 30, x1, stream, 7, PDType1Font.TIMES_BOLD);
+                                        break;
+                                    case "CONEGRE|REF":
+                                        x1 = x + 302;
+                                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y - 30, x1, stream, 7, PDType1Font.TIMES_BOLD);
+
+                                        break;
+                                    case "CONEGRE|FALL":
+                                        x1 = x + 348;
+                                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y - 30, x1, stream, 7, PDType1Font.TIMES_BOLD);
+                                        break;
+                                }
+
+                            }
+
+
                         }else{
                             x1 = x + 256;
                             GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
                         }
                     }
+
+                    y-= 57;
+                    if(clasFinal!= null){
+                        if(clasFinal.contains("CLASFI|INAD")){
+                            x1 = x + 76;
+                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
+                        }
+
+                        if(clasFinal.contains("CLASFI|NV")){
+                            x1 = x + 192;
+                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
+
+                            if(nv!=null){
+                              if(nv.equals("CLASFNV|CONF")){
+                                    x1 = x + 30;
+                                    GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y-20, x1, stream, 7, PDType1Font.TIMES_BOLD);
+
+                                  if(etiologicoViral!= null){
+                                      x1 = x + 112;
+                                      GeneralUtils.drawTEXT(etiologicoViral, y-18, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+                                  }
+                                }
+
+                                if(nv.equals("CLASFNV|DESC")){
+                                    x1 = x + 28;
+                                    GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y-26, x1, stream, 7, PDType1Font.TIMES_BOLD);
+
+                                }
+                            }
+                        }
+
+                        if(clasFinal.contains("CLASFI|NB")){
+                            x1 = x + 133;
+                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
+
+                            if(nb!=null){
+                                if(nb.equals("CLASFNB|CONF")){
+                                    x1 = x + 30;
+                                    GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y-7, x1, stream, 7, PDType1Font.TIMES_BOLD);
+
+                                    if(etiologicoViral!= null){
+                                        x1 = x + 129;
+                                        GeneralUtils.drawTEXT(etiologicoBacteriano, y-5, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+                                    }
+
+                                    if(seroti!= null){
+                                        x1 = x + 300;
+                                        GeneralUtils.drawTEXT(seroti, y-5, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+                                    }
+                                }
+
+                                if(nb.equals("CLASFNB|DESC")){
+                                    x1 = x + 30;
+                                    GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y-14, x1, stream, 7, PDType1Font.TIMES_BOLD);
+                                }
+                            }
+
+                        }
+                    }
+
+                    y-= 54;
+
+                    if(nombreUsuario!= null){
+                        x1 = x + 75;
+                        GeneralUtils.drawTEXT(nombreUsuario, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+                    }
+                    x1 = x + 290;
+                    GeneralUtils.drawTEXT(fechaRegistro, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+
+
+
+
+
 
 
                     //fecha impresión
@@ -2199,9 +2348,9 @@ public class IragController {
         return res;
     }
 
-    private float drawTable(List<String[]> reqList, PDDocument doc, PDPage page, float y) throws IOException {
+    private float drawRequestTable(List<String[]> reqList, PDDocument doc, PDPage page, float y) throws IOException {
 
-        //drawTable
+        //drawRequestTable
 
         //Initialize table
         float height = 0;
@@ -2270,9 +2419,9 @@ public class IragController {
     }
 
 
-    private float drawTable1(List<String[]> reqList, PDDocument doc, PDPage page, float y) throws IOException {
+    private float drawTestTable(List<String[]> reqList, PDDocument doc, PDPage page, float y) throws IOException {
 
-        //drawTable
+        //drawRequestTable
 
         //Initialize table
         float height = 0;
