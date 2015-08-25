@@ -134,5 +134,18 @@ public class DaNotificacionService {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public List<DaNotificacion> getNoticesByPersonAndType(long idPersona, String tipoNotificacion){
+        Session session = sessionFactory.getCurrentSession();
+        //todas las notificaciones tipo CASO ESPECIAL registradas para la persona seleccionada
+        return session.createCriteria(DaNotificacion.class, "noti")
+                .createAlias("noti.persona", "persona")
+                .add(Restrictions.and(
+                                Restrictions.eq("persona.personaId", idPersona),
+                                Restrictions.eq("codTipoNotificacion.codigo", tipoNotificacion))
+                )
+                .list();
+
+    }
 
 }

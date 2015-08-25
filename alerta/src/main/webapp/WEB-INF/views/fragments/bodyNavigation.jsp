@@ -66,6 +66,9 @@
                     <li class="vih">
                         <a href="<spring:url value="/vih/search" htmlEscape="true "/>" title="<spring:message code="menu.vih" />"><i class="fa fa-lg fa-fw fa-flask"></i> <spring:message code="menu.vih" /></a>
                     </li>
+                    <li class="paciente">
+                        <a href="<spring:url value="/paciente/create" htmlEscape="true "/>" title="<spring:message code="menu.paciente" />"><i class="fa fa-lg fa-fw fa-user"></i> <spring:message code="menu.paciente" /></a>
+                    </li>
                 </ul>
             </li>
             <li class="samples">

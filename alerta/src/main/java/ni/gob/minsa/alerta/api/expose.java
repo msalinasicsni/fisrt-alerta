@@ -260,8 +260,12 @@ public class expose {
             map.put("tipoSolicitud",messageSource.getMessage("lbl.routine",null,null));
             map.put("nombreSolicitud",diagnostico.getCodDx().getNombre());
             map.put("fechaSolicitud", DateUtil.DateToString(diagnostico.getFechaHSolicitud(), "dd/MM/yyyy hh:mm:ss a"));
-            map.put("fechaAprobacion",DateUtil.DateToString(diagnostico.getFechaAprobacion(),"dd/MM/yyyy hh:mm:ss a"));
-            map.put("codigoUnicoMx", diagnostico.getIdTomaMx().getCodigoUnicoMx());
+            if (diagnostico.getFechaAprobacion()!=null) {
+                map.put("fechaAprobacion", DateUtil.DateToString(diagnostico.getFechaAprobacion(), "dd/MM/yyyy hh:mm:ss a"));
+            }else{
+                map.put("fechaAprobacion"," ");
+            }
+            map.put("codigoUnicoMx", diagnostico.getIdTomaMx().getCodigoLab()!=null?diagnostico.getIdTomaMx().getCodigoLab():diagnostico.getIdTomaMx().getCodigoUnicoMx());
             map.put("tipoMx", diagnostico.getIdTomaMx().getCodTipoMx().getNombre());
             //detalle resultado solicitud
             List<DetalleResultadoFinal> resultList = resultadoFinalService.getDetResActivosBySolicitud(idSolicitud);
@@ -309,7 +313,11 @@ public class expose {
             map.put("tipoSolicitud",messageSource.getMessage("lbl.research",null,null));
             map.put("nombreSolicitud",estudio.getTipoEstudio().getNombre());
             map.put("fechaSolicitud",DateUtil.DateToString(estudio.getFechaHSolicitud(),"dd/MM/yyyy hh:mm:ss a"));
-            map.put("fechaAprobacion",DateUtil.DateToString(estudio.getFechaAprobacion(),"dd/MM/yyyy hh:mm:ss a"));
+            if (estudio.getFechaAprobacion()!=null) {
+                map.put("fechaAprobacion", DateUtil.DateToString(estudio.getFechaAprobacion(), "dd/MM/yyyy hh:mm:ss a"));
+            }else{
+                map.put("fechaAprobacion"," ");
+            }
             map.put("codigoUnicoMx", estudio.getIdTomaMx().getCodigoUnicoMx());
             map.put("tipoMx", estudio.getIdTomaMx().getCodTipoMx().getNombre());
             //detalle resultado solicitud
