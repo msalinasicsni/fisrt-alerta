@@ -2,30 +2,32 @@
  * Created by souyen-ics on 08-13-15.
  */
 var IragResults = function () {
-    var bloquearUI = function (mensaje) {
-        var loc = window.location;
-        var pathName = loc.pathname.substring(0, loc.pathname.indexOf('/', 1) + 1);
-        var mess = '<img src=' + pathName + 'resources/img/ajax-loading.gif>' + mensaje;
-        $.blockUI({ message: mess,
-            css: {
-                border: 'none',
-                padding: '15px',
-                backgroundColor: '#000',
-                '-webkit-border-radius': '10px',
-                '-moz-border-radius': '10px',
-                opacity: .5,
-                color: '#fff'
-            }
-        });
-    };
-
-    var desbloquearUI = function () {
-        setTimeout($.unblockUI, 500);
-    };
 
     return {
         //main function to initiate the module
         init: function (parametros) {
+
+            function blockUI() {
+                var loc = window.location;
+                var pathName = loc.pathname.substring(0, loc.pathname.indexOf('/', 1) + 1);
+                //var mess = $("#blockUI_message").val()+' <img src=' + pathName + 'resources/img/loading.gif>';
+                var mess = '<img src=' + pathName + 'resources/img/ajax-loading.gif> ' + parametros.blockMess;
+                $.blockUI({ message: mess,
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    }});
+            }
+
+            function unBlockUI() {
+                setTimeout($.unblockUI, 500);
+            }
+
             getResults($('#idPerson').val());
 
             var responsiveHelper_dt_basic = undefined;
@@ -68,7 +70,7 @@ var IragResults = function () {
                     responsiveHelper_dt_basic.respond();
                 },
 
-                fnDrawCallback : function() {
+                fnDrawCallback: function () {
                     $('.fPdf')
                         .off("click", pdfHandler)
                         .on("click", pdfHandler);
@@ -82,22 +84,22 @@ var IragResults = function () {
 
             });
 
-            function pdfHandler(){
+            function pdfHandler() {
                 var id = $(this.innerHTML).data('id');
                 if (id != null) {
                     exportPDF(id);
                 }
             }
 
-            function overrideHandler(){
+            function overrideHandler() {
                 var id = $(this.innerHTML).data('id');
                 if (id != null) {
                     $('#overrideUrl').val(id);
-                $('#d_confirmacion').modal('show');
+                    $('#d_confirmacion').modal('show');
                 }
             }
 
-            $('#btnOverride').click(function(){
+            $('#btnOverride').click(function () {
                 window.location.href = parametros.overrideUrl + $('#overrideUrl').val();
             });
 
@@ -112,7 +114,7 @@ var IragResults = function () {
                     for (var i = 0; i < len; i++) {
 
 
-                        var editUrl = parametros.editUrl +  data[i].idNotificacion.idNotificacion;
+                        var editUrl = parametros.editUrl + data[i].idNotificacion.idNotificacion;
                         var btnEdit = '<a href=' + editUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
 
 
@@ -126,7 +128,6 @@ var IragResults = function () {
 
 
                         var btnTomaMx = '<a href=' + tomaMxUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
-
 
 
                         var pasivo = '<span class="label label-success"><i class="fa fa-thumbs-up fa-lg"></i></span>';
@@ -151,6 +152,7 @@ var IragResults = function () {
             }
 
             function exportPDF(id) {
+                blockUI();
                 $.ajax(
                     {
                         url: parametros.pdfUrl,
@@ -160,22 +162,21 @@ var IragResults = function () {
                         contentType: 'application/json',
                         mimeType: 'application/json',
                         success: function (data) {
-                            if(data.length != 0){
-                                var blob =   blobData(data, 'application/pdf');
-                                var blobUrl =  showBlob(blob);
+                            if (data.length != 0) {
+                                var blob = blobData(data, 'application/pdf');
+                                var blobUrl = showBlob(blob);
                             }
 
-
+                            unBlockUI();
                         },
                         error: function (data, status, er) {
-
+                            unBlockUI();
                             alert("error: " + data + " status: " + status + " er:" + er);
                         }
                     });
 
 
             }
-
 
 
         }

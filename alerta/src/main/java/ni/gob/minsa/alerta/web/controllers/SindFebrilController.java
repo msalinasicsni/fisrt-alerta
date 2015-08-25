@@ -1838,7 +1838,7 @@ public class SindFebrilController {
                             if(!ordenes.isEmpty()){
 
                                 String rExamen = null;
-                                String fechaProcesamiento = null;
+                                String fechaProcesamiento = "";
                                 for(OrdenExamen ex: ordenes){
                                     String[] examen = new String[3];
                                     List<DetalleResultado> results = resultadosService.getDetallesResultadoActivosByExamen(ex.getIdOrdenExamen());
