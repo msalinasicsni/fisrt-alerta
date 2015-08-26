@@ -258,7 +258,7 @@ public class IragController {
                     noti.setPersona(persona);
                     irag.setIdNotificacion(noti);
                     Divisionpolitica departamentoProce = divisionPoliticaService.getDepartamentoByMunicipi(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
-                    List<Divisionpolitica> municipiosResi = divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional());
+                    List<Divisionpolitica> municipiosResi = departamentoProce!= null? divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional()):null;
                     List<Comunidades> comunidades = comunidadesService.getComunidades(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
 
                     mav.addObject("entidades", entidades);
