@@ -256,6 +256,9 @@
 	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 	<jsp:include page="../fragments/corePlugins.jsp" />
 	<!-- BEGIN PAGE LEVEL PLUGINS -->
+    <!-- JQUERY BLOCK UI -->
+    <spring:url value="/resources/js/plugin/jquery-blockui/jquery.blockUI.js" var="jqueryBlockUi"/>
+    <script src="${jqueryBlockUi}"></script>
 	<spring:url value="/resources/js/plugin/datatables/jquery.dataTables.min.js" var="dataTables" />
 	<script src="${dataTables}"></script>
 	<spring:url value="/resources/js/plugin/datatables/dataTables.colVis.min.js" var="dataTablesColVis" />
