@@ -102,4 +102,6 @@ public class ResultadoFinalService {
         q.setString("id", id);
         return  (Catalogo_Lista)q.uniqueResult();
     }
+
+
 }

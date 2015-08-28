@@ -5,6 +5,7 @@ import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.irag.Respuesta;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
+import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
 import ni.gob.minsa.alerta.domain.muestra.OrdenExamen;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.persona.Ocupacion;
@@ -655,7 +656,7 @@ public class SindFebrilController {
 
                     BufferedImage image = ImageIO.read(new File(workingDir + "/fichaFebril.png"));
 
-                    GeneralUtils.drawObject(stream,doc,image,20,85,545,745);
+                    GeneralUtils.drawObject(stream,doc,image,20,30,545,745);
                     String silais = febril.getIdNotificacion().getCodSilaisAtencion().getNombre();
 
                     String nombreS = silais != null ? silais.replace("SILAIS", ""): "----";
@@ -1081,11 +1082,12 @@ public class SindFebrilController {
                     String personFilledTab = febril.getNombreLlenoFicha() != null? febril.getNombreLlenoFicha(): "----------";
 
 
-                    float y = 723;
+                    float y = 668;
                     float m = 11;
                     float m1 = 29;
                     float x = 86;
-                    float x1 =86 ;
+                    float x1 = 86;
+                    float y3 = 0;
                     GeneralUtils.drawTEXT(nombreS, y, x, stream,7, PDType1Font.TIMES_ROMAN);
                     x1+= 122;
                     GeneralUtils.drawTEXT(municipio,y,x1,stream, 7, PDType1Font.TIMES_ROMAN);
@@ -1169,8 +1171,8 @@ public class SindFebrilController {
                     GeneralUtils.drawTEXT(mesesEmb,y, x1, stream, 7, PDType1Font.COURIER);
 
                     if (ninguna) {
-                        x1 +=  150;
-                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.none", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
+                        x1 +=  141;
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.none", null, null), y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     }
 
                     if(asma){
@@ -1718,37 +1720,49 @@ public class SindFebrilController {
                     //load all the request by notification
 
                     List<DaSolicitudDx> diagnosticosList = resultadoFinalService.getSolicitudesDxByIdNotificacion(febril.getIdNotificacion().getIdNotificacion());
+                    List<DaSolicitudEstudio> estudiosList = resultadoFinalService.getSolicitudesEstByIdNotificacion(febril.getIdNotificacion().getIdNotificacion());
 
                     float y1 = 0;
 
 
-                    if (!diagnosticosList.isEmpty()) {
-                        int con = 0;
-                        for (DaSolicitudDx soli : diagnosticosList) {
-                            List<String[]> reqList = new ArrayList<String[]>();
-                            List<String[]> dxList = new ArrayList<String[]>();
-                            con++;
-                            if(con >=2){
-                            y = y1;
-                            }
-                            String[] content = new String[5];
-                            List<OrdenExamen> ordenes = ordenExamenMxService.getOrdenesExamenNoAnuladasByIdSolicitud(soli.getIdSolicitudDx());
-                            List<DetalleResultadoFinal> resul = resultadoFinalService.getDetResActivosBySolicitud(soli.getIdSolicitudDx());
+                    if(!diagnosticosList.isEmpty() || !estudiosList.isEmpty()){
+                        stream.close();
+                        page = new PDPage(PDPage.PAGE_SIZE_A4);
+                        doc.addPage(page);
+                        stream = new PDPageContentStream(doc, page);
 
-                            content[0] = soli.getCodDx().getNombre() != null ? soli.getCodDx().getNombre() : "";
-                            content[1] = soli.getFechaHSolicitud() != null ? DateUtil.DateToString(soli.getFechaHSolicitud(), "dd/MM/yyyy HH:mm:ss") : "";
-                            content[2] = soli.getIdTomaMx().getFechaHTomaMx() != null ?DateUtil.DateToString(soli.getIdTomaMx().getFechaHTomaMx(), "dd/MM/yyyy HH:mm:ss") : "";
-                            content[3] = soli.getIdTomaMx().getCodTipoMx() != null ? soli.getIdTomaMx().getCodTipoMx().getNombre() : "";
+                        y = 770;
+                        x1 = x -35;
+                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.febril.lab.data", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
 
-                            int cont = 0;
-                            String rFinal = null;
-                            for (DetalleResultadoFinal det : resul) {
-                                cont++;
+                        y-=10;
 
-                                if (cont == 1) {
-                                    if (cont == resul.size()) {
+                        if (!diagnosticosList.isEmpty()) {
+                            int con = 0;
+                            for (DaSolicitudDx soli : diagnosticosList) {
+                                List<String[]> reqList = new ArrayList<String[]>();
+                                List<String[]> dxList = new ArrayList<String[]>();
+                                con++;
+                                if (con >= 2) {
+                                    y = y1;
+                                }
+                                String[] content = new String[5];
+                                List<OrdenExamen> ordenes = ordenExamenMxService.getOrdenesExamenNoAnuladasByIdSolicitud(soli.getIdSolicitudDx());
+                                List<DetalleResultadoFinal> resul = resultadoFinalService.getDetResActivosBySolicitud(soli.getIdSolicitudDx());
 
-                                        if(det.getRespuesta() != null){
+                                content[0] = soli.getCodDx().getNombre() != null ? soli.getCodDx().getNombre() : "";
+                                content[1] = soli.getFechaHSolicitud() != null ? DateUtil.DateToString(soli.getFechaHSolicitud(), "dd/MM/yyyy HH:mm:ss") : "";
+                                content[2] = soli.getIdTomaMx().getFechaHTomaMx() != null ? DateUtil.DateToString(soli.getIdTomaMx().getFechaHTomaMx(), "dd/MM/yyyy HH:mm:ss") : "";
+                                content[3] = soli.getIdTomaMx().getCodTipoMx() != null ? soli.getIdTomaMx().getCodTipoMx().getNombre() : "";
+
+                                int cont = 0;
+                                String rFinal = null;
+                                //records request results
+                                for (DetalleResultadoFinal det : resul) {
+                                    cont++;
+                                    //first record
+                                    if (cont == 1) {
+                                        if (det.getRespuesta() != null) {
                                             if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
                                                 Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
                                                 rFinal = det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
@@ -1756,7 +1770,7 @@ public class SindFebrilController {
                                             } else {
                                                 rFinal = det.getRespuesta().getNombre() + ":" + " " + det.getValor();
                                             }
-                                        }else{
+                                        } else {
                                             if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
                                                 Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
                                                 rFinal = det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
@@ -1766,158 +1780,230 @@ public class SindFebrilController {
                                             }
                                         }
 
+                                        //no first record
                                     } else {
-                                        if(det.getRespuesta() != null){
+                                        if (det.getRespuesta() != null) {
                                             if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
                                                 Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                rFinal = "," +" "+ det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+                                                rFinal += "," + " "+ det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
 
                                             } else {
-                                                rFinal = "," +" "+ det.getRespuesta().getNombre() + ":" + " " + det.getValor();
+                                                rFinal += "," + " "+ det.getRespuesta().getNombre() + ":" + " " + det.getValor();
                                             }
-                                        }else{
+                                        } else {
                                             if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
                                                 Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                rFinal = "," +" "+ det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
+                                                rFinal += "," + " "+ det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
 
                                             } else {
-                                                rFinal = "," +" "+ det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
+                                                rFinal += "," + " "+ det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
                                             }
                                         }
-
                                     }
-                                } else {
-                                    if (cont == resul.size()) {
-                                        if(det.getRespuesta() != null){
-                                            if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                rFinal += det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
-
-                                            } else {
-                                                rFinal += det.getRespuesta().getNombre() + ":" + " " + det.getValor();
-                                            }
-                                        }else{
-                                            if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                rFinal += det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
-
-                                            } else {
-                                                rFinal += det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
-                                            }
-                                        }
-
-                                    } else {
-                                        if(det.getRespuesta() != null){
-                                            if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                rFinal += "," +" "+ det.getRespuesta().getNombre() + ":" + " " + valor.getValor() ;
-
-                                            } else {
-                                                rFinal += "," +" "+ det.getRespuesta().getNombre() + ":" + " " + det.getValor() ;
-                                            }
-                                        }else{
-                                            if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                rFinal += "," +" "+ det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor() ;
-
-                                            } else {
-                                                rFinal += "," +" "+ det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor() ;
-                                            }
-                                        }
-
-                                    }
-                                }
-
-                            }
-
-                            content[4] = rFinal;
-                            reqList.add(content);
-
-
-
-                            if(!ordenes.isEmpty()){
-
-                                String rExamen = null;
-                                String fechaProcesamiento = "";
-                                for(OrdenExamen ex: ordenes){
-                                    String[] examen = new String[3];
-                                    List<DetalleResultado> results = resultadosService.getDetallesResultadoActivosByExamen(ex.getIdOrdenExamen());
-
-                                    examen[0] = ex.getCodExamen() != null ? ex.getCodExamen().getNombre() : "";
-
-
-                                    int cont1 = 0;
-                                    for (DetalleResultado resExamen: results){
-                                        cont1++;
-
-                                        if(cont1 ==1){
-
-                                            if(cont1 == resul.size()){
-                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy HH:mm:ss");
-                                                if(resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")){
-                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
-                                                    rExamen= resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
-
-                                                }else{
-                                                    rExamen = resExamen.getRespuesta().getNombre() + ":"+ " "  + resExamen.getValor();
-                                                }
-                                            }else{
-                                                if(resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")){
-                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
-                                                    rExamen = "," +" " + resExamen.getRespuesta().getNombre() + ":"  + " " + valor.getValor()  ;
-
-                                                }else{
-                                                    rExamen = ","+ " " + resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor() ;
-                                                }
-                                            }
-                                        }else{
-                                            if(cont1 == resul.size()){
-                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy HH:mm:ss");
-
-                                                if(resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")){
-                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
-                                                    rExamen += resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
-
-                                                }else{
-                                                    rExamen += resExamen.getRespuesta().getNombre() + ":"+ " "  + resExamen.getValor();
-                                                }
-                                            }else{
-                                                if(resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")){
-                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
-                                                    rExamen +=  "," +" "+ resExamen.getRespuesta().getNombre() + ":"  + " " + valor.getValor();
-
-                                                }else{
-                                                    rExamen +=  ","+ " " +resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor()  ;
-                                                }
-                                            }
-                                        }
-
-                                    }
-                                    examen[1] = fechaProcesamiento;
-                                    examen[2] = rExamen != null? rExamen:"";
-                                    dxList.add(examen);
-
 
                                 }
 
+                                content[4] = rFinal;
+                                reqList.add(content);
+
+                                if (!ordenes.isEmpty()) {
+
+                                    String rExamen = null;
+                                    String fechaProcesamiento = "";
+                                    for (OrdenExamen ex : ordenes) {
+                                        String[] examen = new String[3];
+                                        List<DetalleResultado> results = resultadosService.getDetallesResultadoActivosByExamen(ex.getIdOrdenExamen());
+
+                                        examen[0] = ex.getCodExamen() != null ? ex.getCodExamen().getNombre() : "";
+
+
+                                        int contt = 0;
+                                        //records tests results
+                                        for (DetalleResultado resExamen : results) {
+                                            contt++;
+                                            //first record
+                                            if (contt == 1) {
+                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy HH:mm:ss");
+                                                if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
+                                                    rExamen = resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+
+                                                } else {
+                                                    rExamen = resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor();
+                                                }
+
+                                                //no first record
+                                            } else {
+                                                if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
+                                                    rExamen += " " + resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+
+                                                } else {
+                                                    rExamen += " " + resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor();
+                                                }
+
+                                            }
+
+                                        }
+                                        examen[1] = fechaProcesamiento;
+                                        examen[2] = rExamen != null ? rExamen : "";
+                                        dxList.add(examen);
+
+                                    }
+
+                                }
+
+                                float height1 =  drawTable(reqList, doc, page, y);
+                                y-= height1;
+                                float height2 = drawTable1(dxList,doc,page,y);
+                                y1 = y - height2;
+                                y3 = y1;
 
                             }
-                          float height1 =  drawTable(reqList, doc, page, y);
-                            y-= height1;
-                           float height2 = drawTable1(dxList,doc,page,y);
-                            y1 = y - height2;
-
-
 
                         }
 
+                        if(!estudiosList.isEmpty()){
+                            int cn = 0;
+                            for (DaSolicitudEstudio est : estudiosList) {
+                                List<String[]> reqList1 = new ArrayList<String[]>();
+                                List<String[]> dxList1 = new ArrayList<String[]>();
+                                cn++;
+
+                                if (cn >= 2) {
+                                    y = y3;
+                                } else {
+                                    if (y3 != 0) {
+                                        y = y3;
+                                    } else {
+                                        y = 760;
+                                    }
+                                }
+
+                                String[] content1 = new String[5];
+                                List<OrdenExamen> ordenes = ordenExamenMxService.getOrdenesExamenNoAnuladasByIdSolicitud(est.getIdSolicitudEstudio());
+                                List<DetalleResultadoFinal> resul = resultadoFinalService.getDetResActivosBySolicitud(est.getIdSolicitudEstudio());
+
+                                content1[0] = est.getTipoEstudio().getNombre() != null ? est.getTipoEstudio().getNombre() : "";
+                                content1[1] = est.getFechaHSolicitud() != null ? DateUtil.DateToString(est.getFechaHSolicitud(), "dd/MM/yyyy HH:mm:ss") : "";
+                                content1[2] = est.getIdTomaMx().getFechaHTomaMx() != null ? DateUtil.DateToString(est.getIdTomaMx().getFechaHTomaMx(), "dd/MM/yyyy HH:mm:ss") : "";
+                                content1[3] = est.getIdTomaMx().getCodTipoMx() != null ? est.getIdTomaMx().getCodTipoMx().getNombre() : "";
+
+                                int cont1 = 0;
+                                String rFinal = null;
+                                //records request results
+                                for (DetalleResultadoFinal det : resul) {
+                                    cont1++;
+                                    //first record
+                                    if (cont1 == 1) {
+                                        if (det.getRespuesta() != null) {
+                                            if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal = det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+
+                                            } else {
+                                                rFinal = det.getRespuesta().getNombre() + ":" + " " + det.getValor();
+                                            }
+                                        } else {
+                                            if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal = det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
+
+                                            } else {
+                                                rFinal = det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
+                                            }
+                                        }
+
+                                        //no first record
+                                    } else {
+                                        if (det.getRespuesta() != null) {
+                                            if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal += "," + " "+ det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+
+                                            } else {
+                                                rFinal += "," + " "+ det.getRespuesta().getNombre() + ":" + " " + det.getValor();
+                                            }
+                                        } else {
+                                            if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal += "," + " "+ det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
+
+                                            } else {
+                                                rFinal += "," + " "+ det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                content1[4] = rFinal;
+                                reqList1.add(content1);
+
+                                if (!ordenes.isEmpty()) {
+
+                                    String rExamen = null;
+                                    String fechaProcesamiento = "";
+                                    for (OrdenExamen ex : ordenes) {
+                                        String[] examen1 = new String[3];
+                                        List<DetalleResultado> results = resultadosService.getDetallesResultadoActivosByExamen(ex.getIdOrdenExamen());
+
+                                        examen1[0] = ex.getCodExamen() != null ? ex.getCodExamen().getNombre() : "";
+
+                                        int cont2 = 0;
+                                        //records tests results
+                                        for (DetalleResultado resExamen : results) {
+                                            cont2++;
+                                            //first record
+                                            if (cont2 == 1) {
+                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy HH:mm:ss");
+                                                if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
+                                                    rExamen = resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+
+                                                } else {
+                                                    rExamen = resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor();
+                                                }
+
+                                                //no first record
+                                            } else {
+                                                if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
+                                                    rExamen +=  ","+ " " + resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+
+                                                } else {
+                                                    rExamen += ","+ " " + resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor();
+                                                }
+
+
+                                            }
+
+                                        }
+                                        examen1[1] = fechaProcesamiento;
+                                        examen1[2] = rExamen != null ? rExamen : "";
+                                        dxList1.add(examen1);
+
+
+                                    }
+
+
+                                }
+                                float height1 =  drawTable(reqList1, doc, page, y);
+                                y-= height1;
+                                float height2 = drawTable1(dxList1,doc,page,y);
+                                y3 = y - height2;
+
+
+                            }
+                        }
+
+
                         //dx final
-                        y= y1 -10;
-                        x1 = x-25;
+                        y = y3 - 20;
+                        x1 = x - 25;
                         GeneralUtils.drawTEXT(messageSource.getMessage("lbl.final.dx", null, null), y, x1, stream, 8, PDType1Font.TIMES_ROMAN);
                         x1 += 70;
                         GeneralUtils.drawTEXT(dxFinal, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
-
                     }
 
                     y-= 10;
@@ -1997,73 +2083,6 @@ public class SindFebrilController {
 
         //Add multiple rows with random facts about Belgium
         for (String[] fact : reqList) {
-
-           /* if (y < 260) {
-                table.draw();
-                stream.close();
-                page = new PDPage(PDPage.PAGE_SIZE_A4);
-                page.setRotation(90);
-                doc.addPage(page);
-                stream = new PDPageContentStream(doc, page);
-                stream.concatenate2CTM(0, 1, -1, 0, page.getMediaBox().getWidth(), 0);
-                y = 470;
-                GeneralUtils.drawHeaderAndFooter(stream, doc, 500, 840, 90, 840, 70);
-                pageNumber = String.valueOf(doc.getNumberOfPages());
-                GeneralUtils.drawTEXT(pageNumber, 15, 800, stream, 10, PDType1Font.HELVETICA_BOLD);
-
-
-                table = new BaseTable(y, y, bottomMargin, tableWidth, margin, doc, page, true, true);
-
-                //Create Header row
-                headerRow = table.createRow(15f);
-                table.setHeader(headerRow);
-
-                //Create Fact header row
-                factHeaderrow = table.createRow(15f);
-                cell = factHeaderrow.createCell(13, messageSource.getMessage("lbl.lab.code.mx", null, null));
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-                cell.setFillColor(Color.LIGHT_GRAY);
-
-                cell = factHeaderrow.createCell(10, messageSource.getMessage("lbl.sample.type", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-
-                cell = factHeaderrow.createCell(9, messageSource.getMessage("lbl.receipt.dateTime", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-
-                cell = factHeaderrow.createCell(11, messageSource.getMessage("lbl.sample.quality", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-
-                cell = factHeaderrow.createCell(16, messageSource.getMessage("lbl.silais", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-
-                cell = factHeaderrow.createCell(16, messageSource.getMessage("lbl.health.unit", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-
-                cell = factHeaderrow.createCell(16, messageSource.getMessage("lbl.receipt.person.name", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-
-                cell = factHeaderrow.createCell(9, messageSource.getMessage("lbl.request.large", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-                y -= 15;
-
-
-            }*/
-
             row = table.createRow(10);
 
 
@@ -2125,75 +2144,7 @@ public class SindFebrilController {
 
         //Add multiple rows with random facts about Belgium
         for (String[] fact : reqList) {
-
-           /* if (y < 260) {
-                table.draw();
-                stream.close();
-                page = new PDPage(PDPage.PAGE_SIZE_A4);
-                page.setRotation(90);
-                doc.addPage(page);
-                stream = new PDPageContentStream(doc, page);
-                stream.concatenate2CTM(0, 1, -1, 0, page.getMediaBox().getWidth(), 0);
-                y = 470;
-                GeneralUtils.drawHeaderAndFooter(stream, doc, 500, 840, 90, 840, 70);
-                pageNumber = String.valueOf(doc.getNumberOfPages());
-                GeneralUtils.drawTEXT(pageNumber, 15, 800, stream, 10, PDType1Font.HELVETICA_BOLD);
-
-
-                table = new BaseTable(y, y, bottomMargin, tableWidth, margin, doc, page, true, true);
-
-                //Create Header row
-                headerRow = table.createRow(15f);
-                table.setHeader(headerRow);
-
-                //Create Fact header row
-                factHeaderrow = table.createRow(15f);
-                cell = factHeaderrow.createCell(13, messageSource.getMessage("lbl.lab.code.mx", null, null));
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-                cell.setFillColor(Color.LIGHT_GRAY);
-
-                cell = factHeaderrow.createCell(10, messageSource.getMessage("lbl.sample.type", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-
-                cell = factHeaderrow.createCell(9, messageSource.getMessage("lbl.receipt.dateTime", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-
-                cell = factHeaderrow.createCell(11, messageSource.getMessage("lbl.sample.quality", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-
-                cell = factHeaderrow.createCell(16, messageSource.getMessage("lbl.silais", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-
-                cell = factHeaderrow.createCell(16, messageSource.getMessage("lbl.health.unit", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-
-                cell = factHeaderrow.createCell(16, messageSource.getMessage("lbl.receipt.person.name", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-
-                cell = factHeaderrow.createCell(9, messageSource.getMessage("lbl.request.large", null, null));
-                cell.setFillColor(Color.lightGray);
-                cell.setFont(PDType1Font.HELVETICA_BOLD);
-                cell.setFontSize(10);
-                y -= 15;
-
-
-            }*/
-
             row = table.createRow(10);
-
 
             for (int i = 0; i < fact.length; i++) {
 

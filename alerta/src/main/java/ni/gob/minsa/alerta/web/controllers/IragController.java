@@ -2019,87 +2019,45 @@ public class IragController {
                                 String rFinal = null;
                                 for (DetalleResultadoFinal det : resul) {
                                     cont++;
-
+                                    //first record
                                     if (cont == 1) {
-                                        if (cont == resul.size()) {
+                                        //single record result
+                                        if (det.getRespuesta() != null) {
+                                            if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal = det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
 
-                                            if (det.getRespuesta() != null) {
-                                                if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                    rFinal = det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
-
-                                                } else {
-                                                    rFinal = det.getRespuesta().getNombre() + ":" + " " + det.getValor();
-                                                }
                                             } else {
-                                                if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                    rFinal = det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
-
-                                                } else {
-                                                    rFinal = det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
-                                                }
+                                                rFinal = det.getRespuesta().getNombre() + ":" + " " + det.getValor();
                                             }
-
                                         } else {
-                                            if (det.getRespuesta() != null) {
-                                                if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                    rFinal = "," + " " + det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+                                            if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal = det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
 
-                                                } else {
-                                                    rFinal = "," + " " + det.getRespuesta().getNombre() + ":" + " " + det.getValor();
-                                                }
                                             } else {
-                                                if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                    rFinal = "," + " " + det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
-
-                                                } else {
-                                                    rFinal = "," + " " + det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
-                                                }
+                                                rFinal = det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
                                             }
-
                                         }
+
+                                        //no first record
                                     } else {
-                                        if (cont == resul.size()) {
-                                            if (det.getRespuesta() != null) {
-                                                if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                    rFinal += det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+                                        if (det.getRespuesta() != null) {
+                                            if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal += ","+ " " +det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
 
-                                                } else {
-                                                    rFinal += det.getRespuesta().getNombre() + ":" + " " + det.getValor();
-                                                }
                                             } else {
-                                                if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                    rFinal += det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
-
-                                                } else {
-                                                    rFinal += det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
-                                                }
+                                                rFinal += ","+ " " + det.getRespuesta().getNombre() + ":" + " " + det.getValor();
                                             }
-
                                         } else {
-                                            if (det.getRespuesta() != null) {
-                                                if (det.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                    rFinal += "," + " " + det.getRespuesta().getNombre() + ":" + " " + valor.getValor();
+                                            if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
+                                                rFinal += ","+ " " + det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
 
-                                                } else {
-                                                    rFinal += "," + " " + det.getRespuesta().getNombre() + ":" + " " + det.getValor();
-                                                }
                                             } else {
-                                                if (det.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(det.getValor()));
-                                                    rFinal += "," + " " + det.getRespuestaExamen().getNombre() + ":" + " " + valor.getValor();
-
-                                                } else {
-                                                    rFinal += "," + " " + det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
-                                                }
+                                                rFinal += ","+ " " + det.getRespuestaExamen().getNombre() + ":" + " " + det.getValor();
                                             }
-
                                         }
                                     }
 
@@ -2121,48 +2079,27 @@ public class IragController {
 
 
                                         int cont1 = 0;
+                                        //records tests results
                                         for (DetalleResultado resExamen : results) {
                                             cont1++;
-
+                                            //first record
                                             if (cont1 == 1) {
+                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy HH:mm:ss");
+                                                if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
+                                                    rExamen = resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
 
-                                                if (cont1 == resul.size()) {
-                                                    fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy HH:mm:ss");
-                                                    if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                        Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
-                                                        rExamen = resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
-
-                                                    } else {
-                                                        rExamen = resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor();
-                                                    }
                                                 } else {
-                                                    if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                        Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
-                                                        rExamen = "," + " " + resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
-
-                                                    } else {
-                                                        rExamen = "," + " " + resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor();
-                                                    }
+                                                    rExamen = resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor();
                                                 }
+
                                             } else {
-                                                if (cont1 == resul.size()) {
-                                                    fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy HH:mm:ss");
+                                                if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                                    Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
+                                                    rExamen += "," + " " + resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
 
-                                                    if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                        Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
-                                                        rExamen += resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
-
-                                                    } else {
-                                                        rExamen += resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor();
-                                                    }
                                                 } else {
-                                                    if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                                        Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
-                                                        rExamen += "," + " " + resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
-
-                                                    } else {
-                                                        rExamen += "," + " " + resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor();
-                                                    }
+                                                    rExamen += "," + " " + resExamen.getRespuesta().getNombre() + ":" + " " + resExamen.getValor();
                                                 }
                                             }
 
