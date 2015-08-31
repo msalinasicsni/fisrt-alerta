@@ -63,14 +63,14 @@ public class SeguridadService {
                 }
             }
 
-          /*infoSesion = new InfoSesion();
+          infoSesion = new InfoSesion();
             infoSesion.setUsuarioId(25);
             infoSesion.setNombre("usuariosis1");
             infoSesion.setUsername("usuariosis1");
-            infoSesion.setUsuarioId(170);
+            /*infoSesion.setUsuarioId(170);
             infoSesion.setNombre("Adm Alerta");
-            infoSesion.setUsername("alerta");
-            infoSesion.setSistemaSesion("ALERTA");*/
+            infoSesion.setUsername("alerta");*/
+            infoSesion.setSistemaSesion("ALERTA");
             ctx.close();
         }catch(Exception e){
             System.out.println("---- EXCEPTION");
@@ -109,7 +109,7 @@ public class SeguridadService {
         String urlRetorno="";
         if (seguridadHabilitada()) { //Si es false no se realiza ninguna validación
             if (!esUsuarioAutenticado(request.getSession())) {
-                String bdSessionId = "";  // esta variable dejarla en blanco par activar la seguridad
+                String bdSessionId = "a";  // esta variable dejarla en blanco par activar la seguridad
                 Cookie[] cookies = request.getCookies();
                 if (cookies != null) {
                     for (int i = 0; i < cookies.length; i++) {
@@ -203,7 +203,7 @@ public class SeguridadService {
      * @return TRUE: si es de nivel central  o la seguridad esta deshabilitada, FALSE: no es nivel central o sucedió un error
      */
     public boolean esUsuarioNivelCentral(long pUsuarioId, String pSistema) {
-        boolean nivelCentral = true;
+        boolean nivelCentral=false;
         if (seguridadHabilitada()) {
             try {
                 InitialContext ctx = new InitialContext();
@@ -372,6 +372,18 @@ public class SeguridadService {
             qrUsuarioEntidad.setParameter("pCodigoSis", pCodigoSis);
             qrUsuarioEntidad.setParameter("pasivo", '0');
             entidadesAdtvasList = qrUsuarioEntidad.list();
+
+            //si no tiene entidades asignadas directamente, se obtienen las entidades asociadas a las unidades de salud asignadas directamente
+            if (entidadesAdtvasList.size()<=0){
+                query = "select ent from EntidadesAdtvas ent, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
+                        "where ent.id = usuni.unidad.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                        "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo order by ent.nombre";
+                qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
+                qrUsuarioEntidad.setParameter("pUsuarioId", pUsuarioId);
+                qrUsuarioEntidad.setParameter("pCodigoSis", pCodigoSis);
+                qrUsuarioEntidad.setParameter("pasivo", '0');
+                entidadesAdtvasList = qrUsuarioEntidad.list();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -398,6 +410,17 @@ public class SeguridadService {
                 qrUsuarioEntidad.setParameter("pCodEntidad", pCodEntidad);
                 qrUsuarioEntidad.setParameter("pasivo", '0');
                 entidadesAdtvasList = qrUsuarioEntidad.list();
+
+                //si no tiene entidades asignadas directamente, se obtienen las entidades asociadas a las unidades de salud asignadas directamente
+                if (entidadesAdtvasList.size()<=0){
+                    query = "select ent from EntidadesAdtvas ent, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
+                            "where ent.id = usuni.unidad.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                            "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo order by ent.nombre";
+                    qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
+                    qrUsuarioEntidad.setParameter("pUsuarioId", pUsuarioId);
+                    qrUsuarioEntidad.setParameter("pCodigoSis", pCodigoSis);
+                    qrUsuarioEntidad.setParameter("pasivo", '0');
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -451,6 +474,20 @@ public class SeguridadService {
                 qrUsuarioUnidad.setParameter("pCodUnidad", pCodUnidad);
                 qrUsuarioUnidad.setParameter("pasivo", '0');
                 unidadesList = qrUsuarioUnidad.list();
+                //no hay unidades asociadas directamente al usuario, se obtienen todas las unidades del los silais asociados directamente
+                if (unidadesList.size()<=0){
+                    query = "select uni from Unidades uni, UsuarioEntidad usuni, Usuarios usu, Sistema sis " +
+                            "where uni.entidadAdtva.entidadAdtvaId = usuni.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                            "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.codigo = :pCodUnidad and uni.pasivo = :pasivo " +
+                            "order by uni.nombre";
+
+                    qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
+                    qrUsuarioUnidad.setParameter("pUsuarioId", pUsuarioId);
+                    qrUsuarioUnidad.setParameter("pCodigoSis", pCodigoSis);
+                    qrUsuarioUnidad.setParameter("pCodUnidad", pCodUnidad);
+                    qrUsuarioUnidad.setParameter("pasivo", '0');
+                    unidadesList = qrUsuarioUnidad.list();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -479,6 +516,19 @@ public class SeguridadService {
             qrUsuarioUnidad.setParameter("pasivo", '0');
             qrUsuarioUnidad.setParameter("pCodSilais", pCodSilais);
             unidadesList = qrUsuarioUnidad.list();
+            //no hay unidades asociadas directamente al usuario, se obtienen todas las unidades del los silais asociados directamente
+            if (unidadesList.size()<=0){
+                query = "select uni from Unidades uni, UsuarioEntidad usuni, Usuarios usu, Sistema sis " +
+                        "where uni.entidadAdtva.entidadAdtvaId = usuni.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                        "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo and uni.tipoUnidad in ("+tipoUnidades+")" +
+                        "and uni.entidadAdtva.codigo = :pCodSilais order by uni.nombre";
+                qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
+                qrUsuarioUnidad.setParameter("pUsuarioId",pUsuarioId);
+                qrUsuarioUnidad.setParameter("pCodigoSis",pCodigoSis);
+                qrUsuarioUnidad.setParameter("pasivo", '0');
+                qrUsuarioUnidad.setParameter("pCodSilais", pCodSilais);
+                unidadesList = qrUsuarioUnidad.list();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -505,6 +555,19 @@ public class SeguridadService {
             qrUsuarioUnidad.setParameter("pasivo", '0');
             qrUsuarioUnidad.setParameter("pCodSilais", pCodSilais);
             unidadesList = qrUsuarioUnidad.list();
+            //no hay unidades asociadas directamente al usuario, se obtienen todas las unidades del los silais asociados directamente
+            if (unidadesList.size()<=0){
+                query = "select uni from Unidades uni, UsuarioEntidad usuni, Usuarios usu, Sistema sis " +
+                        "where uni.entidadAdtva.entidadAdtvaId = usuni.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                        "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo " +
+                        "and uni.entidadAdtva.codigo = :pCodSilais order by uni.nombre";
+                qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
+                qrUsuarioUnidad.setParameter("pUsuarioId",pUsuarioId);
+                qrUsuarioUnidad.setParameter("pCodigoSis",pCodigoSis);
+                qrUsuarioUnidad.setParameter("pasivo", '0');
+                qrUsuarioUnidad.setParameter("pCodSilais", pCodSilais);
+                unidadesList = qrUsuarioUnidad.list();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -534,6 +597,20 @@ public class SeguridadService {
             qrUsuarioUnidad.setParameter("pCodSilais", pCodSilais);
             qrUsuarioUnidad.setParameter("pCodMunicipio",pCodMunicipio);
             unidadesList = qrUsuarioUnidad.list();
+            //no hay unidades asociadas directamente al usuario, se obtienen todas las unidades del los silais asociados directamente
+            if (unidadesList.size()<=0){
+                query = "select uni from Unidades uni, UsuarioEntidad usuni, Usuarios usu, Sistema sis " +
+                        "where uni.entidadAdtva.entidadAdtvaId = usuni.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                        "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo and uni.tipoUnidad in ("+tipoUnidades+")" +
+                        "and uni.entidadAdtva.codigo = :pCodSilais and uni.municipio.codigoNacional = :pCodMunicipio order by uni.nombre";
+                qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
+                qrUsuarioUnidad.setParameter("pUsuarioId",pUsuarioId);
+                qrUsuarioUnidad.setParameter("pCodigoSis",pCodigoSis);
+                qrUsuarioUnidad.setParameter("pasivo", '0');
+                qrUsuarioUnidad.setParameter("pCodSilais", pCodSilais);
+                qrUsuarioUnidad.setParameter("pCodMunicipio",pCodMunicipio);
+                unidadesList = qrUsuarioUnidad.list();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -551,6 +628,7 @@ public class SeguridadService {
         /*String query = "select distinct muni from Divisionpolitica as muni, Unidades as uni " +
                 "where muni.pasivo = :pasivo and  uni.entidadAdtva = :pCodSilais and uni.municipio = muni.codigoNacional order by muni.nombre"; // muni.dependenciaSilais =:idSilas";
         */
+        List<Divisionpolitica> resultado = new ArrayList<Divisionpolitica>();
         String query = "select distinct muni from Divisionpolitica as muni, Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
                 "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
                 "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo " +
@@ -562,6 +640,22 @@ public class SeguridadService {
         q.setParameter("pCodigoSis",pCodigoSis);
         q.setParameter("pUsuarioId",pUsuarioId);
         q.setParameter("pasivo",'0');
-        return q.list();
+        resultado = q.list();
+        //no hay unidades asociadas directamente al usuario, se obtienen todos los municipios asociados a todas las unidades del los silais asociados directamente
+        if (resultado.size()<=0){
+            query = "select distinct muni from Divisionpolitica as muni, Unidades uni, UsuarioEntidad usuni, Usuarios usu, Sistema sis " +
+                    "where uni.entidadAdtva.entidadAdtvaId = usuni.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                    "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo " +
+                    "and muni.pasivo = :pasivo and  uni.entidadAdtva.codigo = :pCodSilais and uni.municipio.codigoNacional = muni.codigoNacional " +
+                    "order by muni.nombre";
+
+            q = session.createQuery(query);
+            q.setParameter("pCodSilais", pCodSilais);
+            q.setParameter("pCodigoSis",pCodigoSis);
+            q.setParameter("pUsuarioId",pUsuarioId);
+            q.setParameter("pasivo",'0');
+            resultado = q.list();
+        }
+        return resultado;
     }
 }
