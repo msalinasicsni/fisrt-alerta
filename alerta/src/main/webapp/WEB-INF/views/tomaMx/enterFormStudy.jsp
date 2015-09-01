@@ -125,6 +125,7 @@
                                         <section class="col col-md-8">
                                             <label class="text-left txt-color-blue font-md">
                                                 <spring:message code="lbl.health.unit" />
+                                                <input value="${noti.codUnidadAtencion.unidadId}" type="hidden" id="unidadId" name="unidadId"/>
                                             </label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-location-arrow"></i></span>

@@ -2,6 +2,7 @@ package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
+import ni.gob.minsa.alerta.domain.muestra.Estudio_UnidadSalud;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.UtilityProperties;
@@ -657,5 +658,23 @@ public class SeguridadService {
             resultado = q.list();
         }
         return resultado;
+    }
+
+    /**
+     * Método que valida si el usuario tiene asignada una unidad de salud, que tiene asignado algún estudio para permitir toma de muestra de estudio
+     * @param pUsuarioId id del usuario autenticado
+     * @param pCodigoSis código del sistema, ALERTA
+     * @return boolean
+     */
+    public boolean esUsuarioAutorizadoTomaMxEstudio(Integer pUsuarioId, String pCodigoSis){
+        List<Estudio_UnidadSalud> estudioUnidadSaludList = new ArrayList<Estudio_UnidadSalud>();
+        String query = "from Estudio_UnidadSalud eu, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
+                "where eu.unidad.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and eu.pasivo = false ";
+        Query q = sessionFactory.getCurrentSession().createQuery(query);
+        q.setParameter("pUsuarioId",pUsuarioId);
+        q.setParameter("pCodigoSis",pCodigoSis);
+        estudioUnidadSaludList = q.list();
+        return estudioUnidadSaludList.size()>0;
     }
 }

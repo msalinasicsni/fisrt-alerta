@@ -324,6 +324,9 @@ public class TomaMxController {
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+            if (!seguridadService.esUsuarioAutorizadoTomaMxEstudio((int)seguridadService.obtenerIdUsuario(request), ConstantsSecurity.SYSTEM_CODE)){
+                urlValidacion = "403";
+            }
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
@@ -352,6 +355,9 @@ public class TomaMxController {
             //si la url esta vacia significa que la validación del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
+            if (!seguridadService.esUsuarioAutorizadoTomaMxEstudio((int)seguridadService.obtenerIdUsuario(request), ConstantsSecurity.SYSTEM_CODE)){
+                urlValidacion = "403";
+            }
         }catch (Exception e){
             e.printStackTrace();
             urlValidacion = "404";
@@ -389,9 +395,11 @@ public class TomaMxController {
     @RequestMapping(value = "getStudiesBySampleAndNoti", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    List<Estudio_TipoMx_TipoNoti> getEstudioBySampleAndNoti(@RequestParam(value = "codMx", required = true) String codMx, @RequestParam(value = "tipoNoti", required = true) String tipoNoti) throws Exception {
+    List<Estudio_TipoMx_TipoNoti> getEstudioBySampleAndNoti(@RequestParam(value = "codMx", required = true) String codMx,
+                                                            @RequestParam(value = "tipoNoti", required = true) String tipoNoti,
+                                                            @RequestParam(value = "idUnidadSalud", required = true) int idUnidadSalud) throws Exception {
         logger.info("Obteniendo los diagnósticos segun muestra y tipo de Notificacion en JSON");
-        return tomaMxService.getEstudiosByTipoMxTipoNoti(codMx, tipoNoti);
+        return tomaMxService.getEstudiosByTipoMxTipoNoti(codMx, tipoNoti,Long.valueOf(idUnidadSalud));
     }
 
     @RequestMapping(value = "saveTomaMxStudy", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json")

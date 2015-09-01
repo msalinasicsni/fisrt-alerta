@@ -170,14 +170,17 @@ public class TomaMxService {
      *
      */
     @SuppressWarnings("unchecked")
-    public List<Estudio_TipoMx_TipoNoti> getEstudiosByTipoMxTipoNoti(String codTipoMx, String codTipoNoti) throws Exception {
-        String query = "select est from Estudio_TipoMx_TipoNoti est " +
+    public List<Estudio_TipoMx_TipoNoti> getEstudiosByTipoMxTipoNoti(String codTipoMx, String codTipoNoti, Long idUnidadSalud) throws Exception {
+        String query = "select est from Estudio_TipoMx_TipoNoti est, Estudio_UnidadSalud eu " +
                 "where est.tipoMx_tipoNotificacion.tipoMx.idTipoMx = :codTipoMx " +
-                "and est.tipoMx_tipoNotificacion.tipoNotificacion.codigo = :codTipoNoti" ;
+                "and est.tipoMx_tipoNotificacion.tipoNotificacion.codigo = :codTipoNoti " +
+                "and est.estudio.idEstudio = eu.estudio.idEstudio "+
+                "and eu.unidad.unidadId = :idUnidadSalud" ;
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
         q.setString("codTipoMx", codTipoMx);
         q.setString("codTipoNoti", codTipoNoti);
+        q.setParameter("idUnidadSalud",idUnidadSalud);
         return q.list();
     }
 

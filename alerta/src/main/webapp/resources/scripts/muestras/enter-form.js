@@ -194,6 +194,7 @@ var EnterFormTomaMxStudies = function () {
                     $.getJSON(parametros.sStudiesUrl, {
                         codMx: $(this).val(),
                         tipoNoti: $('#tipoNoti').val(),
+                        idUnidadSalud: $('#unidadId').val(),
                         ajax: 'false'
                     }, function (data) {
                         var len = data.length;
