@@ -74,6 +74,7 @@ public class DaNotificacionService {
         Session session = sessionFactory.getCurrentSession();
         if(filtro.matches("[0-9]*")){
             return session.createCriteria(DaNotificacion.class, "noti")
+                    .add(Restrictions.and(Restrictions.eq("noti.pasivo",false)))
                     .createAlias("noti.persona", "persona")
                     .add(Restrictions.or(
                                     Restrictions.eq("persona.telefonoResidencia", filtro),
@@ -107,10 +108,12 @@ public class DaNotificacionService {
             crit.add( Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|CAESP")));
             crit.add( Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|OMX")));
             crit.add( Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|PCNT")));
+            crit.add(Restrictions.and(Restrictions.eq("noti.pasivo",false)));
             return crit.list();
         }
         else{
             return session.createCriteria(DaNotificacion.class, "noti")
+                    .add(Restrictions.and(Restrictions.eq("noti.pasivo",false)))
                     .createAlias("noti.persona", "persona")
                     .add( Restrictions.or(
                                     Restrictions.eq("persona.identificacionHse", filtro).ignoreCase(),
