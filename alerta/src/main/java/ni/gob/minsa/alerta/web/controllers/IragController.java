@@ -1,6 +1,8 @@
 package ni.gob.minsa.alerta.web.controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import ni.gob.minsa.alerta.domain.estructura.Cie10;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
@@ -26,6 +28,7 @@ import ni.gob.minsa.alerta.utilities.pdfUtils.Row;
 import ni.gob.minsa.ciportal.dto.InfoResultado;
 import ni.gob.minsa.ejbPersona.dto.Persona;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
@@ -42,7 +45,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -50,11 +52,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -833,7 +834,7 @@ public class IragController {
         }
     }
 
-    @RequestMapping(value = "newVaccine", method = RequestMethod.GET, produces = "application/json")
+   /* @RequestMapping(value = "newVaccine", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<String> processCreationVaccine(@RequestParam(value = "codVacuna", required = true) String codVacuna,
                                                          @RequestParam(value = "codTipoVacuna", required = true) String codTipoVacuna,
                                                          @RequestParam(value = "dosis", required = false) Integer dosis,
@@ -880,8 +881,8 @@ public class IragController {
         }
         return createJsonResponse(vacunas);
 
-    }
-
+    }*/
+/*
     @RequestMapping(value = "vaccines", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
@@ -898,7 +899,7 @@ public class IragController {
             }
         }
         return listaVacunas;
-    }
+    }*/
 
 
     /**
@@ -2432,6 +2433,208 @@ public class IragController {
         }
         table.draw();
         return height;
+    }
+
+    //Cargar lista de Vacunas
+    @RequestMapping(value = "getVaccines", method = RequestMethod.GET)
+    public @ResponseBody String getDepartmentAssociated(@RequestParam(value = "idNotificacion", required = true) String idNotificacion) {
+        logger.info("Obteniendo las vacunas de una notificacion");
+        List<DaVacunasIrag> vaccinesList = null;
+        vaccinesList = daVacunasIragService.getAllVaccinesByIdIrag(idNotificacion);
+        return vaccinesToJson(vaccinesList);
+    }
+
+    private String vaccinesToJson(List<DaVacunasIrag> vaccinesList){
+        String jsonResponse="";
+        Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
+        Integer indice=0;
+        for(DaVacunasIrag vac : vaccinesList){
+
+            //tipos de vacunas
+            String tipos = vac.getCodTipoVacuna();
+            String[] tiposV = tipos.split(",");
+            String nombre = null;
+
+            int cont = 0;
+            for (String nombreTipo : tiposV) {
+                cont++;
+                TipoVacuna tip = catalogoService.getTipoVacuna(nombreTipo);
+
+                if(cont == 1){
+                    nombre = tip.getValor();
+                }else{
+                        nombre += "," + " " + tip.getValor();
+                    }
+
+
+            }
+
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("idVacuna", vac.getIdVacuna().toString());
+            map.put("nombreVacuna", vac.getCodVacuna().getValor());
+            map.put("tipoVacuna",nombre );
+            map.put("dosis", vac.getDosis().toString());
+            map.put("fechaUltDosis",DateUtil.DateToString(vac.getFechaUltimaDosis(),"dd/MM/yyyy"));
+            mapResponse.put(indice, map);
+            indice ++;
+        }
+        jsonResponse = new Gson().toJson(mapResponse);
+        //escapar caracteres especiales, escape de los caracteres con valor numérico mayor a 127
+        UnicodeEscaper escaper     = UnicodeEscaper.above(127);
+        return escaper.translate(jsonResponse);
+    }
+
+
+    @RequestMapping(value = "addVaccine", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    protected void addVaccine(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String json = "";
+        String resultado = "";
+        Integer dosis = 0;
+        String fechaUltimaDosis = null;
+        String codVacuna = null;
+        JsonArray tVacHib = null;
+        JsonArray tVacMenin = null;
+        JsonArray tVacNeumo = null;
+        JsonArray tVacFlu = null;
+        String idNotificacion = null;
+        String pasivo = null;
+        Integer idVacuna = 0;
+
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF8"));
+            json = br.readLine();
+            //Recuperando Json enviado desde el cliente
+            JsonObject jsonpObject = new Gson().fromJson(json, JsonObject.class);
+
+            if(jsonpObject.get("dosis") != null && !jsonpObject.get("dosis").getAsString().isEmpty() ) {
+                dosis = jsonpObject.get("dosis").getAsInt();
+            }
+
+            if(jsonpObject.get("idVacuna") != null && !jsonpObject.get("idVacuna").getAsString().isEmpty() ) {
+                idVacuna = jsonpObject.get("idVacuna").getAsInt();
+            }
+
+            if (jsonpObject.get("fechaUltimaDosis") != null && !jsonpObject.get("fechaUltimaDosis").getAsString().isEmpty()) {
+                fechaUltimaDosis = jsonpObject.get("fechaUltimaDosis").getAsString();
+            }
+
+            if (jsonpObject.get("codVacuna") != null && !jsonpObject.get("codVacuna").getAsString().isEmpty()) {
+                codVacuna = jsonpObject.get("codVacuna").getAsString();
+            }
+
+            if (jsonpObject.get("pasivo") != null && !jsonpObject.get("pasivo").getAsString().isEmpty()) {
+                pasivo = jsonpObject.get("pasivo").getAsString();
+            }
+
+            if (!jsonpObject.get("tVacHib").isJsonNull()) {
+                tVacHib = jsonpObject.get("tVacHib").getAsJsonArray();
+            }
+
+            if (!jsonpObject.get("tVacMenin").isJsonNull()) {
+                tVacMenin = jsonpObject.get("tVacMenin").getAsJsonArray();
+            }
+
+            if (!jsonpObject.get("tVacNeumo").isJsonNull()) {
+                tVacNeumo = jsonpObject.get("tVacNeumo").getAsJsonArray();
+            }
+
+            if (!jsonpObject.get("tVacFlu").isJsonNull()) {
+                tVacFlu = jsonpObject.get("tVacFlu").getAsJsonArray();
+            }
+
+
+            if (jsonpObject.get("idNotificacion") != null && !jsonpObject.get("idNotificacion").getAsString().isEmpty()) {
+                idNotificacion = jsonpObject.get("idNotificacion").getAsString();
+            }
+
+            DaVacunasIrag vacunas = new DaVacunasIrag();
+
+            if (idNotificacion != null) {
+                //buscar si existe registrada la vacuna y el tipo de vacuna
+                DaVacunasIrag vac = daVacunasIragService.searchVaccineRecord(idNotificacion, codVacuna);
+
+                if (vac == null) {
+                    vacunas.setIdNotificacion(daIragService.getFormById(idNotificacion));
+
+                    long idUsuario = seguridadService.obtenerIdUsuario(request);
+                    vacunas.setUsuario(usuarioService.getUsuarioById((int) idUsuario));
+
+                    vacunas.setFechaRegistro(new Timestamp(new Date().getTime()));
+                    vacunas.setCodVacuna(catalogoService.getVacuna(codVacuna));
+
+                    if(tVacHib != null){
+                        vacunas.setCodTipoVacuna(jsonArrayToString(tVacHib));
+                    }
+
+                    if(tVacMenin!= null){
+                    vacunas.setCodTipoVacuna(jsonArrayToString(tVacMenin));
+                    }
+
+                    if(tVacNeumo != null){
+                    vacunas.setCodTipoVacuna(jsonArrayToString(tVacNeumo));
+                    }
+
+                    if(tVacFlu!= null){
+                    vacunas.setCodTipoVacuna(jsonArrayToString(tVacFlu));
+                    }
+
+                    vacunas.setDosis(dosis);
+                    if (!fechaUltimaDosis.isEmpty()) {
+                        vacunas.setFechaUltimaDosis(StringToDate(fechaUltimaDosis));
+                    }
+
+                    daVacunasIragService.addVaccine(vacunas);
+
+
+                } else {
+                    resultado = messageSource.getMessage("msg.existing.record.vaccine.error", null, null);
+                    throw new Exception(resultado);
+
+                }
+            }else{
+                DaVacunasIrag va = daVacunasIragService.getVaccineById(idVacuna);
+                va.setPasivo(true);
+                daVacunasIragService.updateVaccine(va);
+
+            }
+
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+            ex.printStackTrace();
+            resultado = messageSource.getMessage("msg.add.vaccine.error", null, null);
+            resultado = resultado + ". \n " + ex.getMessage();
+
+        } finally {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("idNotificacion", idNotificacion);
+            map.put("mensaje", resultado);
+            map.put("dosis", dosis.toString());
+            map.put("fechaUltimaDosis", fechaUltimaDosis);
+            map.put("codVacuna", codVacuna);
+            map.put("tVacHib", "");
+            map.put("tVacMenin", "");
+            map.put("tVacNeumo", "");
+            map.put("tVacFlu", "");
+
+            String jsonResponse = new Gson().toJson(map);
+            response.getOutputStream().write(jsonResponse.getBytes());
+            response.getOutputStream().close();
+        }
+    }
+
+    public String jsonArrayToString(JsonArray jsonA){
+        String text = null;
+        for(int i = 0; i < jsonA.size(); i++){
+            if(i == 0){
+                text = String.valueOf(jsonA.get(i));
+
+            }else{
+                text += "," + String.valueOf(jsonA.get(i));
+            }
+        }
+
+        text= text != null ? text.replaceAll("\"", "") : null;
+        return  text;
     }
 
 }

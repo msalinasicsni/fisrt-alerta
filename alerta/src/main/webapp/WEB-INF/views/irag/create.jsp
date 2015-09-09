@@ -1904,6 +1904,15 @@
 <input id="text_value" type="hidden" value="<spring:message code="lbl.result.value"/>"/>
 <input id="text_date" type="hidden" value="<spring:message code="lbl.result.date"/>"/>
 <input id="text_response" type="hidden" value="<spring:message code="lbl.result.response"/>"/>
+<input id="succ" type="hidden" value="<spring:message code="lbl.added.vaccine"/>"/>
+<input id="msg_yes" type="hidden" value="<spring:message code="lbl.send.confirm.msg.opc.yes"/>"/>
+<input id="msg_no" type="hidden" value="<spring:message code="lbl.send.confirm.msg.opc.no"/>"/>
+<input id="msg_conf" type="hidden" value="<spring:message code="msg.sending.confirm.title"/>"/>
+<input id="msg_override_confirm_c" type="hidden" value="<spring:message code="msg.overrideV.confirm.content"/>"/>
+<input id="msg_succOverride" type="hidden" value="<spring:message code="msg.successfully.overrideV"/>"/>
+<input id="msg_override_cancel" type="hidden" value="<spring:message code="msg.override.vaccine.cancel"/>"/>
+
+
 </div>
 
 
@@ -1943,7 +1952,7 @@
 <script src="${datepickerPlugin}"></script>
 
 <!-- JQUERY BLOCK UI -->
-<spring:url value="/resources/js/plugin/jquery-blockui/jquery.blockUI.js" var="jqueryBlockUi"/>
+<spring:url value="/resources/js/plugin/jquery-blockui/jquery.blockUI.js" var="jqueryBlockUi" />
 <script src="${jqueryBlockUi}"></script>
 
 <!-- jQuery Selecte2 Input -->
@@ -1960,7 +1969,6 @@
 <spring:url value="/resources/scripts/utilidades/seleccionUnidad.js" var="selecUnidad"/>
 <script src="${selecUnidad}"></script>
 <!-- PARAMETROS LENGUAJE -->
-<c:set var="blockMess"><spring:message code="blockUI.message"/></c:set>
 <!-- script calcular edad -->
 <spring:url value="/resources/scripts/utilidades/calcularEdad.js" var="calculateAge"/>
 <script src="${calculateAge}"></script>
@@ -1973,8 +1981,8 @@
 <spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
 <spring:url value="/irag/saveIrag" var="sAddIragUrl"/>
 <spring:url value="/api/v1/unidadesPrimHosp" var="unidadesUrl"/>
-<spring:url value="/irag/newVaccine" var="sAddVaccineUrl"/>
-<spring:url value="/irag/vaccines" var="sLoadVaccinesUrl"/>
+<spring:url value="/irag/addVaccine" var="sAddVaccineUrl"/>
+<spring:url value="/irag/getVaccines" var="sLoadVaccinesUrl"/>
 <spring:url value="/api/v1/municipio" var="municipioByDepaUrl"/>
 <spring:url value="/api/v1/comunidad" var="comunidadUrl"/>
 <spring:url value="/irag/updatePerson" var="updatePersonUrl"/>
@@ -1984,6 +1992,8 @@
 <spring:url value="/irag/enfermedades" var="enfermedadUrl"/>
 <c:url var="semanaEpidemiologicaURL" value="/api/v1/semanaEpidemiologica"/>
 <spring:url var="sResultsUrl" value="/api/v1/searchApproveResultsNoti"/>
+<c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
+
 
 <script type="text/javascript">
 
