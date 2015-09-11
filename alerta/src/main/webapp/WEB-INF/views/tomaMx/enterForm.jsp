@@ -210,6 +210,7 @@
                                         <section class="col col-md-3">
                                             <label class="text-left txt-color-blue font-md">
                                                 <spring:message code="person.sexo" />
+                                                <spring:message code="person.sexo" />
                                             </label>
 
                                             <div class="input-group">
@@ -277,8 +278,21 @@
                                 <fieldset>
                                     <legend class="text-left txt-color-blue font-md"> <spring:message
                                             code="lbl.taking.sample.data"/></legend>
-
                                     <div class="row">
+                                        <section class="col col-sm-4 col-md-3 col-lg-3">
+                                            <label class="text-left txt-color-blue font-md"><spring:message code="lbl.changeUs"/></label>
+
+                                        </section>
+                                        <section class="col col-sm-4 col-md-3 col-lg-2">
+                                            <label class="checkbox">
+                                                <input type="checkbox" name="ckChangeUS" id="ckChangeUS">
+                                                <i></i>
+                                            </label>
+                                        </section>
+
+                                    </div>
+
+                                    <div id="dSilais" hidden="hidden"  class="row">
                                         <section class="col col-sm-12 col-md-6 col-lg-3">
                                             <i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
                                             <label class="text-left txt-color-blue font-md hidden-xs">

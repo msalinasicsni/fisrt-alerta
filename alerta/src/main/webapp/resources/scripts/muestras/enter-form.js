@@ -143,6 +143,22 @@ var EnterFormTomaMx = function () {
 
             }
 
+            $("input[name$='ckChangeUS']").change(function () {
+                var valor = ($('#ckChangeUS').is(':checked'));
+                if (valor){
+                    $('#dSilais').fadeIn('slow');
+                    $('#codSilaisAtencion').val('').change();
+                    $('#codUnidadAtencion').val('').change();
+                    $('#codMunicipio').val('').change();
+                }else{
+                    $('#dSilais').fadeOut('slow');
+                }
+
+
+
+            });
+
+
 
 
 
@@ -289,6 +305,8 @@ var EnterFormTomaMxStudies = function () {
 
             });
 
+
+
             function save() {
                 var objetoTomaMx = {};
                 objetoTomaMx['idNotificacion'] = $("#idNotificacion").val();
@@ -346,6 +364,10 @@ var EnterFormTomaMxStudies = function () {
                     }
                 });
             }
+
+
+
+
         }
     }
 

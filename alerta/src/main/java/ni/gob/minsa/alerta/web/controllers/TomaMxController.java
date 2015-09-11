@@ -222,7 +222,8 @@ public class TomaMxController {
 
         DaTomaMx tomaMx = new DaTomaMx();
 
-        tomaMx.setIdNotificacion(daNotificacionService.getNotifById(idNotificacion));
+        DaNotificacion notifi= daNotificacionService.getNotifById(idNotificacion);
+        tomaMx.setIdNotificacion(notifi);
         if(fechaHTomaMx != null){
             tomaMx.setFechaHTomaMx(StringToTimestamp(fechaHTomaMx));
         }
@@ -249,8 +250,15 @@ public class TomaMxController {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         tomaMx.setUsuario(usuarioService.getUsuarioById((int)idUsuario));
         tomaMx.setEstadoMx(catalogoService.getEstadoMx("ESTDMX|PEND"));
-        tomaMx.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
-        tomaMx.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
+
+        if(codSilaisAtencion == null && codUnidadAtencion == null){
+            tomaMx.setCodSilaisAtencion(notifi.getCodSilaisAtencion());
+            tomaMx.setCodUnidadAtencion(notifi.getCodUnidadAtencion());
+        }else{
+            tomaMx.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
+            tomaMx.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
+        }
+
         String codigo = generarCodigoUnicoMx();
         tomaMx.setCodigoUnicoMx(codigo);
         tomaMx.setCodigoLab(null);
