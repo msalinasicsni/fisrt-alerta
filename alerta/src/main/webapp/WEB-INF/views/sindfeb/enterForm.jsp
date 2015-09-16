@@ -1283,6 +1283,14 @@
 	    		$("li.sindfeb").parents("ul").slideDown(200);
 	    	}
 	    	$('#fechaNacimiento').change();
+            $('#viaje').change();
+            $('#enfCronica').change();
+            $('#enfAgudaAdicional').change();
+            $('#fuenteAgua').change();
+            $('#animales').change();
+            $('#hosp').change();
+            $('#fallecido').change();
+
 		});
 	</script>
 	<!-- END JAVASCRIPTS -->

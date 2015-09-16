@@ -365,7 +365,7 @@ public class SeguridadService {
     public List<EntidadesAdtvas> obtenerEntidadesPorUsuario(Integer pUsuarioId, String pCodigoSis){
         List<EntidadesAdtvas> entidadesAdtvasList = new ArrayList<EntidadesAdtvas>();
         try {
-            String query = "select ent from EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
+            String query = "select distinct ent from EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
                     "where ent.id = usuent.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuent.usuario.usuarioId and usuent.sistema.id = sis.id " +
                     "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo order by ent.nombre";
             Query qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
@@ -376,9 +376,9 @@ public class SeguridadService {
 
             //si no tiene entidades asignadas directamente, se obtienen las entidades asociadas a las unidades de salud asignadas directamente
             if (entidadesAdtvasList.size()<=0){
-                query = "select ent from EntidadesAdtvas ent, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
+                query = "select distinct ent from EntidadesAdtvas ent, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
                         "where ent.id = usuni.unidad.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
-                        "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo order by ent.nombre";
+                        "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo and usuni.unidad.pasivo = :pasivo order by ent.nombre";
                 qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
                 qrUsuarioEntidad.setParameter("pUsuarioId", pUsuarioId);
                 qrUsuarioEntidad.setParameter("pCodigoSis", pCodigoSis);
@@ -402,7 +402,7 @@ public class SeguridadService {
         if (seguridadHabilitada()) {
             List<EntidadesAdtvas> entidadesAdtvasList = new ArrayList<EntidadesAdtvas>();
             try {
-                String query = "select ent from EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
+                String query = "select distinct ent from EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
                         "where ent.id = usuent.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuent.usuario.usuarioId and usuent.sistema.id = sis.id " +
                         "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.codigo = :pCodEntidad and ent.pasivo = :pasivo order by ent.nombre";
                 Query qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
@@ -414,9 +414,9 @@ public class SeguridadService {
 
                 //si no tiene entidades asignadas directamente, se obtienen las entidades asociadas a las unidades de salud asignadas directamente
                 if (entidadesAdtvasList.size()<=0){
-                    query = "select ent from EntidadesAdtvas ent, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
+                    query = "select distinct ent from EntidadesAdtvas ent, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
                             "where ent.id = usuni.unidad.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
-                            "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo order by ent.nombre";
+                            "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo and usuni.unidad.pasivo = :pasivo order by ent.nombre";
                     qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
                     qrUsuarioEntidad.setParameter("pUsuarioId", pUsuarioId);
                     qrUsuarioEntidad.setParameter("pCodigoSis", pCodigoSis);
