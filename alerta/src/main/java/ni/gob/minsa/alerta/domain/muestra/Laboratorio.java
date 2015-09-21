@@ -1,8 +1,11 @@
 package ni.gob.minsa.alerta.domain.muestra;
-import ni.gob.minsa.alerta.domain.notificacion.TipoNotificacion;
+
+import ni.gob.minsa.alerta.domain.seguridadLab.User;
 import org.hibernate.annotations.ForeignKey;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by FIRSTICT on 12/2/2014.
@@ -18,6 +21,9 @@ public class Laboratorio {
     String direccion;
     String telefono;
     String telefax;
+    private boolean pasivo;
+    Date fechaRegistro;
+    User usuarioRegistro;
 
     @Id
     @Column(name = "CODIGO", nullable = false, insertable = true, updatable = true, length = 10)
@@ -88,4 +94,36 @@ public class Laboratorio {
     public void setTelefax(String telefax) {
         this.telefax = telefax;
     }
+
+    @Basic
+    @Column(name = "PASIVO", nullable = false, insertable = true, updatable = true)
+    public boolean isPasivo() {
+        return pasivo;
+    }
+
+    public void setPasivo(boolean pasivo) {
+        this.pasivo = pasivo;
+    }
+
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "FECHA_REGISTRO", nullable = false)
+    public Date getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    @ManyToOne()
+    @JoinColumn(name="USUARIO_REGISTRO", referencedColumnName="username", nullable=false)
+    @ForeignKey(name = "laboratorio_usuario_fk")
+    public User getUsuarioRegistro() {
+        return usuarioRegistro;
+    }
+
+    public void setUsuarioRegistro(User usuarioRegistro) {
+        this.usuarioRegistro = usuarioRegistro;
+    }
+
 }

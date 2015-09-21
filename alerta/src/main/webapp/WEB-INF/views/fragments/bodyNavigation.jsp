@@ -47,10 +47,13 @@
                 <a href="<spring:url value="/" htmlEscape="true "/>" title="<spring:message code="menu.home" />"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent"><spring:message code="menu.home" /></span></a>
             </li>
             <li class="mantenimiento">
-                <a href="#" title="<spring:message code="menu.maint" />"><i class="fa fa-lg fa-fw fa-cogs"></i> <span class="menu-item-parent"><spring:message code="menu.maint" /></span></a>
+                <a href="#" title="<spring:message code="menu.admon" />"><i class="fa fa-lg fa-fw fa-cogs"></i> <span class="menu-item-parent"><spring:message code="menu.admon" /></span></a>
                 <ul>
                     <li class="personas">
                         <a href="<spring:url value="/personas/search" htmlEscape="true "/>" title="<spring:message code="menu.persons" />"><i class="fa fa-lg fa-fw fa-group"></i> <spring:message code="menu.persons" /></a>
+                    </li>
+                    <li class="studiesUS">
+                        <a href="<spring:url value="/administracion/studiesUS/init" htmlEscape="true "/>" title="<spring:message code="lbl.studiesbyUS" />"><i class="fa fa-lg fa-fw fa-link"></i> <spring:message code="lbl.studiesbyUS" /></a>
                     </li>
                 </ul>
             </li>

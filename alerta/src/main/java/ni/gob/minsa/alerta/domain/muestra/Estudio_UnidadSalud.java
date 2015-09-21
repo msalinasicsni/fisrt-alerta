@@ -2,7 +2,6 @@ package ni.gob.minsa.alerta.domain.muestra;
 
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
-import ni.gob.minsa.alerta.domain.seguridadLab.User;
 import org.hibernate.annotations.ForeignKey;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,7 +15,7 @@ import java.util.Date;
 @Table(name = "estudio_unidad", schema = "alerta")
 public class Estudio_UnidadSalud {
 
-    Integer isEstudioUnidad;
+    Integer idEstudioUnidad;
     Catalogo_Estudio estudio;
     Unidades unidad;
     Boolean pasivo;
@@ -26,14 +25,9 @@ public class Estudio_UnidadSalud {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "ID_EST_UNIDAD", nullable = false, insertable = true, updatable = false)
-    public Integer getIsEstudioUnidad() {
-        return isEstudioUnidad;
-    }
+    public Integer getIdEstudioUnidad() { return idEstudioUnidad; }
 
-    public void setIsEstudioUnidad(Integer idDxTipoMxNt) {
-        this.isEstudioUnidad = idDxTipoMxNt;
-    }
-
+    public void setIdEstudioUnidad(Integer idEstudioUnidad) { this.idEstudioUnidad = idEstudioUnidad; }
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "ID_ESTUDIO", referencedColumnName = "ID_ESTUDIO", nullable = false)

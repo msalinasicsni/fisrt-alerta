@@ -10,8 +10,8 @@ import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.poblacion.Sectores;
 import ni.gob.minsa.alerta.domain.resultados.Catalogo_Lista;
 import ni.gob.minsa.alerta.domain.resultados.DetalleResultadoFinal;
-import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Distritos;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Areas;
+import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Distritos;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
@@ -364,6 +364,22 @@ public class expose {
         jsonResponse = new Gson().toJson(mapResponse);
         UnicodeEscaper escaper     = UnicodeEscaper.above(127);
         return escaper.translate(jsonResponse);
+    }
+
+    @RequestMapping(value = "municipiosbysilais2", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    List<Divisionpolitica> getMunicipiosBySilas2(@RequestParam(value = "idSilais", required = true) long idSilais, HttpServletRequest request) throws Exception {
+        logger.info("Obteniendo los municipios por silais en JSON");
+        return divisionPoliticaService.getMunicipiosBySilais(idSilais);
+    }
+
+    @RequestMapping(value = "unidadesPrimHosp2", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    List<Unidades> getPUnitsHospByMuniAndSilais2(@RequestParam(value = "codMunicipio", required = true) String codMunicipio, @RequestParam(value = "codSilais", required = true) long codSilais, HttpServletRequest request) throws Exception {
+        logger.info("Obteniendo las unidades primarias y Hospitales por municipio y Silais en JSON");
+        return unidadesService.getPUnitsHospByMuniAndSilais(codMunicipio, HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), codSilais);
     }
 
 }
