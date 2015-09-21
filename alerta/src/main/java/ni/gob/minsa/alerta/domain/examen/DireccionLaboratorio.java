@@ -1,6 +1,5 @@
 package ni.gob.minsa.alerta.domain.examen;
 
-import ni.gob.minsa.alerta.domain.muestra.Catalogo_Dx;
 import ni.gob.minsa.alerta.domain.muestra.Laboratorio;
 import ni.gob.minsa.alerta.domain.seguridadLab.User;
 import org.hibernate.annotations.ForeignKey;

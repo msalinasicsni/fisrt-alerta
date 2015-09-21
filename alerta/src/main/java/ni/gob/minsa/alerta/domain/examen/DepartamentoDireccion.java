@@ -1,6 +1,5 @@
 package ni.gob.minsa.alerta.domain.examen;
 
-import ni.gob.minsa.alerta.domain.muestra.Laboratorio;
 import ni.gob.minsa.alerta.domain.seguridadLab.User;
 import org.hibernate.annotations.ForeignKey;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,7 +16,7 @@ public class DepartamentoDireccion {
 
     Integer idDepartDireccion;
     Departamento departamento;
-    Direccion direccion;
+    DireccionLaboratorio direccionLab;
     private boolean pasivo;
     Date fechaRegistro;
     User usuarioRegistro;
@@ -45,16 +44,14 @@ public class DepartamentoDireccion {
         this.departamento = departamento;
     }
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "ID_DIRECCION", referencedColumnName = "ID_DIRECCION",nullable = false)
-    @ForeignKey(name="DEPARTADIRECCION_DIRECCION_FK")
-    public Direccion getDireccion() {
-        return direccion;
-    }
 
-    public void setDireccion(Direccion direccion) {
-        this.direccion = direccion;
-    }
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "ID_DIRECCION_LAB", referencedColumnName = "ID_DIRECCION_LAB",nullable = false)
+    @ForeignKey(name="DEPART_DIREC_LAB_FK")
+    public DireccionLaboratorio getDireccionLab() { return direccionLab; }
+
+    public void setDireccionLab(DireccionLaboratorio direccionLab) {  this.direccionLab = direccionLab; }
+
 
     @Basic
     @Column(name = "PASIVO", nullable = false, insertable = true, updatable = true)
