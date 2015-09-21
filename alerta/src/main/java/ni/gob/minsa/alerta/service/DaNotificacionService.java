@@ -1,5 +1,7 @@
 package ni.gob.minsa.alerta.service;
 
+import ni.gob.minsa.alerta.domain.muestra.DaTomaMx;
+import ni.gob.minsa.alerta.domain.muestra.FiltroMx;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import org.apache.commons.codec.language.Soundex;
 import org.hibernate.Criteria;
@@ -153,6 +155,49 @@ public class DaNotificacionService {
                 )
                 .list();
 
+    }
+
+    public List<DaNotificacion> getNoticesByFilro(FiltroMx filtro){
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(DaNotificacion.class, "notifi");
+
+        //siempre se tomam las notificaciones activas
+        crit.add( Restrictions.and(
+                        Restrictions.eq("notifi.pasivo", false))
+        );
+        //no mostrar las muestras de notificaciones 'OTRAS MUESTRAS' pues son de laboratorio, ni CASOS ESPECIALES
+        crit.add( Restrictions.and(
+                Restrictions.ne("notifi.codTipoNotificacion.codigo", "TPNOTI|OMX").ignoreCase()));
+        crit.add( Restrictions.and(
+                Restrictions.ne("notifi.codTipoNotificacion.codigo", "TPNOTI|CAESP").ignoreCase()));
+        //se filtra por SILAIS
+        if (filtro.getCodSilais()!=null){
+            crit.createAlias("notifi.codSilaisAtencion","silais");
+            crit.add( Restrictions.and(
+                            Restrictions.eq("silais.codigo", Long.valueOf(filtro.getCodSilais())))
+            );
+        }
+        //se filtra por unidad de salud
+        if (filtro.getCodUnidadSalud()!=null){
+            crit.createAlias("notifi.codUnidadAtencion","unidadS");
+            crit.add( Restrictions.and(
+                            Restrictions.eq("unidadS.codigo", Long.valueOf(filtro.getCodUnidadSalud())))
+            );
+        }
+        //Se filtra por rango de fecha de registro notificación
+        if (filtro.getFechaInicioNotifi()!=null && filtro.getFechaFinNotifi()!=null){
+            crit.add( Restrictions.and(
+                            Restrictions.between("notifi.fechaRegistro", filtro.getFechaInicioNotifi(),filtro.getFechaFinNotifi()))
+            );
+        }
+
+        if (filtro.getTipoNotificacion()!=null){
+            crit.createAlias("notifi.codTipoNotificacion","tipoNoti");
+            crit.add( Restrictions.and(
+                            Restrictions.eq("tipoNoti.codigo", filtro.getTipoNotificacion()))
+            );
+        }
+        return crit.list();
     }
 
 }
