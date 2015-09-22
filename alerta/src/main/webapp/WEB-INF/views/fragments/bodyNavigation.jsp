@@ -72,6 +72,9 @@
                     <li class="paciente">
                         <a href="<spring:url value="/paciente/create" htmlEscape="true "/>" title="<spring:message code="menu.paciente" />"><i class="fa fa-lg fa-fw fa-user"></i> <spring:message code="menu.paciente" /></a>
                     </li>
+                    <li class="buscar">
+                        <a href="<spring:url value="/reportes/generalnoti" htmlEscape="true "/>" title="<spring:message code="menu.reports.general" />"><i class="fa fa-lg fa-fw fa-search"></i> <spring:message code="menu.reports.general" /></a>
+                    </li>
                 </ul>
             </li>
             <li class="samples">
