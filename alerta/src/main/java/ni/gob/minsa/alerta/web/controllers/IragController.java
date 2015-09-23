@@ -969,6 +969,8 @@ public class IragController {
 
                         GeneralUtils.drawObject(stream, doc, image, 10, 50, 580, 780);
 
+                        String clasificacion = irag.getCodClasificacion()!= null? irag.getCodClasificacion().getCodigo():null;
+
                         String us = irag.getIdNotificacion().getCodUnidadAtencion() != null ? irag.getIdNotificacion().getCodUnidadAtencion().getNombre() : "----";
 
                         String silais = irag.getIdNotificacion().getCodSilaisAtencion().getNombre();
@@ -1145,7 +1147,27 @@ public class IragController {
                         float m1 = 29;
                         float x = 86;
                         float x1 = 86;
-                        x1 += 55;
+
+                        if(clasificacion!= null){
+                            switch (clasificacion) {
+                                case "CLASIFVI|ETI":
+                                    x1 += 377;
+                                    GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y + 25, x1, stream, 8, PDType1Font.TIMES_BOLD);
+                                    break;
+                                case "CLASIFVI|IRAG":
+                                    x1 += 336;
+                                    GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y + 25, x1, stream, 8, PDType1Font.TIMES_BOLD);
+
+                                    break;
+                                case "CLASIFVI|INUS":
+                                    x1 += 463;
+                                    GeneralUtils.drawTEXT("(" + messageSource.getMessage("lbl.x", null, null) +")", y + 25, x1, stream, 8, PDType1Font.TIMES_BOLD);
+
+                                    break;
+                            }
+                        }
+
+                        x1= x +55;
                         GeneralUtils.drawTEXT(us, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                         y -= 42;

@@ -660,7 +660,7 @@ public class SindFebrilController {
                     String silais = febril.getIdNotificacion().getCodSilaisAtencion().getNombre();
 
                     String nombreS = silais != null ? silais.replace("SILAIS", ""): "----";
-                    String municipio = febril.getIdNotificacion().getPersona().getMunicipioResidencia() != null ? febril.getIdNotificacion().getPersona().getMunicipioResidencia().getNombre(): "----";
+                    String municipio = febril.getIdNotificacion().getCodUnidadAtencion() != null ? febril.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getNombre(): "----";
                     String us = febril.getIdNotificacion().getCodUnidadAtencion() != null ? febril.getIdNotificacion().getCodUnidadAtencion().getNombre(): "----";
                     String nExp = febril.getCodExpediente() != null ? febril.getCodExpediente(): "----------";
                     //laboratorio pendiente
@@ -713,6 +713,8 @@ public class SindFebrilController {
                     String mesesEmb = febril.getMesesEmbarazo() != 0 ? String.valueOf(febril.getMesesEmbarazo()): "--";
 
                     String enfCronica = febril.getEnfCronica() != null ? febril.getEnfCronica():null;
+
+                    String numFicha = febril.getNumFicha()!= null? febril.getNumFicha():null;
 
 
 
@@ -1088,6 +1090,11 @@ public class SindFebrilController {
                     float x = 86;
                     float x1 = 86;
                     float y3 = 0;
+                    if(numFicha!= null){
+                        GeneralUtils.drawTEXT(numFicha, y+18, x+405, stream,7, PDType1Font.TIMES_ROMAN);
+
+                    }
+
                     GeneralUtils.drawTEXT(nombreS, y, x, stream,7, PDType1Font.TIMES_ROMAN);
                     x1+= 122;
                     GeneralUtils.drawTEXT(municipio,y,x1,stream, 7, PDType1Font.TIMES_ROMAN);
