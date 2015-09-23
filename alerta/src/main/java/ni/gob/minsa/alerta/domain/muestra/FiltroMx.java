@@ -14,6 +14,9 @@ public class FiltroMx {
     String codTipoMx;
     String codTipoSolicitud;
     String nombreSolicitud;
+    String tipoNotificacion;
+    Date fechaInicioNotifi;
+    Date fechaFinNotifi;
 
     public String getNombreApellido() {
         return nombreApellido;
@@ -70,4 +73,28 @@ public class FiltroMx {
     public String getNombreSolicitud() { return nombreSolicitud; }
 
     public void setNombreSolicitud(String nombreSolicitud) { this.nombreSolicitud = nombreSolicitud; }
+
+    public String getTipoNotificacion() {
+        return tipoNotificacion;
+    }
+
+    public void setTipoNotificacion(String tipoNotificacion) {
+        this.tipoNotificacion = tipoNotificacion;
+    }
+
+    public Date getFechaInicioNotifi() {
+        return fechaInicioNotifi;
+    }
+
+    public void setFechaInicioNotifi(Date fechaInicioNotifi) {
+        this.fechaInicioNotifi = fechaInicioNotifi;
+    }
+
+    public Date getFechaFinNotifi() {
+        return fechaFinNotifi;
+    }
+
+    public void setFechaFinNotifi(Date fechaFinNotifi) {
+        this.fechaFinNotifi = fechaFinNotifi;
+    }
 }
