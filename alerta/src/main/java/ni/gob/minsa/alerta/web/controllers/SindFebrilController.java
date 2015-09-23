@@ -266,13 +266,14 @@ public class SindFebrilController {
                     entidades = entidadAdmonService.getAllEntidadesAdtvas();
                 }else {
                     entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-                    if (entidades.size()<=0){
+                    if (!entidades.contains(daSindFeb.getIdNotificacion().getCodSilaisAtencion())){
                         entidades.add(daSindFeb.getIdNotificacion().getCodSilaisAtencion());
                     }
                 }
                 if (idUsuario != 0) {
                       autorizado = seguridadService.esUsuarioNivelCentral(idUsuario,ConstantsSecurity.SYSTEM_CODE) ||
-                        seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodUnidadAtencion().getCodigo());
+                              (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo()) &&
+                               seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodUnidadAtencion().getCodigo()));
 
                 }
                 List<Divisionpolitica> munic = divisionPoliticaService.getMunicipiosBySilais(daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo());
@@ -281,7 +282,7 @@ public class SindFebrilController {
                      uni = unidadesService.getPUnitsHospByMuniAndSilais(daSindFeb.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo());
                 }else{
                     uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int)idUsuario,daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo(),daSindFeb.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(),ConstantsSecurity.SYSTEM_CODE,HealthUnitType.UnidadesPrimHosp.getDiscriminator());
-                    if (uni.size()<=0){
+                    if (!uni.contains(daSindFeb.getIdNotificacion().getCodUnidadAtencion())){
                         uni.add(daSindFeb.getIdNotificacion().getCodUnidadAtencion());
                     }
                 }
@@ -524,9 +525,17 @@ public class SindFebrilController {
         if(urlValidacion.isEmpty()){
 	        DaSindFebril daSindFeb = sindFebrilService.getDaSindFebril(idNotificacion);
 	        if (daSindFeb!=null){
-	        	daSindFeb.getIdNotificacion().setPasivo(true);
-	        	sindFebrilService.saveSindFebril(daSindFeb);
-	        	return "redirect:/febriles/search/"+daSindFeb.getIdNotificacion().getPersona().getPersonaId();
+                long idUsuario = seguridadService.obtenerIdUsuario(request);
+                boolean  autorizado = seguridadService.esUsuarioNivelCentral(idUsuario,ConstantsSecurity.SYSTEM_CODE) ||
+                        (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo()) &&
+                                seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodUnidadAtencion().getCodigo()));
+	        	if (autorizado) {
+                    daSindFeb.getIdNotificacion().setPasivo(true);
+                    sindFebrilService.saveSindFebril(daSindFeb);
+                    return "redirect:/febriles/search/" + daSindFeb.getIdNotificacion().getPersona().getPersonaId();
+                }else {
+                    return "redirect:/403";
+                }
 	        }
 	        else{
 	        	return "redirect:/404";

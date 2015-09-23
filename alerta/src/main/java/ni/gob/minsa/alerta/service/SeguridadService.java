@@ -399,7 +399,7 @@ public class SeguridadService {
      * @return TRUE: si tiena autorización o la seguridad esta deshabilitada, FALSE: no tiene autorización
      */
     public boolean esUsuarioAutorizadoEntidad(Integer pUsuarioId, String pCodigoSis, long pCodEntidad){
-        if (seguridadHabilitada()) {
+        //if (seguridadHabilitada()) {
             List<EntidadesAdtvas> entidadesAdtvasList = new ArrayList<EntidadesAdtvas>();
             try {
                 String query = "select distinct ent from EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
@@ -412,21 +412,24 @@ public class SeguridadService {
                 qrUsuarioEntidad.setParameter("pasivo", '0');
                 entidadesAdtvasList = qrUsuarioEntidad.list();
 
-                //si no tiene entidades asignadas directamente, se obtienen las entidades asociadas a las unidades de salud asignadas directamente
+                //si no tiene entidades asignadas directamente, se obtienen las entidades asociadas a las unidades de salud asignadas directamente, y que pertenenzcan a la entidad que se valida
                 if (entidadesAdtvasList.size()<=0){
                     query = "select distinct ent from EntidadesAdtvas ent, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
                             "where ent.id = usuni.unidad.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
-                            "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo and usuni.unidad.pasivo = :pasivo order by ent.nombre";
+                            "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo and usuni.unidad.pasivo = :pasivo " +
+                            "and ent.id = :pCodEntidad order by ent.nombre";
                     qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
                     qrUsuarioEntidad.setParameter("pUsuarioId", pUsuarioId);
                     qrUsuarioEntidad.setParameter("pCodigoSis", pCodigoSis);
+                    qrUsuarioEntidad.setParameter("pCodEntidad", pCodEntidad);
                     qrUsuarioEntidad.setParameter("pasivo", '0');
+                    entidadesAdtvasList = qrUsuarioEntidad.list();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return entidadesAdtvasList.size() > 0;
-        }else return true;
+        //}else return true;
     }
 
     /**
@@ -462,7 +465,7 @@ public class SeguridadService {
      * @return TRUE: si tiena autorización o la seguridad esta deshabilitada, FALSE: no tiene autorización
      */
     public boolean esUsuarioAutorizadoUnidad(Integer pUsuarioId, String pCodigoSis, long pCodUnidad){
-        if (seguridadHabilitada()) {
+        //if (seguridadHabilitada()) {
             List<Unidades> unidadesList = new ArrayList<Unidades>();
             try {
                 String query = "select uni from Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
@@ -493,7 +496,7 @@ public class SeguridadService {
                 e.printStackTrace();
             }
             return unidadesList.size() > 0;
-        }else return true;
+        //}else return true;
     }
 
     /**
