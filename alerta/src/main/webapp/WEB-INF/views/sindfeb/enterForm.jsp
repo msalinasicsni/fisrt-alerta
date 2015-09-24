@@ -92,6 +92,16 @@
 				</div>
 				<!-- end col -->
 			</div>
+            <div id="dWarning" hidden="hidden" class="alert alert-warning fade in">
+                <button class="close" data-dismiss="alert">
+                    ×
+                </button>
+
+                <!-- PAGE HEADER -->
+                <i class="fa-fw fa fa-warning"></i>
+                <strong> <spring:message code="lbl.warning"/></strong>
+                <spring:message code="lbl.unauthorized.user.warning"/>
+            </div>
 			<!-- end row -->
 			<!-- widget grid -->
 			<section id="widget-grid" class="">
@@ -1293,6 +1303,7 @@
             //Si usuario no está autorizado a editar la ficha, entonces se deshabilitan todos los controles
             if ($("#autorizado").val()!='true') {
                 $('#sind_feb_form').find('input, textarea, button, select').attr('disabled', 'disabled');
+                $('#dWarning').fadeIn('slow');
             }
 
 		});

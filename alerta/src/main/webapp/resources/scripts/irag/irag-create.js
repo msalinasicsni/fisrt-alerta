@@ -139,8 +139,7 @@ var CreateIrag = function () {
 
             });
 
-
-            function fnGuardarFicha(step) {
+           function fnGuardarFicha(step) {
                 if (step == 2) {
                     fnguardar();
 
@@ -1034,7 +1033,7 @@ var CreateIrag = function () {
                     }
                 })
                     .fail(function () {
-                        desbloquearUI();
+                        unBlockUI();
                         alert("error");
                     });
             }

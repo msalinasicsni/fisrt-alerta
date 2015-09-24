@@ -325,7 +325,8 @@
                 overrideUrl: "${overrideUrl}",
                 createMxUrl: "${createMxUrl}",
                 pdfUrl:"${pdfUrl}",
-                blockMess: "${blockMess}"
+                blockMess: "${blockMess}",
+                iragAutorizadas:"${iragAutorizadas}"
 
 
 

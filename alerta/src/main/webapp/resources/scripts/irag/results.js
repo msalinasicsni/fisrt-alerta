@@ -140,7 +140,15 @@ var IragResults = function () {
                             btnTomaMx = '<a href=' + tomaMxUrl + ' disabled class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
 
 
+                        } else {
+                            //se valida si el id de la notificación está autorizada para edición por parte del usuario
+                            var path = new RegExp(data[i].idNotificacion.idNotificacion);
+                            var esAutorizada = path.test(parametros.iragAutorizadas);
+                            if (!esAutorizada) {
+                                btnOverride = ' <button type="button" disabled class="btn btn-xs btn-danger"> <i class="fa fa-times"></i>';
+                            }
                         }
+
 
                         table1.fnAddData(
                             [data[i].fechaConsulta, pasivo, data[i].codExpediente, data[i].idNotificacion.codUnidadAtencion.nombre, data[i].idNotificacion.persona.primerNombre, data[i].idNotificacion.persona.primerApellido, data[i].idNotificacion.persona.segundoApellido, btnEdit, btnPdf, btnTomaMx, btnOverride  ]);

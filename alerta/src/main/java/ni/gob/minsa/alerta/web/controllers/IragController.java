@@ -143,8 +143,6 @@ public class IragController {
 
     void Initialize() throws Exception {
         try {
-
-
             departamentos = divisionPoliticaService.getAllDepartamentos();
             catProcedencia = catalogoService.getProcedencia();
             catClasif = catalogoService.getClasificacion();
@@ -275,11 +273,11 @@ public class IragController {
                     mav.setViewName("404");
                 }
             } else {
-                List<DaIrag> iragAutorizados = new ArrayList<>();
+                List<String> iragAutorizados = new ArrayList<String>();
                 for (DaIrag ira : results) {
                     if (idUsuario != 0) {
                         if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
-                            iragAutorizados.add(ira);
+                            iragAutorizados.add(ira.getIdNotificacion().getIdNotificacion());
                         }
                     }
                 }
@@ -404,7 +402,7 @@ public class IragController {
 
                     entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
 
-                    if (entidades.size() <= 0) {
+                    if (!entidades.contains(irag.getIdNotificacion().getCodSilaisAtencion())){
                         entidades.add(irag.getIdNotificacion().getCodSilaisAtencion());
                     }
 
@@ -412,7 +410,7 @@ public class IragController {
                     List<Divisionpolitica> munic = divisionPoliticaService.getMunicipiosBySilais(irag.getIdNotificacion().getCodSilaisAtencion().getCodigo());
                     List<Unidades> uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int) idUsuario, irag.getIdNotificacion().getCodSilaisAtencion().getCodigo(), irag.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
 
-                    if (uni.size() <= 0) {
+                    if (!uni.contains(irag.getIdNotificacion().getCodUnidadAtencion())) {
                         uni.add(irag.getIdNotificacion().getCodUnidadAtencion());
                     }
 
@@ -1249,7 +1247,7 @@ public class IragController {
 
                         }
 
-                        y -= 28;
+                        y -= 18;
                         x1 = x + 82;
                         GeneralUtils.drawTEXT(depProce, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                         x1 = x1 + 180;

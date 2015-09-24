@@ -86,7 +86,7 @@
 <!-- row -->
 <div class="row">
     <!-- col -->
-    <div class="col col-xs-12 col-sm-7 col-md-7 col-lg-4">
+    <div class="col col-xs-12 col-sm-7 col-md-7 col-lg-5">
         <h2 class="page-title txt-color-blueDark">
             <!-- PAGE HEADER -->
             <i class="fa-fw fa fa-stethoscope"></i>
@@ -99,7 +99,7 @@
     <!-- end col -->
     <!-- right side of the page with the sparkline graphs -->
     <!-- col -->
-    <div class="col col-xs-12 col-sm-5 col-md-5 col-lg-8">
+    <div class="col col-xs-12 col-sm-5 col-md-5 col-lg-7">
         <!-- sparks -->
         <ul id="sparks">
             <li class="sparks-info">
@@ -129,7 +129,18 @@
         </ul>
         <!-- end sparks -->
     </div>
+
     <!-- end col -->
+</div>
+<div id="dWarning" hidden="hidden" class="alert alert-warning fade in">
+    <button class="close" data-dismiss="alert">
+        ×
+    </button>
+
+        <!-- PAGE HEADER -->
+        <i class="fa-fw fa fa-warning"></i>
+    <strong> <spring:message code="lbl.warning"/></strong>
+        <spring:message code="lbl.unauthorized.user.warning"/>
 </div>
 <!-- end row -->
 <!--
@@ -2037,6 +2048,12 @@
         $('#codAntbUlSem').change();
         $('#usoAntivirales').change();
         $('#uciS').change();
+
+        if($('#autorizado').val() != "true"){
+            $('#dWarning').fadeIn('slow');
+            $('#wizard-1').find('input, textarea, button, select').attr('disabled','disabled');
+        }
+
 
 
 
