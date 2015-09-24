@@ -1290,6 +1290,10 @@
             $('#animales').change();
             $('#hosp').change();
             $('#fallecido').change();
+            //Si usuario no está autorizado a editar la ficha, entonces se deshabilitan todos los controles
+            if ($("#autorizado").val()!='true') {
+                $('#sind_feb_form').find('input, textarea, button, select').attr('disabled', 'disabled');
+            }
 
 		});
 	</script>

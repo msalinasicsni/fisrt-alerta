@@ -207,17 +207,17 @@ public class SindFebrilController {
 	        	}
 	        }
 	        else{
-                List<DaSindFebril> febrilAutorizados = new ArrayList<DaSindFebril>();
+                List<String> fichasAutorizadas = new ArrayList<String>();
                 for(DaSindFebril febril: results){
                     if (idUsuario != 0) {
                         if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, febril.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, febril.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
-                            febrilAutorizados.add(febril);
+                            fichasAutorizadas.add(febril.getIdNotificacion().getIdNotificacion());
                         }
                     }
                 }
 	        	mav.addObject("fichas", results);
                 mav.addObject("idPerson", idPerson);
-                mav.addObject("fichasAutorizadas",febrilAutorizados);
+                mav.addObject("fichasAutorizadas",fichasAutorizadas);
 	        	mav.setViewName("sindfeb/results");
 	        }
         }else{
@@ -531,6 +531,7 @@ public class SindFebrilController {
                                 seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodUnidadAtencion().getCodigo()));
 	        	if (autorizado) {
                     daSindFeb.getIdNotificacion().setPasivo(true);
+                    daSindFeb.getIdNotificacion().setFechaAnulacion(new Timestamp(new Date().getTime()));
                     sindFebrilService.saveSindFebril(daSindFeb);
                     return "redirect:/febriles/search/" + daSindFeb.getIdNotificacion().getPersona().getPersonaId();
                 }else {

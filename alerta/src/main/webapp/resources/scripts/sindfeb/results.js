@@ -120,6 +120,13 @@ var Results = function () {
                             btnTomaMx = '<a href=' + tomaMxUrl + ' disabled class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
 
 
+                        }else{
+                            //se valida si el id de la notificación está autorizada para edición por parte del usuario
+                            var path = new RegExp(data[i].idNotificacion.idNotificacion);
+                            var esAutorizada = path.test(parametros.fichasAutorizadas);
+                            if (!esAutorizada){
+                                btnOverride = ' <button type="button" disabled class="btn btn-xs btn-danger"> <i class="fa fa-times"></i>';
+                            }
                         }
 
                         table1.fnAddData(
