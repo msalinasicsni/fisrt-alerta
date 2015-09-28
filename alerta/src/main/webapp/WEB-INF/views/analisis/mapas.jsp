@@ -95,7 +95,7 @@
 								<span class="widget-icon"> <i class="fa fa-edit"></i>
 								</span>
 								<h2>
-									<spring:message code="mapopt" />
+									Opciones del Mapa de William
 								</h2>
 							</header>
 
