@@ -2,6 +2,7 @@ package ni.gob.minsa.alerta.api;
 
 import com.google.gson.Gson;
 import ni.gob.minsa.alerta.domain.estructura.CalendarioEpi;
+import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
@@ -78,6 +79,9 @@ public class expose {
 
     @Resource(name = "resultadoFinalService")
     public ResultadoFinalService resultadoFinalService;
+    
+    @Resource(name="entidadAdmonService")
+	private EntidadAdmonService entidadAdmonService;
 
     @Autowired
     MessageSource messageSource;
@@ -145,6 +149,22 @@ public class expose {
             return  unidadesService.getPUnitsHospByMuniAndSilais(codMunicipio, HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), codSilais);
         }else{ //sino sólo se cargarn las unidades autorizadas para el usuario según SILAIS y municipio
             return seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int) idUsuario, codSilais, codMunicipio, ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+        }
+    }
+    
+    @RequestMapping(value = "unidadesPorSilaisyMuni", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    List<Unidades> getUnitsByMuniAndSilais(@RequestParam(value = "idMunicipio", required = true) long idMunicipio,@RequestParam(value = "idSilais", required = true) long idSilais, HttpServletRequest request) throws Exception {
+        logger.info("Obteniendo las unidades primarias y Hospitales por municipio y Silais en JSON");
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        EntidadesAdtvas silais = entidadAdmonService.getEntidadById(idSilais);
+        Divisionpolitica municipio = divisionPoliticaService.getDivisionPolitiacaById(idMunicipio);
+        //Si es usuario a nivel central se cargan todas las unidades asociados al SILAIS y municipio
+        if(seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)) {
+            return  unidadesService.getPUnitsHospByMuniAndSilais(municipio.getCodigoNacional(), HealthUnitType.UnidadesSIVE.getDiscriminator().split(","), silais.getCodigo());
+        }else{ //sino sólo se cargarn las unidades autorizadas para el usuario según SILAIS y municipio
+            return seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int) idUsuario, silais.getCodigo(), municipio.getCodigoNacional(), ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesSIVE.getDiscriminator());
         }
     }
 

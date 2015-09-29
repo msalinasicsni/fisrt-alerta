@@ -4,15 +4,16 @@ import java.text.ParseException;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import ni.gob.minsa.alerta.domain.catalogos.Anios;
 import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
+import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.sive.SivePatologias;
 import ni.gob.minsa.alerta.service.AnalisisService;
 import ni.gob.minsa.alerta.service.CatalogoService;
+import ni.gob.minsa.alerta.service.DivisionPoliticaService;
 import ni.gob.minsa.alerta.service.EntidadAdmonService;
 import ni.gob.minsa.alerta.service.SivePatologiasService;
 
@@ -42,17 +43,48 @@ public class AnalisisController {
 	private AnalisisService analisisService;
 	@Resource(name="sivePatologiasService")
 	private SivePatologiasService sivePatologiasService;
+	@Resource(name="divisionPoliticaService")
+	private DivisionPoliticaService divisionPoliticaService;
 	
-	@RequestMapping(value = "mapas", method = RequestMethod.GET)
-    public String initMapsPage(Model model, HttpServletRequest request) {
-		logger.debug("presentar analisis por mapas");
-        return "analisis/mapas";
+	@RequestMapping(value = "series", method = RequestMethod.GET)
+    public String initSeriesPage(Model model) throws Exception { 	
+		logger.debug("presentar series temporales");
+    	List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
+    	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+    	List<AreaRep> areas = catalogosService.getAreaRep();
+    	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+    	model.addAttribute("areas", areas);
+    	model.addAttribute("entidades", entidades);
+    	model.addAttribute("departamentos", departamentos);
+    	model.addAttribute("patologias", patologias);
+    	return "analisis/series";
 	}
 	
-	@RequestMapping(value = "agesex", method = RequestMethod.GET)
-    public String initAgeSexPage(Model model) throws Exception { 	
-		logger.debug("presentar analisis por edad y sexo");
-    	List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
+	/**
+     * Retorna una lista de datos. Acepta una solicitud GET para JSON
+     * @return Un arreglo JSON
+	 * @throws ParseException 
+     */
+    @RequestMapping(value = "seriesdata", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<Object[]> fetchSeriesDataJson(@RequestParam(value = "codPato", required = true) String codPato,
+    		@RequestParam(value = "codArea", required = true) String codArea,
+    		@RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
+    		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
+    		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
+    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException {
+        logger.info("Obteniendo los datos de series temporales en JSON");
+        List<Object[]> datos = analisisService.getDataSeries(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad);
+        if (datos == null){
+        	logger.debug("Nulo");
+        }
+        return datos;
+    }   
+    
+    @RequestMapping(value = "mapas", method = RequestMethod.GET)
+    public String initMapasPage(Model model) throws Exception { 	
+		logger.debug("presentar mapas");
+		List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
+    	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
     	List<AreaRep> areas = catalogosService.getAreaRep();
     	List<Semanas> semanas = catalogosService.getSemanas();
     	List<Anios> anios = catalogosService.getAnios();
@@ -61,27 +93,62 @@ public class AnalisisController {
     	model.addAttribute("semanas", semanas);
     	model.addAttribute("anios", anios);
     	model.addAttribute("entidades", entidades);
+    	model.addAttribute("departamentos", departamentos);
     	model.addAttribute("patologias", patologias);
-    	return "analisis/edadsexo";
+    	return "analisis/mapas";
 	}
-	
-	/**
+    
+    /**
      * Retorna una lista de datos. Acepta una solicitud GET para JSON
      * @return Un arreglo JSON
 	 * @throws ParseException 
      */
-    @RequestMapping(value = "agesexdata", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody List<Object[]> fetchAgeSexDataJson(@RequestParam(value = "codPato", required = true) String codPato,
+    @RequestMapping(value = "mapasdata", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<Object[]> fetchMapasDataJson(@RequestParam(value = "codPato", required = true) String codPato,
     		@RequestParam(value = "codArea", required = true) String codArea,
     		@RequestParam(value = "semI", required = true) String semI,
     		@RequestParam(value = "semF", required = true) String semF,
     		@RequestParam(value = "anioI", required = true) String anioI,
-    		@RequestParam(value = "anioF", required = true) String anioF,
     		@RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
-    		@RequestParam(value = "codMunicipio", required = false, defaultValue = "") String codMunicipio,
+    		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
+    		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
     		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException {
-        logger.info("Obteniendo los datos de edad y sexo en JSON");
-        List<Object[]> datos = analisisService.getDataEdadSexo(codPato, codArea, codSilais, codMunicipio, codUnidad,semI,semF,anioI,anioF);
+        logger.info("Obteniendo los datos de mapas en JSON");
+        List<Object[]> datos = analisisService.getDataMapas(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI);
+        if (datos == null){
+        	logger.debug("Nulo");
+        }
+        return datos;
+    }
+    
+    @RequestMapping(value = "piramides", method = RequestMethod.GET)
+    public String initPiramidesPage(Model model) throws Exception { 	
+		logger.debug("presentar piramides");
+		List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
+    	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+    	List<AreaRep> areas = catalogosService.getAreaRep();
+    	List<Anios> anios = catalogosService.getAnios();
+    	model.addAttribute("areas", areas);
+    	model.addAttribute("anios", anios);
+    	model.addAttribute("entidades", entidades);
+    	model.addAttribute("departamentos", departamentos);
+    	return "analisis/piramides";
+	}
+    
+    /**
+     * Retorna una lista de datos. Acepta una solicitud GET para JSON
+     * @return Un arreglo JSON
+	 * @throws ParseException 
+     */
+    @RequestMapping(value = "piramidesdata", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<Object[]> fetchPiramidesDataJson(@RequestParam(value = "codArea", required = true) String codArea,
+    		@RequestParam(value = "anioI", required = true) String anioI,
+    		@RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
+    		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
+    		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
+    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException {
+        logger.info("Obteniendo los datos de piramides en JSON");
+        List<Object[]> datos = analisisService.getDataPiramides(codArea, codSilais, codDepartamento, codMunicipio, codUnidad,anioI);
         if (datos == null){
         	logger.debug("Nulo");
         }

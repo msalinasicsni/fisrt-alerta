@@ -9,6 +9,14 @@
 	<jsp:include page="../fragments/headTag.jsp" />
 	<spring:url value="/resources/js/plugin/chartjs/chartjs.css" var="chartjsCss" />
 	<link href="${chartjsCss}" rel="stylesheet" type="text/css"/>
+	<style>
+		/* columns right and center aligned datatables */
+        .aw-right {
+            padding-left: 0;
+            padding-right: 10px;
+            text-align: right;
+        }
+	</style>
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
@@ -162,7 +170,22 @@
 												<select data-placeholder="<spring:message code="act.select" /> <spring:message code="silais" />" name="codSilaisAtencion" id="codSilaisAtencion" class="select2">
 													<option value=""></option>
 													<c:forEach items="${entidades}" var="entidad">
-														<option value="${entidad.codigo}">${entidad.nombre}</option>
+														<option value="${entidad.entidadAdtvaId}">${entidad.nombre}</option>
+													</c:forEach>
+												</select>
+											</div>
+											</section>
+                                   		</div>
+                                   		<!-- END ROW -->
+                                   		<!-- START ROW -->
+                                   		<div class="row">
+                                   			<section id="departamento" hidden="hidden">
+                                      		<div class="input-group">
+												<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+												<select data-placeholder="<spring:message code="msg.select.depa" />" name="codDepartamento" id="codDepartamento" class="select2">
+													<option value=""></option>
+													<c:forEach items="${departamentos}" var="departamento">
+														<option value="${departamento.divisionpoliticaId}">${departamento.nombre}</option>
 													</c:forEach>
 												</select>
 											</div>
@@ -267,7 +290,7 @@
 					</article>
 					<!-- WIDGET END -->
 					<!-- NEW WIDGET START -->
-					<article class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+					<article class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 						<!-- Widget ID (each widget will need unique ID)-->
 						<div class="jarviswidget" id="wid-id-2">
 							<!-- widget options:
@@ -283,7 +306,7 @@
 							-->
 							<header>
 								<span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-								<h2>Distribucion por sexo </h2>				
+								<h2>Distribución por sexo </h2>				
 							</header>
 							<!-- widget div-->
 							<div>
@@ -295,9 +318,52 @@
 								<!-- end widget edit box -->
 								<!-- widget content -->
 								<div class="widget-body">
+									<div id="pieChart-title" align="center"></div>
 									<div id="pieLegend"></div>
 									<!-- this is what the user will see -->
 									<canvas id="pieChart" height="120"></canvas>
+    								
+								</div>
+								<!-- end widget content -->
+							</div>
+							<!-- end widget div -->
+						</div>
+						<!-- end widget -->
+					</article>
+					<!-- WIDGET END -->
+					<!-- NEW WIDGET START -->
+					<article class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+						<!-- Widget ID (each widget will need unique ID)-->
+						<div class="jarviswidget" id="wid-id-5">
+							<!-- widget options:
+								usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+								data-widget-colorbutton="false"	
+								data-widget-editbutton="false"
+								data-widget-togglebutton="false"
+								data-widget-deletebutton="false"
+								data-widget-fullscreenbutton="false"
+								data-widget-custombutton="false"
+								data-widget-collapsed="true" 
+								data-widget-sortable="false"
+							-->
+							<header>
+								<span class="widget-icon"> <i class="fa fa-comments"></i> </span>
+								<h2>Distribución por sexo </h2>				
+							</header>
+							<!-- widget div-->
+							<div>
+								<!-- widget edit box -->
+								<div class="jarviswidget-editbox">
+									<!-- This area used as dropdown edit box -->
+									<input class="form-control" type="text">	
+								</div>
+								<!-- end widget edit box -->
+								<!-- widget content -->
+								<div class="widget-body">
+									<div id="pieChart2-title" align="center"></div>
+									<div id="pieLegend2"></div>
+									<!-- this is what the user will see -->
+									<canvas id="pieChart2" height="120"></canvas>
     								
 								</div>
 								<!-- end widget content -->
@@ -341,6 +407,7 @@
 								<!-- widget content -->
 								<div class="widget-body">
 									<!-- this is what the user will see -->
+									<div id="lineChart-title" align="center"></div>
 									<div id="lineLegend"></div>
 									<canvas id="lineChart" height="120"></canvas>
 								</div>
@@ -404,9 +471,12 @@
 												<th colspan=2><spring:message code="g12"/></th>
 												<th colspan=2><spring:message code="g13"/></th>
 												<th colspan=2><spring:message code="unk"/></th>
+												<th colspan=2><spring:message code="tot"/></th>
 											</tr>			                
 											<tr>
 												<th data-class="expand"><spring:message code="year"/></th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
 												<th data-hide="phone,tablet">M</th>
 												<th data-hide="phone,tablet">F</th>
 												<th data-hide="phone,tablet">M</th>
@@ -449,7 +519,105 @@
 					</div>
 				</div>
 				<!-- end row -->
-				
+				<!-- row -->
+				<div class="row">
+					<!-- a blank row to get started -->
+					<div class="col-sm-12">
+						<!-- NEW WIDGET START -->
+					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<!-- Widget ID (each widget will need unique ID)-->
+						<div class="jarviswidget" id="wid-id-6">
+							<!-- widget options:
+								usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+								data-widget-colorbutton="false"	
+								data-widget-editbutton="false"
+								data-widget-togglebutton="false"
+								data-widget-deletebutton="false"
+								data-widget-fullscreenbutton="false"
+								data-widget-custombutton="false"
+								data-widget-collapsed="true" 
+								data-widget-sortable="false"
+							-->
+							<header>
+								<span class="widget-icon"> <i class="fa fa-comments"></i> </span>
+								<h2>Distribucion por edad y sexo en porcentajes</h2>				
+							</header>
+							<!-- widget div-->
+							<div>
+								<!-- widget edit box -->
+								<div class="jarviswidget-editbox">
+									<!-- This area used as dropdown edit box -->
+									<input class="form-control" type="text">	
+								</div>
+								<!-- end widget edit box -->
+								<!-- widget content -->
+								<div class="widget-body">
+									<table id="data_result_2" class="table table-striped table-bordered table-hover" width="100%">
+										<thead>
+											<tr>
+												<th></th>
+												<th colspan=2><spring:message code="g1"/></th>
+												<th colspan=2><spring:message code="g2"/></th>
+												<th colspan=2><spring:message code="g3"/></th>
+												<th colspan=2><spring:message code="g4"/></th>
+												<th colspan=2><spring:message code="g5"/></th>
+												<th colspan=2><spring:message code="g6"/></th>
+												<th colspan=2><spring:message code="g7"/></th>
+												<th colspan=2><spring:message code="g8"/></th>
+												<th colspan=2><spring:message code="g9"/></th>
+												<th colspan=2><spring:message code="g10"/></th>
+												<th colspan=2><spring:message code="g11"/></th>
+												<th colspan=2><spring:message code="g12"/></th>
+												<th colspan=2><spring:message code="g13"/></th>
+												<th colspan=2><spring:message code="unk"/></th>
+												<th colspan=2><spring:message code="tot"/></th>
+											</tr>			                
+											<tr>
+												<th data-class="expand"><spring:message code="year"/></th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+												<th data-hide="phone,tablet">M</th>
+												<th data-hide="phone,tablet">F</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+								<!-- end widget content -->
+							</div>
+							<!-- end widget div -->
+						</div>
+						<!-- end widget -->
+					</article>
+					<!-- WIDGET END -->
+					</div>
+				</div>
+				<!-- end row -->
 			</section>
 			<!-- end widget grid -->
 		</div>
@@ -498,13 +666,13 @@
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
 	<spring:url value="/resources/scripts/analisis/edad-sexo.js" var="edadSexo" />
 	<script src="${edadSexo}"></script>
-	<spring:url value="/resources/scripts/utilidades/seleccionUnidad.js" var="selecUnidad" />
-	<script src="${selecUnidad}"></script>
+	<spring:url value="/resources/scripts/utilidades/seleccionRegionSIVE.js" var="seleccionRegionSIVE" />
+	<script src="${seleccionRegionSIVE}"></script>
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<spring:url value="/analisis/agesexdata/" var="sActionUrl"/>
 	<c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
 	<spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
-	<spring:url var="unidadesUrl"   value="/api/v1/unidadesPrimHosp"  />
+	<spring:url var="unidadesUrl"   value="/api/v1/unidadesPorSilaisyMuni"  />
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
@@ -514,9 +682,8 @@
 					unidadesUrl: "${unidadesUrl}",
 					dataTablesTTSWF: "${dataTablesTTSWF}"};
 			ViewReport.init(parametros);
-			SeleccionUnidad.init(parametros);
+			SeleccionRegionSIVE.init(parametros);
 	    	$("li.analisis").addClass("open");
-	    	$("li.descriptivas").addClass("open");
 	    	$("li.agesex").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
 	    		$("li.agesex").parents("ul").slideDown(200);

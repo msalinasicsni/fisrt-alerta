@@ -109,4 +109,13 @@ public class DivisionPoliticaService {
         q.setString("codigoNacional", codNac);
         return (Divisionpolitica)q.uniqueResult();
     }
+    
+    public Divisionpolitica getDivisionPolitiacaById(long idDivPol){
+        String query = "from Divisionpolitica where divisionpoliticaId =:divId";
+
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setLong("divId", idDivPol);
+        return (Divisionpolitica)q.uniqueResult();
+    }
 }

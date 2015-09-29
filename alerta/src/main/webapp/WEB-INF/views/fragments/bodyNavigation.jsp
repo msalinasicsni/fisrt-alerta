@@ -120,24 +120,24 @@
                     </a>
 						<ul>
 							<li class = "agesex"><a href="<spring:url value="/analisis/agesex/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="agesex" /></span></a>
-							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="sex" /></span></a>
-							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="pato" /></span></a>
+							<li class = "anasex"><a href="<spring:url value="/analisis/anasex/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="sex" /></span></a>
+							<li class = "anapato"><a href="<spring:url value="/analisis/anapato/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="pato" /></span></a>
 						</ul>
                     </li>
-					<li><a href="#"> <i class=""></i> <span
+					<li><a href="#"> <i class="obsesp"></i> <span
 							class="menu-item-parent"><fmt:message key="obsexp" /></span>
 					</a>
 						<ul>
-							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="numandrate" /></span></a>
-							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="ratioandindex" /></span></a>
-							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="endemic" /></span></a>
-							<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="epiindex" /></span></a>
+							<li class = "casostasas"><a href="<spring:url value="/analisis/casostasas/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="numandrate" /></span></a>
+							<li class = "razones"><a href="<spring:url value="/analisis/razones/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="ratioandindex" /></span></a>
+							<li class = "corredores"><a href="<spring:url value="/analisis/corredores/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="endemic" /></span></a>
+							<li class = "indice"><a href="<spring:url value="/analisis/indice/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="epiindex" /></span></a>
 						</ul>
                     </li>
-					<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="bol" /></span></a></li>
-					<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="series" /></span></a></li>
-					<li class="mapas"><a href="<spring:url value="/analisis/mapas/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="maps" /></span></a></li>
-					<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="pyram" /></span></a></li>
+					<!-- <li><a href="#"> <i class=""></i> <span class=""><fmt:message key="bol" /></span></a></li> -->
+					<li class = "series"><a href="<spring:url value="/analisis/series/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="series" /></span></a></li>
+					<li class= "mapas"><a href="<spring:url value="/analisis/mapas/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="maps" /></span></a></li>
+					<li class = "piramides"><a href="<spring:url value="/analisis/piramides/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="pyram" /></span></a></li>
 				</ul>
 			</li>
             <li>

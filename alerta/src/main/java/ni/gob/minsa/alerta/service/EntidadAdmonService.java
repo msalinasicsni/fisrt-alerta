@@ -71,4 +71,18 @@ public class EntidadAdmonService {
         q.setInteger("codigo",codigo);
         return  (EntidadesAdtvas)q.uniqueResult();
     }
+    
+    /**
+     * @param idSilais Id para obtener un objeto en especifico del tipo <code>EntidadesAdtvas</code>
+     * @return retorna un objeto filtrado del tipo <code>EntidadesAdtvas</code>
+     * @throws Exception
+     */
+    public EntidadesAdtvas getEntidadById(long idSilais) throws Exception {
+        String query = "from EntidadesAdtvas as a where entidadAdtvaId= :idSilais order by nombre asc";
+
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setLong("idSilais",idSilais);
+        return  (EntidadesAdtvas)q.uniqueResult();
+    }
 }
