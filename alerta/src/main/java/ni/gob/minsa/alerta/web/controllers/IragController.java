@@ -953,13 +953,12 @@ public class IragController {
         if (not != null) {
             if (not.getCodTipoNotificacion().getCodigo().equals("TPNOTI|IRAG")) {
                     DaIrag irag = daIragService.getFormById(not.getIdNotificacion());
-                    String fechaImpresion = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+                   // String fechaImpresion = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
 
                     if (irag != null) {
                         PDPage page = new PDPage(PDPage.PAGE_SIZE_A4);
                         doc.addPage(page);
                         PDPageContentStream stream = new PDPageContentStream(doc, page);
-                        float xCenter;
 
                         String workingDir = System.getProperty("user.dir");
 
@@ -971,10 +970,10 @@ public class IragController {
 
                         String us = irag.getIdNotificacion().getCodUnidadAtencion() != null ? irag.getIdNotificacion().getCodUnidadAtencion().getNombre() : "----";
 
-                        String silais = irag.getIdNotificacion().getCodSilaisAtencion().getNombre();
+                       // String silais = irag.getIdNotificacion().getCodSilaisAtencion().getNombre();
 
-                        String nombreS = silais != null ? silais.replace("SILAIS", "") : "----";
-                        String municipio = irag.getIdNotificacion().getPersona().getMunicipioResidencia() != null ? irag.getIdNotificacion().getPersona().getMunicipioResidencia().getNombre() : "----";
+                       // String nombreS = silais != null ? silais.replace("SILAIS", "") : "----";
+                       // String municipio = irag.getIdNotificacion().getPersona().getMunicipioResidencia() != null ? irag.getIdNotificacion().getPersona().getMunicipioResidencia().getNombre() : "----";
                         String nExp = irag.getCodExpediente() != null ? irag.getCodExpediente() : "----------";
 
                         String fecha = irag.getFechaConsulta() != null ? DateUtil.DateToString(irag.getFechaConsulta(), "yyyy/MM/dd") : null;
@@ -1114,7 +1113,7 @@ public class IragController {
 
                         String dxEgreso2 = irag.getDiagnostico2Egreso() != null ? irag.getDiagnostico2Egreso().getNombreCie10() : "----------";
 
-                        String fechaEgreso = irag.getFechaEgreso() != null ? DateUtil.DateToString(irag.getFechaEgreso(), "dd/MM/yyyy") : "----------";
+                        String fechaEgreso = irag.getFechaEgreso() != null ? DateUtil.DateToString(irag.getFechaEgreso(), "dd/MM/yyyy HH:mm:ss") : "----------";
 
                         String condicionEgreso = irag.getCodCondEgreso() != null ? irag.getCodCondEgreso().getCodigo() : null;
 
@@ -1132,17 +1131,15 @@ public class IragController {
 
                         String etiologicoViral = irag.getAgenteViral() != null ? irag.getAgenteViral() : null;
 
-                        String agentesEt = irag.getAgenteEtiologico() != null ? irag.getAgenteEtiologico() : null;
+                       // String agentesEt = irag.getAgenteEtiologico() != null ? irag.getAgenteEtiologico() : null;
 
                         String seroti = irag.getSerotipificacion() != null ? irag.getSerotipificacion() : null;
 
-                        String fechaRegistro = irag.getFechaRegistro() != null ? DateUtil.DateToString(irag.getFechaRegistro(), "dd/MM/yyyy") : "------";
+                        String fechaRegistro = irag.getFechaRegistro() != null ? DateUtil.DateToString(irag.getFechaRegistro(), "dd/MM/yyyy hh:mm:ss a") : "------";
 
                         String nombreUsuario = irag.getUsuario() != null ? irag.getUsuario().getNombre() : null;
 
                         float y = 737;
-                        float m = 11;
-                        float m1 = 29;
                         float x = 86;
                         float x1 = 86;
 
@@ -1247,7 +1244,7 @@ public class IragController {
 
                         }
 
-                        y -= 18;
+                        y -= 28;
                         x1 = x + 82;
                         GeneralUtils.drawTEXT(depProce, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                         x1 = x1 + 180;
@@ -2032,8 +2029,8 @@ public class IragController {
                                 List<DetalleResultadoFinal> resul = resultadoFinalService.getDetResActivosBySolicitud(soli.getIdSolicitudDx());
 
                                 content[0] = soli.getCodDx().getNombre() != null ? soli.getCodDx().getNombre() : "";
-                                content[1] = soli.getFechaHSolicitud() != null ? DateUtil.DateToString(soli.getFechaHSolicitud(), "dd/MM/yyyy HH:mm:ss") : "";
-                                content[2] = soli.getIdTomaMx().getFechaHTomaMx() != null ? DateUtil.DateToString(soli.getIdTomaMx().getFechaHTomaMx(), "dd/MM/yyyy HH:mm:ss") : "";
+                                content[1] = soli.getFechaHSolicitud() != null ? DateUtil.DateToString(soli.getFechaHSolicitud(), "dd/MM/yyyy hh:mm:ss a") : "";
+                                content[2] = soli.getIdTomaMx().getFechaHTomaMx() != null ? DateUtil.DateToString(soli.getIdTomaMx().getFechaHTomaMx(), "dd/MM/yyyy hh:mm:ss a") : "";
                                 content[3] = soli.getIdTomaMx().getCodTipoMx() != null ? soli.getIdTomaMx().getCodTipoMx().getNombre() : "";
 
                                 int cont = 0;
@@ -2105,7 +2102,7 @@ public class IragController {
                                             cont1++;
                                             //first record
                                             if (cont1 == 1) {
-                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy HH:mm:ss");
+                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy hh:mm:ss a");
                                                 if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
                                                     Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
                                                     rExamen = resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
@@ -2288,7 +2285,7 @@ public class IragController {
                             x1 = x + 75;
                             GeneralUtils.drawTEXT(nombreUsuario, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                         }
-                        x1 = x + 290;
+                        x1 = x + 282;
                         GeneralUtils.drawTEXT(fechaRegistro, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
 
@@ -2316,13 +2313,11 @@ public class IragController {
         //drawRequestTable
 
         //Initialize table
-        float height = 0;
+        float height;
         float margin = 60;
         float tableWidth = 470;
-        float yStartNewPage = y;
-        float yStart = yStartNewPage;
         float bottomMargin = 45;
-        BaseTable table = new BaseTable(yStart, yStartNewPage, bottomMargin, tableWidth, margin, doc, page, true, true);
+        BaseTable table = new BaseTable(y, y, bottomMargin, tableWidth, margin, doc, page, true, true);
 
         //Create Header row
         Row headerRow = table.createRow(10f);
@@ -2390,10 +2385,8 @@ public class IragController {
         float height = 0;
         float margin = 60;
         float tableWidth = 470;
-        float yStartNewPage = y;
-        float yStart = yStartNewPage;
         float bottomMargin = 45;
-        BaseTable table = new BaseTable(yStart, yStartNewPage, bottomMargin, tableWidth, margin, doc, page, true, true);
+        BaseTable table = new BaseTable(y, y, bottomMargin, tableWidth, margin, doc, page, true, true);
 
         //Create Header row
         Row headerRow = table.createRow(10f);
