@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.ForeignKey;
 
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
+import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 
 @Entity
 @Table(name = "sive_informe_diario", schema = "alerta")
@@ -24,7 +25,7 @@ public class SiveInformeDiario implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id;
 	private String silais;
-	private String municipio;
+	private Divisionpolitica municipio;
 	private Unidades unidad;
 	private Date fechaNotificacion;
 	private Integer semana;
@@ -83,11 +84,13 @@ public class SiveInformeDiario implements Serializable {
 	public void setSilais(String silais) {
 		this.silais = silais;
 	}
-	@Column(name = "MUNICIPIO", nullable = false, length = 4)
-	public String getMunicipio() {
+	@ManyToOne(optional = true)
+    @JoinColumn(name = "MUNICIPIO", referencedColumnName = "DIVISIONPOLITICA_ID")
+    @ForeignKey(name = "NOTIFICACION_MUNICIPIO_FK")
+	public Divisionpolitica getMunicipio() {
 		return municipio;
 	}
-	public void setMunicipio(String municipio) {
+	public void setMunicipio(Divisionpolitica municipio) {
 		this.municipio = municipio;
 	}
 	@ManyToOne(optional = true)

@@ -21,13 +21,14 @@ var ViewReport = function () {
         //main function to initiate the module
         init: function (parametros) {
 			var responsiveHelper_data_result = undefined;
+			var responsiveHelper_data_result_2 = undefined;
 			var breakpointDefinition = {
 				tablet : 1024,
 				phone : 480
 			};
+			var title = "";
 			
 			/* TABLETOOLS */
-			var table2 = $('#data_result_2').dataTable({});
 			var table1 = $('#data_result').dataTable({
 				
 				// Tabletools options: 
@@ -59,6 +60,14 @@ var ViewReport = function () {
              	            ],
 		            "sSwfPath": parametros.dataTablesTTSWF
 		        },
+		        "aoColumns" : [null,
+		                       {sClass: "aw-center"},{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },
+		                       {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },
+		                       {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },
+		                       {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },
+		                       {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },
+		                       {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" }
+		                   ],
 				"autoWidth" : true,
 				"preDrawCallback" : function() {
 					// Initialize the responsive datatables helper once.
@@ -74,6 +83,60 @@ var ViewReport = function () {
 				}
 			});
 			
+			var table2 = $('#data_result_2').dataTable({
+				
+				// Tabletools options: 
+				"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'T>r>"+
+						"t"+
+						"<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
+		        "oTableTools": {
+		        	"aButtons": [
+             	                {
+             	                    "sExtends":    "collection",
+             	                    "sButtonText": "Exportar",
+             	                    "aButtons": [
+             	                                 {
+             	                                     "sExtends": "csv",
+             	                                     "sFileName": "ddd"+"-*.csv",
+             	                                     "sTitle": "ddd",
+             	                                     "oSelectorOpts": { filter: 'applied', order: 'current' }
+             	                                 },
+             	                                 {
+             	                                     "sExtends": "pdf",
+             	                                     "sFileName": "DD"+"-*.pdf",
+	            	                                     "sTitle": ":fff:",
+	            	                                     "sPdfMessage": "FF",
+             	                                     "oSelectorOpts": { filter: 'applied', order: 'current' },
+             	                                     "sPdfOrientation": "landscape",
+             	                                 }
+             	                                 ]
+             	                }
+             	            ],
+		            "sSwfPath": parametros.dataTablesTTSWF
+		        },
+		        "aoColumns" : [null,
+		                       {sClass: "aw-center"},{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },
+		                       {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },
+		                       {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },
+		                       {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },
+		                       {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },
+		                       {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" }
+		                   ],
+				"autoWidth" : true,
+				"preDrawCallback" : function() {
+					// Initialize the responsive datatables helper once.
+					if (!responsiveHelper_data_result_2) {
+						responsiveHelper_data_result_2 = new ResponsiveDatatablesHelper($('#data_result_2'), breakpointDefinition);
+					}
+				},
+				"rowCallback" : function(nRow) {
+					responsiveHelper_data_result_2.createExpandIcon(nRow);
+				},
+				"drawCallback" : function(oSettings) {
+					responsiveHelper_data_result_2.respond();
+				}
+			});
+			
 			/* END TABLETOOLS */
 		
 		
@@ -81,9 +144,36 @@ var ViewReport = function () {
             $('#parameters_form').validate({
     			// Rules for form validation
     				rules : {
+    					codPato : {
+    						required : true
+    					},
     					codArea : {
     						required : true
-    					}
+    					},
+    					semI : {
+    						required : true
+    					},
+    					semF : {
+    						required : true
+    					},
+    					anioI : {
+    						required : true
+    					},
+    					anioF : {
+    						required : true
+    					},
+    					codDepartamento : {
+    						required : true
+    					},
+    					codMunicipio : {
+    						required : true
+    					},
+    					codUnidadAtencion : {
+    						required : true
+    					},
+    					codSilaisAtencion: {
+    						required : true
+                        }
     				},
     				// Do not change code below
     				errorPlacement : function(error, element) {
@@ -92,35 +182,140 @@ var ViewReport = function () {
     				submitHandler: function (form) {
                         table1.fnClearTable();
                         table2.fnClearTable();
+                        pieChart();
+                        pieChart2();
                         lineChart();
                         //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
                         getData();
                     }
             });
 
-            
+            $('#codArea').change(
+            		function() {
+            			if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
+            				$('#silais').hide();
+            				$('#departamento').hide();
+            				$('#municipio').hide();
+            				$('#unidad').hide();
+            			}
+            			else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
+            				$('#silais').show();
+            				$('#departamento').hide();
+            				$('#municipio').hide();
+            				$('#unidad').hide();
+            			}
+            			else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
+            				$('#silais').hide();
+            				$('#departamento').show();
+            				$('#municipio').hide();
+            				$('#unidad').hide();
+            			}
+            			else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
+            				$('#silais').show();
+            				$('#departamento').hide();
+            				$('#municipio').show();
+            				$('#unidad').hide();
+            			}
+            			else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
+            				$('#silais').show();
+            				$('#departamento').hide();
+            				$('#municipio').show();
+            				$('#unidad').show();
+            			}
+                    });
             
             function getData() {
             	bloquearUI(parametros.blockMess); 
             	$.getJSON(parametros.sActionUrl, $('#parameters_form').serialize(), function(data) {
-            		for (var row in data) {
-    					table1.fnAddData(
-    							[data[row][0], data[row][1], data[row][2], data[row][3], data[row][4], data[row][5], data[row][6], data[row][7],
-    							 data[row][8], data[row][9], data[row][10], data[row][11], data[row][12], data[row][13], data[row][14],
-    							 data[row][15], data[row][16], data[row][17], data[row][18], data[row][19], data[row][20], data[row][21],
-    							 data[row][22], data[row][23], data[row][24], data[row][25], data[row][26], data[row][27], data[row][28]]);
-    					if (row==0){
-    						values1 = [data[row][1]+ data[row][2], data[row][3]+ data[row][4], data[row][5]+ data[row][6], data[row][7]+data[row][8], data[row][9]+ data[row][10], data[row][11]+ data[row][12], data[row][13]+ data[row][14],data[row][15]+ data[row][16], data[row][17]+ data[row][18], data[row][19]+ data[row][20], data[row][21]+data[row][22], data[row][23]+ data[row][24], data[row][25]+ data[row][26], data[row][27]+ data[row][28]];
-    						series1 = data[row][0];
-    					}
-    					if (row==1){
-    						values2 = [data[row][1]+ data[row][2], data[row][3]+ data[row][4], data[row][5]+ data[row][6], data[row][7]+data[row][8], data[row][9]+ data[row][10], data[row][11]+ data[row][12], data[row][13]+ data[row][14],data[row][15]+ data[row][16], data[row][17]+ data[row][18], data[row][19]+ data[row][20], data[row][21]+data[row][22], data[row][23]+ data[row][24], data[row][25]+ data[row][26], data[row][27]+ data[row][28]];
-    						series2 = data[row][0];
-    					}
+            		values1 = [];
+            		values2 = [];
+            		series1 = [];
+            		series2 = [];
+            		porcM1 = [];
+            		porcF1 = [];
+            		porcM2 = [];
+            		porcF2 = [];
+            		title = $('#codPato option:selected').text();
+            		if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
+    					title = title + '</br>República de Nicaragua';
+    				}
+    				else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
+    					title = title + '</br>'+$('#codSilaisAtencion option:selected').text();
+    				}
+    				else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
+    					title = title + '</br>Departamento de '+$('#codDepartamento option:selected').text();
+    				}
+    				else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
+    					title = title + '</br>Municipio: '+$('#codMunicipio option:selected').text();
+    				}
+    				else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
+    					title = title + '</br>Unidad de Salud: '+$('#codUnidadAtencion option:selected').text();
+    				}
+            		title = title + '</br>Semana '+$('#semI option:selected').text() +' a la '+$('#semF option:selected').text();
+            		if (data == '' || data == null){
+            			showMessage("Sin datos", "No se encontraron datos como resultado de esta consulta", "#AF801C", "fa fa-warning", 3000);
+            			title='';
+            			$('#pieChart-title').html("<h5>"+title+"</h5>");
+            			$('#pieChart2-title').html("<h5>"+title+"</h5>");
+            			$('#lineChart-title').html("<h5>"+title+"</h5>");
             		}
-            		pieChart(25,75);
-            		lineChart(values1,values2,series1,series2);
-                    setTimeout($.unblockUI, 500);
+            		else {
+	            		for (var row in data) {
+	    					table1.fnAddData(
+	    							[data[row][0], data[row][1], data[row][2], data[row][3], data[row][4], data[row][5], data[row][6], data[row][7],
+	    							 data[row][8], data[row][9], data[row][10], data[row][11], data[row][12], data[row][13], data[row][14],
+	    							 data[row][15], data[row][16], data[row][17], data[row][18], data[row][19], data[row][20], data[row][21],
+	    							 data[row][22], data[row][23], data[row][24], data[row][25], data[row][26], data[row][27], data[row][28],data[row][29], data[row][30]]);
+	    					table2.fnAddData(
+	    							[data[row][0], 
+	    							 Math.round(data[row][1]/(data[row][29] + data[row][30]) * 100 * 100) / 100, 
+	    							 Math.round(data[row][2]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][3]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][4]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][5]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][6]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][7]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][8]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][9]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][10]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][11]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][12]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][13]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][14]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][15]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][16]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][17]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][18]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][19]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][20]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][21]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][22]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][23]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][24]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][25]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][26]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][27]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][28]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][29]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
+	    							 Math.round(data[row][30]/(data[row][29] + data[row][30]) * 100 * 100) / 100]);
+	    					if (row==0){
+	    						values1 = [data[row][1]+ data[row][2], data[row][3]+ data[row][4], data[row][5]+ data[row][6], data[row][7]+data[row][8], data[row][9]+ data[row][10], data[row][11]+ data[row][12], data[row][13]+ data[row][14],data[row][15]+ data[row][16], data[row][17]+ data[row][18], data[row][19]+ data[row][20], data[row][21]+data[row][22], data[row][23]+ data[row][24], data[row][25]+ data[row][26], data[row][27]+ data[row][28]];
+	    						series1 = data[row][0];
+	    						porcM1 = Math.round(data[row][29] / (data[row][29] + data[row][30]) * 100 * 100) / 100;
+	    						porcF1 = Math.round(data[row][30] / (data[row][29] + data[row][30]) * 100 * 100) / 100;
+	    					}
+	    					if (row==1){
+	    						values2 = [data[row][1]+ data[row][2], data[row][3]+ data[row][4], data[row][5]+ data[row][6], data[row][7]+data[row][8], data[row][9]+ data[row][10], data[row][11]+ data[row][12], data[row][13]+ data[row][14],data[row][15]+ data[row][16], data[row][17]+ data[row][18], data[row][19]+ data[row][20], data[row][21]+data[row][22], data[row][23]+ data[row][24], data[row][25]+ data[row][26], data[row][27]+ data[row][28]];
+	    						series2 = data[row][0];
+	    						porcM2 = Math.round(data[row][29] / (data[row][29] + data[row][30]) * 100 * 100) / 100;
+	    						porcF2 = Math.round(data[row][30] / (data[row][29] + data[row][30]) * 100 * 100) / 100;
+	    					}
+	            		}
+	            		pieChart(porcM1,porcF1,series1);
+	            		pieChart2(porcM2,porcF2,series2);
+	            		lineChart(values1,values2,series1,series2);
+            		}
+            		setTimeout($.unblockUI, 500);
     			})
     			.fail(function(XMLHttpRequest, textStatus, errorThrown) {
     				alert(" status: " + textStatus + " er:" + errorThrown);
@@ -128,9 +323,19 @@ var ViewReport = function () {
 				});
             }
             
-            function pieChart(value1,value2) {
+	    	function showMessage(title,content,color,icon,timeout){
+	    		$.smallBox({
+				    title: title,
+				    content: content,
+				    color: color,
+				    iconSmall: icon,
+				    timeout: timeout
+				    });
+	    	}
+            
+            function pieChart(porcM1,porcF1,series1) {
             	// PIE CHART
-
+            	$('#pieChart-title').html("<h5>"+title+"</h5>");
 			    var pieOptions = {
 			    	//Boolean - Whether we should show a stroke on each segment
 			        segmentShowStroke: true,
@@ -152,31 +357,81 @@ var ViewReport = function () {
 
 			    pieData = [
 				    {
-				        value: 57,
+				        value: porcM1,
 				        color: "rgba(151,187,205,1)",
 				        highlight: "rgba(151,187,205,0.8)",
-				        label: "Masculino"
+				        label: "Masculino - " + series1
 				    },
 				    {
-				        value: 43,
+				        value: porcF1,
 				        color: "rgba(169, 3, 41, 0.7)",
 				        highlight: "rgba(169, 3, 41, 0.7)",
-				        label: "Femenino"
+				        label: "Femenino - " + series1
 				    }
 			    ];
 
 			    // render chart
+			    if( window.myPie!==undefined)
+			    	window.myPie.destroy();
 			    var ctx = document.getElementById("pieChart").getContext("2d");
-			    new Chart(ctx).Pie(pieData, pieOptions);
-
+			    window.myPie = new Chart(ctx).Pie(pieData, pieOptions);
+			    
 			    // END PIE CHART
 
                 legend(document.getElementById("pieLegend"), pieData);
             }
             
+            function pieChart2(porcM2,porcF2,series2) {
+            	// PIE CHART
+            	$('#pieChart2-title').html("<h5>"+title+"</h5>");
+			    var pieOptions = {
+			    	//Boolean - Whether we should show a stroke on each segment
+			        segmentShowStroke: true,
+			        //String - The colour of each segment stroke
+			        segmentStrokeColor: "#fff",
+			        //Number - The width of each segment stroke
+			        segmentStrokeWidth: 2,
+			        //Number - Amount of animation steps
+			        animationSteps: 100,
+			        //String - types of animation
+			        animationEasing: "easeOutBounce",
+			        //Boolean - Whether we animate the rotation of the Doughnut
+			        animateRotate: true,
+			        //Boolean - Whether we animate scaling the Doughnut from the centre
+			        animateScale: false,
+			        //Boolean - Re-draw chart on page resize
+			        responsive: true,
+			    };
+
+			    pieData = [
+				    {
+				        value: porcM2,
+				        color: "rgba(151,187,205,1)",
+				        highlight: "rgba(151,187,205,0.8)",
+				        label: "Masculino - " + series2
+				    },
+				    {
+				        value: porcF2,
+				        color: "rgba(169, 3, 41, 0.7)",
+				        highlight: "rgba(169, 3, 41, 0.7)",
+				        label: "Femenino - " + series2
+				    }
+			    ];
+
+			    // render chart
+			    if( window.myPie2!==undefined)
+			    	window.myPie2.destroy();
+			    var ctx = document.getElementById("pieChart2").getContext("2d");
+			    window.myPie2 = new Chart(ctx).Pie(pieData, pieOptions);
+			    
+			    // END PIE CHART
+
+                legend(document.getElementById("pieLegend2"), pieData);
+            }
+            
             function lineChart(values1,values2,series1,series2) {
             	// BAR CHART
-
+            	$('#lineChart-title').html("<h5>"+title+"</h5>");
 			    var barOptions = {
 				    //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
 				    scaleBeginAtZero : true,
@@ -221,9 +476,10 @@ var ViewReport = function () {
 			    };
 
 			    // render chart
+			    if( window.myBar!==undefined)
+			    	window.myBar.destroy();
 			    var ctx = document.getElementById("lineChart").getContext("2d");
-			    new Chart(ctx).Bar(barData, barOptions);
-
+			    window.myBar = new Chart(ctx).Bar(barData, barOptions);
 			    // END BAR CHART
 
                 legend(document.getElementById("lineLegend"), barData);

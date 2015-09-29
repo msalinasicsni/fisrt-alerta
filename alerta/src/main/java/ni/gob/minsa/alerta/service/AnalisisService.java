@@ -1,7 +1,11 @@
 package ni.gob.minsa.alerta.service;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+
+import ni.gob.minsa.alerta.domain.sive.SivePatologiasTipo;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,38 +18,117 @@ public class AnalisisService {
 	
 	@Resource(name="sessionFactory")
 	private SessionFactory sessionFactory;
+	//private static final String varOrden = "concat(inf.anio, '-', substring(concat('00', inf.semana),length(concat('00', inf.semana))-1,length(concat('00', inf.semana))))";
+	//private static final String sqlData = "Select " + varOrden + " as periodo, sum(inf.totalm+inf.totalf) as total";
+	
+	//private static final String varOrden = "concat(inf.anio, '-', substring(concat('00', inf.semana),length(concat('00', inf.semana))-1,length(concat('00', inf.semana))))";
+	//private static final String sqlData = "Select " + varOrden + " as periodo, sum(inf.totalf) as totalf";
+	private static final String sqlData = "Select inf.silais, sum(inf.totalm + inf.totalf) as total";
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> getDataEdadSexo(String codPato, String codArea, Long codSilais, String codMunicipio, Long codUnidad,
-			String semI, String semF, String anioI,String anioF){
+	public List<Object[]> getDataSeries(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad){
 		// Retrieve session from Hibernate
 		Session session = sessionFactory.getCurrentSession();
 		Query query = null;
 		if (codArea.equals("AREAREP|PAIS")){
-			query = session.createQuery("Select inf.anio as anio, " +
-					"sum(inf.g01m) as g01m,sum(inf.g01f) as g01f,sum(inf.g02m) as g02m,sum(inf.g02f) as g02f,sum(inf.g03m) as g03m,sum(inf.g03f) as g03f," +
-					"sum(inf.g04m) as g04m,sum(inf.g04f) as g04f,sum(inf.g05m) as g05m,sum(inf.g05f) as g05f,sum(inf.g06m) as g06m,sum(inf.g06f) as g06f," +
-					"sum(inf.g07m) as g07m,sum(inf.g07f) as g07f,sum(inf.g08m) as g08m,sum(inf.g08f) as g08f,sum(inf.g09m) as g09m,sum(inf.g09f) as g09f, " +
-					"sum(inf.g10m) as g10m,sum(inf.g10f) as g10f,sum(inf.g11m) as g11m,sum(inf.g11f) as g11f,sum(inf.g12m) as g12m,sum(inf.g12f) as g12f," +
-					"sum(inf.g13m) as g13m,sum(inf.g13f) as g13f,sum(inf.descm) as descm,sum(inf.descf) as descf, " +
-					"sum(inf.totalm) as totalm,sum(inf.totalf) as totalf " +
-					"From SiveInformeDiario inf where inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anioI or inf.anio=:anioF) group by inf.anio order by inf.anio");
+			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+					"where inf.patologia.codigo =:codPato " +
+					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
+			query.setParameter("codPato", codPato);
+		}
+		else if (codArea.equals("AREAREP|SILAIS")){
+			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+					"where inf.silais =:codSilais and inf.patologia.codigo =:codPato " +
+					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
+			query.setParameter("codPato", codPato);
+			query.setParameter("codSilais", codSilais.toString());
+		}
+		else if (codArea.equals("AREAREP|DEPTO")){
+			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+					"where inf.municipio.dependencia.divisionpoliticaId =:codDepartamento and inf.patologia.codigo =:codPato " +
+					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
+			query.setParameter("codPato", codPato);
+			query.setParameter("codDepartamento", codDepartamento);
+		}
+		else if (codArea.equals("AREAREP|MUNI")){
+			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+					"where inf.municipio.divisionpoliticaId =:codMunicipio and inf.patologia.codigo =:codPato " +
+					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
+			query.setParameter("codPato", codPato);
+			query.setParameter("codMunicipio", codMunicipio);
+		}
+		else if (codArea.equals("AREAREP|UNI")){
+			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+					"where inf.unidad.unidadId =:codUnidad and inf.patologia.codigo =:codPato " +
+					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
+			query.setParameter("codPato", codPato);
+			query.setParameter("codUnidad", codUnidad);
+		}
+		return query.list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> getDataMapas(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,
+			String semI, String semF, String anioI){
+		// Retrieve session from Hibernate
+		List<Object[]> resultado = new ArrayList<Object[]>();
+		Session session = sessionFactory.getCurrentSession();
+		Query query = null;
+		query =  session.createQuery("From SivePatologiasTipo patologia where patologia.patologia.codigo =:codPato");
+		query.setParameter("codPato", codPato);
+		SivePatologiasTipo patologia = (SivePatologiasTipo) query.uniqueResult();
+		if (codArea.equals("AREAREP|PAIS")){
+			query = session.createQuery(sqlData + " From SiveInformeDiario inf " +
+					"where inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anioI) " +
+					"group by inf.silais order by inf.silais");
 			query.setParameter("codPato", codPato);
 			query.setParameter("semI", Integer.parseInt(semI));
 			query.setParameter("semF", Integer.parseInt(semF));
 			query.setParameter("anioI", Integer.parseInt(anioI));
-			query.setParameter("anioF", Integer.parseInt(anioF));
 		}
-		else{
-			query = session.createQuery("Select inf.anio as anio, " +
-					"sum(inf.g01m) as g01m,sum(inf.g01f) as g01f,sum(inf.g02m) as g02m,sum(inf.g02f) as g02f,sum(inf.g03m) as g03m,sum(inf.g03f) as g03f," +
-					"sum(inf.g04m) as g04m,sum(inf.g04f) as g04f,sum(inf.g05m) as g05m,sum(inf.g05f) as g05f,sum(inf.g06m) as g06m,sum(inf.g06f) as g06f," +
-					"sum(inf.g07m) as g07m,sum(inf.g07f) as g07f,sum(inf.g08m) as g08m,sum(inf.g08f) as g08f,sum(inf.g09m) as g09m,sum(inf.g09f) as g09f, " +
-					"sum(inf.g10m) as g10m,sum(inf.g10f) as g10f,sum(inf.g11m) as g11m,sum(inf.g11f) as g11f,sum(inf.g12m) as g12m,sum(inf.g12f) as g12f," +
-					"sum(inf.g13m) as g13m,sum(inf.g13f) as g13f,sum(inf.descm) as descm,sum(inf.descf) as descf, " +
-					"sum(inf.totalm) as totalm,sum(inf.totalf) as totalf " +
-					"From SiveInformeDiario inf where inf.patologia.codigo = '4620' group by inf.anio order by inf.anio");
+		resultado.addAll(query.list());
+		if (codArea.equals("AREAREP|PAIS")){
+			query = session.createQuery("Select 'Pob' as poblacion, pob.divpol.dependenciaSilais.codigo as silais, sum(pob.total) as totales " +
+					"from SivePoblacionDivPol pob where pob.grupo =:tipoPob and pob.anio =:anio " +
+					"group by pob.divpol.dependenciaSilais.codigo order by pob.divpol.dependenciaSilais.codigo");
+			query.setParameter("tipoPob", patologia.getTipoPob());
+			query.setParameter("anio", Integer.parseInt(anioI));
 		}
-		return query.list();
+		resultado.addAll(query.list());
+		return resultado;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> getDataPiramides(String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,String anioI){
+		// Retrieve session from Hibernate
+		List<Object[]> resultado = new ArrayList<Object[]>();
+		Session session = sessionFactory.getCurrentSession();
+		Query query = null;
+		if (codArea.equals("AREAREP|PAIS")){
+			query = session.createQuery("Select pob.grupo, sum(pob.masculino) as masculino, sum(pob.femenino) as femenino, sum(pob.total) as total From SivePoblacionDivPol pob " +
+					"where pob.divpol.dependencia is null and pob.anio=:anioI " +
+					"group by pob.grupo order by pob.grupo");
+		}
+		else if (codArea.equals("AREAREP|SILAIS")){
+			query = session.createQuery("Select pob.grupo, sum(pob.masculino) as masculino, sum(pob.femenino) as femenino, sum(pob.total) as total From SivePoblacionDivPol pob " +
+					"where pob.divpol.dependenciaSilais.entidadAdtvaId=:codSilais and pob.anio=:anioI " +
+					"group by pob.grupo order by pob.grupo");
+			query.setParameter("codSilais", codSilais);
+		}
+		else if (codArea.equals("AREAREP|DEPTO")){
+			query = session.createQuery("Select pob.grupo, sum(pob.masculino) as masculino, sum(pob.femenino) as femenino, sum(pob.total) as total From SivePoblacionDivPol pob " +
+					"where pob.divpol.divisionpoliticaId =:codDepartamento and pob.anio=:anioI " +
+					"group by pob.grupo order by pob.grupo");
+			query.setParameter("codDepartamento", codDepartamento);
+		}
+		else if (codArea.equals("AREAREP|MUNI")){
+			query = session.createQuery("Select pob.grupo, sum(pob.masculino) as masculino, sum(pob.femenino) as femenino, sum(pob.total) as total From SivePoblacionDivPol pob " +
+					"where pob.divpol.divisionpoliticaId =:codMunicipio and pob.anio=:anioI " +
+					"group by pob.grupo order by pob.grupo");
+			query.setParameter("codMunicipio", codMunicipio);
+		}
+		query.setParameter("anioI", Integer.parseInt(anioI));
+		resultado.addAll(query.list());
+		return resultado;
 	}
 }
