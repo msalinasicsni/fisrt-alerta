@@ -140,6 +140,31 @@
 					<li class = "piramides"><a href="<spring:url value="/analisis/piramides/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="pyram" /></span></a></li>
 				</ul>
 			</li>
+
+            <li class="reportes">
+                <a href="#" title="<spring:message code="menu.reports" />"><i class="fa fa-lg fa-fw fa fa-line-chart"></i> <span class="menu-item-parent"><spring:message code="menu.reports" /></span></a>
+                <ul>
+                    <li class="area">
+                        <a href="<spring:url value="#" htmlEscape="true "/>" title="<spring:message code="menu.report.by.area" />"><i class="fa fa-lg fa-fw fa-eyedropper"></i> <spring:message code="menu.report.by.area" /></a>
+                    </li>
+                    <li class="semana">
+                        <a href="<spring:url value="#" htmlEscape="true "/>" title="<spring:message code="menu.weekly.report" />"><i class="fa fa-lg fa-fw fa-eyedropper"></i> <spring:message code="menu.weekly.report" /></a>
+                    </li>
+                    <li class="dia">
+                        <a href="<spring:url value="#" htmlEscape="true "/>" title="<spring:message code="menu.report.per.day" />"><i class="fa fa-lg fa-fw fa-send-o"></i> <spring:message code="menu.report.per.day" /></a>
+                    </li>
+                    <li class="dia">
+                        <a href="<spring:url value="#" htmlEscape="true "/>" title="<spring:message code="menu.notifications.without.result" />"><i class="fa fa-lg fa-fw fa-send-o"></i> <spring:message code="menu.notifications.without.result" /></a>
+                    </li>
+                    <li class="dia">
+                        <a href="<spring:url value="#" htmlEscape="true "/>" title="<spring:message code="menu.result.report" />"><i class="fa fa-lg fa-fw fa-send-o"></i> <spring:message code="menu.result.report" /></a>
+                    </li>
+                    <li class="dia">
+                        <a href="<spring:url value="#" htmlEscape="true "/>" title="<spring:message code="menu.report.sex" />"><i class="fa fa-lg fa-fw fa-send-o"></i> <spring:message code="menu.report.sex" /></a>
+                    </li>
+                </ul>
+            </li>
+
             <li>
                 <a href="<spring:url value="/logout" htmlEscape="true "/>"> <i class="fa fa-lg fa-fw fa-sign-out"></i> <span class="menu-item-parent"><spring:message code="menu.logout" /></span></a>
             </li>
