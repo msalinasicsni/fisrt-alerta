@@ -2,6 +2,7 @@ package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.catalogos.Anios;
 import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
+import ni.gob.minsa.alerta.domain.catalogos.FactorPoblacion;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.irag.*;
@@ -960,4 +961,21 @@ public class CatalogoService {
         return query.list();
     }
 
+    public FactorPoblacion getFactorPoblacion (String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("obtenerFactorPoblacionPorCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (FactorPoblacion) query.uniqueResult();
+    }
+
+    public List<FactorPoblacion> getFactoresPoblacion(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM FactorPoblacion where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
 }

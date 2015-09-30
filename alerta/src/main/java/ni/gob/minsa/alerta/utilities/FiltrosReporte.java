@@ -15,6 +15,7 @@ public class FiltrosReporte {
     String anioInicial;
     String anioFinal;
     String tipoNotificacion;
+    Integer factor;
 
     public String getCodArea() {
         return codArea;
@@ -94,5 +95,13 @@ public class FiltrosReporte {
 
     public void setTipoNotificacion(String tipoNotificacion) {
         this.tipoNotificacion = tipoNotificacion;
+    }
+
+    public Integer getFactor() {
+        return factor;
+    }
+
+    public void setFactor(Integer factor) {
+        this.factor = factor;
     }
 }
