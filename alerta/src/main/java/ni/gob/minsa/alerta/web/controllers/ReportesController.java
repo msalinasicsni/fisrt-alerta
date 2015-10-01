@@ -2,14 +2,21 @@ package ni.gob.minsa.alerta.web.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import ni.gob.minsa.alerta.domain.catalogos.Anios;
+import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
+import ni.gob.minsa.alerta.domain.catalogos.FactorPoblacion;
+import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
 import ni.gob.minsa.alerta.domain.muestra.FiltroMx;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.notificacion.TipoNotificacion;
+import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
+import ni.gob.minsa.alerta.domain.sive.SivePatologias;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
+import ni.gob.minsa.alerta.utilities.FiltrosReporte;
 import ni.gob.minsa.alerta.utilities.typeAdapter.DateUtil;
 import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.slf4j.Logger;
@@ -26,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -56,6 +64,12 @@ public class ReportesController {
     @Autowired
     @Resource(name="resultadoFinalService")
     private ResultadoFinalService resultadoFinalService;
+
+    @Resource(name="divisionPoliticaService")
+    private DivisionPoliticaService divisionPoliticaService;
+
+    @Resource(name="reporteSemanaService")
+    private ReporteSemanaService reporteSemanaService;
 
     @Autowired
     MessageSource messageSource;
@@ -214,5 +228,77 @@ public class ReportesController {
             diff_year--;
         }
         return diff_year;
+    }
+
+
+    @RequestMapping(value = "porSemana", method = RequestMethod.GET)
+    public ModelAndView initCreateFormSemana(HttpServletRequest request) throws Exception {
+        logger.debug("Crear reporte general de notificaciones");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        ModelAndView mav = new ModelAndView();
+        if (urlValidacion.isEmpty()) {
+            mav.setViewName("reportes/porSemana");
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<TipoNotificacion> tiposNotificacion = catalogosService.getTipoNotificacion();
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            List<AreaRep> areas = catalogosService.getAreaRep();
+            List<Semanas> semanas = catalogosService.getSemanas();
+            List<Anios> anios = catalogosService.getAnios();
+            List<FactorPoblacion> factores = catalogosService.getFactoresPoblacion();
+            mav.addObject("areas", areas);
+            mav.addObject("semanas", semanas);
+            mav.addObject("anios", anios);
+            mav.addObject("departamentos", departamentos);
+            mav.addObject("entidades",entidadesAdtvases);
+            mav.addObject("tiposNotificacion", tiposNotificacion);
+            mav.addObject("factores",factores);
+
+        }else{
+            mav.setViewName(urlValidacion);
+        }
+        return mav;
+    }
+
+    @RequestMapping(value = "getDataPorSemana", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<Object[]> getDataPorSemana(
+            @RequestParam(value = "factor", required = false) Integer factor,
+            @RequestParam(value = "codArea", required = true) String codArea,
+            @RequestParam(value = "semI", required = true) String semI,
+            @RequestParam(value = "semF", required = true) String semF,
+            @RequestParam(value = "anioI", required = true) String anioI,
+            @RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
+            @RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
+            @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
+            @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion) throws ParseException {
+
+        logger.info("Obteniendo los datos de casos de notificaciones por semana");
+        FiltrosReporte filtrosReporte = new FiltrosReporte();
+        filtrosReporte.setCodArea(codArea);
+        filtrosReporte.setCodSilais(codSilais);
+        filtrosReporte.setCodDepartamento(codDepartamento);
+        filtrosReporte.setCodMunicipio(codMunicipio);
+        filtrosReporte.setCodUnidad(codUnidad);
+        filtrosReporte.setAnioInicial(anioI);
+        filtrosReporte.setSemInicial(semI);
+        filtrosReporte.setSemFinal(semF);
+        filtrosReporte.setTipoNotificacion(tipoNotificacion);
+        filtrosReporte.setFactor(factor);
+        filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
+        List<Object[]> datos = reporteSemanaService.getDataPorSemana(filtrosReporte);
+        if (datos == null){
+            logger.debug("Nulo");
+        }
+        return datos;
     }
 }

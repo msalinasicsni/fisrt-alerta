@@ -16,6 +16,7 @@ public class FiltrosReporte {
     String anioFinal;
     String tipoNotificacion;
     Integer factor;
+    String tipoPoblacion;
 
     public String getCodArea() {
         return codArea;
@@ -103,5 +104,13 @@ public class FiltrosReporte {
 
     public void setFactor(Integer factor) {
         this.factor = factor;
+    }
+
+    public String getTipoPoblacion() {
+        return tipoPoblacion;
+    }
+
+    public void setTipoPoblacion(String tipoPoblacion) {
+        this.tipoPoblacion = tipoPoblacion;
     }
 }
