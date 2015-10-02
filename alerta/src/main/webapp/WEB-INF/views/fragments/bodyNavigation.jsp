@@ -151,7 +151,7 @@
                         <a href="<spring:url value="/reportes/porSemana" htmlEscape="true "/>" title="<spring:message code="menu.weekly.report" />"><i class="fa fa-lg fa-fw fa-eyedropper"></i> <spring:message code="menu.weekly.report" /></a>
                     </li>
                     <li class="dia">
-                        <a href="<spring:url value="#" htmlEscape="true "/>" title="<spring:message code="menu.report.per.day" />"><i class="fa fa-lg fa-fw fa-send-o"></i> <spring:message code="menu.report.per.day" /></a>
+                        <a href="<spring:url value="/reportes/porDia" htmlEscape="true "/>" title="<spring:message code="menu.report.per.day" />"><i class="fa fa-lg fa-fw fa-send-o"></i> <spring:message code="menu.report.per.day" /></a>
                     </li>
                     <li class="dia">
                         <a href="<spring:url value="#" htmlEscape="true "/>" title="<spring:message code="menu.notifications.without.result" />"><i class="fa fa-lg fa-fw fa-send-o"></i> <spring:message code="menu.notifications.without.result" /></a>

@@ -1,6 +1,6 @@
 package ni.gob.minsa.alerta.service;
 
-import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
+import ni.gob.minsa.alerta.utilities.DateUtil;
 import ni.gob.minsa.alerta.utilities.FiltrosReporte;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.lang.Object;
 
@@ -22,10 +25,13 @@ import java.lang.Object;
 public class ReporteSemanaService {
     @Resource(name="sessionFactory")
     private SessionFactory sessionFactory;
-    private static final String sqlData = "select cal.noSemana ";
-    private static final String sqlWhere = " WHERE cal.anio = :anio " +
+    
+    private static final String sqlDataSemana = "select cal.noSemana ";
+    private static final String sqlWhereSemana = " WHERE cal.anio = :anio " +
             "and cal.noSemana between :semanaI and :semanaF " +
             "order by cal.noSemana";
+
+    private static final String sqlDataDia = "select fechita, count(fechita) ";
 
     public List<Object[]> getDataPorSemana(FiltrosReporte filtro){
         Session session = sessionFactory.getCurrentSession();
@@ -35,9 +41,9 @@ public class ReporteSemanaService {
         List<Object[]> resultadoFinal = new ArrayList<Object[]>();
 
         if (filtro.getCodArea().equals("AREAREP|PAIS")){
-            queryCasos = session.createQuery(sqlData + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
+            queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
-                    "From CalendarioEpi cal " + sqlWhere);
+                    "From CalendarioEpi cal " + sqlWhereSemana);
 
             queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
                     "from SivePoblacionDivPol pob where pob.divpol.dependencia is null " +
@@ -46,9 +52,9 @@ public class ReporteSemanaService {
                     "group by pob.anio order by pob.anio");
         }
         else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
-            queryCasos = session.createQuery(sqlData + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
+            queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codSilaisAtencion.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
-                    "From CalendarioEpi cal " + sqlWhere);
+                    "From CalendarioEpi cal " + sqlWhereSemana);
             queryCasos.setParameter("codSilais", filtro.getCodSilais());
 
             queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
@@ -56,12 +62,12 @@ public class ReporteSemanaService {
                     "and pob.grupo =:tipoPob " +
                     "and (pob.anio =:anio) " +
                     "group by pob.anio order by pob.anio");
-            queryPoblacion.setParameter("codSilais", filtro.getCodDepartamento());
+            queryPoblacion.setParameter("codSilais", filtro.getCodSilais());
         }
         else if (filtro.getCodArea().equals("AREAREP|DEPTO")){
-            queryCasos = session.createQuery(sqlData + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
+            queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId =:codDepartamento and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
-                    "From CalendarioEpi cal " + sqlWhere);
+                    "From CalendarioEpi cal " + sqlWhereSemana);
             queryCasos.setParameter("codDepartamento", filtro.getCodDepartamento());
 
             queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
@@ -72,9 +78,9 @@ public class ReporteSemanaService {
             queryPoblacion.setParameter("codDepartamento", filtro.getCodDepartamento());
         }
         else if (filtro.getCodArea().equals("AREAREP|MUNI")){
-            queryCasos = session.createQuery(sqlData + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
+            queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codUnidadAtencion.municipio.divisionpoliticaId =:codMunicipio and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
-                    "From CalendarioEpi cal " + sqlWhere);
+                    "From CalendarioEpi cal " + sqlWhereSemana);
             queryCasos.setParameter("codMunicipio", filtro.getCodMunicipio());
 
             queryPoblacion = session.createQuery("Select sum(pob.total) as totales " +
@@ -85,9 +91,9 @@ public class ReporteSemanaService {
             queryPoblacion.setParameter("codMunicipio", filtro.getCodMunicipio());
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
-            queryCasos = session.createQuery(sqlData + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
+            queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codUnidadAtencion.unidadId = :codUnidad and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
-                    "From CalendarioEpi cal " + sqlWhere);
+                    "From CalendarioEpi cal " + sqlWhereSemana);
             queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
 
             queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
@@ -119,4 +125,97 @@ public class ReporteSemanaService {
         return resultadoFinal;
     }
 
+    public List<Object[]> getDataPorDia(FiltrosReporte filtro) throws ParseException {
+
+        Session session = sessionFactory.getCurrentSession();
+        Query queryCasos = null;
+        List<Object[]> resultadoTemp = new ArrayList<Object[]>();
+        List<Object[]> resultadoFinal = new ArrayList<Object[]>();
+
+        if (filtro.getCodArea().equals("AREAREP|PAIS")){
+            queryCasos = session.createQuery(" select  noti.fechaRegistro, count(noti.fechaRegistro) as casos From DaNotificacion  noti " +
+                    "where noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "group by noti.fechaRegistro order by noti.fechaRegistro asc");
+
+        }
+        else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
+            queryCasos = session.createQuery(" select  noti.fechaRegistro, count(noti.fechaRegistro) as casos From DaNotificacion  noti " +
+                    "where noti.codSilaisAtencion.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "group by noti.fechaRegistro order by noti.fechaRegistro asc");
+            queryCasos.setParameter("codSilais", filtro.getCodSilais());
+
+        }
+        else if (filtro.getCodArea().equals("AREAREP|DEPTO")){
+            queryCasos = session.createQuery(" select  noti.fechaRegistro, count(noti.fechaRegistro) as casos From DaNotificacion  noti " +
+                    "where noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId =:codDepartamento and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "group by noti.fechaRegistro order by noti.fechaRegistro asc");
+            queryCasos.setParameter("codDepartamento", filtro.getCodDepartamento());
+
+        }
+        else if (filtro.getCodArea().equals("AREAREP|MUNI")){
+            queryCasos = session.createQuery(" select  noti.fechaRegistro, count(noti.fechaRegistro) as casos From DaNotificacion  noti " +
+                    "where noti.codUnidadAtencion.municipio.divisionpoliticaId =:codMunicipio and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "group by noti.fechaRegistro order by noti.fechaRegistro asc");
+            queryCasos.setParameter("codMunicipio", filtro.getCodMunicipio());
+
+        }
+        else if (filtro.getCodArea().equals("AREAREP|UNI")){
+            queryCasos = session.createQuery(" select  noti.fechaRegistro, count(noti.fechaRegistro) as casos From DaNotificacion  noti " +
+                    "where noti.codUnidadAtencion.unidadId = :codUnidad and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "group by noti.fechaRegistro order by noti.fechaRegistro asc");
+            queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
+
+        }
+
+        queryCasos.setParameter("fechaInicio", filtro.getFechaInicio());
+        queryCasos.setParameter("fechaFin", filtro.getFechaFin());
+        queryCasos.setParameter("tipoNoti", filtro.getTipoNotificacion());
+        resultadoTemp = queryCasos.list();
+        Date ultimaFecha = null;
+        Long cantidadCasos = 0L;
+        boolean agregar;
+        for(Object[] jaja : resultadoTemp ){
+            agregar = false;
+            Object[] registroseman = new Object[2];
+            //fecha de registro sin hora
+            Date fechaCompara = DateUtil.StringToDate(DateUtil.DateToString((Date) jaja[0], "dd/MM/yyyy"), "dd/MM/yyyy");
+            if (ultimaFecha!=null) {
+                if (ultimaFecha.compareTo(fechaCompara)==0){//fechas son iguales, entonces sumar casos
+                    cantidadCasos+= (Long)jaja[1];
+                    //es el´último registro, se debe agregar
+                    if (Arrays.equals(resultadoTemp.get(resultadoTemp.size()-1),jaja)){
+                        registroseman[0] = ultimaFecha;
+                        registroseman[1] = cantidadCasos;
+                        //agregar = true;
+                        resultadoFinal.add(registroseman);
+                    }
+                }else{// temporales se actualizan con datos nuevo registro, se indica que es necesario agregar el registro anterior
+                    registroseman[0] = ultimaFecha;
+                    registroseman[1] = cantidadCasos;
+                    ultimaFecha = fechaCompara;
+                    cantidadCasos = (Long)jaja[1];
+                    //agregar =true;
+                    resultadoFinal.add(registroseman);
+                    //no son iguales, pero es el último registro, agregarlo también
+                    if (Arrays.equals(resultadoTemp.get(resultadoTemp.size()-1),jaja)){
+                        registroseman = new Object[2];
+                        registroseman[0] = fechaCompara;
+                        registroseman[1] = jaja[1];
+                        resultadoFinal.add(registroseman);
+                    }
+                }
+            }else{//primer registro
+                ultimaFecha = fechaCompara;
+                cantidadCasos = (Long)jaja[1];
+            }
+            //if (agregar)//agregamos registro
+                //resultadoFinal.add(registroseman);
+        }
+        return resultadoFinal;
+    }
 }

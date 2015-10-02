@@ -450,8 +450,10 @@ public class TomaMxController {
             String idEstudio = jsonpObject.get("estudio").getAsString();
 
             DaTomaMx tomaMx = new DaTomaMx();
-
-            tomaMx.setIdNotificacion(daNotificacionService.getNotifById(idNotificacion));
+            DaNotificacion notificacion = daNotificacionService.getNotifById(idNotificacion);
+            tomaMx.setIdNotificacion(notificacion);
+            tomaMx.setCodSilaisAtencion(notificacion.getCodSilaisAtencion());
+            tomaMx.setCodUnidadAtencion(notificacion.getCodUnidadAtencion());
             if(fechaHTomaMx != null){
                 tomaMx.setFechaHTomaMx(StringToTimestamp(fechaHTomaMx));
             }
