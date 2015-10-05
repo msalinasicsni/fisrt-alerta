@@ -1,5 +1,7 @@
 package ni.gob.minsa.alerta.utilities;
 
+import java.util.Date;
+
 /**
  * Created by FIRSTICT on 9/30/2015.
  * V1.0
