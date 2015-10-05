@@ -2,21 +2,15 @@ package ni.gob.minsa.alerta.web.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import ni.gob.minsa.alerta.domain.catalogos.Anios;
-import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
-import ni.gob.minsa.alerta.domain.catalogos.FactorPoblacion;
-import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
 import ni.gob.minsa.alerta.domain.muestra.FiltroMx;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.notificacion.TipoNotificacion;
-import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
-import ni.gob.minsa.alerta.utilities.FiltrosReporte;
-import ni.gob.minsa.alerta.utilities.typeAdapter.DateUtil;
+import ni.gob.minsa.alerta.utilities.DateUtil;
 import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,15 +59,6 @@ public class ReportesController {
 
     @Autowired
     MessageSource messageSource;
-
-    @Resource(name="entidadAdmonService")
-    private EntidadAdmonService entidadAdmonService;
-
-    @Resource(name="divisionPoliticaService")
-    private DivisionPoliticaService divisionPoliticaService;
-
-    @Resource(name="areaReportService")
-    private AreaReportService areaReportService;
 
     @RequestMapping(value = "generalnoti", method = RequestMethod.GET)
     public ModelAndView initCreateFormTmp(HttpServletRequest request) throws Exception {
@@ -230,6 +214,146 @@ public class ReportesController {
             diff_year--;
         }
         return diff_year;
+    }
+
+    /*******************************************************************/
+    /************************ REPORTE POR SEMANA ***********************/
+    /*******************************************************************/
+    @RequestMapping(value = "porSemana", method = RequestMethod.GET)
+    public ModelAndView initCreateFormSemana(HttpServletRequest request) throws Exception {
+        logger.debug("Crear reporte general de notificaciones");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        ModelAndView mav = new ModelAndView();
+        if (urlValidacion.isEmpty()) {
+            mav.setViewName("reportes/porSemana");
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<TipoNotificacion> tiposNotificacion = catalogosService.getTipoNotificacion();
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            List<AreaRep> areas = catalogosService.getAreaRep();
+            List<Semanas> semanas = catalogosService.getSemanas();
+            List<Anios> anios = catalogosService.getAnios();
+            List<FactorPoblacion> factores = catalogosService.getFactoresPoblacion();
+            mav.addObject("areas", areas);
+            mav.addObject("semanas", semanas);
+            mav.addObject("anios", anios);
+            mav.addObject("departamentos", departamentos);
+            mav.addObject("entidades",entidadesAdtvases);
+            mav.addObject("tiposNotificacion", tiposNotificacion);
+            mav.addObject("factores",factores);
+
+        }else{
+            mav.setViewName(urlValidacion);
+        }
+        return mav;
+    }
+
+    @RequestMapping(value = "getDataPorSemana", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<Object[]> getDataPorSemana(
+            @RequestParam(value = "factor", required = false) Integer factor,
+            @RequestParam(value = "codArea", required = true) String codArea,
+            @RequestParam(value = "semI", required = true) String semI,
+            @RequestParam(value = "semF", required = true) String semF,
+            @RequestParam(value = "anioI", required = true) String anioI,
+            @RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
+            @RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
+            @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
+            @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion) throws ParseException {
+
+        logger.info("Obteniendo los datos de casos de notificaciones por semana");
+        FiltrosReporte filtrosReporte = new FiltrosReporte();
+        filtrosReporte.setCodArea(codArea);
+        filtrosReporte.setCodSilais(codSilais);
+        filtrosReporte.setCodDepartamento(codDepartamento);
+        filtrosReporte.setCodMunicipio(codMunicipio);
+        filtrosReporte.setCodUnidad(codUnidad);
+        filtrosReporte.setAnioInicial(anioI);
+        filtrosReporte.setSemInicial(semI);
+        filtrosReporte.setSemFinal(semF);
+        filtrosReporte.setTipoNotificacion(tipoNotificacion);
+        filtrosReporte.setFactor(factor);
+        filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
+        List<Object[]> datos = reporteSemanaService.getDataPorSemana(filtrosReporte);
+        if (datos == null){
+            logger.debug("Nulo");
+        }
+        return datos;
+    }
+
+    /*******************************************************************/
+    /************************* REPORTE POR DIA *************************/
+    /*******************************************************************/
+    @RequestMapping(value = "porDia", method = RequestMethod.GET)
+    public ModelAndView initCreateFormDia(HttpServletRequest request) throws Exception {
+        logger.debug("Crear reporte general de notificaciones");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        ModelAndView mav = new ModelAndView();
+        if (urlValidacion.isEmpty()) {
+            mav.setViewName("reportes/porDia");
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<TipoNotificacion> tiposNotificacion = catalogosService.getTipoNotificacion();
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            List<AreaRep> areas = catalogosService.getAreaRep();
+            mav.addObject("areas", areas);
+            mav.addObject("departamentos", departamentos);
+            mav.addObject("entidades",entidadesAdtvases);
+            mav.addObject("tiposNotificacion", tiposNotificacion);
+
+        }else{
+            mav.setViewName(urlValidacion);
+        }
+        return mav;
+    }
+
+    @RequestMapping(value = "getDataPorDia", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<Object[]> getDataPorDia(
+            @RequestParam(value = "factor", required = false) Integer factor,
+            @RequestParam(value = "codArea", required = true) String codArea,
+            @RequestParam(value = "fechaInicial", required = true) String fechaInicial,
+            @RequestParam(value = "fechaFinal", required = true) String fechaFinal,
+            @RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
+            @RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
+            @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
+            @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion) throws ParseException {
+
+        logger.info("Obteniendo los datos de casos de notificaciones por semana");
+        FiltrosReporte filtrosReporte = new FiltrosReporte();
+        filtrosReporte.setCodArea(codArea);
+        filtrosReporte.setCodSilais(codSilais);
+        filtrosReporte.setCodDepartamento(codDepartamento);
+        filtrosReporte.setCodMunicipio(codMunicipio);
+        filtrosReporte.setCodUnidad(codUnidad);
+        filtrosReporte.setTipoNotificacion(tipoNotificacion);
+        filtrosReporte.setFactor(factor);
+        filtrosReporte.setFechaInicio(DateUtil.StringToDate(fechaInicial+" 00:00:00","dd/MM/yyyy HH:mm:ss"));
+        filtrosReporte.setFechaFin(DateUtil.StringToDate(fechaFinal+" 23:59:59","dd/MM/yyyy HH:mm:ss"));
+        //filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
+        List<Object[]> datos = reporteSemanaService.getDataPorDia(filtrosReporte);
+        if (datos == null){
+            logger.debug("Nulo");
+        }
+        return datos;
     }
 
     @RequestMapping(value = "area", method = RequestMethod.GET)

@@ -16,7 +16,7 @@ import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Distritos;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
-import ni.gob.minsa.alerta.utilities.typeAdapter.DateUtil;
+import ni.gob.minsa.alerta.utilities.DateUtil;
 import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
