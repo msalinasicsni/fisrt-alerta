@@ -2,14 +2,20 @@ package ni.gob.minsa.alerta.web.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import ni.gob.minsa.alerta.domain.catalogos.Anios;
+import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
+import ni.gob.minsa.alerta.domain.catalogos.FactorPoblacion;
+import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
 import ni.gob.minsa.alerta.domain.muestra.FiltroMx;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.notificacion.TipoNotificacion;
+import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
+import ni.gob.minsa.alerta.utilities.FiltrosReporte;
 import ni.gob.minsa.alerta.utilities.typeAdapter.DateUtil;
 import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.slf4j.Logger;
@@ -18,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,6 +66,15 @@ public class ReportesController {
 
     @Autowired
     MessageSource messageSource;
+
+    @Resource(name="entidadAdmonService")
+    private EntidadAdmonService entidadAdmonService;
+
+    @Resource(name="divisionPoliticaService")
+    private DivisionPoliticaService divisionPoliticaService;
+
+    @Resource(name="areaReportService")
+    private AreaReportService areaReportService;
 
     @RequestMapping(value = "generalnoti", method = RequestMethod.GET)
     public ModelAndView initCreateFormTmp(HttpServletRequest request) throws Exception {
@@ -214,5 +230,87 @@ public class ReportesController {
             diff_year--;
         }
         return diff_year;
+    }
+
+    @RequestMapping(value = "area", method = RequestMethod.GET)
+    public String initArea(Model model,HttpServletRequest request) throws Exception {
+        logger.debug("Reporte por Area");
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
+        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+        List<AreaRep> areas = catalogosService.getAreaRep();
+        List<Semanas> semanas = catalogosService.getSemanas();
+        List<Anios> anios = catalogosService.getAnios();
+        List<TipoNotificacion> tipoNoti = catalogosService.getTipoNotificacion();
+        List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
+        model.addAttribute("areas", areas);
+        model.addAttribute("semanas", semanas);
+        model.addAttribute("anios", anios);
+        model.addAttribute("entidades", entidades);
+        model.addAttribute("departamentos", departamentos);
+        model.addAttribute("tipoNoti", tipoNoti);
+        model.addAttribute("factor", factor);
+        return "reportes/area";
+    }
+
+    private FiltrosReporte jsonToFiltroReportes(String strJson) throws Exception {
+        JsonObject jObjectFiltro = new Gson().fromJson(strJson, JsonObject.class);
+        FiltrosReporte filtroRep = new FiltrosReporte();
+        Date fechaInicio = null;
+        Date fechaFin = null;
+        Long codSilais = null;
+        Long codUnidadSalud = null;
+        String tipoNotificacion = null;
+        Integer factor= 0;
+        Long codDepartamento = null;
+        Long codMunicipio = null;
+        String codArea = null;
+
+        if (jObjectFiltro.get("codSilais") != null && !jObjectFiltro.get("codSilais").getAsString().isEmpty())
+            codSilais = jObjectFiltro.get("codSilais").getAsLong();
+        if (jObjectFiltro.get("codUnidadSalud") != null && !jObjectFiltro.get("codUnidadSalud").getAsString().isEmpty())
+            codUnidadSalud = jObjectFiltro.get("codUnidadSalud").getAsLong();
+        if (jObjectFiltro.get("tipoNotificacion") != null && !jObjectFiltro.get("tipoNotificacion").getAsString().isEmpty())
+            tipoNotificacion = jObjectFiltro.get("tipoNotificacion").getAsString();
+        if (jObjectFiltro.get("codFactor") != null && !jObjectFiltro.get("codFactor").getAsString().isEmpty())
+            factor = jObjectFiltro.get("codFactor").getAsInt();
+        if (jObjectFiltro.get("fechaInicio") != null && !jObjectFiltro.get("fechaInicio").getAsString().isEmpty())
+            fechaInicio = DateUtil.StringToDate(jObjectFiltro.get("fechaInicio").getAsString() + " 00:00:00");
+        if (jObjectFiltro.get("fechaFin") != null && !jObjectFiltro.get("fechaFin").getAsString().isEmpty())
+            fechaFin = DateUtil.StringToDate(jObjectFiltro.get("fechaFin").getAsString() + " 23:59:59");
+        if (jObjectFiltro.get("codDepartamento") != null && !jObjectFiltro.get("codDepartamento").getAsString().isEmpty())
+            codDepartamento = jObjectFiltro.get("codDepartamento").getAsLong();
+        if (jObjectFiltro.get("codMunicipio") != null && !jObjectFiltro.get("codMunicipio").getAsString().isEmpty())
+            codMunicipio = jObjectFiltro.get("codMunicipio").getAsLong();
+        if (jObjectFiltro.get("codArea") != null && !jObjectFiltro.get("codArea").getAsString().isEmpty())
+            codArea = jObjectFiltro.get("codArea").getAsString();
+
+
+        filtroRep.setCodSilais(codSilais);
+        filtroRep.setCodUnidad(codUnidadSalud);
+        filtroRep.setFechaInicio(fechaInicio);
+        filtroRep.setFechaFin(fechaFin);
+        filtroRep.setTipoNotificacion(tipoNotificacion);
+        filtroRep.setFactor(factor);
+        filtroRep.setCodDepartamento(codDepartamento);
+        filtroRep.setCodMunicipio(codMunicipio);
+        filtroRep.setCodArea(codArea);
+        filtroRep.setAnioInicial(DateUtil.DateToString(fechaInicio, "yyyy"));
+
+        return filtroRep;
+    }
+
+    /**
+     * Método para obtener data para Reporte por Area
+     * @param filtro JSon con los datos de los filtros a aplicar en la búsqueda
+     * @return Object
+     * @throws Exception
+     */
+    @RequestMapping(value = "dataArea", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<Object[]> fetchDataAreaJson(@RequestParam(value = "filtro", required = true) String filtro) throws Exception{
+        logger.info("Obteniendo los datos para reporte por Area ");
+        FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
+        return areaReportService.getDataCT(filtroRep);
     }
 }

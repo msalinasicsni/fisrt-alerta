@@ -1,5 +1,7 @@
 package ni.gob.minsa.alerta.utilities;
 
+import java.util.Date;
+
 /**
  * Created by FIRSTICT on 9/30/2015.
  * V1.0
@@ -16,6 +18,9 @@ public class FiltrosReporte {
     String anioFinal;
     String tipoNotificacion;
     Integer factor;
+    Date fechaInicio;
+    Date fechaFin;
+    String tipoPoblacion;
 
     public String getCodArea() {
         return codArea;
@@ -104,4 +109,16 @@ public class FiltrosReporte {
     public void setFactor(Integer factor) {
         this.factor = factor;
     }
+
+    public Date getFechaInicio() { return fechaInicio; }
+
+    public void setFechaInicio(Date fechaInicio) { this.fechaInicio = fechaInicio; }
+
+    public Date getFechaFin() { return fechaFin; }
+
+    public void setFechaFin(Date fechaFin) { this.fechaFin = fechaFin; }
+
+    public String getTipoPoblacion() { return tipoPoblacion; }
+
+    public void setTipoPoblacion(String tipoPoblacion) { this.tipoPoblacion = tipoPoblacion; }
 }
