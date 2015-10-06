@@ -160,7 +160,7 @@
                         <a href="<spring:url value="#" htmlEscape="true "/>" title="<spring:message code="menu.result.report" />"><i class="fa fa-lg fa-fw fa-send-o"></i> <spring:message code="menu.result.report" /></a>
                     </li>
                     <li class="sex">
-                        <a href="<spring:url value="#" htmlEscape="true "/>" title="<spring:message code="menu.report.sex" />"><i class="fa fa-lg fa-fw fa-send-o"></i> <spring:message code="menu.report.sex" /></a>
+                        <a href="<spring:url value="/reportes/sexReport" htmlEscape="true "/>" title="<spring:message code="menu.report.sex" />"><i class=""></i> <spring:message code="menu.report.sex" /></a>
                     </li>
                 </ul>
             </li>

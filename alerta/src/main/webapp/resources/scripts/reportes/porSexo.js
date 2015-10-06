@@ -1,4 +1,7 @@
-var areaReport = function () {
+/**
+ * Created by souyen-ics on 10-05-15.
+ */
+var sexReport = function () {
 
     var bloquearUI = function(mensaje){
         var loc = window.location;
@@ -59,7 +62,7 @@ var areaReport = function () {
                     ],
                     "sSwfPath": parametros.dataTablesTTSWF
                 },
-                "aoColumns" : [{sClass: "aw-left"},{sClass: "aw-right" },{sClass: "aw-right" }],
+                "aoColumns" : [{sClass: "aw-left"},{sClass: "aw-right" },{sClass: "aw-left"},{sClass: "aw-right" }],
                 "autoWidth" : true,
                 "preDrawCallback" : function() {
                     // Initialize the responsive datatables helper once.
@@ -78,6 +81,25 @@ var areaReport = function () {
 
             /* END TABLETOOLS */
 
+            var pieOptions = {
+                //Boolean - Whether we should show a stroke on each segment
+                segmentShowStroke: true,
+                //String - The colour of each segment stroke
+                segmentStrokeColor: "#fff",
+                //Number - The width of each segment stroke
+                segmentStrokeWidth: 2,
+                //Number - Amount of animation steps
+                animationSteps: 100,
+                //String - types of animation
+                animationEasing: "easeOutBounce",
+                //Boolean - Whether we animate the rotation of the Doughnut
+                animateRotate: true,
+                //Boolean - Whether we animate scaling the Doughnut from the centre
+                animateScale: false,
+                //Boolean - Re-draw chart on page resize
+                responsive: true
+            };
+
             var colors = ["#0066FF","#FF0000","#009900","#FF6600","#FF3399","#008B8B","#663399","#FFD700","#0000FF","#DC143C","#32CD32","#FF8C00","#C71585","#20B2AA","#6A5ACD","#9ACD32"];
             var barOptions = {
                 //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
@@ -93,9 +115,9 @@ var areaReport = function () {
                 //Number - Pixel width of the bar stroke
                 barStrokeWidth : 1,
                 //Number - Spacing between each of the X value sets
-                barValueSpacing : 5,
+                barValueSpacing : 30,
                 //Number - Spacing between data sets within X values
-                barDatasetSpacing : 1,
+                barDatasetSpacing : 35,
                 //Boolean - Re-draw chart on page resize
                 responsive: true
             };
@@ -180,20 +202,20 @@ var areaReport = function () {
                 });
 
             function getData() {
-                var areaFiltro = {};
-                areaFiltro['fechaInicio'] = $('#initDate').val();
-                areaFiltro['fechaFin'] = $('#endDate').val();
-                areaFiltro['codSilais'] = $('#codSilaisAtencion').find('option:selected').val();
-                areaFiltro['codUnidadSalud'] = $('#codUnidadAtencion').find('option:selected').val();
-                areaFiltro['codFactor'] = $('#codFactor').find('option:selected').val();
-                areaFiltro['codDepartamento'] = $('#codDepartamento').find('option:selected').val();
-                areaFiltro['codMunicipio'] = $('#codMunicipio').find('option:selected').val();
-                areaFiltro['codArea'] = $('#codArea').find('option:selected').val();
-                areaFiltro['tipoNotificacion'] = $('#codTipoNoti').find('option:selected').val();
+                var filtro = {};
+                filtro['fechaInicio'] = $('#initDate').val();
+                filtro['fechaFin'] = $('#endDate').val();
+                filtro['codSilais'] = $('#codSilaisAtencion').find('option:selected').val();
+                filtro['codUnidadSalud'] = $('#codUnidadAtencion').find('option:selected').val();
+                filtro['codFactor'] = $('#codFactor').find('option:selected').val();
+                filtro['codDepartamento'] = $('#codDepartamento').find('option:selected').val();
+                filtro['codMunicipio'] = $('#codMunicipio').find('option:selected').val();
+                filtro['codArea'] = $('#codArea').find('option:selected').val();
+                filtro['tipoNotificacion'] = $('#codTipoNoti').find('option:selected').val();
 
                 bloquearUI(parametros.blockMess);
                 $.getJSON(parametros.sActionUrl, {
-                    filtro: JSON.stringify(areaFiltro),
+                    filtro: JSON.stringify(filtro),
                     ajax: 'true'
                 }, function(data) {
 
@@ -201,77 +223,67 @@ var areaReport = function () {
                     var encontrado = false;
                     if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
                         title = title + '</br>' + $('#nicRepublic').val();
-                        $('#thSilais').show();
-                        $('#thMunic').hide();
-                        $('#thUnit').hide();
+
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
                         title = title + '</br>'+$('#codSilaisAtencion option:selected').text();
-                        $('#thSilais').show();
-                        $('#thMunic').hide();
-                        $('#thUnit').hide();
+
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
-                        title = title + '</br>' + $('#dep').val() + " " +$('#codDepartamento option:selected').text();
-                        $('#thMunic').show();
-                        $('#thSilais').hide();
-                        $('#thUnit').hide();
+                        title = title + '</br>' + $('#dep').val()+ " " +$('#codDepartamento option:selected').text();
+
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
-                        title = title + '</br>'+ $('#munic').val() + " "  +$('#codMunicipio option:selected').text();
-                        $('#thUnit').show();
-                        $('#thMunic').hide();
-                        $('#thSilais').hide();
+                        title = title + '</br>'+ $('#munic').val() + " " +$('#codMunicipio option:selected').text();
+
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
                         title = title + '</br>'+ $('#unit').val() + " " +$('#codUnidadAtencion option:selected').text();
-                        $('#thUnit').show();
-                        $('#thMunic').hide();
-                        $('#thSilais').hide();
+
                     }
                     title = title + '</br>' + $('#from').val() +" " +$('#initDate').val()  + " "+ "-" + " " + $('#to').val() + " " +$('#endDate').val();
 
-                    datosC = [];
+                    datosP = [];
                     datosT = [];
                     labels = [];
-                    datasetsC = [];
+                    datasetsP = [];
                     datasetsT = [];
 
+
+                    labels.push(["Sexo"]);
                     for (var row in data) {
-                        table1.fnAddData([data[row][0],data[row][1], data[row][2]]);
+                        table1.fnAddData([data[row][0],data[row][1], data[row][2],data[row][3]]);
                         encontrado = true;
-                        labels.push([data[row][0]]);
-                        datosC.push(data[row][1]);
-                        datosT.push(data[row][2]);
+
+                        datosT.push(data[row][3]);
+
+                        datasetsP[row] = {
+                            value: data[row][2],
+                            color: colors[row],
+                            highlight: convertHex(colors[row],80),
+                            label: data[row][0]
+                        };
+
+                        datasetsT[row]= {
+                            label: data[row][0],
+                            fillColor: convertHex( colors[row],100),
+                            strokeColor: convertHex( colors[row],100),
+                            highlightFill: convertHex( colors[row],100),
+                            highlightStroke:convertHex( colors[row],100),
+                            data: [data[row][3]]
+                        };
+
+
                     }
 
-                    var colorS = colors[0];
-                    var colorT = colors[1];
-                  //  var label = $('#anioI').find('option:selected').val();
-                    datasetsC.push({
-                        label: "Casos",
-                        fillColor: convertHex(colorS,100),
-                        strokeColor: convertHex(colorS,100),
-                        highlightFill: convertHex(colorS,100),
-                        highlightStroke: convertHex(colorS,100),
-                        data: datosC
-                    });
-                    datasetsT.push({
-                        label: "Tasas",
-                        fillColor: convertHex(colorT,100),
-                        strokeColor: convertHex(colorT,100),
-                        highlightFill: convertHex(colorT,100),
-                        highlightStroke:convertHex(colorT,100),
-                        data: datosT
-                    });
-                   barChart(datasetsC,labels);
-                   barChartT(datasetsT,labels);
+                    pieChart(datasetsP);
+                    barChartT(datasetsT,labels);
 
                     if(!encontrado){
                         showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
                         title='';
-                        $('#lineChart-title').html("<h5>"+title+"</h5>");
                         $('#lineChart-titleT').html("<h5>"+title+"</h5>");
+                        $('#pieChart-titleP').html("<h5>"+title+"</h5>");
                     }
                     setTimeout($.unblockUI, 500);
                 })
@@ -293,21 +305,18 @@ var areaReport = function () {
             }
 
 
-            function barChart(datasetsC,labels) {
-                // LINE CHART
-                // ref: http://www.chartjs.org/docs/#line-chart-introduction
-                $('#lineChart-title').html("<h5>"+title+"</h5>");
-                var barData = { labels: labels,
-                    datasets: datasetsC
-                };
+            function pieChart(datasetsP) {
                 // render chart
-                if( window.myBar!==undefined)
-                    window.myBar.destroy();
-                var ctx = document.getElementById("lineChart").getContext("2d");
-                window.myBar = new Chart(ctx).Bar(barData, barOptions);
-                // END BAR CHART
+                $('#pieChart-titleP').html("<h5>"+title+"</h5>");
 
-                legend(document.getElementById("lineLegend"), barData);
+                if( window.myPie!==undefined)
+                    window.myPie.destroy();
+                var ctx = document.getElementById("pieChart").getContext("2d");
+                window.myPie = new Chart(ctx).Pie(datasetsP, pieOptions);
+
+                // END PIE CHART
+
+                legend(document.getElementById("pieLegend"), datasetsP);
             }
 
             function barChartT(datasetsT,labels) {

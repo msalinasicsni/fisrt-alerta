@@ -237,7 +237,7 @@ public class SeguridadService {
                 idUsuario = infoSesion.getUsuarioId();
             }
         }else{
-            idUsuario= 1L;
+            idUsuario= 25L;
         }
 
         return idUsuario;

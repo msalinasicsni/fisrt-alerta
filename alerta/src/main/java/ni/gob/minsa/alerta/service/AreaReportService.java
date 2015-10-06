@@ -124,8 +124,8 @@ public class AreaReportService {
                     " and noti.pasivo = false " +
                     "and noti.fechaRegistro between :fechaInicio and :fechaFin) " +
                     "FROM Unidades uni " +
-                    "where uni.codigo = :codUnidad " +
-                    "or uni.unidadAdtva = :codUnidad");
+                    "where uni.unidadId = :codUnidad " +
+                    "or uni.unidadId = :codUnidad");
             queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
 
         }
@@ -145,12 +145,196 @@ public class AreaReportService {
             Object[] reg1 = new Object[3];
             reg1[0] = reg[0];
             reg1[1] = reg[1];
-            reg1[2] = ((Long) reg[1] != 0 ? ((double) Math.round((Integer.valueOf(reg[1].toString()).doubleValue()) / poblacion * filtro.getFactor() * 100) / 100) : 0);
+
+            if(poblacion != null){
+                reg1[2] = ((Long) reg[1] != 0 ? ((double) Math.round((Integer.valueOf(reg[1].toString()).doubleValue()) / poblacion * filtro.getFactor() * 100) / 100) : 0);
+
+            }else{
+                reg1[2] = "NP";
+            }
             resFinal.add(reg1);
         }
 
             return resFinal;
     }
+
+    @SuppressWarnings("unchecked")
+    public List<Object[]> getDataSexReport(FiltrosReporte filtro){
+        // Retrieve session from Hibernate
+        List<Object[]> resTemp = new ArrayList<Object[]>();
+        List<Object[]> resFinal = new ArrayList<Object[]>();
+        Session session = sessionFactory.getCurrentSession();
+        Query queryCasos = null;
+        Query queryPoblacion = null;
+
+
+        if (filtro.getCodArea().equals("AREAREP|PAIS")){
+
+            queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
+                    "from SivePoblacionDivPol pob where pob.divpol.dependencia is null " +
+                    "and pob.grupo =:tipoPob " +
+                    "and pob.anio =:anio " +
+                    "group by pob.anio order by pob.anio");
+
+            queryCasos = session.createQuery(" select sex.valor, coalesce((select count(noti.idNotificacion) " +
+                    "from DaNotificacion noti, SisPersona per " +
+                    "where noti.persona.id = per.personaId " +
+                    " and per.sexo.codigo = sex.codigo " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "group by per.sexo.valor),0),  " +
+                    " coalesce( (select count(noti.idNotificacion) " +
+                    "from DaNotificacion noti, SisPersona per " +
+                            "where noti.persona.id = per.personaId " +
+                            "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                            "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                            "),0) " +
+                    " from Sexo sex where sex.pasivo = false" );
+
+        }
+        else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
+
+            queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
+                    "from SivePoblacionDivPol pob where pob.divpol.dependenciaSilais.entidadAdtvaId=:codSilais " +
+                    "and pob.grupo =:tipoPob " +
+                    "and (pob.anio =:anio) " +
+                    "group by pob.anio order by pob.anio");
+            queryPoblacion.setParameter("codSilais", filtro.getCodSilais());
+
+
+            queryCasos = session.createQuery(" select sex.valor, coalesce((select count(noti.idNotificacion) " +
+                    "from DaNotificacion noti, SisPersona per " +
+                    "where noti.persona.id = per.personaId " +
+                    " and per.sexo.codigo = sex.codigo " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "and noti.codSilaisAtencion.codigo = :codSilais  " +
+                    "group by per.sexo.valor),0),  " +
+                    " coalesce( (select count(noti.idNotificacion) " +
+                    "from DaNotificacion noti, SisPersona per " +
+                    "where noti.persona.id = per.personaId " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.codSilaisAtencion.codigo = :codSilais " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "),0) " +
+                    " from Sexo sex where sex.pasivo = false" );
+            queryCasos.setParameter("codSilais", filtro.getCodSilais());
+
+        }
+        else if (filtro.getCodArea().equals("AREAREP|DEPTO")){
+
+            queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
+                    "from SivePoblacionDivPol pob where pob.divpol.divisionpoliticaId =:codDepartamento " +
+                    "and pob.grupo =:tipoPob " +
+                    "and (pob.anio =:anio) " +
+                    "group by pob.anio order by pob.anio");
+            queryPoblacion.setParameter("codDepartamento", filtro.getCodDepartamento());
+
+            queryCasos = session.createQuery(" select sex.valor, coalesce((select count(noti.idNotificacion) " +
+                    "from DaNotificacion noti, SisPersona per " +
+                    "where noti.persona.id = per.personaId " +
+                    " and per.sexo.codigo = sex.codigo " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = :codDepartamento  " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "group by per.sexo.valor),0),  " +
+                    " coalesce( (select count(noti.idNotificacion) " +
+                    "from DaNotificacion noti, SisPersona per " +
+                    "where noti.persona.id = per.personaId " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = :codDepartamento  " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "),0) " +
+                    " from Sexo sex where sex.pasivo = false" );
+
+                    queryCasos.setParameter("codDepartamento", filtro.getCodDepartamento());
+        }
+        else if (filtro.getCodArea().equals("AREAREP|MUNI")){
+
+            queryPoblacion = session.createQuery("Select sum(pob.total) as totales " +
+                    "from SivePoblacionDivPol pob where pob.divpol.divisionpoliticaId =:codMunicipio " +
+                    "and pob.grupo =:tipoPob " +
+                    "and (pob.anio =:anio) " +
+                    "group by pob.anio order by pob.anio");
+            queryPoblacion.setParameter("codMunicipio", filtro.getCodMunicipio());
+
+            queryCasos = session.createQuery(" select sex.valor, coalesce((select count(noti.idNotificacion) " +
+                    "from DaNotificacion noti, SisPersona per " +
+                    "where noti.persona.id = per.personaId " +
+                    " and per.sexo.codigo = sex.codigo " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "and noti.codUnidadAtencion.municipio.divisionpoliticaId = :codMunicipio  " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "group by per.sexo.valor),0),  " +
+                    " coalesce( (select count(noti.idNotificacion) " +
+                    "from DaNotificacion noti, SisPersona per " +
+                    "where noti.persona.id = per.personaId " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "and noti.codUnidadAtencion.municipio.divisionpoliticaId = :codMunicipio  " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "),0) " +
+                    " from Sexo sex where sex.pasivo = false" );
+
+                   queryCasos.setParameter("codMunicipio", filtro.getCodMunicipio());
+        }
+        else if (filtro.getCodArea().equals("AREAREP|UNI")){
+            queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
+                    "from SivePoblacion pob where pob.comunidad.sector.unidad.unidadId =:codUnidad " +
+                    "and pob.grupo =:tipoPob " +
+                    "and (pob.anio =:anio) " +
+                    "group by pob.anio order by pob.anio");
+            queryPoblacion.setParameter("codUnidad", filtro.getCodUnidad());
+
+            queryCasos = session.createQuery(" select sex.valor, coalesce((select count(noti.idNotificacion) " +
+                    "from DaNotificacion noti, SisPersona per " +
+                    "where noti.persona.id = per.personaId " +
+                    " and per.sexo.codigo = sex.codigo " +
+                    " and noti.codUnidadAtencion.unidadId = :codUnidad " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "group by per.sexo.valor),0),  " +
+                    " coalesce( (select count(noti.idNotificacion) " +
+                    "from DaNotificacion noti, SisPersona per " +
+                    "where noti.persona.id = per.personaId " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.codUnidadAtencion.unidadId = :codUnidad " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "),0) " +
+                    " from Sexo sex where sex.pasivo = false" );
+
+            queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
+
+        }
+
+        queryCasos.setParameter("tipoNoti", filtro.getTipoNotificacion());
+        queryCasos.setParameter("fechaInicio", filtro.getFechaInicio());
+        queryCasos.setParameter("fechaFin", filtro.getFechaFin());
+        queryPoblacion.setParameter("tipoPob","Todos");
+        queryPoblacion.setParameter("anio", Integer.valueOf(filtro.getAnioInicial()));
+
+
+        resTemp.addAll(queryCasos.list());
+
+        Long poblacion = (Long) queryPoblacion.uniqueResult();
+
+        for (Object[] reg : resTemp) {
+            Object[] reg1 = new Object[4];
+            reg1[0] = reg[0];
+            reg1[1] = reg[1];
+            reg1[2] = ((Long) reg[1] != 0 ? (double) Math.round(Integer.valueOf(reg[1].toString()).doubleValue() / Integer.valueOf(reg[2].toString()).doubleValue() * 100 * 100) / 100 : 0);
+
+          if(poblacion != null){
+              reg1[3] = ((Long) reg[1] != 0 ? ((double) Math.round((Integer.valueOf(reg[1].toString()).doubleValue()) / poblacion * filtro.getFactor() * 100) / 100) : 0);
+
+          }else{
+              reg1[3] = "NP";
+          }
+            resFinal.add(reg1);
+        }
+
+        return resFinal;
+    }
+
 
 
 

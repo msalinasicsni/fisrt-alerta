@@ -373,6 +373,10 @@ public class ReportesController {
         return datos;
     }
 
+/*******************************************************************/
+    /************************ REPORTE POR AREA ***********************/
+    /*******************************************************************/
+
     @RequestMapping(value = "area", method = RequestMethod.GET)
     public String initArea(Model model,HttpServletRequest request) throws Exception {
         logger.debug("Reporte por Area");
@@ -380,12 +384,10 @@ public class ReportesController {
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
         List<AreaRep> areas = catalogosService.getAreaRep();
-        List<Semanas> semanas = catalogosService.getSemanas();
         List<Anios> anios = catalogosService.getAnios();
         List<TipoNotificacion> tipoNoti = catalogosService.getTipoNotificacion();
         List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
         model.addAttribute("areas", areas);
-        model.addAttribute("semanas", semanas);
         model.addAttribute("anios", anios);
         model.addAttribute("entidades", entidades);
         model.addAttribute("departamentos", departamentos);
@@ -453,5 +455,42 @@ public class ReportesController {
         logger.info("Obteniendo los datos para reporte por Area ");
         FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
         return areaReportService.getDataCT(filtroRep);
+    }
+
+    /*******************************************************************/
+    /************************ REPORTE POR SEXO ***********************/
+    /*******************************************************************/
+
+    @RequestMapping(value = "sexReport", method = RequestMethod.GET)
+    public String initSexReport(Model model,HttpServletRequest request) throws Exception {
+        logger.debug("Reporte por Sexo");
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
+        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+        List<AreaRep> areas = catalogosService.getAreaRep();
+        List<Anios> anios = catalogosService.getAnios();
+        List<TipoNotificacion> tipoNoti = catalogosService.getTipoNotificacion();
+        List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
+        model.addAttribute("areas", areas);
+        model.addAttribute("anios", anios);
+        model.addAttribute("entidades", entidades);
+        model.addAttribute("departamentos", departamentos);
+        model.addAttribute("tipoNoti", tipoNoti);
+        model.addAttribute("factor", factor);
+        return "reportes/porSexo";
+    }
+
+    /**
+     * Método para obtener data para Reporte por Area
+     * @param filtro JSon con los datos de los filtros a aplicar en la búsqueda
+     * @return Object
+     * @throws Exception
+     */
+    @RequestMapping(value = "datasexReport", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<Object[]> fetchDataSexJson(@RequestParam(value = "filtro", required = true) String filtro) throws Exception{
+        logger.info("Obteniendo los datos para reporte por Sexo ");
+        FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
+        return areaReportService.getDataSexReport(filtroRep);
     }
 }
