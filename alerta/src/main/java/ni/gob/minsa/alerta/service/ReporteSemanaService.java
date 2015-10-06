@@ -118,7 +118,11 @@ public class ReporteSemanaService {
             Object[] registroseman = new Object[3];
             registroseman[0] = semana[0];
             registroseman[1] = semana[1];
-            registroseman[2] = ((Long)semana[1]!=0?((double) Math.round((Integer.valueOf(semana[1].toString()).doubleValue())/poblacion*filtro.getFactor()*100)/100):0);
+            if (poblacion !=null) {
+                registroseman[2] = ((Long) semana[1] != 0 ? ((double) Math.round((Integer.valueOf(semana[1].toString()).doubleValue()) / poblacion * filtro.getFactor() * 100) / 100) : 0);
+            }else{
+                registroseman[2] = "NP";
+            }
             resultadoFinal.add(registroseman);
         }
         return resultadoFinal;

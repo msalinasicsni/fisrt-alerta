@@ -27,6 +27,10 @@ var ViewReport = function () {
 			};
 			var title = "";
 
+            var fecha = new Date();
+            var fechaFormateada = (fecha.getDate()<10?'0'+fecha.getDate():fecha.getDate())
+                                  +''+(fecha.getMonth()+1<10?'0'+fecha.getMonth()+1:fecha.getMonth()+1)
+                                  +''+fecha.getFullYear();
 			/* TABLETOOLS */
 			var table1 = $('#notices_result').dataTable({
 
@@ -42,15 +46,14 @@ var ViewReport = function () {
              	                    "aButtons": [
              	                                 {
              	                                     "sExtends": "csv",
-             	                                     "sFileName": "ddd"+"-*.csv",
-             	                                     "sTitle": "ddd",
+             	                                     "sFileName": fechaFormateada+"-NotificacionesSinResultado.csv",
+             	                                     "sTitle": "Notificaciones sin resultado",
              	                                     "oSelectorOpts": { filter: 'applied', order: 'current' }
              	                                 },
              	                                 {
              	                                     "sExtends": "pdf",
-             	                                     "sFileName": "DD"+"-*.pdf",
-	            	                                     "sTitle": ":fff:",
-	            	                                     "sPdfMessage": "FF",
+             	                                     "sFileName": fechaFormateada+"-NotificacionesSinResultado.pdf",
+                                                     "sTitle": "Notificaciones Sin Resultado",
              	                                     "oSelectorOpts": { filter: 'applied', order: 'current' },
              	                                     "sPdfOrientation": "landscape"
              	                                 }

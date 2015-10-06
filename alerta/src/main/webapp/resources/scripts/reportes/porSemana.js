@@ -28,6 +28,10 @@ var ViewReport = function () {
 			var title = "";
 
 			/* TABLETOOLS */
+            var fecha = new Date();
+            var fechaFormateada = (fecha.getDate()<10?'0'+fecha.getDate():fecha.getDate())
+                +''+(fecha.getMonth()+1<10?'0'+fecha.getMonth()+1:fecha.getMonth()+1)
+                +''+fecha.getFullYear();
 			var table1 = $('#data_result').dataTable({
 
 				// Tabletools options:
@@ -42,13 +46,13 @@ var ViewReport = function () {
              	                    "aButtons": [
              	                                 {
              	                                     "sExtends": "csv",
-             	                                     "sFileName": "ddd"+"-*.csv",
+             	                                     "sFileName": fechaFormateada+"-ReportePorSemana.csv",
              	                                     "sTitle": "ddd",
              	                                     "oSelectorOpts": { filter: 'applied', order: 'current' }
              	                                 },
              	                                 {
              	                                     "sExtends": "pdf",
-             	                                     "sFileName": "DD"+"-*.pdf",
+             	                                     "sFileName": fechaFormateada+"-ReportePorSemana.pdf",
 	            	                                     "sTitle": ":fff:",
 	            	                                     "sPdfMessage": "FF",
              	                                     "oSelectorOpts": { filter: 'applied', order: 'current' },
