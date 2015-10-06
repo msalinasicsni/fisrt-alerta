@@ -194,24 +194,25 @@ var ViewReport = function () {
             function getData() {
             	bloquearUI(parametros.blockMess);
                 $.getJSON(parametros.sActionUrl, $('#parameters_form').serialize(), function(data) {
-            		title = $('#tipoNotificacion option:selected').text();
-            		var encontrado = false;
-            		if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
-    					title = title + '</br>República de Nicaragua';
-    				}
-    				else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
-    					title = title + '</br>'+$('#codSilaisAtencion option:selected').text();
-    				}
-    				else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
-    					title = title + '</br>Departamento de '+$('#codDepartamento option:selected').text();
-    				}
-    				else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
-    					title = title + '</br>Municipio: '+$('#codMunicipio option:selected').text();
-    				}
-    				else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
-    					title = title + '</br>Unidad de Salud: '+$('#codUnidadAtencion option:selected').text();
-    				}
-            		title = title + '</br>Semana '+$('#semI option:selected').text() +' a la '+$('#semF option:selected').text() +', '+$('#anioI option:selected').text();
+                    title = $('#tipoNotificacion option:selected').text();
+                    var encontrado = false;
+                    if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
+                        title = title + '</br>'+parametros.nicaragua;
+                    }
+                    else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
+                        title = title + '</br>'+$('#codSilaisAtencion option:selected').text();
+                    }
+                    else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
+                        title = title + '</br>'+parametros.departamento+' '+$('#codDepartamento option:selected').text();
+                    }
+                    else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
+                        title = title + '</br>'+parametros.municipio+' '+$('#codMunicipio option:selected').text();
+                    }
+                    else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
+                        title = title + '</br>'+parametros.unidad+' '+$('#codUnidadAtencion option:selected').text();
+                    }
+                    title = title + '</br>'+parametros.semana+' '+$('#semI option:selected').text() +' a la '+$('#semF option:selected').text() +', '+$('#anioI option:selected').text();
+
                     datasets = [];
                     datosC = [];
                     datasetsTasa = [];

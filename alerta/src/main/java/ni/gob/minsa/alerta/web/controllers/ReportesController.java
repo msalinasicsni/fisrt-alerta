@@ -156,6 +156,8 @@ public class ReportesController {
             map.put("codtipoNoti",notificacion.getCodTipoNotificacion().getCodigo());
             map.put("tipoNoti",notificacion.getCodTipoNotificacion().getValor());
             map.put("fechaRegistro",DateUtil.DateToString(notificacion.getFechaRegistro(), "dd/MM/yyyy"));
+            map.put("SILAIS",notificacion.getCodSilaisAtencion().getNombre());
+            map.put("unidad",notificacion.getCodUnidadAtencion().getNombre());
             //Si hay persona
             if (notificacion.getPersona()!=null){
                 /// se obtiene el nombre de la persona asociada a la ficha
@@ -192,24 +194,23 @@ public class ReportesController {
             //se valida si tiene resultado final aprobado
             boolean conResultado = false;
             List<DaSolicitudDx> solicitudDxList = resultadoFinalService.getSolicitudesDxByIdNotificacion(notificacion.getIdNotificacion());
-            for(DaSolicitudDx solicitudDx : solicitudDxList) {
-                conResultado =resultadoFinalService.getDetResActivosBySolicitud(solicitudDx.getIdSolicitudDx()).size()>0;
+            for (DaSolicitudDx solicitudDx : solicitudDxList) {
+                conResultado = resultadoFinalService.getDetResActivosBySolicitud(solicitudDx.getIdSolicitudDx()).size() > 0;
                 //cuando se encuentre el primer diagnóstico con resultado, salimos
                 if (conResultado)
                     break;
             }
             //si no hay resultado para diagnóstico, validar estudios
-            if (!conResultado){
+            if (!conResultado) {
                 List<DaSolicitudEstudio> solicitudEstudioList = resultadoFinalService.getSolicitudesEstByIdNotificacion(notificacion.getIdNotificacion());
-                for(DaSolicitudEstudio solicitudEstudio : solicitudEstudioList){
-                    conResultado =resultadoFinalService.getDetResActivosBySolicitud(solicitudEstudio.getIdSolicitudEstudio()).size()>0;
+                for (DaSolicitudEstudio solicitudEstudio : solicitudEstudioList) {
+                    conResultado = resultadoFinalService.getDetResActivosBySolicitud(solicitudEstudio.getIdSolicitudEstudio()).size() > 0;
                     //cuando se encuentre el primer estudio con resultado, salimos
                     if (conResultado)
                         break;
                 }
             }
-            map.put("conResultado",(conResultado? messageSource.getMessage("lbl.yes",null,null): messageSource.getMessage("lbl.no",null,null)));
-
+            map.put("conResultado", (conResultado ? messageSource.getMessage("lbl.yes", null, null) : messageSource.getMessage("lbl.no", null, null)));
             mapResponse.put(indice, map);
             indice ++;
         }
@@ -254,7 +255,11 @@ public class ReportesController {
             mav.setViewName("reportes/porSemana");
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-            List<TipoNotificacion> tiposNotificacion = catalogosService.getTipoNotificacion();
+            List<TipoNotificacion> tiposNotificacion = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
+            TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
+            TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
+            tiposNotificacion.add(tipoNotificacionSF);
+            tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
             List<AreaRep> areas = catalogosService.getAreaRep();
             List<Semanas> semanas = catalogosService.getSemanas();
@@ -328,7 +333,11 @@ public class ReportesController {
             mav.setViewName("reportes/porDia");
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-            List<TipoNotificacion> tiposNotificacion = catalogosService.getTipoNotificacion();
+            List<TipoNotificacion> tiposNotificacion = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
+            TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
+            TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
+            tiposNotificacion.add(tipoNotificacionSF);
+            tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
             List<AreaRep> areas = catalogosService.getAreaRep();
             mav.addObject("areas", areas);
@@ -455,6 +464,74 @@ public class ReportesController {
         logger.info("Obteniendo los datos para reporte por Area ");
         FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
         return areaReportService.getDataCT(filtroRep);
+    }
+
+    /*******************************************************************/
+    /************************* REPORTE NOTIFICACIONES SIN RESULTADO *************************/
+    /*******************************************************************/
+    @RequestMapping(value = "sinResultado", method = RequestMethod.GET)
+    public ModelAndView initCreateFormSR(HttpServletRequest request) throws Exception {
+        logger.debug("Crear reporte general de notificaciones");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        ModelAndView mav = new ModelAndView();
+        if (urlValidacion.isEmpty()) {
+            mav.setViewName("reportes/sinResultado");
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<TipoNotificacion> tiposNotificacion = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
+            TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
+            TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
+            tiposNotificacion.add(tipoNotificacionSF);
+            tiposNotificacion.add(tipoNotificacionIRA);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            List<AreaRep> areas = catalogosService.getAreaRep();
+            mav.addObject("areas", areas);
+            mav.addObject("departamentos", departamentos);
+            mav.addObject("entidades",entidadesAdtvases);
+            mav.addObject("tiposNotificacion", tiposNotificacion);
+
+        }else{
+            mav.setViewName(urlValidacion);
+        }
+        return mav;
+    }
+
+    @RequestMapping(value = "getDataSinResultado", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody String getDataSinResultado(
+            @RequestParam(value = "codArea", required = true) String codArea,
+            @RequestParam(value = "fechaInicial", required = true) String fechaInicial,
+            @RequestParam(value = "fechaFinal", required = true) String fechaFinal,
+            @RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
+            @RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
+            @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
+            @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion) throws ParseException {
+
+        logger.info("Obteniendo los datos de casos de notificaciones por semana");
+        FiltrosReporte filtrosReporte = new FiltrosReporte();
+        filtrosReporte.setCodArea(codArea);
+        filtrosReporte.setCodSilais(codSilais);
+        filtrosReporte.setCodDepartamento(codDepartamento);
+        filtrosReporte.setCodMunicipio(codMunicipio);
+        filtrosReporte.setCodUnidad(codUnidad);
+        filtrosReporte.setTipoNotificacion(tipoNotificacion);
+        filtrosReporte.setFechaInicio(DateUtil.StringToDate(fechaInicial+" 00:00:00","dd/MM/yyyy HH:mm:ss"));
+        filtrosReporte.setFechaFin(DateUtil.StringToDate(fechaFinal+" 23:59:59","dd/MM/yyyy HH:mm:ss"));
+        //filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
+        List<DaNotificacion> datos = reporteSemanaService.getDataSinResultado(filtrosReporte);
+        if (datos == null){
+            logger.debug("Nulo");
+        }
+        return notificacionesToJson(datos);
     }
 
     /*******************************************************************/

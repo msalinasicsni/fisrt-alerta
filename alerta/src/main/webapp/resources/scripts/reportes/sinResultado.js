@@ -28,7 +28,7 @@ var ViewReport = function () {
 			var title = "";
 
 			/* TABLETOOLS */
-/*			var table1 = $('#data_result').dataTable({
+			var table1 = $('#notices_result').dataTable({
 
 				// Tabletools options:
 				"sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'T>r>"+
@@ -59,13 +59,11 @@ var ViewReport = function () {
              	            ],
 		            "sSwfPath": parametros.dataTablesTTSWF
 		        },
-		        "aoColumns" : [{sClass: "aw-center"},{sClass: "aw-right" },{sClass: "aw-right" }
-		                   ],
 				"autoWidth" : true,
 				"preDrawCallback" : function() {
 					// Initialize the responsive datatables helper once.
 					if (!responsiveHelper_data_result) {
-						responsiveHelper_data_result = new ResponsiveDatatablesHelper($('#data_result'), breakpointDefinition);
+						responsiveHelper_data_result = new ResponsiveDatatablesHelper($('#notices_result'), breakpointDefinition);
 					}
 				},
 				"rowCallback" : function(nRow) {
@@ -75,48 +73,13 @@ var ViewReport = function () {
 					responsiveHelper_data_result.respond();
 				}
 			});
-*/
+
 
 			/* END TABLETOOLS */
 
-            var colors = ["#0066FF","#FF0000","#009900","#FF6600","#FF3399","#008B8B","#663399","#FFD700","#0000FF","#DC143C","#32CD32","#FF8C00","#C71585","#20B2AA","#6A5ACD","#9ACD32"];
-            var lineOptions = {
-                ///Boolean - Whether grid lines are shown across the chart
-                scaleShowGridLines : true,
-                //String - Colour of the grid lines
-                scaleGridLineColor : "rgba(0,0,0,0.04)",
-                //Number - Width of the grid lines
-                scaleGridLineWidth : 1,
-                //Boolean - Whether the line is curved between points
-                bezierCurve : false,
-                //Number - Tension of the bezier curve between points
-                bezierCurveTension : 0.4,
-                //Boolean - Whether to show a dot for each point
-                pointDot : true,
-                //Number - Radius of each point dot in pixels
-                pointDotRadius : 4,
-                //Number - Pixel width of point dot stroke
-                pointDotStrokeWidth : 1,
-                //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-                pointHitDetectionRadius : 20,
-                //Boolean - Whether to show a stroke for datasets
-                datasetStroke : true,
-                //Number - Pixel width of dataset stroke
-                datasetStrokeWidth : 2,
-                //Boolean - Whether to fill the dataset with a colour
-                datasetFill : true,
-                //Boolean - Re-draw chart on page resize
-                responsive: true,
-                //String - A legend template
-                legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-            };
-
-            $('#parameters_form').validate({
+             $('#parameters_form').validate({
     			// Rules for form validation
     				rules : {
-                        factor : {
-    						required : true
-    					},
     					codArea : {
     						required : true
     					},
@@ -190,46 +153,16 @@ var ViewReport = function () {
 
             function getData() {
             	bloquearUI(parametros.blockMess);
+                table1.fnClearTable();
                 $.getJSON(parametros.sActionUrl, $('#parameters_form').serialize(), function(data) {
-            		title = $('#tipoNotificacion option:selected').text();
             		var encontrado = false;
-            		if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
-    					title = title + '</br>'+parametros.nicaragua;
-    				}
-    				else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
-    					title = title + '</br>'+$('#codSilaisAtencion option:selected').text();
-    				}
-    				else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
-    					title = title + '</br>'+parametros.departamento+' '+$('#codDepartamento option:selected').text();
-    				}
-    				else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
-    					title = title + '</br>'+parametros.municipio+' '+$('#codMunicipio option:selected').text();
-    				}
-    				else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
-    					title = title + '</br>'+parametros.unidad+' '+$('#codUnidadAtencion option:selected').text();
-    				}
-            		title = title + '</br>'+parametros.desde+' '+$('#fechaInicial').val() +' '+parametros.hasta+' '+$('#fechaFinal').val();
-
-                    for(var row in data){
-                        data[row][0] = new Date(data[row][0]);
-                        encontrado = true;
+            		for(var row in data){
+                        if (data[row].conResultado === parametros.valorNo) {
+                            table1.fnAddData([data[row].persona, data[row].edad, data[row].sexo, data[row].embarazada, data[row].municipio, data[row].tipoNoti, data[row].fechaRegistro, data[row].fechaInicioSintomas,data[row].SILAIS,data[row].unidad]);
+                            encontrado = true;
+                        }
                     }
-                    console.log(data);
-                    g1 = new Dygraph(document.getElementById("noroll"),data,
-                        {
-                            rollPeriod : 1,
-                            showRoller : true,
-                            labels: [ "x", parametros.casos ],
-                            customBars : false,
-                            title : title,
-                            ylabel : parametros.casos,
-                            legend : 'always',
-                            labelsDivStyles : {
-                                'textAlign' : 'right'
-                            },
-                            showRangeSelector : true
-                        });
-            		if(!encontrado){
+                    if(!encontrado){
 	            		showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
 	            		title='';
             		}
@@ -250,17 +183,6 @@ var ViewReport = function () {
 				    timeout: timeout
 				    });
 	    	}
-            // Convert Hex color to RGB
-            function convertHex(hex,opacity){
-                hex = hex.replace('#','');
-                r = parseInt(hex.substring(0,2), 16);
-                g = parseInt(hex.substring(2,4), 16);
-                b = parseInt(hex.substring(4,6), 16);
-
-                // Add Opacity to RGB to obtain RGBA
-                result = 'rgba('+r+','+g+','+b+','+opacity/100+')';
-                return result;
-            }
         }
     };
 

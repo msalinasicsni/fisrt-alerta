@@ -476,6 +476,11 @@
 	<c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
     <c:set var="noData"><spring:message code="lbl.no.data" /></c:set>
     <c:set var="msgNoData"><spring:message code="msg.no.data.found" /></c:set>
+    <c:set var="nicaragua"><spring:message code="lbl.nicaragua.republic" /></c:set>
+    <c:set var="departamento"><spring:message code="lbl.dep" /></c:set>
+    <c:set var="municipio"><spring:message code="lbl.munic" /></c:set>
+    <c:set var="unidad"><spring:message code="lbl.unit" /></c:set>
+    <c:set var="semana"><spring:message code="lbl.week" /></c:set>
 	<spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
 	<spring:url var="unidadesUrl"   value="/api/v1/unidadesPorSilaisyMuni"  />
 	<script type="text/javascript">
@@ -487,7 +492,12 @@
 					unidadesUrl: "${unidadesUrl}",
 					dataTablesTTSWF: "${dataTablesTTSWF}",
                 noData: "${noData}",
-                msgNoData: "${msgNoData}"
+                msgNoData: "${msgNoData}",
+                nicaragua : "${nicaragua}",
+                departamento : "${departamento}",
+                municipio : "${municipio}",
+                unidad : "${unidad}",
+                semana : "${semana}"
             };
 			ViewReport.init(parametros);
 			SeleccionRegionSIVE.init(parametros);
