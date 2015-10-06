@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.service;
 
+import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.utilities.DateUtil;
 import ni.gob.minsa.alerta.utilities.FiltrosReporte;
 import org.hibernate.Query;
@@ -27,11 +28,9 @@ public class ReporteSemanaService {
     private SessionFactory sessionFactory;
     
     private static final String sqlDataSemana = "select cal.noSemana ";
-    private static final String sqlWhereSemana = " WHERE cal.anio = :anio " +
-            "and cal.noSemana between :semanaI and :semanaF " +
-            "order by cal.noSemana";
-
-    private static final String sqlDataDia = "select fechita, count(fechita) ";
+    private static final String sqlWhereSemana = " WHERE cal.anio = :anio and cal.noSemana between :semanaI and :semanaF order by cal.noSemana";
+    private static final String sqlDataDia = "select  noti.fechaRegistro, count(noti.idNotificacion) as casos ";
+    private static final String sqlDataSinR = "select distinct noti ";
 
     public List<Object[]> getDataPorSemana(FiltrosReporte filtro){
         Session session = sessionFactory.getCurrentSession();
@@ -42,7 +41,7 @@ public class ReporteSemanaService {
 
         if (filtro.getCodArea().equals("AREAREP|PAIS")){
             queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
-                    "where noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
+                    "where noti.pasivo = false and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
                     "From CalendarioEpi cal " + sqlWhereSemana);
 
             queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
@@ -53,7 +52,7 @@ public class ReporteSemanaService {
         }
         else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
             queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
-                    "where noti.codSilaisAtencion.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
+                    "where noti.pasivo = false and noti.codSilaisAtencion.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
                     "From CalendarioEpi cal " + sqlWhereSemana);
             queryCasos.setParameter("codSilais", filtro.getCodSilais());
 
@@ -66,7 +65,7 @@ public class ReporteSemanaService {
         }
         else if (filtro.getCodArea().equals("AREAREP|DEPTO")){
             queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
-                    "where noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId =:codDepartamento and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
+                    "where noti.pasivo = false and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId =:codDepartamento and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
                     "From CalendarioEpi cal " + sqlWhereSemana);
             queryCasos.setParameter("codDepartamento", filtro.getCodDepartamento());
 
@@ -79,7 +78,7 @@ public class ReporteSemanaService {
         }
         else if (filtro.getCodArea().equals("AREAREP|MUNI")){
             queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
-                    "where noti.codUnidadAtencion.municipio.divisionpoliticaId =:codMunicipio and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
+                    "where noti.pasivo = false and noti.codUnidadAtencion.municipio.divisionpoliticaId =:codMunicipio and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
                     "From CalendarioEpi cal " + sqlWhereSemana);
             queryCasos.setParameter("codMunicipio", filtro.getCodMunicipio());
 
@@ -92,7 +91,7 @@ public class ReporteSemanaService {
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
             queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
-                    "where noti.codUnidadAtencion.unidadId = :codUnidad and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
+                    "where noti.pasivo = false and noti.codUnidadAtencion.unidadId = :codUnidad and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
                     "From CalendarioEpi cal " + sqlWhereSemana);
             queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
 
@@ -133,39 +132,39 @@ public class ReporteSemanaService {
         List<Object[]> resultadoFinal = new ArrayList<Object[]>();
 
         if (filtro.getCodArea().equals("AREAREP|PAIS")){
-            queryCasos = session.createQuery(" select  noti.fechaRegistro, count(noti.fechaRegistro) as casos From DaNotificacion  noti " +
-                    "where noti.codTipoNotificacion.codigo = :tipoNoti " +
+            queryCasos = session.createQuery(sqlDataDia + " From DaNotificacion  noti " +
+                    "where noti.pasivo = false and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     "group by noti.fechaRegistro order by noti.fechaRegistro asc");
 
         }
         else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
-            queryCasos = session.createQuery(" select  noti.fechaRegistro, count(noti.fechaRegistro) as casos From DaNotificacion  noti " +
-                    "where noti.codSilaisAtencion.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
+            queryCasos = session.createQuery(sqlDataDia + " From DaNotificacion  noti " +
+                    "where noti.pasivo = false and noti.codSilaisAtencion.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     "group by noti.fechaRegistro order by noti.fechaRegistro asc");
             queryCasos.setParameter("codSilais", filtro.getCodSilais());
 
         }
         else if (filtro.getCodArea().equals("AREAREP|DEPTO")){
-            queryCasos = session.createQuery(" select  noti.fechaRegistro, count(noti.fechaRegistro) as casos From DaNotificacion  noti " +
-                    "where noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId =:codDepartamento and noti.codTipoNotificacion.codigo = :tipoNoti " +
+            queryCasos = session.createQuery(sqlDataDia + " From DaNotificacion  noti " +
+                    "where noti.pasivo = false and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId =:codDepartamento and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     "group by noti.fechaRegistro order by noti.fechaRegistro asc");
             queryCasos.setParameter("codDepartamento", filtro.getCodDepartamento());
 
         }
         else if (filtro.getCodArea().equals("AREAREP|MUNI")){
-            queryCasos = session.createQuery(" select  noti.fechaRegistro, count(noti.fechaRegistro) as casos From DaNotificacion  noti " +
-                    "where noti.codUnidadAtencion.municipio.divisionpoliticaId =:codMunicipio and noti.codTipoNotificacion.codigo = :tipoNoti " +
+            queryCasos = session.createQuery(sqlDataDia + " From DaNotificacion  noti " +
+                    "where noti.pasivo = false and noti.codUnidadAtencion.municipio.divisionpoliticaId =:codMunicipio and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     "group by noti.fechaRegistro order by noti.fechaRegistro asc");
             queryCasos.setParameter("codMunicipio", filtro.getCodMunicipio());
 
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
-            queryCasos = session.createQuery(" select  noti.fechaRegistro, count(noti.fechaRegistro) as casos From DaNotificacion  noti " +
-                    "where noti.codUnidadAtencion.unidadId = :codUnidad and noti.codTipoNotificacion.codigo = :tipoNoti " +
+            queryCasos = session.createQuery(sqlDataDia + " From DaNotificacion  noti " +
+                    "where noti.pasivo = false and noti.codUnidadAtencion.unidadId = :codUnidad and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     "group by noti.fechaRegistro order by noti.fechaRegistro asc");
             queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
@@ -213,9 +212,66 @@ public class ReporteSemanaService {
                 ultimaFecha = fechaCompara;
                 cantidadCasos = (Long)jaja[1];
             }
-            //if (agregar)//agregamos registro
-                //resultadoFinal.add(registroseman);
         }
         return resultadoFinal;
+    }
+
+    public List<DaNotificacion> getDataSinResultado(FiltrosReporte filtro) throws ParseException {
+
+        Session session = sessionFactory.getCurrentSession();
+        Query queryCasos = null;
+        List<DaNotificacion> resultadoTemp = new ArrayList<DaNotificacion>();
+
+        if (filtro.getCodArea().equals("AREAREP|PAIS")){
+            queryCasos = session.createQuery(sqlDataSinR + "From DaNotificacion noti " +
+                            "where noti.pasivo = false  and noti.codTipoNotificacion.codigo = :tipoNoti " +
+            " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    " order by noti.fechaRegistro asc");
+
+        }
+        else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
+            queryCasos = session.createQuery(sqlDataSinR + "From DaNotificacion noti " +
+                    "where noti.pasivo = false  and noti.codSilaisAtencion.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    " order by noti.fechaRegistro asc");
+
+            queryCasos.setParameter("codSilais", filtro.getCodSilais());
+
+        }
+        else if (filtro.getCodArea().equals("AREAREP|DEPTO")){
+            queryCasos = session.createQuery(sqlDataSinR + "From DaNotificacion noti " +
+                    "where noti.pasivo = false  and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId =:codDepartamento" +
+                    " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    " order by noti.fechaRegistro asc");
+            queryCasos.setParameter("codDepartamento", filtro.getCodDepartamento());
+
+        }
+        else if (filtro.getCodArea().equals("AREAREP|MUNI")){
+            queryCasos = session.createQuery(sqlDataSinR + "From DaNotificacion noti " +
+                    "where noti.pasivo = false  and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "and noti.codUnidadAtencion.municipio.divisionpoliticaId =:codMunicipio" +
+                    " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    " order by noti.fechaRegistro asc");
+
+            queryCasos.setParameter("codMunicipio", filtro.getCodMunicipio());
+
+        }
+        else if (filtro.getCodArea().equals("AREAREP|UNI")){
+            queryCasos = session.createQuery(sqlDataSinR + "From DaNotificacion noti " +
+                    "where noti.pasivo = false  and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "and noti.codUnidadAtencion.unidadId = :codUnidad " +
+                    " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    " order by noti.fechaRegistro asc");
+
+            queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
+        }
+
+        queryCasos.setParameter("fechaInicio", filtro.getFechaInicio());
+        queryCasos.setParameter("fechaFin", filtro.getFechaFin());
+        queryCasos.setParameter("tipoNoti", filtro.getTipoNotificacion());
+
+        resultadoTemp = queryCasos.list();
+        return resultadoTemp;
     }
 }
