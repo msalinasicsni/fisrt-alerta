@@ -115,6 +115,35 @@ var ViewReport = function () {
                 legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
             };
 
+            // Se agrega método de validación 'greaterOrEqualThan', para validar que la semana final sea mayor o igual a la semana inicial
+            jQuery.validator.addMethod("greaterOrEqualThan",
+                function (value, element, param) {
+                    var $min = $(param[0]);
+                    if (this.settings.onfocusout) {
+                        $min.off(".validate-greaterOrEqualThan").on("blur.validate-greaterOrEqualThan", function () {
+                            $(element).valid();
+                        });
+                    }
+                    return parseInt(value) >= parseInt($min.val());
+                }, function (param){
+                    var msg = parametros.msg_greaterOrEqualThan.replace(/\{0\}/,param[1]).replace(/\{1\}/,param[2]);
+                    return msg;
+                });
+            // Se agrega método de validación 'lessOrEqualThan', para validar que la semana inicial sea menor o igual a la semana final
+            /*jQuery.validator.addMethod("lessOrEqualThan",
+                function (value, element, param) {
+                    var $min = $(param[0]);
+                    if (this.settings.onfocusout) {
+                        $min.off(".validate-lessOrEqualThan").on("blur.validate-lessOrEqualThan", function () {
+                            $(element).valid();
+                        });
+                    }
+                    return parseInt(value) <= parseInt($min.val());
+                }, function (param){
+                    var msg = parametros.msg_lessOrEqualThan.replace(/\{0\}/,param[1]).replace(/\{1\}/,param[2]);
+                    return msg;
+                });*/
+
             $('#parameters_form').validate({
     			// Rules for form validation
     				rules : {
@@ -126,9 +155,11 @@ var ViewReport = function () {
     					},
     					semI : {
     						required : true
+                            //lessOrEqualThan: ['#semF',parametros.semana1,parametros.semana2]
     					},
     					semF : {
-    						required : true
+    						required : true,
+                            greaterOrEqualThan: ['#semI',parametros.semana2,parametros.semana1]
     					},
     					anioI : {
     						required : true
@@ -234,8 +265,8 @@ var ViewReport = function () {
                     var label = $('#anioI').find('option:selected').val();
                     datasets.push({
                         label: label,
-                        fillColor: convertHex(colorS,0),
-                        strokeColor: convertHex(colorS,100),
+                        fillColor: convertHex(colorS,20),
+                        strokeColor: convertHex(colorS,80),
                         pointColor: convertHex(colorS,100),
                         pointStrokeColor: "#fff",
                         pointHighlightFill: "#fff",
@@ -244,8 +275,8 @@ var ViewReport = function () {
                     });
                     datasetsTasa.push({
                         label: label,
-                        fillColor: convertHex(colorT,0),
-                        strokeColor: convertHex(colorT,100),
+                        fillColor: convertHex(colorT,20),
+                        strokeColor: convertHex(colorT,800),
                         pointColor: convertHex(colorT,100),
                         pointStrokeColor: "#fff",
                         pointHighlightFill: "#fff",
