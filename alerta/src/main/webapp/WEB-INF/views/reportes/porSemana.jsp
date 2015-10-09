@@ -481,6 +481,10 @@
     <c:set var="municipio"><spring:message code="lbl.munic" /></c:set>
     <c:set var="unidad"><spring:message code="lbl.unit" /></c:set>
     <c:set var="semana"><spring:message code="lbl.week" /></c:set>
+    <c:set var="msg_greaterOrEqualThan"><spring:message code="validation.greaterOrEqualThan"/> </c:set>
+    <c:set var="msg_lessOrEqualThan"><spring:message code="validation.lessOrEqualThan"/> </c:set>
+    <c:set var="semana1"><spring:message code="week1" /> </c:set>
+    <c:set var="semana2"><spring:message code="week2" /> </c:set>
 	<spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
 	<spring:url var="unidadesUrl"   value="/api/v1/unidadesPorSilaisyMuni"  />
 	<script type="text/javascript">
@@ -497,7 +501,11 @@
                 departamento : "${departamento}",
                 municipio : "${municipio}",
                 unidad : "${unidad}",
-                semana : "${semana}"
+                semana : "${semana}",
+                msg_greaterOrEqualThan : ${msg_greaterOrEqualThan},
+                msg_lessOrEqualThan : ${msg_lessOrEqualThan},
+                semana1 : "${semana1}",
+                semana2 : "${semana2}"
             };
 			ViewReport.init(parametros);
 			SeleccionRegionSIVE.init(parametros);
