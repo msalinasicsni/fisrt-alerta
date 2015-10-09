@@ -394,7 +394,11 @@ public class ReportesController {
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
         List<AreaRep> areas = catalogosService.getAreaRep();
         List<Anios> anios = catalogosService.getAnios();
-        List<TipoNotificacion> tipoNoti = catalogosService.getTipoNotificacion();
+        List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
+        TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
+        TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
+        tipoNoti.add(tipoNotificacionSF);
+        tipoNoti.add(tipoNotificacionIRA);
         List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
         model.addAttribute("areas", areas);
         model.addAttribute("anios", anios);
@@ -546,7 +550,11 @@ public class ReportesController {
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
         List<AreaRep> areas = catalogosService.getAreaRep();
         List<Anios> anios = catalogosService.getAnios();
-        List<TipoNotificacion> tipoNoti = catalogosService.getTipoNotificacion();
+        List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
+        TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
+        TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
+        tipoNoti.add(tipoNotificacionSF);
+        tipoNoti.add(tipoNotificacionIRA);
         List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
         model.addAttribute("areas", areas);
         model.addAttribute("anios", anios);
@@ -558,7 +566,7 @@ public class ReportesController {
     }
 
     /**
-     * Método para obtener data para Reporte por Area
+     * Método para obtener data para Reporte por Sexo
      * @param filtro JSon con los datos de los filtros a aplicar en la búsqueda
      * @return Object
      * @throws Exception
@@ -569,5 +577,46 @@ public class ReportesController {
         logger.info("Obteniendo los datos para reporte por Sexo ");
         FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
         return areaReportService.getDataSexReport(filtroRep);
+    }
+
+    /*******************************************************************/
+    /************************ REPORTE POR RESULTADO ***********************/
+    /*******************************************************************/
+
+    @RequestMapping(value = "reportResult", method = RequestMethod.GET)
+    public String initReportResult(Model model,HttpServletRequest request) throws Exception {
+        logger.debug("Reporte por Resultado");
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
+        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+        List<AreaRep> areas = catalogosService.getAreaRep();
+        List<Anios> anios = catalogosService.getAnios();
+        List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
+        TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
+        TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
+        tipoNoti.add(tipoNotificacionSF);
+        tipoNoti.add(tipoNotificacionIRA);
+        List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
+        model.addAttribute("areas", areas);
+        model.addAttribute("anios", anios);
+        model.addAttribute("entidades", entidades);
+        model.addAttribute("departamentos", departamentos);
+        model.addAttribute("tipoNoti", tipoNoti);
+        model.addAttribute("factor", factor);
+        return "reportes/porResultado";
+    }
+
+    /**
+     * Método para obtener data para Reporte por Resultado
+     * @param filtro JSon con los datos de los filtros a aplicar en la búsqueda
+     * @return Object
+     * @throws Exception
+     */
+    @RequestMapping(value = "dataReportResult", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<Object[]> fetchReportResultJson(@RequestParam(value = "filtro", required = true) String filtro) throws Exception{
+        logger.info("Obteniendo los datos para Reporte por Resultado ");
+        FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
+        return areaReportService.getDataResultReport(filtroRep);
     }
 }
