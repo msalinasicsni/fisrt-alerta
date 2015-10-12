@@ -91,13 +91,17 @@ public class ReporteSemanaService {
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
             queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
-                    "where noti.pasivo = false and noti.codUnidadAtencion.unidadId = :codUnidad and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
+                    "where noti.pasivo = false and (noti.codUnidadAtencion.unidadId = :codUnidad " +
+                    " or noti.codUnidadAtencion.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
+                    ") " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
                     "From CalendarioEpi cal " + sqlWhereSemana);
             queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
 
             queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
-                    "from SivePoblacion pob where pob.comunidad.sector.unidad.unidadId =:codUnidad " +
-                    "and pob.grupo =:tipoPob " +
+                    "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
+                    " or  pob.comunidad.sector.unidad.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
+                    " ) and pob.grupo =:tipoPob " +
                     "and (pob.anio =:anio) " +
                     "group by pob.anio order by pob.anio");
             queryPoblacion.setParameter("codUnidad", filtro.getCodUnidad());
@@ -264,8 +268,9 @@ public class ReporteSemanaService {
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
             queryCasos = session.createQuery(sqlDataSinR + "From DaNotificacion noti " +
                     "where noti.pasivo = false  and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                    "and noti.codUnidadAtencion.unidadId = :codUnidad " +
-                    " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    "and (noti.codUnidadAtencion.unidadId = :codUnidad " +
+                    " or noti.codUnidadAtencion.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
+                    " ) and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " order by noti.fechaRegistro asc");
 
             queryCasos.setParameter("codUnidad", filtro.getCodUnidad());

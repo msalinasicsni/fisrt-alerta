@@ -391,9 +391,9 @@
 			SeleccionRegionSIVE.init(parametros);
             handleDatePickers("${pageContext.request.locale.language}");
             $("li.reportes").addClass("open");
-	    	$("li.dia").addClass("active");
+	    	$("li.withoutRes").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
-	    		$("li.dia").parents("ul").slideDown(200);
+	    		$("li.withoutRes").parents("ul").slideDown(200);
 	    	}
 		});
 	</script>

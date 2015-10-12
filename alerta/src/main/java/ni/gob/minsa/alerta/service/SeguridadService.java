@@ -590,8 +590,9 @@ public class SeguridadService {
     public List<Unidades> obtenerUnidadesPorUsuarioEntidadMunicipio(Integer pUsuarioId, long pCodSilais, String pCodMunicipio, String pCodigoSis, String tipoUnidades){
         List<Unidades> unidadesList = new ArrayList<Unidades>();
         try {
-            String query = "select uni from Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
-                    "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+            //se obtienen todas las unidades del los silais asociados directamente
+            String query = "select uni from Unidades uni, UsuarioEntidad usuni, Usuarios usu, Sistema sis " +
+                    "where uni.entidadAdtva.entidadAdtvaId = usuni.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
                     "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo and uni.tipoUnidad in ("+tipoUnidades+")" +
                     "and uni.entidadAdtva.codigo = :pCodSilais and uni.municipio.codigoNacional = :pCodMunicipio order by uni.nombre";
             Query qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
@@ -601,10 +602,10 @@ public class SeguridadService {
             qrUsuarioUnidad.setParameter("pCodSilais", pCodSilais);
             qrUsuarioUnidad.setParameter("pCodMunicipio",pCodMunicipio);
             unidadesList = qrUsuarioUnidad.list();
-            //no hay unidades asociadas directamente al usuario, se obtienen todas las unidades del los silais asociados directamente
+            //no hay unidades asociadas indirectamente al usuario, se obtienen las unidades asociadas directamente
             if (unidadesList.size()<=0){
-                query = "select uni from Unidades uni, UsuarioEntidad usuni, Usuarios usu, Sistema sis " +
-                        "where uni.entidadAdtva.entidadAdtvaId = usuni.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                query = "select uni from Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
+                        "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
                         "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo and uni.tipoUnidad in ("+tipoUnidades+")" +
                         "and uni.entidadAdtva.codigo = :pCodSilais and uni.municipio.codigoNacional = :pCodMunicipio order by uni.nombre";
                 qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
