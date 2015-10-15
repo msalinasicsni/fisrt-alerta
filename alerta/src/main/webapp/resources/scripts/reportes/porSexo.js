@@ -31,6 +31,11 @@ var sexReport = function () {
             var title = "";
 
             /* TABLETOOLS */
+            var fecha = new Date();
+            var fechaFormateada = (fecha.getDate()<10?'0'+fecha.getDate():fecha.getDate())
+                +''+(fecha.getMonth()+1<10?'0'+fecha.getMonth()+1:fecha.getMonth()+1)
+                +''+fecha.getFullYear();
+
             var table1 = $('#table1').dataTable({
 
                 // Tabletools options:
@@ -45,13 +50,13 @@ var sexReport = function () {
                             "aButtons": [
                                 {
                                     "sExtends": "csv",
-                                    "sFileName": "ddd"+"-*.csv",
+                                    "sFileName": fechaFormateada + "-ReportePorSexo.csv",
                                     "sTitle": "ddd",
                                     "oSelectorOpts": { filter: 'applied', order: 'current' }
                                 },
                                 {
                                     "sExtends": "pdf",
-                                    "sFileName": "DD"+"-*.pdf",
+                                    "sFileName": fechaFormateada + "-ReportePorSexo.pdf",
                                     "sTitle": ":fff:",
                                     "sPdfMessage": "FF",
                                     "oSelectorOpts": { filter: 'applied', order: 'current' },
@@ -327,10 +332,10 @@ var sexReport = function () {
                     datasets: datasetsT
                 };
                 // render chart
-                if( window.myBar!==undefined)
-                    window.myBar.destroy();
+                if( window.myBar2!==undefined)
+                    window.myBar2.destroy();
                 var ctx = document.getElementById("lineChartT").getContext("2d");
-                window.myBar = new Chart(ctx).Bar(barData, barOptions);
+                window.myBar2 = new Chart(ctx).Bar(barData, barOptions);
                 // END BAR CHART
 
                 legend(document.getElementById("lineLegendT"), barData);

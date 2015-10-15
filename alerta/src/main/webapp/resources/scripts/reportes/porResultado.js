@@ -29,6 +29,11 @@ var resultReport = function () {
             var title = "";
 
             /* TABLETOOLS */
+            var fecha = new Date();
+            var fechaFormateada = (fecha.getDate()<10?'0'+fecha.getDate():fecha.getDate())
+                +''+(fecha.getMonth()+1<10?'0'+fecha.getMonth()+1:fecha.getMonth()+1)
+                +''+fecha.getFullYear();
+
             var table1 = $('#tableRES').dataTable({
 
                 // Tabletools options:
@@ -43,13 +48,13 @@ var resultReport = function () {
                             "aButtons": [
                                 {
                                     "sExtends": "csv",
-                                    "sFileName": "ddd"+"-*.csv",
+                                    "sFileName": fechaFormateada + "-ReportePorResultado.csv",
                                     "sTitle": "ddd",
                                     "oSelectorOpts": { filter: 'applied', order: 'current' }
                                 },
                                 {
                                     "sExtends": "pdf",
-                                    "sFileName": "DD"+"-*.pdf",
+                                    "sFileName": fechaFormateada + "-ReportePorResultado.pdf",
                                     "sTitle": ":fff:",
                                     "sPdfMessage": "FF",
                                     "oSelectorOpts": { filter: 'applied', order: 'current' },
@@ -199,16 +204,20 @@ var resultReport = function () {
                     if ($('#codArea option:selected').val() == "AREAREP|PAIS") {
                         title = title + '</br>' + $('#nicRepublic').val();
                         $('#firstTh').html($('#silaisT').val());
+
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
-                        title = title + '</br>'+$('#codSilaisAtencion option:selected').text();
-                        $('#firstTh').html( $('#silaisT').val() );
+                        title = title + '</br>'+$('#codSilaisAtencion option:selected').text() + " " + "-" + " " + $('#municps').val() ;
+                        $('#firstTh').html( $('#municT').val() );
+
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
                         title = title + '</br>' + $('#dep').val() + " " +$('#codDepartamento option:selected').text();
                         $('#firstTh').html( $('#municT').val() );
+
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
+
                         title = title + '</br>'+ $('#munic').val() + " "  +$('#codMunicipio option:selected').text();
                         $('#firstTh').html( $('#usT').val() );
 
@@ -216,6 +225,7 @@ var resultReport = function () {
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
                         title = title + '</br>'+ $('#unit').val() + " " +$('#codUnidadAtencion option:selected').text();
                         $('#firstTh').html( $('#usT').val() );
+
 
                     }
                     title = title + '</br>' + $('#from').val() +" " +$('#initDate').val()  + " "+ "-" + " " + $('#to').val() + " " +$('#endDate').val();
@@ -227,23 +237,41 @@ var resultReport = function () {
 
                     var colorS = colors[1];
                     for (var row in data) {
+
+                        if($('#codArea option:selected').val() != "AREAREP|MUNI"){
+                            labels.push([data[row][0]]);
+                            datosRes.push(data[row][6]);
+                        }
                         table1.fnAddData([data[row][0], data[row][1], data[row][2], data[row][3], data[row][4], data[row][5], data[row][6]]);
                         encontrado = true;
-                        labels.push([data[row][0]]);
-                        datosRes.push(data[row][6]);
+
                     }
 
-                    datasetsRes.push({
-                        label: "% Positividad",
-                        fillColor: convertHex(colorS,100),
-                        strokeColor: convertHex(colorS,100),
-                        highlightFill: convertHex(colorS,100),
-                        highlightStroke: convertHex(colorS,100),
-                        data: datosRes
-                    });
+                    if($('#codArea option:selected').val() != "AREAREP|MUNI"){
+                        datasetsRes.push({
+                            label: "% Positividad",
+                            fillColor: convertHex(colorS,100),
+                            strokeColor: convertHex(colorS,100),
+                            highlightFill: convertHex(colorS,100),
+                            highlightStroke: convertHex(colorS,100),
+                            data: datosRes
+                        });
 
+                        barChart(datasetsRes,labels);
+                    } else {
+                        $('#lineChart-title').html("");
 
-                   barChart(datasetsRes,labels);
+                        leg = $('#lineLegend');
+
+                        leg.html("");
+                        leg.removeClass("legend");
+
+                        if (window.myBar !== undefined)
+                            window.myBar.destroy();
+
+                        document.getElementById("lineChart").style.height = "120px";
+
+                    }
 
 
                     if(!encontrado){
@@ -299,6 +327,8 @@ var resultReport = function () {
                 result = 'rgba('+r+','+g+','+b+','+opacity/100+')';
                 return result;
             }
+
+
 
 
 

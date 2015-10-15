@@ -133,7 +133,7 @@
                 <input id="unit" type="hidden" value="<spring:message code="lbl.unit"/>"/>
                 <input id="from" type="hidden" value="<spring:message code="lbl.from"/>"/>
                 <input id="to" type="hidden" value="<spring:message code="lbl.to"/>"/>
-
+                <input id="municps" type="hidden" value="<spring:message code="lbl.municps"/>"/>
                 <input id="silaisT" type="hidden" value="<spring:message code="lbl.silais"/>"/>
                 <input id="municT" type="hidden" value="<spring:message code="muni"/>"/>
                 <input id="usT" type="hidden" value="<spring:message code="lbl.health.unit"/>"/>
@@ -334,7 +334,7 @@
 </div>
 <!-- end row -->
 <!-- row -->
-<div class="row">
+<div id="dWid3" class="row">
     <!-- NEW WIDGET START -->
     <article class="col-xs-12 col-sm-12 col-md-7 col-lg-12">
         <!-- Widget ID (each widget will need unique ID)-->
@@ -368,7 +368,7 @@
                     <!-- this is what the user will see -->
                     <div id="lineChart-title" align="center"></div>
                     <div id="lineLegend"></div>
-                    <canvas id="lineChart" height="120"></canvas>
+                    <canvas  id="lineChart" height="120"></canvas>
                 </div>
                 <!-- end widget content -->
             </div>

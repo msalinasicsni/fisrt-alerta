@@ -28,6 +28,11 @@ var areaReport = function () {
             var title = "";
 
             /* TABLETOOLS */
+
+            var fecha = new Date();
+            var fechaFormateada = (fecha.getDate()<10?'0'+fecha.getDate():fecha.getDate())
+                +''+(fecha.getMonth()+1<10?'0'+fecha.getMonth()+1:fecha.getMonth()+1)
+                +''+fecha.getFullYear();
             var table1 = $('#table1').dataTable({
 
                 // Tabletools options:
@@ -42,13 +47,13 @@ var areaReport = function () {
                             "aButtons": [
                                 {
                                     "sExtends": "csv",
-                                    "sFileName": "ddd"+"-*.csv",
+                                    "sFileName": fechaFormateada + "-ReportePorArea.csv",
                                     "sTitle": "ddd",
                                     "oSelectorOpts": { filter: 'applied', order: 'current' }
                                 },
                                 {
                                     "sExtends": "pdf",
-                                    "sFileName": "DD"+"-*.pdf",
+                                    "sFileName": fechaFormateada+"-ReportePorArea.pdf",
                                     "sTitle": ":fff:",
                                     "sPdfMessage": "FF",
                                     "oSelectorOpts": { filter: 'applied', order: 'current' },
@@ -201,33 +206,30 @@ var areaReport = function () {
                     var encontrado = false;
                     if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
                         title = title + '</br>' + $('#nicRepublic').val();
-                        $('#thSilais').show();
-                        $('#thMunic').hide();
-                        $('#thUnit').hide();
+                        $('#firstTh').html($('#silaisT').val());
+
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
-                        title = title + '</br>'+$('#codSilaisAtencion option:selected').text();
-                        $('#thSilais').show();
-                        $('#thMunic').hide();
-                        $('#thUnit').hide();
+                        title = title + '</br>'+$('#codSilaisAtencion option:selected').text() + " " + "-" + " " + $('#municps').val() ;
+                        $('#firstTh').html( $('#municT').val() );
+
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
                         title = title + '</br>' + $('#dep').val() + " " +$('#codDepartamento option:selected').text();
-                        $('#thMunic').show();
-                        $('#thSilais').hide();
-                        $('#thUnit').hide();
+                        $('#firstTh').html( $('#municT').val() );
+
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
                         title = title + '</br>'+ $('#munic').val() + " "  +$('#codMunicipio option:selected').text();
-                        $('#thUnit').show();
-                        $('#thMunic').hide();
-                        $('#thSilais').hide();
+                        $('#firstTh').html( $('#usT').val() );
+
+
+
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
                         title = title + '</br>'+ $('#unit').val() + " " +$('#codUnidadAtencion option:selected').text();
-                        $('#thUnit').show();
-                        $('#thMunic').hide();
-                        $('#thSilais').hide();
+                        $('#firstTh').html( $('#usT').val() );
+
                     }
                     title = title + '</br>' + $('#from').val() +" " +$('#initDate').val()  + " "+ "-" + " " + $('#to').val() + " " +$('#endDate').val();
 
@@ -238,34 +240,64 @@ var areaReport = function () {
                     datasetsT = [];
 
                     for (var row in data) {
+
+                        if($('#codArea option:selected').val() != "AREAREP|MUNI"){
+                            labels.push([data[row][0]]);
+                            datosC.push(data[row][1]);
+                            datosT.push(data[row][2]);
+                        }
                         table1.fnAddData([data[row][0],data[row][1], data[row][2]]);
                         encontrado = true;
-                        labels.push([data[row][0]]);
-                        datosC.push(data[row][1]);
-                        datosT.push(data[row][2]);
+
                     }
 
                     var colorS = colors[0];
                     var colorT = colors[1];
                   //  var label = $('#anioI').find('option:selected').val();
-                    datasetsC.push({
-                        label: "Casos",
-                        fillColor: convertHex(colorS,100),
-                        strokeColor: convertHex(colorS,100),
-                        highlightFill: convertHex(colorS,100),
-                        highlightStroke: convertHex(colorS,100),
-                        data: datosC
-                    });
-                    datasetsT.push({
-                        label: "Tasas",
-                        fillColor: convertHex(colorT,100),
-                        strokeColor: convertHex(colorT,100),
-                        highlightFill: convertHex(colorT,100),
-                        highlightStroke:convertHex(colorT,100),
-                        data: datosT
-                    });
-                   barChart(datasetsC,labels);
-                   barChartT(datasetsT,labels);
+
+                    if($('#codArea option:selected').val() != "AREAREP|MUNI"){
+
+                        datasetsC.push({
+                            label: "Casos",
+                            fillColor: convertHex(colorS,100),
+                            strokeColor: convertHex(colorS,100),
+                            highlightFill: convertHex(colorS,100),
+                            highlightStroke: convertHex(colorS,100),
+                            data: datosC
+                        });
+                        datasetsT.push({
+                            label: "Tasas",
+                            fillColor: convertHex(colorT,100),
+                            strokeColor: convertHex(colorT,100),
+                            highlightFill: convertHex(colorT,100),
+                            highlightStroke:convertHex(colorT,100),
+                            data: datosT
+                        });
+
+                        barChart(datasetsC,labels);
+                        barChartT(datasetsT,labels);
+
+                    }else{
+                        leg = $('#lineLegend');
+                        leg1 = $('#lineLegendT');
+
+                        $('#lineChart-title').html("");
+                        $('#lineChart-titleT').html("");
+                        leg1.removeClass("legend");
+                        leg.removeClass("legend");
+                        leg1.html("");
+                        leg.html("");
+
+                        if (window.myBar !== undefined)
+                            window.myBar.destroy();
+
+                        if (window.myBar2 !== undefined)
+                            window.myBar2.destroy();
+
+                        document.getElementById("lineChart").style.height = "120px";
+                        document.getElementById("lineChartT").style.height = "120px";
+
+                    }
 
                     if(!encontrado){
                         showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
@@ -318,10 +350,10 @@ var areaReport = function () {
                     datasets: datasetsT
                 };
                 // render chart
-                if( window.myBar!==undefined)
-                    window.myBar.destroy();
+                if( window.myBar2!==undefined)
+                    window.myBar2.destroy();
                 var ctx = document.getElementById("lineChartT").getContext("2d");
-                window.myBar = new Chart(ctx).Bar(barData, barOptions);
+                window.myBar2 = new Chart(ctx).Bar(barData, barOptions);
                 // END BAR CHART
 
                 legend(document.getElementById("lineLegendT"), barData);

@@ -130,9 +130,14 @@
                                     <input id="nicRepublic" type="hidden" value="<spring:message code="lbl.nicaragua.republic"/>"/>
                                     <input id="dep" type="hidden" value="<spring:message code="lbl.dep"/>"/>
                                     <input id="munic" type="hidden" value="<spring:message code="lbl.munic"/>"/>
+                                    <input id="municps" type="hidden" value="<spring:message code="lbl.municps"/>"/>
                                     <input id="unit" type="hidden" value="<spring:message code="lbl.unit"/>"/>
                                     <input id="from" type="hidden" value="<spring:message code="lbl.from"/>"/>
                                     <input id="to" type="hidden" value="<spring:message code="lbl.to"/>"/>
+                                    <input id="silaisT" type="hidden" value="<spring:message code="lbl.silais"/>"/>
+                                    <input id="municT" type="hidden" value="<spring:message code="muni"/>"/>
+                                    <input id="usT" type="hidden" value="<spring:message code="lbl.health.unit"/>"/>
+
 
                                     <form id="area_form" class ="smart-form">
 										<fieldset>
@@ -317,10 +322,7 @@
                                     <table id="table1" class="table table-striped table-bordered table-hover" width="100%">
                                         <thead>
                                         <tr>
-                                            <th hidden="hidden" id="thUnit"><spring:message code="lbl.health.unit"/></th>
-                                            <th hidden="hidden" id="thSilais"><spring:message code="lbl.silais"/></th>
-                                            <th hidden="hidden" id="thDep"><spring:message code="lbl.department"/></th>
-                                            <th hidden="hidden" id="thMunic"><spring:message code="muni"/></th>
+                                            <th id="firstTh"></th>
                                             <th><spring:message code="lbl.cases"/></th>
                                             <th><spring:message code="lbl.rates"/></th>
 
@@ -340,7 +342,7 @@
 				</div>
 				<!-- end row -->
 				<!-- row -->
-				<div class="row">
+				<div id="d1" class="row">
 					<!-- NEW WIDGET START -->
 					<article class="col-xs-12 col-sm-12 col-md-7 col-lg-12">
 						<!-- Widget ID (each widget will need unique ID)-->
@@ -386,7 +388,7 @@
 				</div>
 				<!-- end row -->
                 <!-- row -->
-                <div class="row">
+                <div id="d2" class="row">
                     <!-- NEW WIDGET START -->
                     <article class="col-xs-12 col-sm-12 col-md-7 col-lg-12">
                         <!-- Widget ID (each widget will need unique ID)-->

@@ -56,28 +56,46 @@ public class AreaReportService {
                     " and noti.pasivo = false " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     "and noti.fechaRegistro between :fechaInicio and :fechaFin) " +
-                    "FROM EntidadesAdtvas ent ");
+                    "FROM EntidadesAdtvas ent "+
+                    " where ent.pasivo = 0 " );
 
 
 
         }
         else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
 
-            queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
+           /* queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
                     "from SivePoblacionDivPol pob where pob.divpol.dependenciaSilais.entidadAdtvaId=:codSilais " +
+                    "and pob.grupo =:tipoPob " +
+                    "and (pob.anio =:anio) " +
+                    "group by pob.anio order by pob.anio");
+            queryPoblacion.setParameter("codSilais", filtro.getCodSilais());*/
+
+            queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
+                    "from SivePoblacionDivPol pob where pob.divpol.dependenciaSilais.entidadAdtvaId =:codSilais " +
                     "and pob.grupo =:tipoPob " +
                     "and (pob.anio =:anio) " +
                     "group by pob.anio order by pob.anio");
             queryPoblacion.setParameter("codSilais", filtro.getCodSilais());
 
-            queryCasos = session.createQuery("select ent.nombre, " +
+          /*  queryCasos = session.createQuery("select ent.nombre, " +
                     "(select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codSilaisAtencion.codigo =  ent.codigo " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti" +
                     " and noti.pasivo = false " +
                     "and noti.fechaRegistro between :fechaInicio and :fechaFin) " +
                     "FROM EntidadesAdtvas ent " +
-                    "where ent.codigo = :codSilais ");
+                    "where ent.codigo = :codSilais ");*/
+
+            queryCasos = session.createQuery(" select divi.nombre, " +
+                    "(select count(noti.idNotificacion) from DaNotificacion noti " +
+                    "where noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.pasivo = false " +
+                    "and noti.codUnidadAtencion.municipio.divisionpoliticaId = divi.divisionpoliticaId  " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin) " +
+                    "FROM Divisionpolitica divi " +
+                    "where divi.dependenciaSilais.entidadAdtvaId = :codSilais ");
+
             queryCasos.setParameter("codSilais", filtro.getCodSilais());
 
         }
@@ -122,10 +140,12 @@ public class AreaReportService {
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
             queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
-                    "from SivePoblacion pob where pob.comunidad.sector.unidad.unidadId =:codUnidad " +
-                    "and pob.grupo =:tipoPob " +
+                    "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
+                    " or  pob.comunidad.sector.unidad.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
+                    " ) and pob.grupo =:tipoPob " +
                     "and (pob.anio =:anio) " +
                     "group by pob.anio order by pob.anio");
+            queryPoblacion.setParameter("codUnidad", filtro.getCodUnidad());
             queryPoblacion.setParameter("codUnidad", filtro.getCodUnidad());
 
             queryCasos = session.createQuery("select uni.nombre, " +
@@ -290,8 +310,9 @@ public class AreaReportService {
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
             queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
-                    "from SivePoblacion pob where pob.comunidad.sector.unidad.unidadId =:codUnidad " +
-                    "and pob.grupo =:tipoPob " +
+                    "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
+                    " or  pob.comunidad.sector.unidad.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
+                    " ) and pob.grupo =:tipoPob " +
                     "and (pob.anio =:anio) " +
                     "group by pob.anio order by pob.anio");
             queryPoblacion.setParameter("codUnidad", filtro.getCodUnidad());
@@ -392,6 +413,7 @@ public class AreaReportService {
                     " and noti.pasivo = false " +
                     " and mx.anulada = false),0) as sinresultado " +
                     " from EntidadesAdtvas ent " +
+                    " where ent.pasivo = 0 " +
                     " order by ent.codigo ");
 
 
@@ -410,7 +432,7 @@ public class AreaReportService {
 
         } else if (filtro.getCodArea().equals("AREAREP|SILAIS")) {
 
-            queryNotiDx = session.createQuery(" select ent.codigo, ent.nombre, " +
+          /*  queryNotiDx = session.createQuery(" select ent.codigo, ent.nombre, " +
                     " coalesce( " +
                     " (select count(noti.idNotificacion) from DaNotificacion noti " +
                     " where noti.codSilaisAtencion.codigo = ent.codigo and noti.pasivo = false " +
@@ -454,7 +476,53 @@ public class AreaReportService {
                     " and mx.anulada = false " +
                     " and dx.aprobada = true " +
                     " and noti.codSilaisAtencion.codigo = :codSilais " +
-                    " order by noti.codSilaisAtencion.codigo ");
+                    " order by noti.codSilaisAtencion.codigo ");*/
+
+            queryNotiDx = session.createQuery(" select div.divisionpoliticaId, div.nombre, " +
+                    " coalesce( " +
+                    " (select count(noti.idNotificacion) from DaNotificacion noti " +
+                    " where noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId" +
+                    " and noti.pasivo = false " +
+                    sqlTipoNoti +sqlFechas +
+                    " group by noti.codUnidadAtencion.municipio.divisionpoliticaId),0) as noti, " +
+                    " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                    " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
+                    " and noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                    sqlTipoNoti +sqlFechas +
+                    " group by noti.codUnidadAtencion.municipio.divisionpoliticaId) as dx, " +
+                    " coalesce( " +
+                    " (select sum(case dx.aprobada when true then 1 else 0 end) " +
+                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                    " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                    " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
+                    sqlTipoNoti +sqlFechas +
+                    " and noti.pasivo = false " +
+                    " and mx.anulada = false),0) as conresultado, " +
+                    " coalesce( " +
+                    " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
+                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                    " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                    sqlTipoNoti +sqlFechas +
+                    " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
+                    " and noti.pasivo = false " +
+                    " and mx.anulada = false),0) as sinresultado " +
+                    " from Divisionpolitica div " +
+                    "where div.dependenciaSilais.entidadAdtvaId = :codSilais " +
+                    " order by div.divisionpoliticaId ");
+
+            queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.municipio.divisionpoliticaId, dx.idSolicitudDx " +
+                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                    " where noti.idNotificacion = mx.idNotificacion " +
+                    sqlTipoNoti +sqlFechas +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                    " and noti.pasivo = false " +
+                    " and mx.anulada = false " +
+                    " and dx.aprobada = true " +
+                    " and noti.codUnidadAtencion.municipio.dependenciaSilais.entidadAdtvaId = :codSilais " +
+                    " order by noti.codUnidadAtencion.municipio.divisionpoliticaId ");
 
             queryNotiDx.setParameter("codSilais", filtro.getCodSilais());
             queryIdNoti.setParameter("codSilais", filtro.getCodSilais());
