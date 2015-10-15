@@ -68,11 +68,8 @@ public class ReportesController {
     @Resource(name="divisionPoliticaService")
     private DivisionPoliticaService divisionPoliticaService;
 
-    @Resource(name="reporteSemanaService")
-    private ReporteSemanaService reporteSemanaService;
-
-    @Resource(name="areaReportService")
-    private AreaReportService areaReportService;
+    @Resource(name="reportesService")
+    private ReportesService reportesService;
 
     @Autowired
     MessageSource messageSource;
@@ -305,7 +302,7 @@ public class ReportesController {
         filtrosReporte.setTipoNotificacion(tipoNotificacion);
         filtrosReporte.setFactor(factor);
         filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
-        List<Object[]> datos = reporteSemanaService.getDataPorSemana(filtrosReporte);
+        List<Object[]> datos = reportesService.getDataPorSemana(filtrosReporte);
         if (datos == null){
             logger.debug("Nulo");
         }
@@ -375,7 +372,7 @@ public class ReportesController {
         filtrosReporte.setFechaInicio(DateUtil.StringToDate(fechaInicial+" 00:00:00","dd/MM/yyyy HH:mm:ss"));
         filtrosReporte.setFechaFin(DateUtil.StringToDate(fechaFinal+" 23:59:59","dd/MM/yyyy HH:mm:ss"));
         //filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
-        List<Object[]> datos = reporteSemanaService.getDataPorDia(filtrosReporte);
+        List<Object[]> datos = reportesService.getDataPorDia(filtrosReporte);
         if (datos == null){
             logger.debug("Nulo");
         }
@@ -467,7 +464,7 @@ public class ReportesController {
     List<Object[]> fetchDataAreaJson(@RequestParam(value = "filtro", required = true) String filtro) throws Exception{
         logger.info("Obteniendo los datos para reporte por Area ");
         FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
-        return areaReportService.getDataCT(filtroRep);
+        return reportesService.getDataCT(filtroRep);
     }
 
     /*******************************************************************/
@@ -531,7 +528,7 @@ public class ReportesController {
         filtrosReporte.setFechaInicio(DateUtil.StringToDate(fechaInicial+" 00:00:00","dd/MM/yyyy HH:mm:ss"));
         filtrosReporte.setFechaFin(DateUtil.StringToDate(fechaFinal+" 23:59:59","dd/MM/yyyy HH:mm:ss"));
         //filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
-        List<DaNotificacion> datos = reporteSemanaService.getDataSinResultado(filtrosReporte);
+        List<DaNotificacion> datos = reportesService.getDataSinResultado(filtrosReporte);
         if (datos == null){
             logger.debug("Nulo");
         }
@@ -576,7 +573,7 @@ public class ReportesController {
     List<Object[]> fetchDataSexJson(@RequestParam(value = "filtro", required = true) String filtro) throws Exception{
         logger.info("Obteniendo los datos para reporte por Sexo ");
         FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
-        return areaReportService.getDataSexReport(filtroRep);
+        return reportesService.getDataSexReport(filtroRep);
     }
 
     /*******************************************************************/
@@ -617,6 +614,6 @@ public class ReportesController {
     List<Object[]> fetchReportResultJson(@RequestParam(value = "filtro", required = true) String filtro) throws Exception{
         logger.info("Obteniendo los datos para Reporte por Resultado ");
         FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
-        return areaReportService.getDataResultReport(filtroRep);
+        return reportesService.getDataResultReport(filtroRep);
     }
 }
