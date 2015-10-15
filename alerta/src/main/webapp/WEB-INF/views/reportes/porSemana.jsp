@@ -98,7 +98,7 @@
 				<!-- row -->
 				<div class="row">
 					<!-- NEW WIDGET START -->
-					<article class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+					<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<!-- Widget ID (each widget will need unique ID)-->
 						<div class="jarviswidget" id="wid-id-0">
 							<!-- widget options:
@@ -288,7 +288,7 @@
 					</article>
 					<!-- WIDGET END -->
 					<!-- NEW WIDGET START -->
-					<article class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+					<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<!-- Widget ID (each widget will need unique ID)-->
 						<div class="jarviswidget" id="wid-id-1">
 							<!-- widget options:

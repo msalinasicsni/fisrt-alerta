@@ -160,10 +160,8 @@ var ViewReport = function () {
                 $.getJSON(parametros.sActionUrl, $('#parameters_form').serialize(), function(data) {
             		var encontrado = false;
             		for(var row in data){
-                        if (data[row].conResultado === parametros.valorNo) {
                             table1.fnAddData([data[row].persona, data[row].edad, data[row].sexo, data[row].embarazada, data[row].municipio, data[row].tipoNoti, data[row].fechaRegistro, data[row].fechaInicioSintomas,data[row].SILAIS,data[row].unidad]);
                             encontrado = true;
-                        }
                     }
                     if(!encontrado){
 	            		showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);

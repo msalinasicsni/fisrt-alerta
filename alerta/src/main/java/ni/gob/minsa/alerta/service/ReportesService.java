@@ -1038,15 +1038,17 @@ public class ReportesService {
         List<DaNotificacion> resultadoTemp = new ArrayList<DaNotificacion>();
 
         if (filtro.getCodArea().equals("AREAREP|PAIS")){
-            queryCasos = session.createQuery(sqlDataSinR + "From DaNotificacion noti " +
-                    "where noti.pasivo = false  and noti.codTipoNotificacion.codigo = :tipoNoti " +
+            queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                    "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                    " and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " order by noti.fechaRegistro asc");
 
         }
         else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
-            queryCasos = session.createQuery(sqlDataSinR + "From DaNotificacion noti " +
-                    "where noti.pasivo = false  and noti.codSilaisAtencion.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
+            queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                    "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                    "and noti.codSilaisAtencion.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " order by noti.fechaRegistro asc");
 
@@ -1054,8 +1056,9 @@ public class ReportesService {
 
         }
         else if (filtro.getCodArea().equals("AREAREP|DEPTO")){
-            queryCasos = session.createQuery(sqlDataSinR + "From DaNotificacion noti " +
-                    "where noti.pasivo = false  and noti.codTipoNotificacion.codigo = :tipoNoti " +
+            queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                    "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     "and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId =:codDepartamento" +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " order by noti.fechaRegistro asc");
@@ -1063,8 +1066,9 @@ public class ReportesService {
 
         }
         else if (filtro.getCodArea().equals("AREAREP|MUNI")){
-            queryCasos = session.createQuery(sqlDataSinR + "From DaNotificacion noti " +
-                    "where noti.pasivo = false  and noti.codTipoNotificacion.codigo = :tipoNoti " +
+            queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                    "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     "and noti.codUnidadAtencion.municipio.divisionpoliticaId =:codMunicipio" +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " order by noti.fechaRegistro asc");
@@ -1073,8 +1077,9 @@ public class ReportesService {
 
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
-            queryCasos = session.createQuery(sqlDataSinR + "From DaNotificacion noti " +
-                    "where noti.pasivo = false  and noti.codTipoNotificacion.codigo = :tipoNoti " +
+            queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                    "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     "and (noti.codUnidadAtencion.unidadId = :codUnidad " +
                     " or noti.codUnidadAtencion.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
                     " ) and noti.fechaRegistro between :fechaInicio and :fechaFin " +
