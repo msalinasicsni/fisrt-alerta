@@ -11,6 +11,7 @@ import ni.gob.minsa.alerta.domain.muestra.EstadoMx;
 import ni.gob.minsa.alerta.domain.muestra.TipoMx;
 import ni.gob.minsa.alerta.domain.notificacion.TipoNotificacion;
 import ni.gob.minsa.alerta.domain.persona.*;
+import ni.gob.minsa.alerta.domain.rotavirus.*;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.*;
 import ni.gob.minsa.alerta.domain.vih.*;
 import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.Animales;
@@ -975,6 +976,116 @@ public class CatalogoService {
         Session session = sessionFactory.getCurrentSession();
         //Create a hibernate query (HQL)
         Query query = session.createQuery("FROM FactorPoblacion where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    //ROTAVIRUS
+
+    public GradoDeshidratacion getGradoDeshidratacion (String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getGradoDeshidratacionByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (GradoDeshidratacion) query.uniqueResult();
+    }
+
+    public List<GradoDeshidratacion> getGradosDeshidratacion(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM GradoDeshidratacion where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public TipoVacunaRotavirus getTipoVacunaRotavirus (String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getTipoVacunaRotavirusByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (TipoVacunaRotavirus) query.uniqueResult();
+    }
+
+    public List<TipoVacunaRotavirus> getTiposVacunasRotavirus(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoVacunaRotavirus where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public ClasificacionFinalRotavirus getClasificacionFinalRotavirus (String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getClasificacionFinalRotavirusByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (ClasificacionFinalRotavirus) query.uniqueResult();
+    }
+
+    public List<ClasificacionFinalRotavirus> getClasificacionesFinalRotavirus(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM ClasificacionFinalRotavirus where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public RegistroVacuna getRegistroVacuna (String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getRegistroVacunaByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (RegistroVacuna) query.uniqueResult();
+    }
+
+    public List<RegistroVacuna> getRegistrosVacuna(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM RegistroVacuna where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public CaracteristaHeces getCaracteristaHeces (String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getCaracteristaHecesByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (CaracteristaHeces) query.uniqueResult();
+    }
+
+    public List<CaracteristaHeces> getCaracteristasHeces(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM CaracteristaHeces where pasivo = false order by orden");
+        //retrieve all
+        return query.list();
+    }
+
+    public SalaRotaVirus getSalaRotaVirus (String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.getNamedQuery("getSalasRTByCodigo").setString("pCodigo", codigo);
+        //Retrieve all
+        return (SalaRotaVirus) query.uniqueResult();
+    }
+
+    public List<SalaRotaVirus> getSalasRotaVirus(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM SalaRotaVirus where pasivo = false order by orden");
         //retrieve all
         return query.list();
     }
