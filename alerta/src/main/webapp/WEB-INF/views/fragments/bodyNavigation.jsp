@@ -72,6 +72,9 @@
                     <li class="paciente">
                         <a href="<spring:url value="/paciente/create" htmlEscape="true "/>" title="<spring:message code="menu.paciente" />"><i class="fa fa-lg fa-fw fa-user"></i> <spring:message code="menu.paciente" /></a>
                     </li>
+		    <li class="rotavirus">
+                        <a href="<spring:url value="/rotavirus/create" htmlEscape="true "/>" title="<spring:message code="menu.rotavirus" />"><i class="fa fa-lg fa-fw fa-stethoscope"></i> <spring:message code="menu.rotavirus" /></a>
+                    </li>
                     <li class="buscar">
                         <a href="<spring:url value="/reportes/generalnoti" htmlEscape="true "/>" title="<spring:message code="menu.reports.general" />"><i class="fa fa-lg fa-fw fa-search"></i> <spring:message code="menu.reports.general" /></a>
                     </li>
