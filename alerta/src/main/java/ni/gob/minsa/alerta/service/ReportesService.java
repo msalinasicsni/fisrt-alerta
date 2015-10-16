@@ -54,60 +54,34 @@ public class ReportesService {
         List<Object[]> resFinal = new ArrayList<Object[]>();
         Session session = sessionFactory.getCurrentSession();
         Query queryCasos = null;
-        Query queryPoblacion = null;
-
 
         if (filtro.getCodArea().equals("AREAREP|PAIS")){
-
-            queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
-                    "from SivePoblacionDivPol pob where pob.divpol.dependencia is null " +
-                    "and pob.grupo =:tipoPob " +
-                    "and pob.anio =:anio " +
-                    "group by pob.anio order by pob.anio");
 
             queryCasos = session.createQuery(" select ent.nombre, " +
                     "(select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codSilaisAtencion.codigo =  ent.codigo " +
                     " and noti.pasivo = false " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                    "and noti.fechaRegistro between :fechaInicio and :fechaFin) " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin), " +
+                            "(select sum(pob.total)" +
+                            "from SivePoblacionDivPol pob where pob.divpol.dependenciaSilais.entidadAdtvaId = ent.entidadAdtvaId " +
+                            "and pob.grupo =:tipoPob " +
+                            "and (pob.anio =:anio)) " +
                     "FROM EntidadesAdtvas ent "+
                     " where ent.pasivo = 0 " );
-
-
-
         }
         else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
-
-           /* queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
-                    "from SivePoblacionDivPol pob where pob.divpol.dependenciaSilais.entidadAdtvaId=:codSilais " +
-                    "and pob.grupo =:tipoPob " +
-                    "and (pob.anio =:anio) " +
-                    "group by pob.anio order by pob.anio");
-            queryPoblacion.setParameter("codSilais", filtro.getCodSilais());*/
-
-            queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
-                    "from SivePoblacionDivPol pob where pob.divpol.dependenciaSilais.entidadAdtvaId =:codSilais " +
-                    "and pob.grupo =:tipoPob " +
-                    "and (pob.anio =:anio) " +
-                    "group by pob.anio order by pob.anio");
-            queryPoblacion.setParameter("codSilais", filtro.getCodSilais());
-
-          /*  queryCasos = session.createQuery("select ent.nombre, " +
-                    "(select count(noti.idNotificacion) from DaNotificacion noti " +
-                    "where noti.codSilaisAtencion.codigo =  ent.codigo " +
-                    "and noti.codTipoNotificacion.codigo = :tipoNoti" +
-                    " and noti.pasivo = false " +
-                    "and noti.fechaRegistro between :fechaInicio and :fechaFin) " +
-                    "FROM EntidadesAdtvas ent " +
-                    "where ent.codigo = :codSilais ");*/
 
             queryCasos = session.createQuery(" select divi.nombre, " +
                     "(select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.pasivo = false " +
                     "and noti.codUnidadAtencion.municipio.divisionpoliticaId = divi.divisionpoliticaId  " +
-                    "and noti.fechaRegistro between :fechaInicio and :fechaFin) " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin), " +
+                    "(select sum(pob.total) " +
+                    "from SivePoblacionDivPol pob where pob.divpol.divisionpoliticaId = divi.divisionpoliticaId " +
+                    "and pob.grupo =:tipoPob " +
+                    "and (pob.anio =:anio)) " +
                     "FROM Divisionpolitica divi " +
                     "where divi.dependenciaSilais.entidadAdtvaId = :codSilais ");
 
@@ -115,60 +89,51 @@ public class ReportesService {
 
         }
         else if (filtro.getCodArea().equals("AREAREP|DEPTO")){
-
-            queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
-                    "from SivePoblacionDivPol pob where pob.divpol.divisionpoliticaId =:codDepartamento " +
-                    "and pob.grupo =:tipoPob " +
-                    "and (pob.anio =:anio) " +
-                    "group by pob.anio order by pob.anio");
-            queryPoblacion.setParameter("codDepartamento", filtro.getCodDepartamento());
-
             queryCasos = session.createQuery(" select divi.nombre, " +
                     "(select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.pasivo = false " +
                     "and noti.codUnidadAtencion.municipio.divisionpoliticaId = divi.divisionpoliticaId  " +
-                    "and noti.fechaRegistro between :fechaInicio and :fechaFin) " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin), " +
+                    "(Select sum(pob.total) as total " +
+                    "from SivePoblacionDivPol pob where pob.divpol.divisionpoliticaId =divi.divisionpoliticaId " +
+                    "and pob.grupo =:tipoPob " +
+                    "and (pob.anio =:anio)) " +
                     "FROM Divisionpolitica divi " +
                     "where divi.dependencia.divisionpoliticaId = :codDepartamento ");
             queryCasos.setParameter("codDepartamento", filtro.getCodDepartamento());
         }
         else if (filtro.getCodArea().equals("AREAREP|MUNI")){
 
-            queryPoblacion = session.createQuery("Select sum(pob.total) as totales " +
-                    "from SivePoblacionDivPol pob where pob.divpol.divisionpoliticaId =:codMunicipio " +
-                    "and pob.grupo =:tipoPob " +
-                    "and (pob.anio =:anio) " +
-                    "group by pob.anio order by pob.anio");
-            queryPoblacion.setParameter("codMunicipio", filtro.getCodMunicipio());
-
             queryCasos = session.createQuery("select uni.nombre, " +
                     " ( select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codUnidadAtencion.codigo =  uni.codigo " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.pasivo = false " +
-                    "and noti.fechaRegistro between :fechaInicio and :fechaFin) " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin), " +
+                    "(select sum(pob.total) as total " +
+                    "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =uni.unidadId " +
+                    " or  pob.comunidad.sector.unidad.unidadAdtva in (select uni2.codigo from Unidades uni2 where uni2.unidadId = uni.unidadId ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
+                    " ) and pob.grupo =:tipoPob " +
+                    "and (pob.anio =:anio)) " +
                     "FROM Unidades uni " +
                     "where uni.municipio.divisionpoliticaId = :codMunicipio" +
                     " and uni.tipoUnidad in ("+ HealthUnitType.UnidadesPrimHosp.getDiscriminator()+") ");
             queryCasos.setParameter("codMunicipio", filtro.getCodMunicipio());
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
-            queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
-                    "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
-                    " or  pob.comunidad.sector.unidad.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
-                    " ) and pob.grupo =:tipoPob " +
-                    "and (pob.anio =:anio) " +
-                    "group by pob.anio order by pob.anio");
-            queryPoblacion.setParameter("codUnidad", filtro.getCodUnidad());
-            queryPoblacion.setParameter("codUnidad", filtro.getCodUnidad());
 
             queryCasos = session.createQuery("select uni.nombre, " +
                     " coalesce (( select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codUnidadAtencion.codigo =  uni.codigo " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.pasivo = false " +
-                    "and noti.fechaRegistro between :fechaInicio and :fechaFin),0) " +
+                    "and noti.fechaRegistro between :fechaInicio and :fechaFin),0), " +
+                    "coalesce ((Select sum(pob.total) as total " +
+                    "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
+                    " or  pob.comunidad.sector.unidad.unidadAdtva in (select uni2.codigo from Unidades uni2 where uni2.unidadId = uni.unidadId ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
+                    " ) and pob.grupo =:tipoPob " +
+                    "and (pob.anio =:anio)),0) " +
                     "FROM Unidades uni " +
                     "where uni.unidadId = :codUnidad " +
                     "or uni.unidadAdtva in (select u.codigo from Unidades u where u.unidadId = :codUnidad ) ");
@@ -179,22 +144,21 @@ public class ReportesService {
         queryCasos.setParameter("tipoNoti", filtro.getTipoNotificacion());
         queryCasos.setParameter("fechaInicio", filtro.getFechaInicio());
         queryCasos.setParameter("fechaFin", filtro.getFechaFin());
-        queryPoblacion.setParameter("tipoPob","Todos");
-        queryPoblacion.setParameter("anio", Integer.valueOf(filtro.getAnioInicial()));
+        queryCasos.setParameter("tipoPob","Todos");
+        queryCasos.setParameter("anio", Integer.valueOf(filtro.getAnioInicial()));
 
 
         resTemp.addAll(queryCasos.list());
 
-        Long poblacion = (Long) queryPoblacion.uniqueResult();
+        Long poblacion;
 
         for (Object[] reg : resTemp) {
             Object[] reg1 = new Object[3];
             reg1[0] = reg[0];
             reg1[1] = reg[1];
-
+            poblacion = (Long)reg[2];
             if(poblacion != null){
                 reg1[2] = ((Long) reg[1] != 0 ? ((double) Math.round((Integer.valueOf(reg[1].toString()).doubleValue()) / poblacion * filtro.getFactor() * 100) / 100) : 0);
-
             }else{
                 reg1[2] = "NP";
             }

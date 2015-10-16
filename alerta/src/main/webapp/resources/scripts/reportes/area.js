@@ -244,7 +244,11 @@ var areaReport = function () {
                         if($('#codArea option:selected').val() != "AREAREP|MUNI"){
                             labels.push([data[row][0]]);
                             datosC.push(data[row][1]);
-                            datosT.push(data[row][2]);
+                            if (data[row][2]==='NP'){
+                                datosT.push(0);
+                            }else {
+                                datosT.push(data[row][2]);
+                            }
                         }
                         table1.fnAddData([data[row][0],data[row][1], data[row][2]]);
                         encontrado = true;
