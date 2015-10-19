@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.service;
 
+import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.muestra.Estudio_UnidadSalud;
@@ -680,5 +681,68 @@ public class SeguridadService {
         q.setParameter("pCodigoSis",pCodigoSis);
         estudioUnidadSaludList = q.list();
         return estudioUnidadSaludList.size()>0;
+    }
+
+    public String getNivelUsuario(Integer idUsuario){
+
+        if (esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE))
+            return "PAIS";
+        else{
+            Session session = sessionFactory.getCurrentSession();
+            String query = "select distinct ent from EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
+                    "where ent.id = usuent.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuent.usuario.usuarioId and usuent.sistema.id = sis.id " +
+                    "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo order by ent.nombre";
+
+            Query q = session.createQuery(query);
+            q.setParameter("pUsuarioId", idUsuario);
+            q.setParameter("pCodigoSis",ConstantsSecurity.SYSTEM_CODE);
+            q.setParameter("pasivo",'0');
+            if (q.list().size()>0){
+                return "SILAIS";
+            }
+
+            query = "select uni from Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
+                    "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                    "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo order by uni.nombre";
+
+            q = session.createQuery(query);
+            q.setParameter("pUsuarioId", idUsuario);
+            q.setParameter("pCodigoSis",ConstantsSecurity.SYSTEM_CODE);
+            q.setParameter("pasivo",'0');
+
+            if (q.list().size()>0){
+                return "UNIDAD";
+            }
+            return null;
+        }
+    }
+
+    public List<AreaRep> getAreasUsuario(Integer idUsuario){
+        List<AreaRep> areaRepList = new ArrayList<AreaRep>();
+        Session session = sessionFactory.getCurrentSession();
+        String query = "from AreaRep as a ";
+
+
+        String nivelUsuario = getNivelUsuario(idUsuario);
+        if (nivelUsuario!=null) {
+            switch (nivelUsuario){
+                case "PAIS" :{
+                    query += " where 1 = 1";  // todos
+                    break;
+                }
+                case "SILAIS" : {
+                    query += " where a.codigo not in ('AREAREP|PAIS','AREAREP|DEPTO') "; // no incluir pais y departamento
+                    break;
+                }
+                case "UNIDAD" :{
+                    query += " where a.codigo in ('AREAREP|UNI') "; // sólo unidad
+                    break;
+                }
+               default: break;
+            }
+            Query q = session.createQuery(query);
+            areaRepList = q.list();
+        }
+        return  areaRepList;
     }
 }

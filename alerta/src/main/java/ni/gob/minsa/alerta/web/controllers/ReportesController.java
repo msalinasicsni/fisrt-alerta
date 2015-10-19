@@ -258,7 +258,7 @@ public class ReportesController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = catalogosService.getAreaRep();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario);
             List<Semanas> semanas = catalogosService.getSemanas();
             List<Anios> anios = catalogosService.getAnios();
             List<FactorPoblacion> factores = catalogosService.getFactoresPoblacion();
@@ -336,7 +336,7 @@ public class ReportesController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = catalogosService.getAreaRep();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario);
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
             mav.addObject("entidades",entidadesAdtvases);
@@ -389,7 +389,7 @@ public class ReportesController {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-        List<AreaRep> areas = catalogosService.getAreaRep();
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario);
         List<Anios> anios = catalogosService.getAnios();
         List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
         TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
@@ -494,7 +494,7 @@ public class ReportesController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = catalogosService.getAreaRep();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario);
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
             mav.addObject("entidades",entidadesAdtvases);
@@ -602,7 +602,7 @@ public class ReportesController {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-        List<AreaRep> areas = catalogosService.getAreaRep();
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario);
         List<Anios> anios = catalogosService.getAnios();
         List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
         TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
@@ -643,7 +643,7 @@ public class ReportesController {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-        List<AreaRep> areas = catalogosService.getAreaRep();
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario);
         List<Anios> anios = catalogosService.getAnios();
         List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
         TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
