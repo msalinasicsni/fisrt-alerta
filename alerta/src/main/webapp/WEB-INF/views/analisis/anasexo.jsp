@@ -493,7 +493,7 @@
 	<script src="${jqueryValidate}"></script>
 	<spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
 	<spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>				
-	<script src="${jQValidationLoc}"/></script>
+	<script src="${jQValidationLoc}"></script>
 	<!-- jQuery Select2 Input -->
 	<spring:url value="/resources/js/plugin/select2/select2.min.js" var="selectPlugin"/>
 	<script src="${selectPlugin}"></script>

@@ -137,7 +137,7 @@
 							<li class = "indice"><a href="<spring:url value="/analisis/indice/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="epiindex" /></span></a>
 						</ul>
                     </li>
-					<!-- <li><a href="#"> <i class=""></i> <span class=""><fmt:message key="bol" /></span></a></li> -->
+					<li><a href="#"> <i class=""></i> <span class=""><fmt:message key="bol" /></span></a></li>
 					<li class = "series"><a href="<spring:url value="/analisis/series/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="series" /></span></a></li>
 					<li class= "mapas"><a href="<spring:url value="/analisis/mapas/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="maps" /></span></a></li>
 					<li class = "piramides"><a href="<spring:url value="/analisis/piramides/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="pyram" /></span></a></li>

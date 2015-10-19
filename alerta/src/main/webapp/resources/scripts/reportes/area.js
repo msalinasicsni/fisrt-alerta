@@ -157,30 +157,35 @@ var areaReport = function () {
                         $('#departamento').hide();
                         $('#municipio').hide();
                         $('#unidad').hide();
+                        $('#dSubUnits').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
                         $('#silais').show();
                         $('#departamento').hide();
                         $('#municipio').hide();
                         $('#unidad').hide();
+                        $('#dSubUnits').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
                         $('#silais').hide();
                         $('#departamento').show();
                         $('#municipio').hide();
                         $('#unidad').hide();
+                        $('#dSubUnits').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
                         $('#silais').show();
                         $('#departamento').hide();
                         $('#municipio').show();
                         $('#unidad').hide();
+                        $('#dSubUnits').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
                         $('#silais').show();
                         $('#departamento').hide();
                         $('#municipio').show();
                         $('#unidad').show();
+                        $('#dSubUnits').show();
                     }
                 });
 

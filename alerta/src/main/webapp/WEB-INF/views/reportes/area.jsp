@@ -99,7 +99,7 @@
 				<!-- row -->
 				<div class="row">
 					<!-- NEW WIDGET START -->
-					<article class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+					<article class="col-xs-12 col-sm-12 col-md-12 col-lg-10">
 						<!-- Widget ID (each widget will need unique ID)-->
 						<div class="jarviswidget" id="wid-id-0">
 							<!-- widget options:
@@ -143,7 +143,7 @@
 										<fieldset>
 										<!-- START ROW -->
                                             <div class="row">
-                                                <section class="col col-sm-12 col-md-12 col-lg-12">
+                                                <section class="col col-sm-12 col-md-12 col-lg-8">
                                                     <div class="input-group">
                                                         <span class="input-group-addon"> <i class="fa fa-list"></i></span>
                                                         <select  name="codTipoNoti" id="codTipoNoti" data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.notification.type" />" class="select2">
@@ -158,7 +158,7 @@
                                             <!-- END ROW -->
                                             <!-- START ROW -->
                                       	<div class="row">
-                                      		<section class="col col-sm-12 col-md-12 col-lg-12">
+                                      		<section class="col col-sm-12 col-md-12 col-lg-8">
                                       		<div class="input-group">
 												<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
 												<select  name="codArea" id="codArea" data-placeholder="<spring:message code="act.select" /> <spring:message code="level" />" class="select2">
@@ -173,7 +173,7 @@
                                    		<!-- END ROW -->
                                    		<!-- START ROW -->
                                    		<div class="row">
-                                   			<section class="col col-sm-12 col-md-12 col-lg-12" id="silais" hidden="hidden">
+                                   			<section class="col col-sm-12 col-md-12 col-lg-8" id="silais" hidden="hidden">
                                       		<div class="input-group">
 												<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
 												<select data-placeholder="<spring:message code="act.select" /> <spring:message code="silais" />" name="codSilaisAtencion" id="codSilaisAtencion" class="select2">
@@ -188,7 +188,7 @@
                                    		<!-- END ROW -->
                                    		<!-- START ROW -->
                                    		<div class="row">
-                                   			<section class="col col-sm-12 col-md-12 col-lg-12" id="departamento" hidden="hidden">
+                                   			<section class="col col-sm-12 col-md-12 col-lg-8" id="departamento" hidden="hidden">
                                       		<div class="input-group">
 												<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
 												<select data-placeholder="<spring:message code="msg.select.depa" />" name="codDepartamento" id="codDepartamento" class="select2">
@@ -203,7 +203,7 @@
                                    		<!-- END ROW -->
                                    		<!-- START ROW -->
                                    		<div class="row">
-                                   			<section class="col col-sm-12 col-md-12 col-lg-12" id="municipio" hidden="hidden">
+                                   			<section class="col col-sm-12 col-md-12 col-lg-8" id="municipio" hidden="hidden">
                                       		<div class="input-group">
 												<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
 												<select data-placeholder="<spring:message code="act.select" /> <spring:message code="muni" />" name="codMunicipio" id="codMunicipio" class="select2">
@@ -215,7 +215,7 @@
                                    		<!-- END ROW -->
                                    		<!-- START ROW -->
                                    		<div class="row">
-                                   			<section class="col col-sm-12 col-md-12 col-lg-12" id="unidad" hidden="hidden">
+                                   			<section class="col col-sm-12 col-md-12 col-lg-8" id="unidad" hidden="hidden">
                                       		<div class="input-group">
 												<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
 												<select data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.health.unit" />" name="codUnidadAtencion" id="codUnidadAtencion" class="select2">
@@ -223,11 +223,29 @@
 												</select>
 											</div>
 											</section>
+
+                                            <section class="col col-sm-12 col-md-12 col-lg-3" >
+                                            <div id="dSubUnits" hidden="hidden" class="row">
+                                                <section class="col col-sm-4 col-md-3 col-lg-10">
+                                                    <label class="text-left txt-color-blue font-sm"><spring:message code="lbl.include.subunits"/></label>
+
+                                                </section>
+
+                                                <section class="col col-sm-4 col-md-3 col-lg-2">
+                                                    <label class="checkbox">
+                                                        <input type="checkbox" name="ckUS" id="ckUS">
+                                                        <i></i>
+                                                    </label>
+                                                </section>
+                                            </div>
+                                            </section>
+
+
                                    		</div>
                                             <!-- END ROW -->
                                             <!-- START ROW -->
                                             <div class="row">
-                                                <section class="col col-sm-12 col-md-12 col-lg-12">
+                                                <section class="col col-sm-12 col-md-12 col-lg-8">
                                                     <div class="input-group">
                                                         <span class="input-group-addon"> <i class="fa fa-list"></i></span>
                                                         <select  name="codFactor"  id="codFactor" data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.factor" />" class="select2">
@@ -291,55 +309,60 @@
 						<!-- end widget -->
 					</article>
 
-                    <article class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
-                        <!-- Widget ID (each widget will need unique ID)-->
-                        <div class="jarviswidget" id="wid-id-4">
-                            <!-- widget options:
-                                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-                                data-widget-colorbutton="false"
-                                data-widget-editbutton="false"
-                                data-widget-togglebutton="false"
-                                data-widget-deletebutton="false"
-                                data-widget-fullscreenbutton="false"
-                                data-widget-custombutton="false"
-                                data-widget-collapsed="true"
-                                data-widget-sortable="false"
-                            -->
-                            <header>
-                                <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-                                <h2><spring:message code="lbl.cases.distribution.weeks"/> </h2>
-                            </header>
-                            <!-- widget div-->
-                            <div>
-                                <!-- widget edit box -->
-                                <div class="jarviswidget-editbox">
-                                    <!-- This area used as dropdown edit box -->
-                                    <input class="form-control" type="text">
-                                </div>
-                                <!-- end widget edit box -->
-                                <!-- widget content -->
-                                <div class="widget-body">
-                                    <table id="table1" class="table table-striped table-bordered table-hover" width="100%">
-                                        <thead>
-                                        <tr>
-                                            <th id="firstTh"></th>
-                                            <th><spring:message code="lbl.cases"/></th>
-                                            <th><spring:message code="lbl.rates"/></th>
 
-                                        </tr>
-
-                                        </thead>
-                                    </table>
-                                </div>
-                                <!-- end widget content -->
-                            </div>
-                            <!-- end widget div -->
-                        </div>
-                        <!-- end widget -->
-                    </article>
-					<!-- WIDGET END -->
 
 				</div>
+
+                <div class="row">
+                <article class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                    <!-- Widget ID (each widget will need unique ID)-->
+                    <div class="jarviswidget" id="wid-id-4">
+                        <!-- widget options:
+                            usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                            data-widget-colorbutton="false"
+                            data-widget-editbutton="false"
+                            data-widget-togglebutton="false"
+                            data-widget-deletebutton="false"
+                            data-widget-fullscreenbutton="false"
+                            data-widget-custombutton="false"
+                            data-widget-collapsed="true"
+                            data-widget-sortable="false"
+                        -->
+                        <header>
+                            <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
+                            <h2><spring:message code="lbl.cases.distribution.weeks"/> </h2>
+                        </header>
+                        <!-- widget div-->
+                        <div>
+                            <!-- widget edit box -->
+                            <div class="jarviswidget-editbox">
+                                <!-- This area used as dropdown edit box -->
+                                <input class="form-control" type="text">
+                            </div>
+                            <!-- end widget edit box -->
+                            <!-- widget content -->
+                            <div class="widget-body">
+                                <table id="table1" class="table table-striped table-bordered table-hover" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th id="firstTh"></th>
+                                        <th><spring:message code="lbl.cases"/></th>
+                                        <th><spring:message code="lbl.rates"/></th>
+
+                                    </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- end widget content -->
+                        </div>
+                        <!-- end widget div -->
+                    </div>
+                    <!-- end widget -->
+                </article>
+                </div>
+                <!-- WIDGET END -->
+
 				<!-- end row -->
 				<!-- row -->
 				<div id="d1" class="row">
