@@ -138,6 +138,7 @@
                 <input id="unit" type="hidden" value="<spring:message code="lbl.unit"/>"/>
                 <input id="from" type="hidden" value="<spring:message code="lbl.from"/>"/>
                 <input id="to" type="hidden" value="<spring:message code="lbl.to"/>"/>
+                <input id="areaL" type="hidden" value="<spring:message code="lbl.health.area"/>"/>
 
                 <form id="area_form" class ="smart-form">
                     <fieldset>
@@ -225,6 +226,23 @@
                             </section>
                         </div>
                         <!-- END ROW -->
+
+                        <!-- START ROW -->
+                        <div id="dSubUnits" hidden="hidden" class="row">
+                            <section class="col col-sm-6 col-md-6 col-lg-5">
+                                <label class="text-left txt-color-blue font-sm"><spring:message code="lbl.include.subunits"/></label>
+
+                            </section>
+
+                            <section class="col col-sm-4 col-md-3 col-lg-2">
+                                <label class="checkbox">
+                                    <input type="checkbox" checked name="ckUS" id="ckUS">
+                                    <i></i>
+                                </label>
+                            </section>
+                        </div>
+                        <!-- END ROW -->
+
                         <!-- START ROW -->
                         <div class="row">
                             <section class="col col-sm-12 col-md-12 col-lg-12">

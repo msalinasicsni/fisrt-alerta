@@ -155,35 +155,41 @@ var resultReport = function () {
                         $('#departamento').hide();
                         $('#municipio').hide();
                         $('#unidad').hide();
+                        $('#dSubUnits').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
                         $('#silais').show();
                         $('#departamento').hide();
                         $('#municipio').hide();
                         $('#unidad').hide();
+                        $('#dSubUnits').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
                         $('#silais').hide();
                         $('#departamento').show();
                         $('#municipio').hide();
                         $('#unidad').hide();
+                        $('#dSubUnits').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
                         $('#silais').show();
                         $('#departamento').hide();
                         $('#municipio').show();
                         $('#unidad').hide();
+                        $('#dSubUnits').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
                         $('#silais').show();
                         $('#departamento').hide();
                         $('#municipio').show();
                         $('#unidad').show();
+                        $('#dSubUnits').show();
                     }
                 });
 
             function getData() {
                 var filtro = {};
+                filtro['subunidades'] = $('#ckUS').is(':checked');
                 filtro['fechaInicio'] = $('#initDate').val();
                 filtro['fechaFin'] = $('#endDate').val();
                 filtro['codSilais'] = $('#codSilaisAtencion').find('option:selected').val();
@@ -223,9 +229,17 @@ var resultReport = function () {
 
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
-                        title = title + '</br>'+ $('#unit').val() + " " +$('#codUnidadAtencion option:selected').text();
+                       // title = title + '</br>'+ $('#unit').val() + " " +$('#codUnidadAtencion option:selected').text();
                         $('#firstTh').html( $('#usT').val() );
 
+                        var ckeckd = $('#ckUS').is(':checked');
+
+                        if (ckeckd) {
+                            title = title + '</br>' + $('#areaL').val() + " " + $('#codUnidadAtencion option:selected').text();
+                        } else {
+                            title = title + '</br>' + $('#unit').val() + " " + $('#codUnidadAtencion option:selected').text();
+
+                        }
 
                     }
                     title = title + '</br>' + $('#from').val() +" " +$('#initDate').val()  + " "+ "-" + " " + $('#to').val() + " " +$('#endDate').val();

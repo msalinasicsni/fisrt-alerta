@@ -191,6 +191,7 @@ var areaReport = function () {
 
             function getData() {
                 var areaFiltro = {};
+                areaFiltro['subunidades'] = $('#ckUS').is(':checked');
                 areaFiltro['fechaInicio'] = $('#initDate').val();
                 areaFiltro['fechaFin'] = $('#endDate').val();
                 areaFiltro['codSilais'] = $('#codSilaisAtencion').find('option:selected').val();
@@ -228,12 +229,17 @@ var areaReport = function () {
                         title = title + '</br>'+ $('#munic').val() + " "  +$('#codMunicipio option:selected').text();
                         $('#firstTh').html( $('#usT').val() );
 
-
-
                     }
-                    else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
-                        title = title + '</br>'+ $('#unit').val() + " " +$('#codUnidadAtencion option:selected').text();
-                        $('#firstTh').html( $('#usT').val() );
+                    else if ($('#codArea option:selected').val() == "AREAREP|UNI") {
+                        $('#firstTh').html($('#usT').val());
+                        var ckeckd = $('#ckUS').is(':checked');
+
+                        if (ckeckd) {
+                            title = title + '</br>' + $('#areaL').val() + " " + $('#codUnidadAtencion option:selected').text();
+                        } else {
+                            title = title + '</br>' + $('#unit').val() + " " + $('#codUnidadAtencion option:selected').text();
+
+                        }
 
                     }
                     title = title + '</br>' + $('#from').val() +" " +$('#initDate').val()  + " "+ "-" + " " + $('#to').val() + " " +$('#endDate').val();

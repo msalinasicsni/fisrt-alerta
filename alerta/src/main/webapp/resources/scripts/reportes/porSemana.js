@@ -199,30 +199,35 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
             			}
             			else if (opcion == "AREAREP|SILAIS"){
             				$('#silais').show();
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
             			}
             			else if (opcion == "AREAREP|DEPTO"){
             				$('#silais').hide();
             				$('#departamento').show();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
             			}
             			else if (opcion == "AREAREP|MUNI"){
             				$('#silais').show();
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
             			}
             			else if (opcion == "AREAREP|UNI"){
             				$('#silais').show();
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').show();
+                            $('#dSubUnits').show();
             			}
                     });
 
@@ -243,8 +248,18 @@ var ViewReport = function () {
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
                         title = title + '</br>'+parametros.municipio+' '+$('#codMunicipio option:selected').text();
                     }
-                    else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
-                        title = title + '</br>'+parametros.unidad+' '+$('#codUnidadAtencion option:selected').text();
+                    else if ($('#codArea option:selected').val() == "AREAREP|UNI") {
+                        //    title = title + '</br>'+parametros.unidad+' '+$('#codUnidadAtencion option:selected').text();
+
+                        var ckeckd = $('#ckUS').is(':checked');
+
+                        if (ckeckd) {
+                            title = title + '</br>' + $('#areaL').val() + " " + $('#codUnidadAtencion option:selected').text();
+                        } else {
+                            title = title + '</br>' + parametros.unidad + " " + $('#codUnidadAtencion option:selected').text();
+
+                        }
+
                     }
                     title = title + '</br>'+parametros.semana+' '+$('#semI option:selected').text() +' a la '+$('#semF option:selected').text() +', '+$('#anioI option:selected').text();
 

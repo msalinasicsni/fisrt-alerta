@@ -126,7 +126,9 @@
 								<!-- end widget edit box -->
 								<!-- widget content -->
 								<div class="widget-body">
-									<form id="parameters_form" class ="smart-form">
+                                    <input id="areaL" type="hidden" value="<spring:message code="lbl.health.area"/>"/>
+
+                                    <form id="parameters_form" class ="smart-form">
 										<fieldset>
                                             <!-- START ROW -->
                                             <div class="row">
@@ -199,6 +201,23 @@
                                                     </select>
                                                 </div>
                                             </section>
+                                            <section id="dSubUnits" hidden="hidden" class="col col-sm-12 col-md-6 col-lg-6">
+
+                                                <section  class="col col-sm-6 col-md-6 col-lg-5">
+                                                    <label class="text-left txt-color-blue font-sm"><spring:message code="lbl.include.subunits"/></label>
+
+                                                </section>
+
+                                                <section class="col col-sm-4 col-md-3 col-lg-2">
+                                                    <label class="checkbox">
+                                                        <input type="checkbox" checked name="ckUS" id="ckUS">
+                                                        <i></i>
+                                                    </label>
+                                                </section>
+
+                                            </section>
+
+                                            <!-- END ROW -->
                                    		</div>
                                    		<!-- END ROW -->
                                    		<!-- START ROW -->

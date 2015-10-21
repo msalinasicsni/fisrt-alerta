@@ -127,31 +127,42 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
-            			}
+                            $('#dSubUnits').hide();
+
+                        }
             			else if (opcion == "AREAREP|SILAIS"){
             				$('#silais').show();
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
-            			}
+                            $('#dSubUnits').hide();
+                            $('#dSubUnits').hide();
+
+                        }
             			else if (opcion == "AREAREP|DEPTO"){
             				$('#silais').hide();
             				$('#departamento').show();
             				$('#municipio').hide();
             				$('#unidad').hide();
-            			}
+                            $('#dSubUnits').hide();
+
+                        }
             			else if (opcion == "AREAREP|MUNI"){
             				$('#silais').show();
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').hide();
-            			}
+                            $('#dSubUnits').hide();
+
+                        }
             			else if (opcion == "AREAREP|UNI"){
             				$('#silais').show();
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').show();
-            			}
+                            $('#dSubUnits').show();
+
+                        }
                     });
 
             function getData() {

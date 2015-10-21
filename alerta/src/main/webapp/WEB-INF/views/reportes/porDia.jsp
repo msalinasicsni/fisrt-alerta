@@ -126,7 +126,9 @@
 								<!-- end widget edit box -->
 								<!-- widget content -->
 								<div class="widget-body">
-									<form id="parameters_form" class ="smart-form">
+                                    <input id="areaL" type="hidden" value="<spring:message code="lbl.health.area1"/>"/>
+
+                                    <form id="parameters_form" class ="smart-form">
 										<fieldset>
                                             <!-- START ROW -->
                                             <div class="row">
@@ -213,6 +215,22 @@
 											</section>
                                    		</div>
                                    		<!-- END ROW -->
+
+                                            <!-- START ROW -->
+                                            <div id="dSubUnits" hidden="hidden" class="row">
+                                                <section class="col col-sm-6 col-md-6 col-lg-5">
+                                                    <label class="text-left txt-color-blue font-sm"><spring:message code="lbl.include.subunits"/></label>
+
+                                                </section>
+
+                                                <section class="col col-sm-4 col-md-3 col-lg-2">
+                                                    <label class="checkbox">
+                                                        <input type="checkbox" checked name="ckUS" id="ckUS">
+                                                        <i></i>
+                                                    </label>
+                                                </section>
+                                            </div>
+                                            <!-- END ROW -->
                                    		<!-- START ROW -->
                                         <div class="row">
                                             <section class="col col-6">
@@ -369,7 +387,7 @@
     <c:set var="nicaragua"><spring:message code="lbl.nicaragua.republic" /></c:set>
     <c:set var="departamento"><spring:message code="lbl.dep" /></c:set>
     <c:set var="municipio"><spring:message code="lbl.munic" /></c:set>
-    <c:set var="unidad"><spring:message code="lbl.unit" /></c:set>
+    <c:set var="unidad"><spring:message code="sindfeb.unidad" /></c:set>
     <c:set var="desde"><spring:message code="lbl.from" /></c:set>
     <c:set var="hasta"><spring:message code="lbl.to" /></c:set>
     <c:set var="casos"><spring:message code="lbl.cases" /></c:set>

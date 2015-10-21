@@ -137,6 +137,7 @@
                 <input id="silaisT" type="hidden" value="<spring:message code="lbl.silais"/>"/>
                 <input id="municT" type="hidden" value="<spring:message code="muni"/>"/>
                 <input id="usT" type="hidden" value="<spring:message code="lbl.health.unit"/>"/>
+                <input id="areaL" type="hidden" value="<spring:message code="lbl.health.area"/>"/>
 
 
 
@@ -223,6 +224,22 @@
                                         <option value=""></option>
                                     </select>
                                 </div>
+                            </section>
+                        </div>
+                        <!-- END ROW -->
+
+                        <!-- START ROW -->
+                        <div id="dSubUnits" hidden="hidden" class="row">
+                            <section class="col col-sm-6 col-md-6 col-lg-5">
+                                <label class="text-left txt-color-blue font-sm"><spring:message code="lbl.include.subunits"/></label>
+
+                            </section>
+
+                            <section class="col col-sm-4 col-md-3 col-lg-2">
+                                <label class="checkbox">
+                                    <input type="checkbox" checked name="ckUS" id="ckUS">
+                                    <i></i>
+                                </label>
                             </section>
                         </div>
                         <!-- END ROW -->

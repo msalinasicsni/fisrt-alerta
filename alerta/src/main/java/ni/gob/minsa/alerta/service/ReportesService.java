@@ -123,21 +123,40 @@ public class ReportesService {
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
 
-            queryCasos = session.createQuery("select uni.nombre, " +
-                    " coalesce (( select count(noti.idNotificacion) from DaNotificacion noti " +
-                    "where noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                    " and noti.pasivo = false " +
-                    "and noti.fechaRegistro between :fechaInicio and :fechaFin),0), " +
-                    "coalesce ((Select sum(pob.total) as total " +
-                    "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
-                    " or  pob.comunidad.sector.unidad.unidadAdtva in (select uni2.codigo from Unidades uni2 where uni2.unidadId = uni.unidadId ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
-                    " ) and pob.grupo =:tipoPob " +
-                    "and (pob.anio =:anio)),0) " +
-                    "FROM Unidades uni " +
-                    "where uni.unidadId = :codUnidad " +
-                    "or uni.unidadAdtva in (select u.codigo from Unidades u where u.unidadId = :codUnidad ) ");
+            if(filtro.isSubunidades()){
+                queryCasos = session.createQuery("select uni.nombre, " +
+                        " coalesce (( select count(noti.idNotificacion) from DaNotificacion noti " +
+                        "where noti.codUnidadAtencion.codigo =  uni.codigo " +
+                        "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                        " and noti.pasivo = false " +
+                        "and noti.fechaRegistro between :fechaInicio and :fechaFin),0), " +
+                        "(Select sum(pob.total) as total " +
+                        "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
+                        " or  pob.comunidad.sector.unidad.unidadAdtva in (select uni2.codigo from Unidades uni2 where uni2.unidadId = uni.unidadId ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
+                        " ) and pob.grupo =:tipoPob " +
+                        "and (pob.anio =:anio)) " +
+                        "FROM Unidades uni " +
+                        "where (uni.unidadId = :codUnidad " +
+                        "or uni.unidadAdtva in (select u.codigo from Unidades u where u.unidadId = :codUnidad )) ");
+            }else{
+                queryCasos = session.createQuery("select uni.nombre, " +
+                        " coalesce (( select count(noti.idNotificacion) from DaNotificacion noti " +
+                        "where noti.codUnidadAtencion.codigo =  uni.codigo " +
+                        "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                        " and noti.pasivo = false " +
+                        "and noti.fechaRegistro between :fechaInicio and :fechaFin),0), " +
+                        "(Select sum(pob.total) as total " +
+                        "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad ) " +
+                        " and pob.grupo =:tipoPob " +
+                        "and (pob.anio =:anio)) " +
+                        "FROM Unidades uni " +
+                        "where uni.unidadId = :codUnidad " );
+
+            }
+
+
             queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
+
 
         }
 
@@ -293,31 +312,61 @@ public class ReportesService {
             queryCasos.setParameter("codMunicipio", filtro.getCodMunicipio());
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
-            queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
-                    "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
-                    " or  pob.comunidad.sector.unidad.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
-                    " ) and pob.grupo =:tipoPob " +
-                    "and (pob.anio =:anio) " +
-                    "group by pob.anio order by pob.anio");
-            queryPoblacion.setParameter("codUnidad", filtro.getCodUnidad());
 
-            queryCasos = session.createQuery(" select sex.valor, coalesce((select count(noti.idNotificacion) " +
-                    "from DaNotificacion noti, SisPersona per " +
-                    "where noti.persona.id = per.personaId " +
-                    " and per.sexo.codigo = sex.codigo " +
-                    " and noti.codUnidadAtencion.unidadId = :codUnidad " +
-                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                    "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                    "group by per.sexo.valor),0),  " +
-                    " coalesce( (select count(noti.idNotificacion) " +
-                    "from DaNotificacion noti, SisPersona per " +
-                    "where noti.persona.id = per.personaId " +
-                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                    " and noti.codUnidadAtencion.unidadId = :codUnidad " +
-                    "or noti.codUnidadAtencion.unidadAdtva in (select u.codigo from Unidades u where u.unidadId = :codUnidad ) " +
-                    "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                    "),0) " +
-                    " from Sexo sex where sex.pasivo = false" );
+            if(filtro.isSubunidades()){
+                queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
+                        "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
+                        " or  pob.comunidad.sector.unidad.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
+                        " ) and pob.grupo =:tipoPob " +
+                        "and (pob.anio =:anio) " +
+                        "group by pob.anio order by pob.anio");
+                queryPoblacion.setParameter("codUnidad", filtro.getCodUnidad());
+
+                queryCasos = session.createQuery(" select sex.valor, coalesce((select count(noti.idNotificacion) " +
+                        "from DaNotificacion noti, SisPersona per " +
+                        "where noti.persona.id = per.personaId " +
+                        " and per.sexo.codigo = sex.codigo " +
+                        " and (noti.codUnidadAtencion.unidadId = :codUnidad " +
+                        "or noti.codUnidadAtencion.unidadAdtva in (select u.codigo from Unidades u where u.unidadId = :codUnidad )) " +
+                        "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                        "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                        "group by per.sexo.valor),0),  " +
+                        " coalesce( (select count(noti.idNotificacion) " +
+                        "from DaNotificacion noti, SisPersona per " +
+                        "where noti.persona.id = per.personaId " +
+                        "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                        " and (noti.codUnidadAtencion.unidadId = :codUnidad " +
+                        "or noti.codUnidadAtencion.unidadAdtva in (select u.codigo from Unidades u where u.unidadId = :codUnidad )) " +
+                        "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                        "),0) " +
+                        " from Sexo sex where sex.pasivo = false" );
+            }else{
+                queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
+                        "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
+                        " ) and pob.grupo =:tipoPob " +
+                        "and (pob.anio =:anio) " +
+                        "group by pob.anio order by pob.anio");
+                queryPoblacion.setParameter("codUnidad", filtro.getCodUnidad());
+
+                queryCasos = session.createQuery(" select sex.valor, coalesce((select count(noti.idNotificacion) " +
+                        "from DaNotificacion noti, SisPersona per " +
+                        "where noti.persona.id = per.personaId " +
+                        " and per.sexo.codigo = sex.codigo " +
+                        " and noti.codUnidadAtencion.unidadId = :codUnidad " +
+                        "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                        "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                        "group by per.sexo.valor),0),  " +
+                        " coalesce( (select count(noti.idNotificacion) " +
+                        "from DaNotificacion noti, SisPersona per " +
+                        "where noti.persona.id = per.personaId " +
+                        "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                        " and noti.codUnidadAtencion.unidadId = :codUnidad " +
+                        "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                        "),0) " +
+                        " from Sexo sex where sex.pasivo = false" );
+            }
+
+
 
             queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
 
@@ -623,57 +672,109 @@ public class ReportesService {
             queryIdNoti.setParameter("codMunicipio", filtro.getCodMunicipio());
         } else if (filtro.getCodArea().equals("AREAREP|UNI")) {
 
+            if(filtro.isSubunidades()){
+                queryNotiDx = session.createQuery(" select uni.unidadId, uni.nombre, " +
+                        " coalesce( " +
+                        " (select count(noti.idNotificacion) from DaNotificacion noti " +
+                        " where noti.codUnidadAtencion.codigo =  uni.codigo " +
+                        " and noti.pasivo = false " +
+                        sqlTipoNoti +sqlFechas +
+                        " group by noti.codUnidadAtencion.unidadId),0) as noti, " +
+                        " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
+                        " and noti.codUnidadAtencion.codigo =  uni.codigo " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                        sqlTipoNoti +sqlFechas +
+                        " group by  noti.codUnidadAtencion.unidadId) as dx, " +
+                        " coalesce( " +
+                        " (select sum(case dx.aprobada when true then 1 else 0 end) " +
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
+                        sqlTipoNoti +sqlFechas +
+                        " and noti.pasivo = false " +
+                        " and mx.anulada = false),0) as conresultado, " +
+                        " coalesce( " +
+                        " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        sqlTipoNoti +sqlFechas +
+                        " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
+                        " and noti.pasivo = false " +
+                        " and mx.anulada = false),0) as sinresultado " +
+                        "FROM Unidades uni " +
+                        "where (uni.unidadId = :codUnidad" +
+                        " or uni.unidadAdtva in (select u.codigo from Unidades u where u.unidadId = :codUnidad )) " +
+                        " and uni.tipoUnidad in ("+ HealthUnitType.UnidadesPrimHosp.getDiscriminator()+") " +
+                        " order by uni.unidadId ");
 
-            queryNotiDx = session.createQuery(" select uni.unidadId, uni.nombre, " +
-                    " coalesce( " +
-                    " (select count(noti.idNotificacion) from DaNotificacion noti " +
-                    " where noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    " and noti.pasivo = false " +
-                    sqlTipoNoti +sqlFechas +
-                    " group by noti.codUnidadAtencion.unidadId),0) as noti, " +
-                    " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
-                    " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
-                    " and noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
-                    sqlTipoNoti +sqlFechas +
-                    " group by  noti.codUnidadAtencion.unidadId) as dx, " +
-                    " coalesce( " +
-                    " (select sum(case dx.aprobada when true then 1 else 0 end) " +
-                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
-                    " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
-                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                    " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    sqlTipoNoti +sqlFechas +
-                    " and noti.pasivo = false " +
-                    " and mx.anulada = false),0) as conresultado, " +
-                    " coalesce( " +
-                    " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
-                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
-                    " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
-                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                    sqlTipoNoti +sqlFechas +
-                    " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    " and noti.pasivo = false " +
-                    " and mx.anulada = false),0) as sinresultado " +
-                    "FROM Unidades uni " +
-                    "where uni.unidadId = :codUnidad" +
-                    " or uni.unidadAdtva in (select u.codigo from Unidades u where u.unidadId = :codUnidad ) " +
-                    " and uni.tipoUnidad in ("+ HealthUnitType.UnidadesPrimHosp.getDiscriminator()+") " +
-                    " order by uni.unidadId ");
+
+
+                queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.unidadId, dx.idSolicitudDx " +
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.idNotificacion = mx.idNotificacion " +
+                        sqlTipoNoti +sqlFechas +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        " and noti.pasivo = false " +
+                        " and mx.anulada = false " +
+                        " and dx.aprobada = true " +
+                        " and (noti.codUnidadAtencion.unidadId = :codUnidad " +
+                        " or noti.codUnidadAtencion.unidadAdtva in (select u.codigo from Unidades u where u.unidadId = :codUnidad )) " +
+                        " order by noti.codUnidadAtencion.unidadId ");
+            }else{
+                queryNotiDx = session.createQuery(" select uni.unidadId, uni.nombre, " +
+                        " coalesce( " +
+                        " (select count(noti.idNotificacion) from DaNotificacion noti " +
+                        " where noti.codUnidadAtencion.codigo =  uni.codigo " +
+                        " and noti.pasivo = false " +
+                        sqlTipoNoti +sqlFechas +
+                        " group by noti.codUnidadAtencion.unidadId),0) as noti, " +
+                        " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
+                        " and noti.codUnidadAtencion.codigo =  uni.codigo " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                        sqlTipoNoti +sqlFechas +
+                        " group by  noti.codUnidadAtencion.unidadId) as dx, " +
+                        " coalesce( " +
+                        " (select sum(case dx.aprobada when true then 1 else 0 end) " +
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
+                        sqlTipoNoti +sqlFechas +
+                        " and noti.pasivo = false " +
+                        " and mx.anulada = false),0) as conresultado, " +
+                        " coalesce( " +
+                        " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        sqlTipoNoti +sqlFechas +
+                        " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
+                        " and noti.pasivo = false " +
+                        " and mx.anulada = false),0) as sinresultado " +
+                        "FROM Unidades uni " +
+                        "where uni.unidadId = :codUnidad" +
+                        " and uni.tipoUnidad in ("+ HealthUnitType.UnidadesPrimHosp.getDiscriminator()+") " +
+                        " order by uni.unidadId ");
 
 
 
-            queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.unidadId, dx.idSolicitudDx " +
-                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
-                    " where noti.idNotificacion = mx.idNotificacion " +
-                    sqlTipoNoti +sqlFechas +
-                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                    " and noti.pasivo = false " +
-                    " and mx.anulada = false " +
-                    " and dx.aprobada = true " +
-                    " and noti.codUnidadAtencion.unidadId = :codUnidad " +
-                    " or noti.codUnidadAtencion.unidadAdtva in (select u.codigo from Unidades u where u.unidadId = :codUnidad ) " +
-                    " order by noti.codUnidadAtencion.unidadId ");
+                queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.unidadId, dx.idSolicitudDx " +
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.idNotificacion = mx.idNotificacion " +
+                        sqlTipoNoti +sqlFechas +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        " and noti.pasivo = false " +
+                        " and mx.anulada = false " +
+                        " and dx.aprobada = true " +
+                        " and noti.codUnidadAtencion.unidadId = :codUnidad " +
+                        " order by noti.codUnidadAtencion.unidadId ");
+            }
+
+
 
 
             queryNotiDx.setParameter("codUnidad", filtro.getCodUnidad());
@@ -849,21 +950,39 @@ public class ReportesService {
             queryPoblacion.setParameter("codMunicipio", filtro.getCodMunicipio());
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
-            queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
-                    "where noti.pasivo = false and (noti.codUnidadAtencion.unidadId = :codUnidad " +
-                    " or noti.codUnidadAtencion.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
-                    ") " +
-                    "and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
-                    "From CalendarioEpi cal " + sqlWhereSemana);
-            queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
 
-            queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
-                    "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
-                    " or  pob.comunidad.sector.unidad.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
-                    " ) and pob.grupo =:tipoPob " +
-                    "and (pob.anio =:anio) " +
-                    "group by pob.anio order by pob.anio");
+            if(filtro.isSubunidades()){
+                queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
+                        "where noti.pasivo = false and (noti.codUnidadAtencion.unidadId = :codUnidad " +
+                        " or noti.codUnidadAtencion.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
+                        ") " +
+                        "and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
+                        "From CalendarioEpi cal " + sqlWhereSemana);
+
+
+                queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
+                        "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
+                        " or  pob.comunidad.sector.unidad.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
+                        " ) and pob.grupo =:tipoPob " +
+                        "and (pob.anio =:anio) " +
+                        "group by pob.anio order by pob.anio");
+
+            }else{
+                queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
+                        "where noti.pasivo = false and (noti.codUnidadAtencion.unidadId = :codUnidad) " +
+                        "and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
+                        "From CalendarioEpi cal " + sqlWhereSemana);
+
+
+                queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
+                        "from SivePoblacion pob where (pob.comunidad.sector.unidad.unidadId =:codUnidad " +
+                        " ) and pob.grupo =:tipoPob " +
+                        "and (pob.anio =:anio) " +
+                        "group by pob.anio order by pob.anio");
+            }
+
             queryPoblacion.setParameter("codUnidad", filtro.getCodUnidad());
+            queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
         }
 
         queryCasos.setParameter("anio", Integer.valueOf(filtro.getAnioInicial()));
@@ -936,10 +1055,23 @@ public class ReportesService {
 
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
-            queryCasos = session.createQuery(sqlDataDia + " From DaNotificacion  noti " +
-                    "where noti.pasivo = false and noti.codUnidadAtencion.unidadId = :codUnidad and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                    " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                    "group by noti.fechaRegistro order by noti.fechaRegistro asc");
+
+            if(filtro.isSubunidades()){
+
+                queryCasos = session.createQuery(sqlDataDia + " From DaNotificacion  noti " +
+                        "where noti.pasivo = false and noti.codTipoNotificacion.codigo = :tipoNoti" +
+                        " and (noti.codUnidadAtencion.unidadId = :codUnidad  " +
+                       "or noti.codUnidadAtencion.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad )) " +
+                        " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                        "group by noti.fechaRegistro order by noti.fechaRegistro asc");
+            }else{
+
+                queryCasos = session.createQuery(sqlDataDia + " From DaNotificacion  noti " +
+                        "where noti.pasivo = false and noti.codUnidadAtencion.unidadId = :codUnidad and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                        " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                        "group by noti.fechaRegistro order by noti.fechaRegistro asc");
+            }
+
             queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
 
         }
@@ -1041,13 +1173,23 @@ public class ReportesService {
 
         }
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
-            queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
-                    "and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                    "and (noti.codUnidadAtencion.unidadId = :codUnidad " +
-                    " or noti.codUnidadAtencion.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
-                    " ) and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                    " order by noti.fechaRegistro asc");
+            if(filtro.isSubunidades()){
+                queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                        "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                        "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                        "and (noti.codUnidadAtencion.unidadId = :codUnidad " +
+                        " or noti.codUnidadAtencion.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
+                        " ) and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                        " order by noti.fechaRegistro asc");
+            }else{
+                queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                        "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                        "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                        "and noti.codUnidadAtencion.unidadId = :codUnidad " +
+                        "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                        " order by noti.fechaRegistro asc");
+            }
+
 
             queryCasos.setParameter("codUnidad", filtro.getCodUnidad());
         }

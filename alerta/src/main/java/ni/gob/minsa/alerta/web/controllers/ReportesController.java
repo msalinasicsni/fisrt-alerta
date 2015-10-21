@@ -287,7 +287,8 @@ public class ReportesController {
             @RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
             @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
             @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
-            @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion) throws ParseException {
+            @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion,
+            @RequestParam(value= "ckUS", required = false) boolean ckUS) throws ParseException {
 
         logger.info("Obteniendo los datos de casos de notificaciones por semana");
         FiltrosReporte filtrosReporte = new FiltrosReporte();
@@ -302,6 +303,7 @@ public class ReportesController {
         filtrosReporte.setTipoNotificacion(tipoNotificacion);
         filtrosReporte.setFactor(factor);
         filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
+        filtrosReporte.setSubunidades((ckUS));//Incluir subunidades
         List<Object[]> datos = reportesService.getDataPorSemana(filtrosReporte);
         if (datos == null){
             logger.debug("Nulo");
@@ -358,7 +360,8 @@ public class ReportesController {
             @RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
             @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
             @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
-            @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion) throws ParseException {
+            @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion,
+            @RequestParam(value= "ckUS", required = false) boolean ckUS) throws ParseException {
 
         logger.info("Obteniendo los datos de casos de notificaciones por semana");
         FiltrosReporte filtrosReporte = new FiltrosReporte();
@@ -372,6 +375,7 @@ public class ReportesController {
         filtrosReporte.setFechaInicio(DateUtil.StringToDate(fechaInicial+" 00:00:00","dd/MM/yyyy HH:mm:ss"));
         filtrosReporte.setFechaFin(DateUtil.StringToDate(fechaFinal+" 23:59:59","dd/MM/yyyy HH:mm:ss"));
         //filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
+        filtrosReporte.setSubunidades((ckUS));//Incluir subunidades
         List<Object[]> datos = reportesService.getDataPorDia(filtrosReporte);
         if (datos == null){
             logger.debug("Nulo");
@@ -418,6 +422,7 @@ public class ReportesController {
         Long codDepartamento = null;
         Long codMunicipio = null;
         String codArea = null;
+        boolean subunidad = false;
 
         if (jObjectFiltro.get("codSilais") != null && !jObjectFiltro.get("codSilais").getAsString().isEmpty())
             codSilais = jObjectFiltro.get("codSilais").getAsLong();
@@ -437,8 +442,10 @@ public class ReportesController {
             codMunicipio = jObjectFiltro.get("codMunicipio").getAsLong();
         if (jObjectFiltro.get("codArea") != null && !jObjectFiltro.get("codArea").getAsString().isEmpty())
             codArea = jObjectFiltro.get("codArea").getAsString();
+        if (jObjectFiltro.get("subunidades") != null && !jObjectFiltro.get("subunidades").getAsString().isEmpty())
+            subunidad = jObjectFiltro.get("subunidades").getAsBoolean();
 
-
+        filtroRep.setSubunidades(subunidad);
         filtroRep.setCodSilais(codSilais);
         filtroRep.setCodUnidad(codUnidadSalud);
         filtroRep.setFechaInicio(fechaInicio);
@@ -515,7 +522,8 @@ public class ReportesController {
             @RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
             @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
             @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
-            @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion) throws ParseException {
+            @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion,
+            @RequestParam(value = "ckUS", required = false) boolean subunidades) throws ParseException {
 
         logger.info("Obteniendo los datos de casos de notificaciones por semana");
         FiltrosReporte filtrosReporte = new FiltrosReporte();
@@ -527,6 +535,7 @@ public class ReportesController {
         filtrosReporte.setTipoNotificacion(tipoNotificacion);
         filtrosReporte.setFechaInicio(DateUtil.StringToDate(fechaInicial+" 00:00:00","dd/MM/yyyy HH:mm:ss"));
         filtrosReporte.setFechaFin(DateUtil.StringToDate(fechaFinal+" 23:59:59","dd/MM/yyyy HH:mm:ss"));
+        filtrosReporte.setSubunidades(subunidades);
         //filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
         List<DaNotificacion> datos = reportesService.getDataSinResultado(filtrosReporte);
         if (datos == null){
