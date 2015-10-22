@@ -132,7 +132,8 @@
 					</a>
 						<ul>
 							<li class = "casostasas"><a href="<spring:url value="/analisis/casostasas/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="numandrate" /></span></a>
-							<li class = "razones"><a href="<spring:url value="/analisis/razones/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="ratioandindex" /></span></a>
+                            <li class = "casostasasarea"><a href="<spring:url value="/analisis/casostasasarea/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="numandratebyarea" /></span></a>
+                            <li class = "razones"><a href="<spring:url value="/analisis/razones/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="ratioandindex" /></span></a>
 							<li class = "corredores"><a href="<spring:url value="/analisis/corredores/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="endemic" /></span></a>
 							<li class = "indice"><a href="<spring:url value="/analisis/indice/" htmlEscape="true" />"> <i class=""></i> <span class=""><fmt:message key="epiindex" /></span></a>
 						</ul>

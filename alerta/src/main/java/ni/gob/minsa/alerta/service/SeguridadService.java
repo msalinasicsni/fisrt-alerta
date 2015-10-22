@@ -741,6 +741,7 @@ public class SeguridadService {
                 }
                default: break;
             }
+            query += "order by a.orden asc";
             Query q = session.createQuery(query);
             areaRepList = q.list();
         }
