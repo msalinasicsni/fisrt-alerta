@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import ni.gob.minsa.alerta.domain.sive.SivePatologiasTipo;
 
+import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -21,6 +22,7 @@ public class AnalisisObsEsperadosService {
 	private SessionFactory sessionFactory;
 	private static final String sqlData = "Select inf.patologia.codigo as codigo, inf.patologia.nombre as patologia, inf.anio as anio, inf.semana as semana,  " +
 			"sum(inf.totalm) as totalm, sum(inf.totalf) as totalf, sum(inf.totalm+inf.totalf) as total";
+    private static final String sqlDataArea = "Select inf.silais as silais, inf.anio as anio, sum(inf.totalm+inf.totalf) as total";
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getDataCasosTasas(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,
@@ -772,4 +774,210 @@ public class AnalisisObsEsperadosService {
 		
 		return resultadoF;
 	}
+
+    public List<Object[]> getDataCasosTasasArea(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad, String semI, String semF, String anioI, String anioF)
+    {
+        List<Object[]> resultadoFinal = new ArrayList<Object[]>();
+        List<Object[]> resultadoTemp = new ArrayList<Object[]>();
+        List<Object[]> instancias = new ArrayList<Object[]>();
+        Session session = sessionFactory.getCurrentSession();
+        Query queryInstancias = null; //para recuperar la lista de instancias (SILAIS, municipio, o unidad de salud) que se van a mostrar en el reporte
+        Query query = null;
+        String patoQuery = null;
+        List<Integer> anios = new ArrayList<Integer>();
+        patoQuery = "inf.patologia.codigo = '"+codPato+"'";
+
+        for (int i = 0; i<=(Integer.parseInt(anioF)-Integer.parseInt(anioI)); i++){
+            anios.add(Integer.parseInt(anioI)+i);
+        }
+
+        if(codArea.equals("AREAREP|PAIS"))
+        {
+            query = session.createQuery(sqlDataArea + " From SiveInformeDiario inf " +
+                    "where ("+ patoQuery +") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                    "group by inf.anio, inf.silais order by inf.silais, inf.anio");
+
+            queryInstancias = session.createQuery("select entidadAdtvaId, nombre from EntidadesAdtvas where pasivo = '0' order by entidadAdtvaId");
+
+        }else if (codArea.equals("AREAREP|SILAIS")){
+            query = session.createQuery("Select inf.municipio.divisionpoliticaId as munici, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+                    "where inf.municipio.dependenciaSilais.entidadAdtvaId =:codSilais and ("+ patoQuery +") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                    "group by inf.anio, inf.municipio.divisionpoliticaId order by inf.municipio.divisionpoliticaId, inf.anio");
+            query.setParameter("codSilais", codSilais);
+
+            queryInstancias = session.createQuery("select dp.divisionpoliticaId, dp.nombre from Divisionpolitica dp " +
+                    "where dp.dependenciaSilais.entidadAdtvaId = :codSilais and dp.pasivo = '0' order by dp.divisionpoliticaId");
+            queryInstancias.setParameter("codSilais", codSilais);
+        }
+        else if (codArea.equals("AREAREP|DEPTO")){
+            query = session.createQuery("Select inf.municipio.divisionpoliticaId as munici, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+                    "where inf.municipio.dependencia.divisionpoliticaId =:codDepartamento and ("+ patoQuery +") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                    "group by inf.anio, inf.municipio.divisionpoliticaId order by inf.municipio.divisionpoliticaId, inf.anio");
+            query.setParameter("codDepartamento", codDepartamento);
+
+            queryInstancias = session.createQuery("select dp.divisionpoliticaId, dp.nombre from Divisionpolitica dp " +
+                    "where dp.dependencia.divisionpoliticaId = :codDepartamento and dp.pasivo = '0' order by dp.divisionpoliticaId");
+            queryInstancias.setParameter("codDepartamento", codDepartamento);
+        }
+        else if (codArea.equals("AREAREP|MUNI")){
+            query = session.createQuery("Select inf.unidad.unidadId as unidadid, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+                    "where inf.unidad.municipio.divisionpoliticaId =:codMunicipio and ("+ patoQuery +") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                    "group by inf.anio, inf.unidad.unidadId order by inf.unidad.unidadId, inf.anio");
+            query.setParameter("codMunicipio", codMunicipio);
+
+            queryInstancias = session.createQuery("select uni.unidadId, uni.nombre from Unidades uni " +
+                    "where uni.municipio.divisionpoliticaId = :codMunicipio " +
+                    " and uni.tipoUnidad in ("+ HealthUnitType.UnidadesSIVE.getDiscriminator()+") " +
+                    "and uni.pasivo = '0' order by uni.unidadId");
+            queryInstancias.setParameter("codMunicipio", codMunicipio);
+        }
+        else if (codArea.equals("AREAREP|UNI")){
+            query = session.createQuery("Select inf.unidad.unidadId as unidadid, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+                    "where inf.unidad.unidadId =:codUnidad and ("+ patoQuery +") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                    "group by inf.anio, inf.unidad.unidadId order by inf.unidad.unidadId, inf.anio");
+            query.setParameter("codUnidad", codUnidad);
+
+            queryInstancias = session.createQuery("select uni.unidadId, uni.nombre from Unidades uni " +
+                    "where uni.unidadId = :codUnidad " +
+                    "and uni.pasivo = '0' order by uni.unidadId");
+            queryInstancias.setParameter("codUnidad", codUnidad);
+        }
+        instancias.addAll(queryInstancias.list());
+        query.setParameter("semI", Integer.parseInt(semI));
+        query.setParameter("semF", Integer.parseInt(semF));
+        query.setParameter("anioI", Integer.parseInt(anioI));
+        query.setParameter("anioF", Integer.parseInt(anioF));
+        resultadoTemp.addAll(query.list());
+        query = session.createQuery("From SivePatologiasTipo patologia where patologia.patologia.codigo =:codPato");
+        query.setParameter("codPato", codPato);
+        SivePatologiasTipo patologia = (SivePatologiasTipo)query.uniqueResult();
+        if(instancias.size() > 0)
+        {
+            //por cada instancia que se va a mostrar en el reporte, se obtiene los casos agrupados por año en el informe diario
+            for (Object[] objArray :instancias )
+            {
+                Object[] dataInstancia; //objeto que tomara todos los datos de la instancia que se esta consultando ID,NOMBRE,[[año1,[CASOS,TASAS]],[año2,[CASOS,TASAS]],...,[añoN,[CASOS,TASAS]]]
+                dataInstancia = new Object[anios.size() + 2];//tamaño es todos los años mas id y nombre de la instancia que se esta filtrando(SILAIS, Departamento, municipio, unidad salud)
+                dataInstancia[0] = objArray[0]; //id
+                dataInstancia[1] = objArray[1]; //nombre
+                int indice = 1;
+                int indiceAnio = 0;
+                boolean noEncontrado=true;
+                for(Object[] objArrayDatos : resultadoTemp){
+                    Integer anioEvaluar = anios.get(indiceAnio);
+                    List<Object> dataAnios = new ArrayList<Object>();
+                    noEncontrado = true;
+                    //id de la instancia a mostrar coincide con el id de la instancia en el informe diario
+                    if(objArray[0].toString().matches(objArrayDatos[0].toString()))
+                    {
+                        //mientras no se encuentre registro para el año en evaluación, se compara el año de la instancia en el informe diario contra cada anio indicado por el usuario
+                        while (noEncontrado) {
+                            //si año que se esta evaluando es menor al año que se obtiene de la entidad actual, significa que para ese año no se encontraron registros y se agrega con caso y tasa null
+                            if (anioEvaluar < (int) objArrayDatos[1]) {
+                                dataAnios.add(anioEvaluar); //año (ejemplo 2010,2011,2012, etc.)
+                                Object casoTasa[] = new Object[2];
+                                casoTasa[0] = null; //se recuperan los casos
+                                casoTasa[1] = null; //la tasa es null, se seteara posteriormente
+                                dataAnios.add(casoTasa); //[caso,tasa]
+                                indiceAnio++;
+                                indice++;
+                                dataInstancia[indice] = dataAnios; //se agrega data(año, [casos,tasas]) del año consultado
+                                dataAnios = new ArrayList<Object>();
+                                anioEvaluar = anios.get(indiceAnio);//pasamos al siguiente año indicado por el usuario
+                            }else{ // coinciden los años, entonces se recuperan casos de la instancia en ese año
+                                Object casoTasa[] = new Object[2];
+                                casoTasa[0] = objArrayDatos[2]; //se recuperan los casos
+                                casoTasa[1] = null; //la tasa es null, se seteara posteriormente
+                                dataAnios.add(objArrayDatos[1]); //año (ejemplo 2010,2011,2012, etc.)
+                                dataAnios.add(casoTasa); //[caso,tasa]
+                                indice++;
+                                dataInstancia[indice] = dataAnios; //se agrega data(año, [casos,tasas]) del año consultado
+                                noEncontrado = false;//salir del ciclo
+                                indiceAnio++;//pasar al siguiente año
+                            }
+                        }
+                    }
+                    //si es el último año indicado por el usuario, entonces se reinicia indice de años para que el siguiente registro[instancia,año,casos], se evalue contra todos los años
+                    if (indiceAnio==anios.size())
+                        indiceAnio=0;
+                }
+                resultadoFinal.add(dataInstancia);
+            }
+            //se recorre cada registro para calcular la tasa
+            for(Object[] dataInstancia : resultadoFinal)
+            {
+                int indice = 2; //indice es 2, porque en la posición 0 y 1 estan el id y nombre de la instancia, respectivamente
+                List<Object> dataAnios = new ArrayList<Object>();
+                //por cada año que se busca se obtiene la población según la instancia, el tipo de población y el año
+                for(Integer anio : anios){
+                    switch (codArea){
+                        case "AREAREP|PAIS" :
+                            query = session.createQuery("Select sum(pob.total) as total from SivePoblacionDivPol pob " +
+                                    "where pob.divpol.dependenciaSilais.entidadAdtvaId=:codSilais and pob.grupo =:tipoPob and (pob.anio =:anio) " +
+                                    "group by pob.anio order by pob.anio");
+                            query.setParameter("codSilais", dataInstancia[0]);
+                            break;
+                        case "AREAREP|SILAIS" :
+                            query = session.createQuery("Select sum(pob.total) as totales " +
+                                    "from SivePoblacionDivPol pob where pob.divpol.divisionpoliticaId =:codMunicipio and pob.grupo =:tipoPob and (pob.anio =:anio) " +
+                                    "group by pob.anio order by pob.anio");
+                            query.setParameter("codMunicipio", dataInstancia[0]);
+                            break;
+                        case "AREAREP|DEPTO" :
+                            query = session.createQuery("Select sum(pob.total) as totales " +
+                                    "from SivePoblacionDivPol pob where pob.divpol.divisionpoliticaId =:codMunicipio and pob.grupo =:tipoPob and (pob.anio =:anio) " +
+                                    "group by pob.anio order by pob.anio");
+                            query.setParameter("codMunicipio", dataInstancia[0]);
+                            break;
+                        case "AREAREP|MUNI" :
+                            query = session.createQuery("Select sum(pob.total) as total " +
+                                    "from SivePoblacion pob where pob.comunidad.sector.unidad.unidadId =:codUnidad and pob.grupo =:tipoPob and (pob.anio =:anio) " +
+                                    "group by pob.anio order by pob.anio");
+                            query.setParameter("codUnidad", codUnidad);
+                            break;
+                        case "AREAREP|UNI" :
+                            query = session.createQuery("Select sum(pob.total) as total " +
+                                    "from SivePoblacion pob where pob.comunidad.sector.unidad.unidadId =:codUnidad and pob.grupo =:tipoPob and (pob.anio =:anio) " +
+                                    "group by pob.anio order by pob.anio");
+                            query.setParameter("codUnidad", codUnidad);
+                            break;
+                    }
+
+                    query.setParameter("tipoPob", patologia.getTipoPob());
+                    query.setParameter("anio", anio);
+
+                    //se recupera la población
+                    Long poblacion = (Long)query.uniqueResult();
+
+                    dataAnios = (List<Object>)dataInstancia[indice];// se recupera la info del año que se esta recorriendo
+                    //si hay datos sobre el año, y es el año que se esta recorriendo
+                    if(dataAnios != null && dataAnios.size() > 0 && dataAnios.get(0).toString().matches(anio.toString()))
+                    {
+                        Object[] casoTasa = (Object[])dataAnios.get(1);//em la posición 1 esta el dato de casos
+                        if(poblacion != null && casoTasa.length > 0 && casoTasa[0] != null) {
+                            casoTasa[1] = (double) Math.round((Integer.valueOf(casoTasa[0].toString()).doubleValue())/poblacion*patologia.getFactor()*100)/100;
+                        }
+                        //se actualiza datos, ya con la tasa calculada
+                        dataAnios.remove(1);
+                        dataAnios.add(1, casoTasa);
+                    }else{//se rellenan con caso y tasa null, los años que no hay registros en la base de datos para esa instancia
+                        if (dataAnios == null){
+                            dataAnios = new ArrayList<Object>();
+                            dataAnios.add(anio);
+                            Object casoTasa[] = new Object[2];
+                            casoTasa[0] = null; //se recuperan los casos
+                            casoTasa[1] = null; //la tasa es null, se seteara posteriormente
+                            dataAnios.add(casoTasa); //[caso,tasa]
+                            dataInstancia[indice] = dataAnios;
+                        }
+                    }
+                    indice++;
+                }
+            }
+        }
+        resultadoFinal.add(anios.toArray());
+        return resultadoFinal;
+    }
+
+
 }

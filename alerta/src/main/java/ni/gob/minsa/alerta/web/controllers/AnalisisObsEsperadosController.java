@@ -208,5 +208,46 @@ public class AnalisisObsEsperadosController {
         }
         return datos;
     }
-    
+
+    @RequestMapping(value = "casostasasarea", method = RequestMethod.GET)
+    public String initCasosTasasAreaPage(Model model)
+            throws Exception
+    {
+        logger.debug("presentar analisis por casos y tasas");
+        List entidades = entidadAdmonService.getAllEntidadesAdtvas();
+        List departamentos = divisionPoliticaService.getAllDepartamentos();
+        List areas = catalogosService.getAreaRep();
+        List semanas = catalogosService.getSemanas();
+        List anios = catalogosService.getAnios();
+        List patologias = sivePatologiasService.getSivePatologias();
+        model.addAttribute("areas", areas);
+        model.addAttribute("semanas", semanas);
+        model.addAttribute("anios", anios);
+        model.addAttribute("entidades", entidades);
+        model.addAttribute("departamentos", departamentos);
+        model.addAttribute("patologias", patologias);
+        return "analisis/casostasasarea";
+    }
+
+    @RequestMapping(value = "casostasasareadata", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List fetchCasosTasasAreaDataJson(@RequestParam(value = "codPato", required = true) String codPato,
+                                            @RequestParam(value = "codArea", required = true) String codArea,
+                                            @RequestParam(value = "semI", required = true) String semI,
+                                            @RequestParam(value = "semF", required = true) String semF,
+                                            @RequestParam(value = "anioI", required = true) String anioI,
+                                            @RequestParam(value = "anioF", required = true) String anioF,
+                                            @RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
+                                            @RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
+                                            @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
+                                            @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException
+    {
+        logger.info("Obteniendo los datos de casos y tasas en JSON");
+        List datos = analisisObsEsperadosService.getDataCasosTasasArea(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semI, semF, anioI, anioF);
+        if(datos == null)
+            logger.debug("Nulo");
+        return datos;
+    }
+
+
 }
