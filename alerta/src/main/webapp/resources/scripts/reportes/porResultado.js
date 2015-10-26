@@ -65,7 +65,7 @@ var resultReport = function () {
                     ],
                     "sSwfPath": parametros.dataTablesTTSWF
                 },
-                "aoColumns" : [ {sClass: "aw-left" },{sClass: "aw-right" },{sClass: "aw-right"},{sClass: "aw-right"},{sClass: "aw-right"},{sClass: "aw-right"},{sClass: "aw-right"}],
+                "aoColumns" : [ {sClass: "aw-left" },{sClass: "aw-right" },{sClass: "aw-right"},{sClass: "aw-right"},{sClass: "aw-right"},{sClass: "aw-right"},{sClass: "aw-right"},{sClass: "aw-right"}],
                 "autoWidth" : true,
                 "preDrawCallback" : function() {
                     // Initialize the responsive datatables helper once.
@@ -156,6 +156,7 @@ var resultReport = function () {
                         $('#municipio').hide();
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
+                        $('#dNivelPais').show();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
                         $('#silais').show();
@@ -163,6 +164,7 @@ var resultReport = function () {
                         $('#municipio').hide();
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
+                        $('#dNivelPais').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
                         $('#silais').hide();
@@ -170,6 +172,7 @@ var resultReport = function () {
                         $('#municipio').hide();
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
+                        $('#dNivelPais').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
                         $('#silais').show();
@@ -177,6 +180,7 @@ var resultReport = function () {
                         $('#municipio').show();
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
+                        $('#dNivelPais').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
                         $('#silais').show();
@@ -184,6 +188,7 @@ var resultReport = function () {
                         $('#municipio').show();
                         $('#unidad').show();
                         $('#dSubUnits').show();
+                        $('#dNivelPais').hide();
                     }
                 });
 
@@ -198,6 +203,7 @@ var resultReport = function () {
                 filtro['codMunicipio'] = $('#codMunicipio').find('option:selected').val();
                 filtro['codArea'] = $('#codArea').find('option:selected').val();
                 filtro['tipoNotificacion'] = $('#codTipoNoti').find('option:selected').val();
+                filtro['porSilais'] = $('input[name="rbNivelPais"]:checked', '#result_form').val();
 
                 bloquearUI(parametros.blockMess);
                 $.getJSON(parametros.sActionUrl, {
@@ -209,7 +215,12 @@ var resultReport = function () {
                     var encontrado = false;
                     if ($('#codArea option:selected').val() == "AREAREP|PAIS") {
                         title = title + '</br>' + $('#nicRepublic').val();
-                        $('#firstTh').html($('#silaisT').val());
+                        console.log(filtro['porSilais']);
+                        if (filtro['porSilais'] == 'true') {
+                            $('#firstTh').html($('#silaisT').val());
+                        }else {
+                            $('#firstTh').html($('#departaT').val());
+                        }
 
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
@@ -256,7 +267,7 @@ var resultReport = function () {
                             labels.push([data[row][0]]);
                             datosRes.push(data[row][6]);
                         }
-                        table1.fnAddData([data[row][0], data[row][1], data[row][2], data[row][3], data[row][4], data[row][5], data[row][6]]);
+                        table1.fnAddData([data[row][0], data[row][1], data[row][2], data[row][3], data[row][4], data[row][5],data[row][7], data[row][6]]);
                         encontrado = true;
 
                     }

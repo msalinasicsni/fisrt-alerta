@@ -423,6 +423,7 @@ public class ReportesController {
         Long codMunicipio = null;
         String codArea = null;
         boolean subunidad = false;
+        boolean porSilais = true;//por defecto true
 
         if (jObjectFiltro.get("codSilais") != null && !jObjectFiltro.get("codSilais").getAsString().isEmpty())
             codSilais = jObjectFiltro.get("codSilais").getAsLong();
@@ -444,6 +445,8 @@ public class ReportesController {
             codArea = jObjectFiltro.get("codArea").getAsString();
         if (jObjectFiltro.get("subunidades") != null && !jObjectFiltro.get("subunidades").getAsString().isEmpty())
             subunidad = jObjectFiltro.get("subunidades").getAsBoolean();
+        if (jObjectFiltro.get("porSilais") != null && !jObjectFiltro.get("porSilais").getAsString().isEmpty())
+            porSilais = jObjectFiltro.get("porSilais").getAsBoolean();
 
         filtroRep.setSubunidades(subunidad);
         filtroRep.setCodSilais(codSilais);
@@ -456,6 +459,7 @@ public class ReportesController {
         filtroRep.setCodMunicipio(codMunicipio);
         filtroRep.setCodArea(codArea);
         filtroRep.setAnioInicial(DateUtil.DateToString(fechaInicio, "yyyy"));
+        filtroRep.setPorSilais(porSilais);
 
         return filtroRep;
     }

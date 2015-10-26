@@ -148,7 +148,7 @@ var ViewReport = function () {
                     var hay = (long < 2)?false:true;
                     var descEntidad = '';
                     if (hay){
-                        title = "Distribución por patologías";
+                        title = $('#codPato option:selected').text()
                         if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
                             title = title + '</br>'+parametros.nicaragua;
                             descEntidad = 'SILAIS';

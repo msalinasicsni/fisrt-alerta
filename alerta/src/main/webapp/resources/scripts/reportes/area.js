@@ -158,6 +158,7 @@ var areaReport = function () {
                         $('#municipio').hide();
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
+                        $('#dNivelPais').show();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
                         $('#silais').show();
@@ -165,6 +166,7 @@ var areaReport = function () {
                         $('#municipio').hide();
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
+                        $('#dNivelPais').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
                         $('#silais').hide();
@@ -172,6 +174,7 @@ var areaReport = function () {
                         $('#municipio').hide();
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
+                        $('#dNivelPais').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
                         $('#silais').show();
@@ -179,6 +182,7 @@ var areaReport = function () {
                         $('#municipio').show();
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
+                        $('#dNivelPais').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
                         $('#silais').show();
@@ -186,6 +190,7 @@ var areaReport = function () {
                         $('#municipio').show();
                         $('#unidad').show();
                         $('#dSubUnits').show();
+                        $('#dNivelPais').hide();
                     }
                 });
 
@@ -201,6 +206,7 @@ var areaReport = function () {
                 areaFiltro['codMunicipio'] = $('#codMunicipio').find('option:selected').val();
                 areaFiltro['codArea'] = $('#codArea').find('option:selected').val();
                 areaFiltro['tipoNotificacion'] = $('#codTipoNoti').find('option:selected').val();
+                areaFiltro['porSilais'] = $('input[name="rbNivelPais"]:checked', '#area_form').val();
 
                 bloquearUI(parametros.blockMess);
                 $.getJSON(parametros.sActionUrl, {
@@ -212,7 +218,11 @@ var areaReport = function () {
                     var encontrado = false;
                     if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
                         title = title + '</br>' + $('#nicRepublic').val();
-                        $('#firstTh').html($('#silaisT').val());
+                        if (areaFiltro['porSilais'] == 'true') {
+                            $('#firstTh').html($('#silaisT').val());
+                        }else {
+                            $('#firstTh').html($('#departaT').val());
+                        }
 
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
