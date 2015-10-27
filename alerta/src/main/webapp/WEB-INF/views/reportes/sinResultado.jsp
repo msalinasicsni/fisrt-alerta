@@ -299,6 +299,7 @@
                                             <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.send.symptoms.start.date"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.silais"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.health.unit"/></th>
+                                            <th><spring:message code="act.go"/></th>
                                         </tr>
                                         </thead>
                                     </table>
@@ -368,8 +369,8 @@
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
 	<spring:url value="/resources/scripts/reportes/sinResultado.js" var="diaJs" />
 	<script src="${diaJs}"></script>
-	<spring:url value="/resources/scripts/utilidades/seleccionRegionSIVE.js" var="seleccionRegionSIVE" />
-	<script src="${seleccionRegionSIVE}"></script>
+    <spring:url value="/resources/scripts/utilidades/seleccionUnidadReporte.js" var="seleccionUnidadReporte" />
+    <script src="${seleccionUnidadReporte}"></script>
     <spring:url value="/resources/scripts/utilidades/handleDatePickers.js" var="handleDatePickers" />
     <script src="${handleDatePickers}"></script>
 	<!-- END PAGE LEVEL SCRIPTS -->
@@ -386,8 +387,13 @@
     <c:set var="casos"><spring:message code="lbl.cases" /></c:set>
     <c:set var="valorNo"><spring:message code="lbl.no" /></c:set>
 	<spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
-	<spring:url var="unidadesUrl"   value="/api/v1/unidadesPorSilaisyMuni"  />
-	<script type="text/javascript">
+	<spring:url var="unidadesUrl"   value="/api/v1/uniRepPorSilaisyMuni"  />
+    <!--SIEMPRE QUE SE AGREGUE UNA NUEVA NOTIFICACION, SERÁ NECESARIO AGREGAR ACA LA URL DE EDICIÓN Y LUEGO TRATARLA EN EL .js-->
+    <c:url var="febrilesUrl" value="/febriles/edit/"/>
+    <c:url var="iragUrl" value="/irag/edit/"/>
+    <c:url var="pacienteUrl" value="/paciente/detail/"/>
+
+    <script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
 			var parametros = {sActionUrl: "${sActionUrl}",
@@ -404,10 +410,13 @@
                 desde : "${desde}",
                 hasta : "${hasta}",
                 casos : "${casos}",
-                valorNo : "${valorNo}"
+                valorNo : "${valorNo}",
+                febrilesUrl : "${febrilesUrl}",
+                iragUrl : "${iragUrl}",
+                pacienteUrl : "${pacienteUrl}"
             };
 			ViewReport.init(parametros);
-			SeleccionRegionSIVE.init(parametros);
+            SeleccionUnidadReporte.init(parametros);
             handleDatePickers("${pageContext.request.locale.language}");
             $("li.reportes").addClass("open");
 	    	$("li.withoutRes").addClass("active");

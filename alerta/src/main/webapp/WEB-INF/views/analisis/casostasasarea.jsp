@@ -311,7 +311,7 @@
                     data-widget-sortable="false"
                 -->
                 <header>
-                    <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
                     <h2><spring:message code="numandrate" /></h2>
                 </header>
                 <!-- widget div-->
@@ -357,7 +357,7 @@
                     data-widget-sortable="false"
                 -->
                 <header>
-                    <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
+                    <span class="widget-icon"> <i class="fa fa-line-chart"></i> </span>
                     <h2><spring:message code="lbl.cases" /></h2>
                 </header>
                 <!-- widget div-->
@@ -405,7 +405,7 @@
                     data-widget-sortable="false"
                 -->
                 <header>
-                    <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
+                    <span class="widget-icon"> <i class="fa fa-line-chart"></i> </span>
                     <h2><spring:message code="lbl.rates" /></h2>
                 </header>
                 <!-- widget div-->
@@ -507,7 +507,9 @@
             departamento : "${departamento}",
             municipio : "${municipio}",
             unidad : "${unidad}",
-            semana : "${semana}"
+            semana : "${semana}",
+            casos : "${casos}",
+            tasas : "${tasas}"
         };
         ViewReport.init(parametros);
         SeleccionRegionSIVE.init(parametros);

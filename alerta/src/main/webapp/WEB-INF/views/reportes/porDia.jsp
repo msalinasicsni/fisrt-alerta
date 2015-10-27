@@ -375,8 +375,8 @@
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
 	<spring:url value="/resources/scripts/reportes/porDia.js" var="diaJs" />
 	<script src="${diaJs}"></script>
-	<spring:url value="/resources/scripts/utilidades/seleccionRegionSIVE.js" var="seleccionRegionSIVE" />
-	<script src="${seleccionRegionSIVE}"></script>
+    <spring:url value="/resources/scripts/utilidades/seleccionUnidadReporte.js" var="seleccionUnidadReporte" />
+    <script src="${seleccionUnidadReporte}"></script>
     <spring:url value="/resources/scripts/utilidades/handleDatePickers.js" var="handleDatePickers" />
     <script src="${handleDatePickers}"></script>
 	<!-- END PAGE LEVEL SCRIPTS -->
@@ -392,7 +392,7 @@
     <c:set var="hasta"><spring:message code="lbl.to" /></c:set>
     <c:set var="casos"><spring:message code="lbl.cases" /></c:set>
 	<spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
-	<spring:url var="unidadesUrl"   value="/api/v1/unidadesPorSilaisyMuni"  />
+	<spring:url var="unidadesUrl"   value="/api/v1/uniRepPorSilaisyMuni"  />
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
@@ -412,7 +412,7 @@
                 casos : "${casos}"
             };
 			ViewReport.init(parametros);
-			SeleccionRegionSIVE.init(parametros);
+            SeleccionUnidadReporte.init(parametros);
             handleDatePickers("${pageContext.request.locale.language}");
             $("li.reportes").addClass("open");
 	    	$("li.dia").addClass("active");

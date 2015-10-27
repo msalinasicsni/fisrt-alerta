@@ -22,6 +22,7 @@ public class FiltrosReporte {
     Date fechaFin;
     String tipoPoblacion;
     boolean subunidades;
+    boolean porSilais;
 
     public String getCodArea() {
         return codArea;
@@ -126,4 +127,12 @@ public class FiltrosReporte {
     public boolean isSubunidades() { return subunidades; }
 
     public void setSubunidades(boolean subunidades) { this.subunidades = subunidades; }
+
+    public boolean isPorSilais() {
+        return porSilais;
+    }
+
+    public void setPorSilais(boolean porSilais) {
+        this.porSilais = porSilais;
+    }
 }

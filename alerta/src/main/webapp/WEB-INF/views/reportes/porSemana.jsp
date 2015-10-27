@@ -489,8 +489,8 @@
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
 	<spring:url value="/resources/scripts/reportes/porSemana.js" var="semana" />
 	<script src="${semana}"></script>
-	<spring:url value="/resources/scripts/utilidades/seleccionRegionSIVE.js" var="seleccionRegionSIVE" />
-	<script src="${seleccionRegionSIVE}"></script>
+    <spring:url value="/resources/scripts/utilidades/seleccionUnidadReporte.js" var="seleccionUnidadReporte" />
+    <script src="${seleccionUnidadReporte}"></script>
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<spring:url value="/reportes/getDataPorSemana/" var="sActionUrl"/>
 	<c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
@@ -506,7 +506,7 @@
     <c:set var="semana1"><spring:message code="week1" /> </c:set>
     <c:set var="semana2"><spring:message code="week2" /> </c:set>
 	<spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
-	<spring:url var="unidadesUrl"   value="/api/v1/unidadesPorSilaisyMuni"  />
+	<spring:url var="unidadesUrl"   value="/api/v1/uniRepPorSilaisyMuni"  />
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
@@ -528,7 +528,7 @@
                 semana2 : "${semana2}"
             };
 			ViewReport.init(parametros);
-			SeleccionRegionSIVE.init(parametros);
+            SeleccionUnidadReporte.init(parametros);
 	    	$("li.reportes").addClass("open");
 	    	$("li.semana").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){

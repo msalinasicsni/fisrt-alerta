@@ -138,7 +138,7 @@
                 <input id="municT" type="hidden" value="<spring:message code="muni"/>"/>
                 <input id="usT" type="hidden" value="<spring:message code="lbl.health.unit"/>"/>
                 <input id="areaL" type="hidden" value="<spring:message code="lbl.health.area"/>"/>
-
+                <input id="departaT" type="hidden" value="<spring:message code="lbl.department"/>"/>
 
 
                 <form id="result_form" class ="smart-form">
@@ -169,6 +169,24 @@
                                             <option value="${area.codigo}">${area.valor}</option>
                                         </c:forEach>
                                     </select>
+                                </div>
+                            </section>
+                        </div>
+                        <!-- END ROW -->
+                        <!-- START ROW -->
+                        <div id="dNivelPais" hidden="hidden" class="row">
+                            <section class="col col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="inline-group">
+                                    <section class="col col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                        <label class="radio">
+                                            <input type="radio" name="rbNivelPais" id="rbNPSILAIS" value="true" checked="checked">
+                                            <i></i><spring:message code="lbl.silais"/></label>
+                                    </section>
+                                    <section class="col col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                        <label class="radio">
+                                            <input type="radio" name="rbNivelPais" value="false" id="rbNPDepa">
+                                            <i></i><spring:message code="lbl.department"/></label>
+                                    </section>
                                 </div>
                             </section>
                         </div>
@@ -328,10 +346,11 @@
 
                         <th id="firstTh"></th>
                         <th><spring:message code="lbl.notifications"/></th>
-                        <th><spring:message code="lbl.requests"/></th>
+                        <th><spring:message code="lbl.send.dx.orders"/></th>
                         <th><spring:message code="lbl.positives"/></th>
                         <th><spring:message code="lbl.negatives"/></th>
                         <th><spring:message code="lbl.without.res"/></th>
+                        <th><spring:message code="lbl.mx.inadecuada"/></th>
                         <th><spring:message code="lbl.pos.percentage"/></th>
 
 
