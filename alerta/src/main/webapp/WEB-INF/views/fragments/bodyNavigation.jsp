@@ -148,23 +148,51 @@
             <li class="reportes">
                 <a href="#" title="<spring:message code="menu.reports" />"><i class="fa fa-lg fa-fw fa fa-line-chart"></i> <span class="menu-item-parent"><spring:message code="menu.reports" /></span></a>
                 <ul>
-                    <li class="area">
-                        <a href="<spring:url value="/reportes/area" htmlEscape="true "/>" title="<spring:message code="menu.report.by.area" />"><i class=""></i> <spring:message code="menu.report.by.area" /></a>
+                    <li>
+                        <a href="#" title="<spring:message code="menu.reports.notification" />"><i class="fa fa-lg fa-fw fa-pencil"></i> <spring:message code="menu.reports.notification" /></a>
+                        <ul>
+                            <li class="area">
+                                <a href="<spring:url value="/reportes/area" htmlEscape="true "/>" title="<spring:message code="menu.report.by.area" />"><i class=""></i> <spring:message code="menu.report.by.area" /></a>
+                            </li>
+                            <li class="semana">
+                                <a href="<spring:url value="/reportes/porSemana" htmlEscape="true "/>" title="<spring:message code="menu.weekly.report" />"> <spring:message code="menu.weekly.report" /></a>
+                            </li>
+                            <li class="dia">
+                                <a href="<spring:url value="/reportes/porDia" htmlEscape="true "/>" title="<spring:message code="menu.report.per.day" />"> <spring:message code="menu.report.per.day" /></a>
+                            </li>
+                            <li class="withoutRes">
+                                <a href="<spring:url value="/reportes/sinResultado" htmlEscape="true "/>" title="<spring:message code="menu.notifications.without.result" />"> <spring:message code="menu.notifications.without.result" /></a>
+                            </li>
+                            <li class="result">
+                                <a href="<spring:url value="/reportes/reportResult" htmlEscape="true "/>" title="<spring:message code="menu.report.result" />"><i class=""></i> <spring:message code="menu.report.result" /></a>
+                            </li>
+                            <li class="sex">
+                                <a href="<spring:url value="/reportes/sexReport" htmlEscape="true "/>" title="<spring:message code="menu.report.sex" />"><i class=""></i> <spring:message code="menu.report.sex" /></a>
+                            </li>
+                        </ul>
                     </li>
-                    <li class="semana">
-                        <a href="<spring:url value="/reportes/porSemana" htmlEscape="true "/>" title="<spring:message code="menu.weekly.report" />"> <spring:message code="menu.weekly.report" /></a>
-                    </li>
-                    <li class="dia">
-                        <a href="<spring:url value="/reportes/porDia" htmlEscape="true "/>" title="<spring:message code="menu.report.per.day" />"> <spring:message code="menu.report.per.day" /></a>
-                    </li>
-                    <li class="withoutRes">
-                        <a href="<spring:url value="/reportes/sinResultado" htmlEscape="true "/>" title="<spring:message code="menu.notifications.without.result" />"> <spring:message code="menu.notifications.without.result" /></a>
-                    </li>
-                    <li class="result">
-                        <a href="<spring:url value="/reportes/reportResult" htmlEscape="true "/>" title="<spring:message code="menu.report.result" />"><i class=""></i> <spring:message code="menu.report.result" /></a>
-                    </li>
-                    <li class="sex">
-                        <a href="<spring:url value="/reportes/sexReport" htmlEscape="true "/>" title="<spring:message code="menu.report.sex" />"><i class=""></i> <spring:message code="menu.report.sex" /></a>
+                    <li>
+                        <a href="#" title="<spring:message code="menu.reports.home" />"><i class="fa fa-lg fa-fw fa-pencil"></i> <spring:message code="menu.reports.home" /></a>
+                        <ul>
+                            <li class="homearea">
+                                <a href="<spring:url value="/reportesPorResidencia/area" htmlEscape="true "/>" title="<spring:message code="menu.report.by.area" />"><i class=""></i> <spring:message code="menu.report.by.area" /></a>
+                            </li>
+                            <li class="homesemana">
+                                <a href="<spring:url value="/reportesPorResidencia/porSemana" htmlEscape="true "/>" title="<spring:message code="menu.weekly.report" />"> <spring:message code="menu.weekly.report" /></a>
+                            </li>
+                            <li class="homedia">
+                                <a href="<spring:url value="/reportesPorResidencia/porDia" htmlEscape="true "/>" title="<spring:message code="menu.report.per.day" />"> <spring:message code="menu.report.per.day" /></a>
+                            </li>
+                            <li class="homewithoutRes">
+                                <a href="<spring:url value="/reportesPorResidencia/sinResultado" htmlEscape="true "/>" title="<spring:message code="menu.notifications.without.result" />"> <spring:message code="menu.notifications.without.result" /></a>
+                            </li>
+                            <li class="homeresult">
+                                <a href="<spring:url value="/reportesPorResidencia/reportResult" htmlEscape="true "/>" title="<spring:message code="menu.report.result" />"><i class=""></i> <spring:message code="menu.report.result" /></a>
+                            </li>
+                            <li class="homesex">
+                                <a href="<spring:url value="/reportesPorResidencia/sexReport" htmlEscape="true "/>" title="<spring:message code="menu.report.sex" />"><i class=""></i> <spring:message code="menu.report.sex" /></a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </li>
