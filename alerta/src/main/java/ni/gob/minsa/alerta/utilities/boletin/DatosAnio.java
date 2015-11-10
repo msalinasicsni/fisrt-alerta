@@ -6,13 +6,13 @@ package ni.gob.minsa.alerta.utilities.boletin;
 public class DatosAnio {
 
     Integer anio;
-    Entidad idEntidad;
+    Entidad entidad;
 
     public Integer getAnio() { return anio; }
 
     public void setAnio(Integer anio) { this.anio = anio; }
 
-    public Entidad getIdEntidad() { return idEntidad; }
+    public Entidad getEntidad() { return entidad; }
 
-    public void setIdEntidad(Entidad idEntidad) { this.idEntidad = idEntidad; }
+    public void setEntidad(Entidad entidad) { this.entidad = entidad; }
 }

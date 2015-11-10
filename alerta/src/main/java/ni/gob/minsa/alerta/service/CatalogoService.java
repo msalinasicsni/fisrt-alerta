@@ -923,6 +923,16 @@ public class CatalogoService {
         //retrieve all
         return query.list();
     }
+
+    public AreaRep getAreaRep (String codigo){
+        //Retrieve session from hibernated
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM AreaRep area where area.pasivo = false and area.codigo = :codigo ");
+        query.setParameter("codigo",codigo);
+        //Retrieve all
+        return (AreaRep) query.uniqueResult();
+    }
     
     @SuppressWarnings("unchecked")
     public List<Semanas> getSemanas(){

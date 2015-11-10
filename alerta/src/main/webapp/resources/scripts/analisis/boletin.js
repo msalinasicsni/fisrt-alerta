@@ -1,9 +1,8 @@
-
 var Boletin = function () {
 
-    var bloquearUI = function(mensaje){
+    var bloquearUI = function (mensaje) {
         var loc = window.location;
-        var pathName = loc.pathname.substring(0,loc.pathname.indexOf('/', 1)+1);
+        var pathName = loc.pathname.substring(0, loc.pathname.indexOf('/', 1) + 1);
         var mess = '<img src=' + pathName + 'resources/img/ajax-loading.gif>' + mensaje;
         $.blockUI({ message: mess,
             css: {
@@ -24,292 +23,562 @@ var Boletin = function () {
             var responsiveHelper_data_result = undefined;
             var responsiveHelper_data_result_2 = undefined;
             var breakpointDefinition = {
-                tablet : 1024,
-                phone : 480
+                tablet: 1024,
+                phone: 480
             };
             var title = "";
+            var anio = $('#anio').val();
+            var table = null;
+            var secondTime = false;
+            var arrayTable = [];
+
 
             /* TABLETOOLS */
-            var table1 = $('#data_result').dataTable({
+            var summaryTable = $('#summaryTable').dataTable({
 
                 // Tabletools options:
-                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'T>r>"+
-                    "t"+
+                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'T>r>" +
+                    "t" +
                     "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
                 "oTableTools": {
                     "aButtons": [
                         {
-                            "sExtends":    "collection",
+                            "sExtends": "collection",
                             "sButtonText": "Exportar",
                             "aButtons": [
                                 {
                                     "sExtends": "csv",
-                                    "sFileName": "ddd"+"-*.csv",
+                                    "sFileName": "ddd" + "-*.csv",
                                     "sTitle": "ddd",
                                     "oSelectorOpts": { filter: 'applied', order: 'current' }
                                 },
                                 {
                                     "sExtends": "pdf",
-                                    "sFileName": "DD"+"-*.pdf",
+                                    "sFileName": "DD" + "-*.pdf",
                                     "sTitle": ":fff:",
                                     "sPdfMessage": "FF",
                                     "oSelectorOpts": { filter: 'applied', order: 'current' },
-                                    "sPdfOrientation": "landscape",
+                                    "sPdfOrientation": "landscape"
                                 }
                             ]
                         }
                     ],
                     "sSwfPath": parametros.dataTablesTTSWF
                 },
-                "aoColumns" : [null, null,
-                    {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },
-                    {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" }
+                "aoColumns": [
+                    {sClass: "aw-right" },
+                    {sClass: "aw-right" },
+                    {sClass: "aw-right" },
+                    {sClass: "aw-right" },
+                    {sClass: "aw-right" },
+                    {sClass: "aw-right" },
+                    {sClass: "aw-right" },
+                    {sClass: "aw-right" },
+                    {sClass: "aw-right" },
+                    {sClass: "aw-right" }
                 ],
-                "autoWidth" : true,
-                "preDrawCallback" : function() {
+                "autoWidth": true,
+                "preDrawCallback": function () {
                     // Initialize the responsive datatables helper once.
                     if (!responsiveHelper_data_result) {
-                        responsiveHelper_data_result = new ResponsiveDatatablesHelper($('#data_result'), breakpointDefinition);
+                        responsiveHelper_data_result = new ResponsiveDatatablesHelper($('#summaryTable'), breakpointDefinition);
                     }
                 },
-                "rowCallback" : function(nRow) {
+                "rowCallback": function (nRow) {
                     responsiveHelper_data_result.createExpandIcon(nRow);
                 },
-                "drawCallback" : function(oSettings) {
+                "drawCallback": function (oSettings) {
                     responsiveHelper_data_result.respond();
                 }
             });
 
-            var table2 = $('#data_result_2').dataTable({
+            var form =$('#parameters_form');
 
-                // Tabletools options:
-                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'T>r>"+
-                    "t"+
-                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
-                "oTableTools": {
-                    "aButtons": [
-                        {
-                            "sExtends":    "collection",
-                            "sButtonText": "Exportar",
-                            "aButtons": [
-                                {
-                                    "sExtends": "csv",
-                                    "sFileName": "ddd"+"-*.csv",
-                                    "sTitle": "ddd",
-                                    "oSelectorOpts": { filter: 'applied', order: 'current' }
-                                },
-                                {
-                                    "sExtends": "pdf",
-                                    "sFileName": "DD"+"-*.pdf",
-                                    "sTitle": ":fff:",
-                                    "sPdfMessage": "FF",
-                                    "oSelectorOpts": { filter: 'applied', order: 'current' },
-                                    "sPdfOrientation": "landscape",
-                                }
-                            ]
-                        }
-                    ],
-                    "sSwfPath": parametros.dataTablesTTSWF
-                },
-                "aoColumns" : [null, null,
-                    {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },
-                    {sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" },{sClass: "aw-right" }
-                ],
-                "autoWidth" : true,
-                "preDrawCallback" : function() {
-                    // Initialize the responsive datatables helper once.
-                    if (!responsiveHelper_data_result_2) {
-                        responsiveHelper_data_result_2 = new ResponsiveDatatablesHelper($('#data_result_2'), breakpointDefinition);
-                    }
-                },
-                "rowCallback" : function(nRow) {
-                    responsiveHelper_data_result_2.createExpandIcon(nRow);
-                },
-                "drawCallback" : function(oSettings) {
-                    responsiveHelper_data_result_2.respond();
+            jQuery.validator.addMethod("maximo10", function(value, select) {
+                var isValid = true;
+                var number = $('option:selected', select).size();
+                if (number > 10 ) {
+                    isValid = false;
                 }
-            });
-
-            /* END TABLETOOLS */
-
+                return isValid;
+            }, "Se permite como máximo 10 patologías");
 
 
-            $('#parameters_form').validate({
+            form.validate({
                 // Rules for form validation
-                rules : {
-                    codPato : {
-                        required : true
+                rules: {
+                    codPato: {
+                        required: true,
+                        maximo10: true
                     },
-                    codArea : {
-                        required : true
+                    codArea: {
+                        required: true
                     },
-                    semI : {
-                        required : true
+                    semI: {
+                        required: true
                     },
-                    semF : {
-                        required : true
+                    semF: {
+                        required: true
                     },
-                    anioI : {
-                        required : true
+                    anio: {
+                        required: true
                     },
-                    anioF : {
-                        required : true
-                    },
-                    codDepartamento : {
-                        required : true
-                    },
-                    codMunicipio : {
-                        required : true
-                    },
-                    codUnidadAtencion : {
-                        required : true
-                    },
-                    codSilaisAtencion: {
-                        required : true
+                    codDepartamento: {
+                        required: true
                     }
+
+
                 },
                 // Do not change code below
-                errorPlacement : function(error, element) {
+                errorPlacement: function (error, element) {
                     error.insertAfter(element.parent());
                 },
                 submitHandler: function (form) {
-                    table1.fnClearTable();
-                    table2.fnClearTable();
+                    summaryTable.fnClearTable();
 
                     //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
+
+                    if (secondTime) {
+                        cleanTables(arrayTable);
+                    }
+
                     getData();
+                    secondTime = true;
                 }
             });
 
             $('#codArea').change(
-                function() {
-                    if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
+                function () {
+                    if ($('#codArea option:selected').val() == "AREAREP|PAIS") {
                         $('#silais').hide();
                         $('#departamento').hide();
-                        $('#municipio').hide();
-                        $('#unidad').hide();
+
                     }
-                    else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
+                    else if ($('#codArea option:selected').val() == "AREAREP|SILAIS") {
                         $('#silais').show();
                         $('#departamento').hide();
-                        $('#municipio').hide();
-                        $('#unidad').hide();
+
                     }
-                    else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
+                    else if ($('#codArea option:selected').val() == "AREAREP|DEPTO") {
                         $('#silais').hide();
                         $('#departamento').show();
-                        $('#municipio').hide();
-                        $('#unidad').hide();
+
                     }
-                    else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
-                        $('#silais').show();
-                        $('#departamento').hide();
-                        $('#municipio').show();
-                        $('#unidad').hide();
-                    }
-                    else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
-                        $('#silais').show();
-                        $('#departamento').hide();
-                        $('#municipio').show();
-                        $('#unidad').show();
-                    }
+
+
                 });
 
             function getData() {
                 bloquearUI(parametros.blockMess);
-                $.getJSON(parametros.sActionUrl, $('#parameters_form').serialize(), function(data) {
-                    values1 = [], values2 = [];
-                    values1P = [], values2P = [];
-                    values1T = [], values2T = [];
-                    series1 = $('#anioI option:selected').text(),series2 = $('#anioF option:selected').text();
-                    labels1 = [], labels2 = [];
-                    total1 = 0 , total2 =0;
-                    pobMasc1 = 0, pobFem1 = 0, pobTotal1 = 0;
-                    pobMasc2 = 0, pobFem2 = 0, pobTotal2 = 0;
-                    factor = 0;
+                $.getJSON(parametros.sActionUrl, $('#parameters_form').serialize(), function (data) {
+
                     title = "Distribución por patologías";
-                    if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
-                        title = title + '</br>República de Nicaragua';
+                    if ($('#codArea option:selected').val() == "AREAREP|PAIS") {
+                        title = title + '</br>' + $('#nicRepublic').val();
                     }
-                    else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
-                        title = title + '</br>'+$('#codSilaisAtencion option:selected').text();
+                    else if ($('#codArea option:selected').val() == "AREAREP|SILAIS") {
+                        title = title + '</br>' + $('#codSilaisAtencion option:selected').text();
                     }
-                    else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
-                        title = title + '</br>Departamento de '+$('#codDepartamento option:selected').text();
-                    }
-                    else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
-                        title = title + '</br>Municipio: '+$('#codMunicipio option:selected').text();
-                    }
-                    else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
-                        title = title + '</br>Unidad de Salud: '+$('#codUnidadAtencion option:selected').text();
-                    }
-                    title = title + '</br>Semana '+$('#semI option:selected').text() +' a la '+$('#semF option:selected').text();
-
-                    for (var row in data) {
-                        if(data[row][0]=='Pop' && data[row][1]==$('#anioI option:selected').text()){
-                            pobMasc1=data[row][2],pobFem1=data[row][3],pobTotal1=data[row][4];
-                        }
-                        if(data[row][0]=='Pop' && data[row][1]==$('#anioF option:selected').text()){
-                            pobMasc2=data[row][2],pobFem2=data[row][3],pobTotal2=data[row][4];
-                        }
+                    else if ($('#codArea option:selected').val() == "AREAREP|DEPTO") {
+                        title = title + '</br>' + $('#dep').val() + " " + $('#codDepartamento option:selected').text();
                     }
 
-                    for (var row in data) {
-                        if(data[row][0]=='Pato'){
-                            factor=data[row][1];
-                            break;
-                        }
+                    title = title + '</br>' + $('#sem').val() + $('#semI option:selected').text() + $('#to').val() + $('#semF option:selected').text() + '</br>' + $('#lblAnios').val() + " " + anio - 1 + " " + "-" + " " + anio;
+
+
+                    var codPato = $('#codPato').val();
+                    var pato = [];
+
+                    var coma = new RegExp(",");
+                    if (coma.test(codPato)) {
+                        pato = codPato;
+                    } else {
+                        pato.push(codPato);
                     }
 
-                    for (var row in data) {
-                        if(data[row][0]==$('#anioI option:selected').text()){
-                            total1=total1+data[row][29] + data[row][30];
+                    var indicePato = 1;
+                    arrayTable = [];
+
+
+                    for (var pat in pato) {
+
+                        var idTable = '#table' + indicePato;
+                        table = $(idTable).dataTable({
+
+                            // Tabletools options:
+                            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'T>r>" +
+                                "t" +
+                                "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
+                            "oTableTools": {
+                                "aButtons": [
+                                    {
+                                        "sExtends": "collection",
+                                        "sButtonText": "Exportar",
+                                        "aButtons": [
+                                            {
+                                                "sExtends": "csv",
+                                                "sFileName": "ddd" + "-*.csv",
+                                                "sTitle": "ddd",
+                                                "oSelectorOpts": { filter: 'applied', order: 'current' }
+                                            },
+                                            {
+                                                "sExtends": "pdf",
+                                                "sFileName": "DD" + "-*.pdf",
+                                                "sTitle": ":fff:",
+                                                "sPdfMessage": "FF",
+                                                "oSelectorOpts": { filter: 'applied', order: 'current' },
+                                                "sPdfOrientation": "landscape"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "sSwfPath": parametros.dataTablesTTSWF
+                            },
+                            "bDestroy": true,
+                            "aoColumns": [
+                                {sClass: "aw-right" },
+                                {sClass: "aw-right" },
+                                {sClass: "aw-right" },
+                                {sClass: "aw-right" },
+                                {sClass: "aw-right" },
+                                {sClass: "aw-right" },
+                                {sClass: "aw-right" },
+                                {sClass: "aw-right" },
+                                {sClass: "aw-right" },
+                                {sClass: "aw-right" }
+                            ],
+                            "autoWidth": true,
+                            "preDrawCallback": function () {
+                                // Initialize the responsive datatables helper once.
+                                if (!responsiveHelper_data_result_2) {
+                                    responsiveHelper_data_result_2 = new ResponsiveDatatablesHelper($(idTable), breakpointDefinition);
+                                }
+                            },
+                            "rowCallback": function (nRow) {
+                                responsiveHelper_data_result_2.createExpandIcon(nRow);
+                            },
+                            "drawCallback": function (oSettings) {
+                                responsiveHelper_data_result_2.respond();
+                            }
+                        });
+
+
+                        var i = 0;
+                        var idEntidad = 0;
+
+                        dataset = [];
+                        summDataset = [];
+                        var firstYear = '#firstYear' + indicePato;
+                        var secYear = '#secYear' + indicePato;
+                        var anio = $('#anio').val();
+
+                        //pathologies table
+                        $(firstYear).html(anio - 1);
+                        $(secYear).html(anio);
+
+                        //summary table
+                        $(firstY).html(anio - 1);
+                        $(secY).html(anio);
+
+                        var contRow = 0;
+
+                        //var summary table
+                        var sumCasosAct = 0;
+                        var sumAcumAct = 0;
+                        var sumCasosAnt = 0;
+                        var sumAcumAnt = 0;
+                        var contSumm = 0;
+                        var sumPobAct= 0;
+                        var sumPobAnt= 0;
+                        var factor = null;
+                        var nombrePatologia = null;
+
+                        for (i = 0; i < (data.length); i++) {
+                            var nombrePato = '#pat' + indicePato;
+
+                            var entidad = '#entidad' + indicePato;
+                            var dTable = '#dTable' + indicePato;
+
+                            if (pato[pat] == data[i].anio.entidad.patologia.idPatologia) {
+                                if ($('#codArea option:selected').val() == "AREAREP|PAIS") {
+                                    $(entidad).html($('#silaisT').val());
+                                }
+                                $(nombrePato).html(data[i].anio.entidad.patologia.nombre);
+
+                                var caso = (data[i].valor == null) ? 0 :data[i].valor;
+                                var acum = (data[i].valorAcum == null) ? 0 :data[i].valorAcum;
+                                var pob  = (data[i].anio.entidad.totalPoblacion == null) ? 0 :data[i].anio.entidad.totalPoblacion;
+
+                                 // Si es la misma entidad
+                                if (idEntidad == data[i].anio.entidad.idEntidad) {
+
+                                    //summary table
+
+                                        //anio actual
+                                        if (data[i].anio.anio == anio) {
+
+                                            sumCasosAct = parseInt(sumCasosAct) +  parseInt(caso);
+                                            sumAcumAct =   parseInt(sumAcumAct) +  parseInt(acum);
+                                            sumPobAct = parseInt(sumPobAct) + parseInt(pob);
+                                            contSumm++;
+                                        } else {
+                                            //anio anterior
+
+                                            sumCasosAnt = parseInt(sumCasosAnt) +  parseInt(caso);
+                                            sumAcumAnt = parseInt(sumAcumAnt) +  parseInt(acum);
+                                            sumPobAnt = parseInt(sumPobAnt) + parseInt(pob);
+                                            contSumm++;
+                                        }
+
+
+                                     // pathologies tables
+                                    //año seleccionado
+                                    if (data[i].anio.anio == anio) {
+                                        dataset.push(data[i].valor);
+                                        dataset.push(data[i].valorAcum);
+                                        dataset.push(data[i].tasa);
+
+                                        //Diferencia de Casos
+                                        var difC = dataset[5] - dataset[2];
+                                        // porcentaje relativo de tasas (tasa actual-tasa anterior)/tasa anterior *100
+                                        var porc1 = "";
+                                        if (dataset[7] != "" && dataset[4]!= "") {
+                                            porc = (dataset[7] - dataset[4]) / dataset[4] * 100 ;
+                                            porc1 = porc.toFixed(5);
+                                        }
+
+                                        dataset.push(difC);
+                                        dataset.push(porc1);
+                                        table.fnAddData(dataset);
+                                        $(dTable).show();
+                                        dataset = [];
+                                        contRow = 0;
+                                    }
+
+                                } else {
+
+                                   //summary table
+                                    if (contSumm == 0) {
+                                        factor = data[i].anio.entidad.patologia.factor;
+                                        nombrePatologia = data[i].anio.entidad.patologia.nombre;
+
+
+                                        //anio actual
+                                        if (data[i].anio.anio == anio) {
+                                            sumCasosAct = caso;
+                                            sumAcumAct = acum;
+                                            sumPobAct = pob;
+                                            contSumm++;
+                                        } else {
+                                            //anio anterior
+                                            sumCasosAnt = caso;
+                                            sumAcumAnt = acum;
+                                            sumPobAnt = pob;
+                                            contSumm++;
+                                        }
+                                    } else {
+                                        //anio actual
+                                        if (data[i].anio.anio == anio) {
+                                            sumCasosAct = parseInt(sumCasosAct) + parseInt(caso);
+                                            sumAcumAct =  parseInt(sumAcumAct) +  parseInt(acum);
+                                            sumPobAct = parseInt(sumPobAct) + parseInt(pob);
+                                            contSumm++;
+                                        } else {
+                                            //anio anterior
+                                            sumCasosAnt =  parseInt(sumCasosAnt) +  parseInt(caso);
+                                            sumAcumAnt =  parseInt(sumAcumAnt) +  parseInt(acum);
+                                            sumPobAnt = parseInt(sumPobAnt) + parseInt(pob);
+                                            contSumm++;
+                                        }
+                                    }
+
+
+                                     //pathologies tables
+                                    //si es el primer registro se realiza push de los registros del año anterior
+                                    if (contRow == 0) {
+                                        //validar año anterior
+                                        if (data[i].anio.anio == anio - 1) {
+                                            //datos de año anterior
+                                            dataset.push(data[i].anio.entidad.nombreEntidad);
+                                            dataset.push("37/2014");
+                                            dataset.push(data[i].valor);
+                                            dataset.push(data[i].valorAcum);
+                                            dataset.push(data[i].tasa);
+                                            contRow++;
+                                        } else {
+                                            //en caso q no hayan registros de año anterior y si se encuentren datos del año seleccionado
+                                            dataset.push(data[i].anio.entidad.nombreEntidad);
+                                            dataset.push("37/2014");
+                                            dataset.push("");
+                                            dataset.push("");
+                                            dataset.push("");
+                                            dataset.push(data[i].valor);
+                                            dataset.push(data[i].valorAcum);
+                                            dataset.push(data[i].tasa);
+                                            //Diferencia de Casos
+                                            var difC = dataset[5] - dataset[2];
+                                            // porcentaje relativo de tasas (tasa actual-tasa anterior)/tasa anterior *100
+                                            var porc1 = "";
+                                            if (dataset[7] != "" && dataset[4]!= "") {
+                                                porc = (dataset[7] - dataset[4]) / dataset[4] * 100 ;
+                                                porc1 = porc.toFixed(5);
+                                            }
+
+                                            dataset.push(difC);
+                                            dataset.push(porc1);
+                                            table.fnAddData(dataset);
+                                            $(dTable).show();
+                                            dataset = [];
+                                            contRow = 0;
+                                        }
+                                    } else {
+                                        //para los registros q solo tienen info del año anterior
+                                        // si es diferente de cero se guardan los registros con el año seleccionado vacio
+
+                                        //año actual sin datos
+                                        dataset.push("");
+                                        dataset.push("");
+                                        dataset.push("");
+
+                                        //Diferencia de Casos
+                                        var difC = dataset[5] - dataset[2];
+                                        // porcentaje relativo de tasas (tasa actual-tasa anterior)/tasa anterior *100
+
+                                        var porc1 = "";
+                                        if (dataset[7] != "" && dataset[4]!= "") {
+                                            porc = (dataset[7] - dataset[4]) / dataset[4] * 100 ;
+                                            porc1 = porc.toFixed(5);
+                                        }
+
+                                        dataset.push(difC);
+                                        dataset.push(porc1);
+                                        table.fnAddData(dataset);
+                                        $(dTable).show();
+                                        dataset = [];
+                                        contRow = 0;
+
+                                        //validar año anterior
+                                        if (data[i].anio.anio == anio - 1) {
+                                            //es el ultimo
+                                            if (data[i] == data[data.length - 1]) {
+                                                //datos de año anterior
+                                                dataset.push(data[i].anio.entidad.nombreEntidad);
+                                                dataset.push("37/2014");
+                                                dataset.push(data[i].valor);
+                                                dataset.push(data[i].valorAcum);
+                                                dataset.push(data[i].tasa);
+                                                dataset.push("");
+                                                dataset.push("");
+                                                dataset.push("");
+                                                //Diferencia de Casos
+                                                var difC = dataset[5] - dataset[2];
+                                                // porcentaje relativo de tasas (tasa actual-tasa anterior)/tasa anterior *100
+                                                var porc1 = "";
+                                                if (dataset[7] != "" && dataset[4]!= "") {
+                                                    porc = (dataset[7] - dataset[4]) / dataset[4] * 100 ;
+                                                    porc1 = porc.toFixed(5);
+                                                }
+
+                                                dataset.push(difC);
+                                                dataset.push(porc1);
+                                                table.fnAddData(dataset);
+                                                $(dTable).show();
+                                                dataset = [];
+                                                contRow = 0;
+                                            } else {
+                                                //datos de año anterior
+                                                dataset.push(data[i].anio.entidad.nombreEntidad);
+                                                dataset.push("37/2014");
+                                                dataset.push(data[i].valor);
+                                                dataset.push(data[i].valorAcum);
+                                                dataset.push(data[i].tasa);
+                                                contRow++;
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                                idEntidad = data[i].anio.entidad.idEntidad;
+                            }
+
+
                         }
-                        if(data[row][0]==$('#anioF option:selected').text()){
-                            total2=total2+data[row][29] + data[row][30];
+
+                        var difCasos = parseInt(sumCasosAct) - parseInt(sumCasosAnt);
+                        var tasaAct = null;
+                        var tasaAnt = null;
+                        var porcR = null;
+
+                        if(sumAcumAct!= 0 && sumPobAct!= 0 && factor!= null ){
+                           var tasaAct1 = (sumCasosAct / sumPobAct)* factor;
+                            tasaAct = tasaAct1.toFixed(2);
                         }
+
+                        if(sumAcumAnt!= 0 && sumPobAnt!= 0 && factor!= null ){
+                           var tasaAnt1 = (sumCasosAnt / sumPobAnt)* factor;
+                            tasaAnt = tasaAnt1.toFixed(2);
+                        }
+
+                        if(tasaAct != null && tasaAnt != null){
+                           var porcR1 = (tasaAct - tasaAnt) / tasaAnt * 100 ;
+                            porcR = porcR1.toFixed(5);
+                        }
+
+                        summDataset.push(nombrePatologia);
+                        summDataset.push(factor);
+                        summDataset.push(sumCasosAnt);
+                        summDataset.push(sumAcumAnt);
+                        summDataset.push(tasaAnt);
+                        summDataset.push(sumCasosAct);
+                        summDataset.push(sumAcumAct);
+                        summDataset.push(tasaAct);
+                        summDataset.push(difCasos);
+                        summDataset.push(porcR);
+                        summaryTable.fnAddData(summDataset);
+
+                        summDataset = [];
+                        nombrePatologia = null;
+                        factor = null;
+                        contSumm = 0;
+
+                        indicePato++;
+                        arrayTable.push(table);
+
+
                     }
 
-                    for (var row in data) {
-                        if(data[row][0]==$('#anioI option:selected').text()){
-                            table1.fnAddData([data[row][0],data[row][32],data[row][29], data[row][30], data[row][29] + data[row][30],
-                                    Math.round(data[row][29]/(total1) * 100 * 100) / 100,
-                                    Math.round(data[row][30]/(total1) * 100 * 100) / 100,
-                                    Math.round((data[row][29]+data[row][30])/(total1) * 100 * 100) / 100,
-                                (pobMasc1 == 0) ? "NP":Math.round(data[row][29]/(pobMasc1) * factor * 100) / 100,
-                                (pobFem1 == 0) ? "NP":Math.round(data[row][30]/(pobFem1) * factor * 100) / 100,
-                                (pobTotal1 == 0) ? "NP":Math.round((data[row][29] + data[row][30])/(pobTotal1) * factor * 100) / 100]);
-                            values1.push(data[row][29] + data[row][30]);
-                            values1P.push(Math.round((data[row][29]+data[row][30])/(total1) * 100 * 100) / 100);
-                            values1T.push((pobTotal1 == 0) ? 0:Math.round((data[row][29] + data[row][30])/(pobTotal1) * factor * 100) / 100);
-                            labels1.push(data[row][32]);
-                        }
-                        if(data[row][0]==$('#anioF option:selected').text()){
-                            table2.fnAddData([data[row][0],data[row][32],data[row][29], data[row][30], data[row][29] + data[row][30],
-                                    Math.round(data[row][29]/(total2) * 100 * 100) / 100,
-                                    Math.round(data[row][30]/(total2) * 100 * 100) / 100,
-                                    Math.round((data[row][29]+data[row][30])/(total2) * 100 * 100) / 100,
-                                (pobMasc2 == 0) ? "NP":Math.round(data[row][29]/(pobMasc2) * factor * 100) / 100,
-                                (pobFem2 == 0) ? "NP":Math.round(data[row][30]/(pobFem2) * factor * 100) / 100,
-                                (pobTotal2 == 0) ? "NP":Math.round((data[row][29] + data[row][30])/(pobTotal2) * factor * 100) / 100]);
-                            values2.push(data[row][29] + data[row][30]);
-                            values2P.push(Math.round((data[row][29]+data[row][30])/(total2) * 100 * 100) / 100);
-                            values2T.push((pobTotal2 == 0) ? 0:Math.round((data[row][29] + data[row][30])/(pobTotal2) * factor * 100) / 100);
-                            labels2.push(data[row][32]);
-                        }
-                    }
-                    lineChart(values1,values2,series1,series2,labels1);
-                    lineChartPorc(values1P,values2P,series1,series2,labels1);
-                    lineChartTasa(values1T,values2T,series1,series2,labels1);
                     setTimeout($.unblockUI, 500);
                 })
-                    .fail(function(XMLHttpRequest, textStatus, errorThrown) {
+                    .fail(function (XMLHttpRequest, textStatus, errorThrown) {
                         alert(" status: " + textStatus + " error:" + errorThrown);
                         setTimeout($.unblockUI, 5);
                     });
             }
 
-            function showMessage(title,content,color,icon,timeout){
+
+            function cleanTables(arrayTable) {
+                var cont=0;
+                for (var row in arrayTable) {
+                    cont++;
+                    var nombrePato = '#pat' + cont;
+                    var divName = '#dTable' + cont;
+                    $(nombrePato).html("");
+                    $(divName).hide();
+
+                    var table = arrayTable[row];
+                    if (!(table == null)) {
+                        table.fnClearTable();
+                        table.fnDestroy();
+                        table = null;
+                    }
+                }
+            }
+
+
+            function showMessage(title, content, color, icon, timeout) {
                 $.smallBox({
                     title: title,
                     content: content,
@@ -319,173 +588,8 @@ var Boletin = function () {
                 });
             }
 
-            function lineChart(values1,values2,series1,series2,labels1) {
-                // BAR CHART
-                $('#lineChart-title').html("<h5>"+title+"</h5>");
-                var barOptions = {
-                    //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-                    scaleBeginAtZero : true,
-                    //Boolean - Whether grid lines are shown across the chart
-                    scaleShowGridLines : true,
-                    //String - Colour of the grid lines
-                    scaleGridLineColor : "rgba(0,0,0,.05)",
-                    //Number - Width of the grid lines
-                    scaleGridLineWidth : 1,
-                    //Boolean - If there is a stroke on each bar
-                    barShowStroke : true,
-                    //Number - Pixel width of the bar stroke
-                    barStrokeWidth : 1,
-                    //Number - Spacing between each of the X value sets
-                    barValueSpacing : 5,
-                    //Number - Spacing between data sets within X values
-                    barDatasetSpacing : 1,
-                    //Boolean - Re-draw chart on page resize
-                    responsive: true,
-                };
 
-                var barData = {
-                    labels: labels1,
-                    datasets: [
-                        {
-                            label: series1,
-                            fillColor: "rgba(220,220,220,0.5)",
-                            strokeColor: "rgba(220,220,220,0.8)",
-                            highlightFill: "rgba(220,220,220,0.75)",
-                            highlightStroke: "rgba(220,220,220,1)",
-                            data: values1
-                        },
-                        {
-                            label: series2,
-                            fillColor: "rgba(151,187,205,0.5)",
-                            strokeColor: "rgba(151,187,205,0.8)",
-                            highlightFill: "rgba(151,187,205,0.75)",
-                            highlightStroke: "rgba(151,187,205,1)",
-                            data: values2
-                        }
-                    ]
-                };
 
-                // render chart
-                if( window.myBar!==undefined)
-                    window.myBar.destroy();
-                var ctx = document.getElementById("lineChart").getContext("2d");
-                window.myBar = new Chart(ctx).Bar(barData, barOptions);
-                // END BAR CHART
-
-                legend(document.getElementById("lineLegend"), barData);
-            }
-
-            function lineChartPorc(values1,values2,series1,series2,labels1) {
-                // BAR CHART
-                $('#lineChart2-title').html("<h5>"+title+"</h5>");
-                var barOptions = {
-                    //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-                    scaleBeginAtZero : true,
-                    //Boolean - Whether grid lines are shown across the chart
-                    scaleShowGridLines : true,
-                    //String - Colour of the grid lines
-                    scaleGridLineColor : "rgba(0,0,0,.05)",
-                    //Number - Width of the grid lines
-                    scaleGridLineWidth : 1,
-                    //Boolean - If there is a stroke on each bar
-                    barShowStroke : true,
-                    //Number - Pixel width of the bar stroke
-                    barStrokeWidth : 1,
-                    //Number - Spacing between each of the X value sets
-                    barValueSpacing : 5,
-                    //Number - Spacing between data sets within X values
-                    barDatasetSpacing : 1,
-                    //Boolean - Re-draw chart on page resize
-                    responsive: true,
-                };
-
-                var barData = {
-                    labels: labels1,
-                    datasets: [
-                        {
-                            label: series1,
-                            fillColor: "rgba(220,220,220,0.5)",
-                            strokeColor: "rgba(220,220,220,0.8)",
-                            highlightFill: "rgba(220,220,220,0.75)",
-                            highlightStroke: "rgba(220,220,220,1)",
-                            data: values1
-                        },
-                        {
-                            label: series2,
-                            fillColor: "rgba(151,187,205,0.5)",
-                            strokeColor: "rgba(151,187,205,0.8)",
-                            highlightFill: "rgba(151,187,205,0.75)",
-                            highlightStroke: "rgba(151,187,205,1)",
-                            data: values2
-                        }
-                    ]
-                };
-
-                // render chart
-                if( window.myBar2!==undefined)
-                    window.myBar2.destroy();
-                var ctx = document.getElementById("lineChart2").getContext("2d");
-                window.myBar2 = new Chart(ctx).Bar(barData, barOptions);
-                // END BAR CHART
-
-                legend(document.getElementById("lineLegend2"), barData);
-            }
-
-            function lineChartTasa(values1,values2,series1,series2,labels1) {
-                // BAR CHART
-                $('#lineChart3-title').html("<h5>"+title+"</h5>");
-                var barOptions = {
-                    //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-                    scaleBeginAtZero : true,
-                    //Boolean - Whether grid lines are shown across the chart
-                    scaleShowGridLines : true,
-                    //String - Colour of the grid lines
-                    scaleGridLineColor : "rgba(0,0,0,.05)",
-                    //Number - Width of the grid lines
-                    scaleGridLineWidth : 1,
-                    //Boolean - If there is a stroke on each bar
-                    barShowStroke : true,
-                    //Number - Pixel width of the bar stroke
-                    barStrokeWidth : 1,
-                    //Number - Spacing between each of the X value sets
-                    barValueSpacing : 5,
-                    //Number - Spacing between data sets within X values
-                    barDatasetSpacing : 1,
-                    //Boolean - Re-draw chart on page resize
-                    responsive: true,
-                };
-
-                var barData = {
-                    labels: labels1,
-                    datasets: [
-                        {
-                            label: series1,
-                            fillColor: "rgba(220,220,220,0.5)",
-                            strokeColor: "rgba(220,220,220,0.8)",
-                            highlightFill: "rgba(220,220,220,0.75)",
-                            highlightStroke: "rgba(220,220,220,1)",
-                            data: values1
-                        },
-                        {
-                            label: series2,
-                            fillColor: "rgba(151,187,205,0.5)",
-                            strokeColor: "rgba(151,187,205,0.8)",
-                            highlightFill: "rgba(151,187,205,0.75)",
-                            highlightStroke: "rgba(151,187,205,1)",
-                            data: values2
-                        }
-                    ]
-                };
-
-                // render chart
-                if( window.myBar3!==undefined)
-                    window.myBar3.destroy();
-                var ctx = document.getElementById("lineChart3").getContext("2d");
-                window.myBar3 = new Chart(ctx).Bar(barData, barOptions);
-                // END BAR CHART
-
-                legend(document.getElementById("lineLegend3"), barData);
-            }
 
         }
     };

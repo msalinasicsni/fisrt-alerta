@@ -5,19 +5,24 @@ package ni.gob.minsa.alerta.utilities.boletin;
  */
 public class Entidad {
 
-    Integer idEntidad;
+    String idEntidad;
     String nombreEntidad;
-    Patologia idPatologia;
+    Patologia patologia;
+    Long totalPoblacion;
 
-    public Integer getIdEntidad() { return idEntidad; }
+    public String getIdEntidad() { return idEntidad; }
 
-    public void setIdEntidad(Integer idEntidad) { this.idEntidad = idEntidad; }
+    public void setIdEntidad(String idEntidad) { this.idEntidad = idEntidad; }
 
     public String getNombreEntidad() { return nombreEntidad; }
 
     public void setNombreEntidad(String nombreEntidad) { this.nombreEntidad = nombreEntidad; }
 
-    public Patologia getIdPatologia() { return idPatologia; }
+    public Patologia getPatologia() { return patologia; }
 
-    public void setIdPatologia(Patologia idPatologia) { this.idPatologia = idPatologia; }
+    public void setPatologia(Patologia patologia) { this.patologia = patologia; }
+
+    public Long getTotalPoblacion() { return totalPoblacion; }
+
+    public void setTotalPoblacion(Long totalPoblacion) { this.totalPoblacion = totalPoblacion; }
 }

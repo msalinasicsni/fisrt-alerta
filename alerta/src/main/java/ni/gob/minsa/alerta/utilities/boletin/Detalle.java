@@ -7,7 +7,9 @@ public class Detalle {
 
     DatosAnio anio;
     String nombre;
-    Integer valor;
+    String valor;
+    String valorAcum;
+    String tasa;
 
     public DatosAnio getAnio() { return anio; }
 
@@ -17,7 +19,15 @@ public class Detalle {
 
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public Integer getValor() { return valor; }
+    public String getValor() { return valor; }
 
-    public void setValor(Integer valor) { this.valor = valor;  }
+    public void setValor(String valor) { this.valor = valor;  }
+
+    public String getValorAcum() { return valorAcum; }
+
+    public void setValorAcum(String valorAcum) { this.valorAcum = valorAcum; }
+
+    public String getTasa() {  return tasa;  }
+
+    public void setTasa(String tasa) { this.tasa = tasa; }
 }

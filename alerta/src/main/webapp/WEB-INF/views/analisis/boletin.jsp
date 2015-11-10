@@ -125,6 +125,14 @@
                 <!-- end widget edit box -->
                 <!-- widget content -->
                 <div class="widget-body">
+                    <input id="nicRepublic" type="hidden" value="<spring:message code="lbl.nicaragua.republic"/>"/>
+                    <input id="dep" type="hidden" value="<spring:message code="lbl.dep"/>"/>
+                    <input id="munic" type="hidden" value="<spring:message code="lbl.munic"/>"/>
+                    <input hidden="hidden" id="sem" value="<spring:message code="week"/>" />
+                    <input id="to" type="hidden" value="<spring:message code="lbl.to1"/>"/>
+                    <input id="lblAnios" type="hidden" value="<spring:message code="lbl.years"/>"/>
+                    <input id="silaisT" type="hidden" value="<spring:message code="lbl.silais"/>"/>
+
                     <form id="parameters_form" class ="smart-form">
                         <fieldset>
                             <!-- START ROW -->
@@ -135,7 +143,7 @@
                                         <select data-placeholder="<spring:message code="act.select" /> <spring:message code="pato" />" multiple name="codPato" id="codPato" class="select2">
                                             <option value=""></option>
                                             <c:forEach items="${patologias}" var="patologia">
-                                                <option value="${patologia.codigo}">${patologia.codigo} - ${patologia.nombre}</option>
+                                                <option  value="${patologia.codigo}">${patologia.codigo} - ${patologia.nombre}</option>
                                             </c:forEach>
                                         </select>
                                     </div>
@@ -189,34 +197,10 @@
                                 </section>
                             </div>
                             <!-- END ROW -->
-                            <!-- START ROW -->
-                            <div class="row">
-                                <section class="col col-sm-12 col-md-12 col-lg-12" id="municipio" hidden="hidden">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
-                                        <select data-placeholder="<spring:message code="act.select" /> <spring:message code="muni" />" name="codMunicipio" id="codMunicipio" class="select2">
-                                            <option value=""></option>
-                                        </select>
-                                    </div>
-                                </section>
-                            </div>
-                            <!-- END ROW -->
-                            <!-- START ROW -->
-                            <div class="row">
-                                <section class="col col-sm-12 col-md-12 col-lg-12" id="unidad" hidden="hidden">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
-                                        <select data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.health.unit" />" name="codUnidadAtencion" id="codUnidadAtencion" class="select2">
-                                            <option value=""></option>
-                                        </select>
-                                    </div>
-                                </section>
-                            </div>
-                            <!-- END ROW -->
 
                             <!-- START ROW -->
                             <div class="row">
-                                <section class="col col-sm-12 col-md-6 col-lg-6">
+                               <%-- <section class="col col-sm-12 col-md-6 col-lg-6">
 
                                     <div class="input-group">
                                         <span class="input-group-addon"></span>
@@ -227,7 +211,7 @@
                                             </c:forEach>
                                         </select>
                                     </div>
-                                </section>
+                                </section>--%>
                                 <section class="col col-sm-12 col-md-6 col-lg-6">
 
                                     <div class="input-group">
@@ -280,9 +264,9 @@
     <!-- a blank row to get started -->
     <div class="col-sm-12">
         <!-- NEW WIDGET START -->
-        <article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <!-- Widget ID (each widget will need unique ID)-->
-            <div class="jarviswidget" id="wid-id-1">
+            <div class="jarviswidget" id="wid-id-summ">
                 <!-- widget options:
                     usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
                     data-widget-colorbutton="false"
@@ -295,8 +279,8 @@
                     data-widget-sortable="false"
                 -->
                 <header>
-                    <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-                    <h2>Distribucion por patologías </h2>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2><spring:message code="lbl.country.summary"/> </h2>
                 </header>
                 <!-- widget div-->
                 <div>
@@ -308,28 +292,35 @@
                     <!-- end widget edit box -->
                     <!-- widget content -->
                     <div class="widget-body">
-                        <table id="data_result" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="summaryTable" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th colspan=3>Casos absolutos</th>
-                                <th colspan=3>Porcentajes</th>
-                                <th colspan=3>Tasas</th>
+
+                            <tr role="row">
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th id="firstY" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th id="secY" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+
                             </tr>
+
                             <tr>
-                                <th data-class="expand"><spring:message code="year"/></th>
-                                <th data-class="expand"><spring:message code="pato"/></th>
-                                <th data-hide="phone,tablet">M</th>
-                                <th data-hide="phone,tablet">F</th>
-                                <th data-hide="phone,tablet">T</th>
-                                <th data-hide="phone,tablet">M</th>
-                                <th data-hide="phone,tablet">F</th>
-                                <th data-hide="phone,tablet">T</th>
-                                <th data-hide="phone,tablet">M</th>
-                                <th data-hide="phone,tablet">F</th>
-                                <th data-hide="phone,tablet">T</th>
+
+                                <th><spring:message code="lbl.pathologies"/></th>
+                                <th><spring:message code="lbl.rates.x"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.unlike.cases"/></th>
+                                <th><spring:message code="lbl.relative.percentage.rate"/></th>
+
+
                             </tr>
+
                             </thead>
                         </table>
                     </div>
@@ -341,9 +332,9 @@
         </article>
         <!-- WIDGET END -->
         <!-- NEW WIDGET START -->
-        <article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <!-- Widget ID (each widget will need unique ID)-->
-            <div class="jarviswidget" id="wid-id-2">
+            <div hidden="hidden" class="jarviswidget" id="dTable1">
                 <!-- widget options:
                     usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
                     data-widget-colorbutton="false"
@@ -356,8 +347,8 @@
                     data-widget-sortable="false"
                 -->
                 <header>
-                    <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-                    <h2>Distribucion patologías </h2>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2><spring:message code="pato"/> </h2>
                 </header>
                 <!-- widget div-->
                 <div>
@@ -369,28 +360,685 @@
                     <!-- end widget edit box -->
                     <!-- widget content -->
                     <div class="widget-body">
-                        <table id="data_result_2" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="table1" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>
                             <tr>
-                                <th></th>
-                                <th></th>
-                                <th colspan=3>Casos absolutos</th>
-                                <th colspan=3>Porcentajes</th>
-                                <th colspan=3>Tasas</th>
+                                <th style="text-align: center" id="pat1" rowspan="1" colspan="10"></th>
                             </tr>
+
+                            <tr role="row">
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th id="firstYear1" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th id="secYear1" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+
+                            </tr>
+
                             <tr>
-                                <th data-class="expand"><spring:message code="year"/></th>
-                                <th data-class="expand"><spring:message code="pato"/></th>
-                                <th data-hide="phone,tablet">M</th>
-                                <th data-hide="phone,tablet">F</th>
-                                <th data-hide="phone,tablet">T</th>
-                                <th data-hide="phone,tablet">M</th>
-                                <th data-hide="phone,tablet">F</th>
-                                <th data-hide="phone,tablet">T</th>
-                                <th data-hide="phone,tablet">M</th>
-                                <th data-hide="phone,tablet">F</th>
-                                <th data-hide="phone,tablet">T</th>
+
+                                <th id="entidad1" ></th>
+                                <th><spring:message code="lbl.last.week"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.unlike.cases"/></th>
+                                <th><spring:message code="lbl.relative.percentage.rate"/></th>
+
+
                             </tr>
+
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- end widget content -->
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+        </article>
+        <!-- WIDGET END -->
+
+        <!-- NEW WIDGET START -->
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" hidden="hidden" id="dTable2">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+                -->
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                     <h2><spring:message code="pato"/> </h2>
+                </header>
+                <!-- widget div-->
+                <div>
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+                        <input class="form-control" type="text">
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body">
+                        <table id="table2" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center" id="pat2" rowspan="1" colspan="10"></th>
+                            </tr>
+
+                            <tr role="row">
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th id="firstYear2" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th id="secYear2" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+
+                            </tr>
+
+                            <tr>
+
+                                <th id="entidad2" ></th>
+                                <th><spring:message code="lbl.last.week"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.unlike.cases"/></th>
+                                <th><spring:message code="lbl.relative.percentage.rate"/></th>
+
+                            </tr>
+
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- end widget content -->
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+        </article>
+        <!-- WIDGET END -->
+
+        <!-- NEW WIDGET START -->
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" hidden="hidden" id="dTable3">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+                -->
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2><spring:message code="pato"/> </h2>
+                </header>
+                <!-- widget div-->
+                <div>
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+                        <input class="form-control" type="text">
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body">
+                        <table id="table3" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center" id="pat3" rowspan="1" colspan="10"></th>
+                            </tr>
+
+                            <tr role="row">
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th id="firstYear3" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th id="secYear3" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+
+                            </tr>
+
+                            <tr>
+
+                                <th id="entidad3" ></th>
+                                <th><spring:message code="lbl.last.week"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.unlike.cases"/></th>
+                                <th><spring:message code="lbl.relative.percentage.rate"/></th>
+
+
+                            </tr>
+
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- end widget content -->
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+        </article>
+        <!-- WIDGET END -->
+
+        <!-- NEW WIDGET START -->
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" hidden="hidden" id="dTable4">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+                -->
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2><spring:message code="pato"/> </h2>
+                </header>
+                <!-- widget div-->
+                <div>
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+                        <input class="form-control" type="text">
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body">
+                        <table id="table4" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center" id="pat4" rowspan="1" colspan="10"></th>
+                            </tr>
+
+                            <tr role="row">
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th id="firstYear4" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th id="secYear4" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+
+                            </tr>
+
+                            <tr>
+
+                                <th id="entidad4" ></th>
+                                <th><spring:message code="lbl.last.week"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.unlike.cases"/></th>
+                                <th><spring:message code="lbl.relative.percentage.rate"/></th>
+
+
+                            </tr>
+
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- end widget content -->
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+        </article>
+        <!-- WIDGET END -->
+
+        <!-- NEW WIDGET START -->
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" id="dTable5" hidden="hidden">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+                -->
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2><spring:message code="pato"/> </h2>
+                </header>
+                <!-- widget div-->
+                <div>
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+                        <input class="form-control" type="text">
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body">
+                        <table id="table5" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center" id="pat5" rowspan="1" colspan="10"></th>
+                            </tr>
+
+                            <tr role="row">
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th id="firstYear5" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th id="secYear5" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+
+                            </tr>
+
+                            <tr>
+
+                                <th id="entidad5" ></th>
+                                <th><spring:message code="lbl.last.week"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.unlike.cases"/></th>
+                                <th><spring:message code="lbl.relative.percentage.rate"/></th>
+
+
+                            </tr>
+
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- end widget content -->
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+        </article>
+        <!-- WIDGET END -->
+
+        <!-- NEW WIDGET START -->
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" hidden="hidden" id="dTable6">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+                -->
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2><spring:message code="pato"/> </h2>
+                </header>
+                <!-- widget div-->
+                <div>
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+                        <input class="form-control" type="text">
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body">
+                        <table id="table6" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center" id="pat6" rowspan="1" colspan="10"></th>
+                            </tr>
+
+                            <tr role="row">
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th id="firstYear6" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th id="secYear6" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+
+                            </tr>
+
+                            <tr>
+
+                                <th id="entidad6" ></th>
+                                <th><spring:message code="lbl.last.week"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.unlike.cases"/></th>
+                                <th><spring:message code="lbl.relative.percentage.rate"/></th>
+
+
+                            </tr>
+
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- end widget content -->
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+        </article>
+        <!-- WIDGET END -->
+
+        <!-- NEW WIDGET START -->
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" id="dTable7" hidden="hidden">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+                -->
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2><spring:message code="pato"/> </h2>
+                </header>
+                <!-- widget div-->
+                <div>
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+                        <input class="form-control" type="text">
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body">
+                        <table id="table7" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center" id="pat7" rowspan="1" colspan="10"></th>
+                            </tr>
+
+                            <tr role="row">
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th id="firstYear7" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th id="secYear7" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+
+                            </tr>
+
+                            <tr>
+
+                                <th id="entidad7" ></th>
+                                <th><spring:message code="lbl.last.week"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.unlike.cases"/></th>
+                                <th><spring:message code="lbl.relative.percentage.rate"/></th>
+
+
+                            </tr>
+
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- end widget content -->
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+        </article>
+        <!-- WIDGET END -->
+
+        <!-- NEW WIDGET START -->
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" hidden="hidden" id="dTable8">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+                -->
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2><spring:message code="pato"/> </h2>
+                </header>
+                <!-- widget div-->
+                <div>
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+                        <input class="form-control" type="text">
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body">
+                        <table id="table8" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center" id="pat8" rowspan="1" colspan="10"></th>
+                            </tr>
+
+                            <tr role="row">
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th id="firstYear8" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th id="secYear8" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+
+                            </tr>
+
+                            <tr>
+
+                                <th id="entidad8" ></th>
+                                <th><spring:message code="lbl.last.week"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.unlike.cases"/></th>
+                                <th><spring:message code="lbl.relative.percentage.rate"/></th>
+
+
+                            </tr>
+
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- end widget content -->
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+        </article>
+        <!-- WIDGET END -->
+
+        <!-- NEW WIDGET START -->
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" hidden="hidden" id="dTable9">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+                -->
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2><spring:message code="pato"/> </h2>
+                </header>
+                <!-- widget div-->
+                <div>
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+                        <input class="form-control" type="text">
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body">
+                        <table id="table9" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center" id="pat9" rowspan="1" colspan="10"></th>
+                            </tr>
+
+                            <tr role="row">
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th id="firstYear9" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th id="secYear9" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+
+                            </tr>
+
+                            <tr>
+
+                                <th id="entidad9" ></th>
+                                <th><spring:message code="lbl.last.week"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.unlike.cases"/></th>
+                                <th><spring:message code="lbl.relative.percentage.rate"/></th>
+
+
+                            </tr>
+
+                            </thead>
+                        </table>
+                    </div>
+                    <!-- end widget content -->
+                </div>
+                <!-- end widget div -->
+            </div>
+            <!-- end widget -->
+        </article>
+        <!-- WIDGET END -->
+
+        <!-- NEW WIDGET START -->
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget" hidden="hidden" id="dTable10">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+                -->
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2><spring:message code="pato"/> </h2>
+                </header>
+                <!-- widget div-->
+                <div>
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+                        <input class="form-control" type="text">
+                    </div>
+                    <!-- end widget edit box -->
+                    <!-- widget content -->
+                    <div class="widget-body">
+                        <table id="table10" class="table table-striped table-bordered table-hover" width="100%">
+                            <thead>
+                            <tr>
+                                <th style="text-align: center" id="pat10" rowspan="1" colspan="10"></th>
+                            </tr>
+
+                            <tr role="row">
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th id="firstYear10" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th id="secYear10" colspan="3" style="text-align: center" rowspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+                                <th rowspan="1" colspan="1"></th>
+
+                            </tr>
+
+                            <tr>
+
+                                <th id="entidad10" ></th>
+                                <th><spring:message code="lbl.last.week"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.cases"/></th>
+                                <th><spring:message code="lbl.acum"/></th>
+                                <th><spring:message code="lbl.rates"/></th>
+                                <th><spring:message code="lbl.unlike.cases"/></th>
+                                <th><spring:message code="lbl.relative.percentage.rate"/></th>
+
+
+                            </tr>
+
                             </thead>
                         </table>
                     </div>
@@ -405,149 +1053,10 @@
 </div>
 <!-- end row -->
 <!-- row -->
-<div class="row">
-    <!-- a blank row to get started -->
-    <div class="col-sm-12">
-        <!-- NEW WIDGET START -->
-        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <!-- Widget ID (each widget will need unique ID)-->
-            <div class="jarviswidget" id="wid-id-3">
-                <!-- widget options:
-                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-                    data-widget-colorbutton="false"
-                    data-widget-editbutton="false"
-                    data-widget-togglebutton="false"
-                    data-widget-deletebutton="false"
-                    data-widget-fullscreenbutton="false"
-                    data-widget-custombutton="false"
-                    data-widget-collapsed="true"
-                    data-widget-sortable="false"
-                -->
-                <header>
-                    <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-                    <h2>Distribucion por patologías </h2>
-                </header>
-                <!-- widget div-->
-                <div>
-                    <!-- widget edit box -->
-                    <div class="jarviswidget-editbox">
-                        <!-- This area used as dropdown edit box -->
-                        <input class="form-control" type="text">
-                    </div>
-                    <!-- end widget edit box -->
-                    <!-- widget content -->
-                    <div class="widget-body">
-                        <!-- this is what the user will see -->
-                        <div id="lineChart-title" align="center"></div>
-                        <div id="lineLegend"></div>
-                        <canvas id="lineChart" height="120"></canvas>
-                    </div>
-                    <!-- end widget content -->
-                </div>
-                <!-- end widget div -->
-            </div>
-            <!-- end widget -->
-        </article>
-        <!-- WIDGET END -->
-    </div>
-</div>
+
 <!-- end row -->
-<!-- row -->
-<div class="row">
-    <!-- a blank row to get started -->
-    <div class="col-sm-12">
-        <!-- NEW WIDGET START -->
-        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <!-- Widget ID (each widget will need unique ID)-->
-            <div class="jarviswidget" id="wid-id-4">
-                <!-- widget options:
-                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-                    data-widget-colorbutton="false"
-                    data-widget-editbutton="false"
-                    data-widget-togglebutton="false"
-                    data-widget-deletebutton="false"
-                    data-widget-fullscreenbutton="false"
-                    data-widget-custombutton="false"
-                    data-widget-collapsed="true"
-                    data-widget-sortable="false"
-                -->
-                <header>
-                    <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-                    <h2>Distribucion por patologías porcentajes</h2>
-                </header>
-                <!-- widget div-->
-                <div>
-                    <!-- widget edit box -->
-                    <div class="jarviswidget-editbox">
-                        <!-- This area used as dropdown edit box -->
-                        <input class="form-control" type="text">
-                    </div>
-                    <!-- end widget edit box -->
-                    <!-- widget content -->
-                    <div class="widget-body">
-                        <!-- this is what the user will see -->
-                        <div id="lineChart2-title" align="center"></div>
-                        <div id="lineLegend2"></div>
-                        <canvas id="lineChart2" height="120"></canvas>
-                    </div>
-                    <!-- end widget content -->
-                </div>
-                <!-- end widget div -->
-            </div>
-            <!-- end widget -->
-        </article>
-        <!-- WIDGET END -->
-    </div>
-</div>
-<!-- end row -->
-<!-- row -->
-<div class="row">
-    <!-- a blank row to get started -->
-    <div class="col-sm-12">
-        <!-- NEW WIDGET START -->
-        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <!-- Widget ID (each widget will need unique ID)-->
-            <div class="jarviswidget" id="wid-id-5">
-                <!-- widget options:
-                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-                    data-widget-colorbutton="false"
-                    data-widget-editbutton="false"
-                    data-widget-togglebutton="false"
-                    data-widget-deletebutton="false"
-                    data-widget-fullscreenbutton="false"
-                    data-widget-custombutton="false"
-                    data-widget-collapsed="true"
-                    data-widget-sortable="false"
-                -->
-                <header>
-                    <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-                    <h2>Distribucion por patologías tasas</h2>
-                </header>
-                <!-- widget div-->
-                <div>
-                    <!-- widget edit box -->
-                    <div class="jarviswidget-editbox">
-                        <!-- This area used as dropdown edit box -->
-                        <input class="form-control" type="text">
-                    </div>
-                    <!-- end widget edit box -->
-                    <!-- widget content -->
-                    <div class="widget-body">
-                        <!-- this is what the user will see -->
-                        <div id="lineChart3-title" align="center"></div>
-                        <div id="lineLegend3"></div>
-                        <canvas id="lineChart3" height="120"></canvas>
-                    </div>
-                    <!-- end widget content -->
-                </div>
-                <!-- end widget div -->
-            </div>
-            <!-- end widget -->
-        </article>
-        <!-- WIDGET END -->
-    </div>
-</div>
-<!-- end row -->
+
+
 </section>
 <!-- end widget grid -->
 </div>
@@ -599,7 +1108,7 @@
 <spring:url value="/resources/scripts/utilidades/seleccionRegionSIVE.js" var="seleccionRegionSIVE" />
 <script src="${seleccionRegionSIVE}"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-<spring:url value="/analisis/anapatodata/" var="sActionUrl"/>
+<spring:url value="/boletin/dataBulletin" var="sActionUrl"/>
 <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
 <spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
 <spring:url var="unidadesUrl"   value="/api/v1/unidadesPorSilaisyMuni"  />
