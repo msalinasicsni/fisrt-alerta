@@ -103,83 +103,6 @@ public class ReportesResidenciaController {
         return filtroMx;
     }
 
-    private String notificacionesToJson(List<DaNotificacion> notificacions){
-        String jsonResponse="";
-        Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
-        Integer indice=0;
-        for(DaNotificacion notificacion : notificacions){
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("idNotificacion",notificacion.getIdNotificacion());
-            if (notificacion.getFechaInicioSintomas()!=null)
-                map.put("fechaInicioSintomas",DateUtil.DateToString(notificacion.getFechaInicioSintomas(), "dd/MM/yyyy"));
-            else
-                map.put("fechaInicioSintomas"," ");
-            map.put("codtipoNoti",notificacion.getCodTipoNotificacion().getCodigo());
-            map.put("tipoNoti",notificacion.getCodTipoNotificacion().getValor());
-            map.put("fechaRegistro",DateUtil.DateToString(notificacion.getFechaRegistro(), "dd/MM/yyyy"));
-            map.put("SILAIS",notificacion.getCodSilaisAtencion().getNombre());
-            map.put("unidad",notificacion.getCodUnidadAtencion().getNombre());
-            //Si hay persona
-            if (notificacion.getPersona()!=null){
-                /// se obtiene el nombre de la persona asociada a la ficha
-                String nombreCompleto = "";
-                nombreCompleto = notificacion.getPersona().getPrimerNombre();
-                if (notificacion.getPersona().getSegundoNombre()!=null)
-                    nombreCompleto = nombreCompleto +" "+ notificacion.getPersona().getSegundoNombre();
-                nombreCompleto = nombreCompleto+" "+notificacion.getPersona().getPrimerApellido();
-                if (notificacion.getPersona().getSegundoApellido()!=null)
-                    nombreCompleto = nombreCompleto +" "+ notificacion.getPersona().getSegundoApellido();
-                map.put("persona",nombreCompleto);
-                //Se calcula la edad
-                int edad = calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
-                map.put("edad",String.valueOf(edad));
-                //se obtiene el sexo
-                map.put("sexo",notificacion.getPersona().getSexo().getValor());
-                if(edad > 12 && notificacion.getPersona().isSexoFemenino()){
-                    map.put("embarazada", envioMxService.estaEmbarazada(notificacion.getIdNotificacion()));
-                }else
-                    map.put("embarazada","--");
-                if (notificacion.getPersona().getMunicipioResidencia()!=null){
-                    map.put("municipio",notificacion.getPersona().getMunicipioResidencia().getNombre());
-                }else{
-                    map.put("municipio","--");
-                }
-            }else{
-                map.put("persona"," ");
-                map.put("edad"," ");
-                map.put("sexo"," ");
-                map.put("embarazada","--");
-                map.put("municipio","");
-            }
-
-            //se valida si tiene resultado final aprobado
-            boolean conResultado = false;
-            List<DaSolicitudDx> solicitudDxList = resultadoFinalService.getSolicitudesDxByIdNotificacion(notificacion.getIdNotificacion());
-            for (DaSolicitudDx solicitudDx : solicitudDxList) {
-                conResultado = resultadoFinalService.getDetResActivosBySolicitud(solicitudDx.getIdSolicitudDx()).size() > 0;
-                //cuando se encuentre el primer diagnóstico con resultado, salimos
-                if (conResultado)
-                    break;
-            }
-            //si no hay resultado para diagnóstico, validar estudios
-            if (!conResultado) {
-                List<DaSolicitudEstudio> solicitudEstudioList = resultadoFinalService.getSolicitudesEstByIdNotificacion(notificacion.getIdNotificacion());
-                for (DaSolicitudEstudio solicitudEstudio : solicitudEstudioList) {
-                    conResultado = resultadoFinalService.getDetResActivosBySolicitud(solicitudEstudio.getIdSolicitudEstudio()).size() > 0;
-                    //cuando se encuentre el primer estudio con resultado, salimos
-                    if (conResultado)
-                        break;
-                }
-            }
-            map.put("conResultado", (conResultado ? messageSource.getMessage("lbl.yes", null, null) : messageSource.getMessage("lbl.no", null, null)));
-            mapResponse.put(indice, map);
-            indice ++;
-        }
-        jsonResponse = new Gson().toJson(mapResponse);
-        UnicodeEscaper escaper     = UnicodeEscaper.above(127);
-        return escaper.translate(jsonResponse);
-    }
-
     public int calcularEdadAnios(Date dFechaNac){
         Calendar today = Calendar.getInstance();
         Calendar fechaNac = Calendar.getInstance();
@@ -222,7 +145,7 @@ public class ReportesResidenciaController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
             List<Semanas> semanas = catalogosService.getSemanas();
             List<Anios> anios = catalogosService.getAnios();
             List<FactorPoblacion> factores = catalogosService.getFactoresPoblacion();
@@ -302,7 +225,7 @@ public class ReportesResidenciaController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
             mav.addObject("entidades",entidadesAdtvases);
@@ -374,7 +297,7 @@ public class ReportesResidenciaController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
             mav.addObject("entidades",entidadesAdtvases);
@@ -453,8 +376,8 @@ public class ReportesResidenciaController {
                     map.put("embarazada", envioMxService.estaEmbarazada(notificacion.getIdNotificacion()));
                 }else
                     map.put("embarazada","--");
-                if (notificacion.getPersona().getMunicipioResidencia()!=null){
-                    map.put("municipio",notificacion.getPersona().getMunicipioResidencia().getNombre());
+                if (notificacion.getMunicipioResidencia()!=null){
+                    map.put("municipio",notificacion.getMunicipioResidencia().getNombre());
                 }else{
                     map.put("municipio","--");
                 }
@@ -485,7 +408,7 @@ public class ReportesResidenciaController {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario);
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
         List<Anios> anios = catalogosService.getAnios();
         List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
         TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
@@ -580,7 +503,7 @@ public class ReportesResidenciaController {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario);
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
         List<Anios> anios = catalogosService.getAnios();
         List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
         TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
@@ -621,7 +544,7 @@ public class ReportesResidenciaController {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario);
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
         List<Anios> anios = catalogosService.getAnios();
         List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
         TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");

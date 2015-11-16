@@ -718,7 +718,13 @@ public class SeguridadService {
         }
     }
 
-    public List<AreaRep> getAreasUsuario(Integer idUsuario){
+    /**
+     * Método que obtiene la lista de areas por las que puede generar reportes un usuario
+     * @param idUsuario id del usuario a validar
+     * @param menorNivelPermitido nivel mas bajo permitido a obtener areas: 1=PAIS, 2=SILAIS, 3=UNIDAD
+     * @return
+     */
+    public List<AreaRep> getAreasUsuario(Integer idUsuario, int menorNivelPermitido){
         List<AreaRep> areaRepList = new ArrayList<AreaRep>();
         Session session = sessionFactory.getCurrentSession();
         String query = "from AreaRep as a ";
@@ -728,15 +734,68 @@ public class SeguridadService {
         if (nivelUsuario!=null) {
             switch (nivelUsuario){
                 case "PAIS" :{
-                    query += " where 1 = 1";  // todos
+                    switch (menorNivelPermitido){
+                        case 1 :{
+                            query += " where a.codigo in ('AREAREP|PAIS','AREAREP|DEPTO','AREAREP|SILAIS') "; // no incluir pais y departamento
+                            break;
+                        }
+                        case 2: {
+                            query += " where a.codigo not in ('AREAREP|UNI') "; // sólo unidad
+                            break;
+                        }
+                        case 3 : {
+                            query += " where 1 = 1";  // todos
+                            break;
+                        }
+                        default: break;
+                    }
+
                     break;
                 }
                 case "SILAIS" : {
-                    query += " where a.codigo not in ('AREAREP|PAIS','AREAREP|DEPTO') "; // no incluir pais y departamento
+                    /*if (menorNivelPermitido >= 2) {
+                        query += " where a.codigo not in ('AREAREP|PAIS','AREAREP|DEPTO') "; // no incluir pais y departamento
+                    }else{
+                        query += " where 1 = 0";  // ninguno
+                    }*/
+                    switch (menorNivelPermitido){
+                        case 1 :{
+                            query += " where 1 = 0";  // ninguno
+                            break;
+                        }
+                        case 2: {
+                            query += " where a.codigo not in ('AREAREP|PAIS','AREAREP|DEPTO','AREAREP|UNI') "; // no incluir pais, departamento y unidades
+                            break;
+                        }
+                        case 3 : {
+                            query += " where a.codigo not in ('AREAREP|PAIS','AREAREP|DEPTO') "; // no incluir pais y departamento
+                            break;
+                        }
+                        default: break;
+                    }
                     break;
                 }
                 case "UNIDAD" :{
-                    query += " where a.codigo in ('AREAREP|UNI') "; // sólo unidad
+                    switch (menorNivelPermitido){
+                        case 1 :{
+                            query += " where 1 = 0";  // ninguno
+                            break;
+                        }
+                        case 2: {
+                            query += " where 1 = 0";  // ninguno
+                            break;
+                        }
+                        case 3 : {
+                            query += " where a.codigo in ('AREAREP|UNI') "; // sólo unidad
+                            break;
+                        }
+                        default: break;
+                    }
+                    /*if (menorNivelPermitido==3) {
+                        query += " where a.codigo in ('AREAREP|UNI') "; // sólo unidad
+                    }else {
+                        query += " where 1 = 0";  // ninguno
+                    }*/
                     break;
                 }
                default: break;

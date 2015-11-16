@@ -1104,7 +1104,7 @@ public class ReportesResidenciaService {
         }
         else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
             queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
-                    "where noti.pasivo = false and noti.persona.municipioResidencia.dependenciaSilais.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
+                    "where noti.pasivo = false and noti.municipioResidencia.dependenciaSilais.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
                     "From CalendarioEpi cal " + sqlWhereSemana);
             queryCasos.setParameter("codSilais", filtro.getCodSilais());
 
@@ -1117,7 +1117,7 @@ public class ReportesResidenciaService {
         }
         else if (filtro.getCodArea().equals("AREAREP|DEPTO")){
             queryCasos = session.createQuery(sqlDataSemana + ", (select count(noti.idNotificacion) from DaNotificacion noti " +
-                    "where noti.pasivo = false and noti.persona.municipioResidencia.dependencia.divisionpoliticaId =:codDepartamento and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
+                    "where noti.pasivo = false and noti.municipioResidencia.dependencia.divisionpoliticaId =:codDepartamento and noti.codTipoNotificacion.codigo = :tipoNoti and noti.fechaRegistro between cal.fechaInicial and cal.fechaFinal) " +
                     "From CalendarioEpi cal " + sqlWhereSemana);
             queryCasos.setParameter("codDepartamento", filtro.getCodDepartamento());
 
@@ -1176,14 +1176,14 @@ public class ReportesResidenciaService {
         }
         else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
             queryCasos = session.createQuery(sqlDataDia + " From DaNotificacion  noti " +
-                    "where noti.pasivo = false and noti.persona.municipioResidencia.dependenciaSilais.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "where noti.pasivo = false and noti.municipioResidencia.dependenciaSilais.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     "group by noti.fechaRegistro order by noti.fechaRegistro asc");
             queryCasos.setParameter("codSilais", filtro.getCodSilais());
         }
         else if (filtro.getCodArea().equals("AREAREP|DEPTO")){
             queryCasos = session.createQuery(sqlDataDia + " From DaNotificacion  noti " +
-                    "where noti.pasivo = false and noti.persona.municipioResidencia.dependencia.divisionpoliticaId =:codDepartamento and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "where noti.pasivo = false and noti.municipioResidencia.dependencia.divisionpoliticaId =:codDepartamento and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     "group by noti.fechaRegistro order by noti.fechaRegistro asc");
             queryCasos.setParameter("codDepartamento", filtro.getCodDepartamento());
@@ -1267,13 +1267,13 @@ public class ReportesResidenciaService {
         else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
             queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
                     "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
-                    "and noti.persona.municipioResidencia.dependenciaSilais.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "and noti.municipioResidencia.dependenciaSilais.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " order by noti.fechaRegistro asc");
 
             sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti " +
                     "where noti.pasivo = false and est.aprobada = false and mx.anulada = false  " +
-                    "and noti.persona.municipioResidencia.dependenciaSilais.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    "and noti.municipioResidencia.dependenciaSilais.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
                     " and dx.idTomaMx.idNotificacion.persona.municipioResidencia.dependenciaSilais.entidadAdtvaId = :codSilais and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti " +
@@ -1287,14 +1287,14 @@ public class ReportesResidenciaService {
             queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
                     "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                    "and noti.persona.municipioResidencia.dependencia.divisionpoliticaId =:codDepartamento" +
+                    "and noti.municipioResidencia.dependencia.divisionpoliticaId =:codDepartamento" +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " order by noti.fechaRegistro asc");
 
             sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti " +
                     "where noti.pasivo = false and est.aprobada = false and mx.anulada = false  " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                    "and noti.persona.municipioResidencia.dependencia.divisionpoliticaId =:codDepartamento" +
+                    "and noti.municipioResidencia.dependencia.divisionpoliticaId =:codDepartamento" +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
                     " and dx.idTomaMx.idNotificacion.persona.municipioResidencia.dependencia.divisionpoliticaId = :codDepartamento and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti " +
