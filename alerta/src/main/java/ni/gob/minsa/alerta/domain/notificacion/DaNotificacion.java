@@ -5,7 +5,7 @@ import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.irag.Respuesta;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
-import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
+import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
@@ -32,10 +32,11 @@ public class DaNotificacion {
     private Usuarios usuarioRegistro;
     private Timestamp fechaAnulacion;
     private Timestamp fechaRegistro;
-    private Comunidades comunidadResidencia;
+    private Divisionpolitica municipioResidencia;
     private String direccionResidencia;
     private Date fechaInicioSintomas;
     private Respuesta urgente;
+    private boolean completa;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -135,15 +136,12 @@ public class DaNotificacion {
         this.fechaAnulacion = fechaAnulacion;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Comunidades.class)
-    @JoinColumn(name = "CODIGO_COMUNIDAD_RESIDENCIA", referencedColumnName = "CODIGO", nullable = true)
-    public Comunidades getComunidadResidencia() {
-        return comunidadResidencia;
-    }
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Divisionpolitica.class)
+    @JoinColumn(name = "CODIGO_MUNIC_RESIDENCIA", referencedColumnName = "CODIGO_NACIONAL", nullable = true)
+    public Divisionpolitica getMunicipioResidencia() { return municipioResidencia; }
 
-    public void setComunidadResidencia(Comunidades comunidadResidencia) {
-        this.comunidadResidencia = comunidadResidencia;
-    }
+    public void setMunicipioResidencia(Divisionpolitica municipioResidencia) { this.municipioResidencia = municipioResidencia; }
+
 
     @Column(name = "DIRECCION_RESIDENCIA", length = 100)
     public String getDireccionResidencia() {
@@ -171,5 +169,9 @@ public class DaNotificacion {
 
     public void setUrgente(Respuesta urgente) { this.urgente = urgente; }
 
+    @Basic
+    @Column(name = "COMPLETA", nullable = true, insertable = true, updatable = true)
+    public boolean isCompleta() { return completa; }
 
+    public void setCompleta(boolean completa) {  this.completa = completa; }
 }

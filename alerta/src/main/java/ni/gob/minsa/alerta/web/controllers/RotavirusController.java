@@ -4,17 +4,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
-import ni.gob.minsa.alerta.domain.irag.*;
+import ni.gob.minsa.alerta.domain.irag.CondicionEgreso;
+import ni.gob.minsa.alerta.domain.irag.Respuesta;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.rotavirus.*;
-import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.DaSindFebril;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
-import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import ni.gob.minsa.alerta.utilities.DateUtil;
+import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import ni.gob.minsa.ciportal.dto.InfoResultado;
 import ni.gob.minsa.ejbPersona.dto.Persona;
 import org.slf4j.Logger;
@@ -544,7 +544,7 @@ public class RotavirusController {
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             noti.setUsuarioRegistro(usuarioService.getUsuarioById((int)idUsuario));
             noti.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|RTV"));
-            noti.setComunidadResidencia(persona.getComunidadResidencia());
+            noti.setMunicipioResidencia(persona.getMunicipioResidencia());
             noti.setDireccionResidencia(persona.getDireccionResidencia());
             noti.setUrgente(catalogoService.getRespuesta(urgente));
 
@@ -561,7 +561,7 @@ public class RotavirusController {
         if (idNotificacion != null) {
             //DaNotificacion
             noti = daNotificacionService.getNotifById(idNotificacion);
-            noti.setComunidadResidencia(persona.getComunidadResidencia());
+            noti.setMunicipioResidencia(persona.getMunicipioResidencia());
             noti.setDireccionResidencia(persona.getDireccionResidencia());
             daNotificacionService.updateNotificacion(noti);
         }

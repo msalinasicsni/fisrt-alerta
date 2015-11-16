@@ -499,7 +499,7 @@ public class ReportesResidenciaController {
         model.addAttribute("departamentos", departamentos);
         model.addAttribute("tipoNoti", tipoNoti);
         model.addAttribute("factor", factor);
-        return "reportes/area";
+        return "reportes/residencia/porArea";
     }
 
     private FiltrosReporte jsonToFiltroReportes(String strJson) throws Exception {
@@ -594,7 +594,7 @@ public class ReportesResidenciaController {
         model.addAttribute("departamentos", departamentos);
         model.addAttribute("tipoNoti", tipoNoti);
         model.addAttribute("factor", factor);
-        return "reportes/porSexo";
+        return "reportes/residencia/porSexo";
     }
 
     /**

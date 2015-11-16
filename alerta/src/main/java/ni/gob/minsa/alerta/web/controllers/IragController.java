@@ -618,13 +618,15 @@ public class IragController {
             irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
             daIragService.saveOrUpdateIrag(irag);*/
             if (irag.getIdNotificacion() == null) {
+                //crear nueva notificacion
                 DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion, urgente);
                 irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
             } else {
                 if (fechaInicioSintomas != null && !fechaInicioSintomas.equals("")) {
-                    irag.getIdNotificacion().setFechaInicioSintomas(StringToDate(fechaInicioSintomas));
-                    daNotificacionService.updateNotificacion(irag.getIdNotificacion());
-                }
+                    //actualizar notificacion
+                     irag.getIdNotificacion().setFechaInicioSintomas(StringToDate(fechaInicioSintomas));
+                     daNotificacionService.updateNotificacion(irag.getIdNotificacion());
+                    }
             }
             daIragService.saveOrUpdateIrag(irag);
 
@@ -653,9 +655,10 @@ public class IragController {
             noti.setUsuarioRegistro(usuarioService.getUsuarioById((int) idUsuario));
             // noti.setUsuarioRegistro(usuarioService.getUsuarioById(1));
             noti.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|IRAG"));
-            noti.setComunidadResidencia(persona.getComunidadResidencia());
+            noti.setMunicipioResidencia(persona.getMunicipioResidencia());
             noti.setDireccionResidencia(persona.getDireccionResidencia());
             noti.setUrgente(catalogoService.getRespuesta(urgente));
+            noti.setCompleta(false);
 
             daNotificacionService.addNotification(noti);
             return noti;
@@ -700,8 +703,9 @@ public class IragController {
                 irag.setSerotipificacion(serotipificacion);
                 irag.setAgenteViral(agenteViral);
                 irag.setAgenteEtiologico(agenteEtiologico);
-                irag.setFichaCompleta(true);
                 daIragService.saveOrUpdateIrag(irag);
+
+                updateNotificacion(irag.getIdNotificacion().getIdNotificacion(),irag.getIdNotificacion().getPersona(), true);
 
             }
             return createJsonResponse(irag);
@@ -739,7 +743,7 @@ public class IragController {
 
                     infoResultado = personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
                     if (infoResultado.isOk() && infoResultado.getObjeto() != null) {
-                        updateNotificacion(idNotificacion, pers);
+                        updateNotificacion(idNotificacion, pers, false);
                     } else
                         throw new Exception(infoResultado.getMensaje() + "----" + infoResultado.getMensajeDetalle());
                     personaService.commitTransaccion();
@@ -760,7 +764,7 @@ public class IragController {
                     }
                 }
             } else {
-                updateNotificacion(idNotificacion, pers);
+                updateNotificacion(idNotificacion, pers, false);
             }
         }
         return createJsonResponse(pers);
@@ -781,7 +785,7 @@ public class IragController {
      * @param idNotificacion the ID of the form
      */
     @RequestMapping(value = "update/{idNotificacion}")
-    public void updateNotificacion(String idNotificacion, SisPersona persona) throws Exception {
+    public void updateNotificacion(String idNotificacion, SisPersona persona, boolean completa) throws Exception {
         DaIrag irag = null;
         DaNotificacion noti = null;
 
@@ -790,9 +794,20 @@ public class IragController {
 
             //DaNotificacion
             noti = daNotificacionService.getNotifById(idNotificacion);
-            noti.setComunidadResidencia(persona.getComunidadResidencia());
-            noti.setDireccionResidencia(persona.getDireccionResidencia());
-            daNotificacionService.updateNotificacion(noti);
+
+            if (!noti.isCompleta()){
+                noti.setMunicipioResidencia(persona.getMunicipioResidencia());
+                noti.setDireccionResidencia(persona.getDireccionResidencia());
+
+                if(completa){
+                    noti.setCompleta(true);
+                }else{
+                    noti.setCompleta(false);
+                }
+
+                daNotificacionService.updateNotificacion(noti);
+            }
+
         }
 
     }
@@ -1032,7 +1047,7 @@ public class IragController {
 
                         String depProce = irag.getIdNotificacion().getPersona().getMunicipioResidencia() != null ? irag.getIdNotificacion().getPersona().getMunicipioResidencia().getDependencia().getNombre() : "----------";
                         String municProce = irag.getIdNotificacion().getPersona().getMunicipioResidencia() != null ? irag.getIdNotificacion().getPersona().getMunicipioResidencia().getNombre() : "----------";
-                        String comunidadResidencia = irag.getIdNotificacion().getComunidadResidencia() != null ? irag.getIdNotificacion().getComunidadResidencia().getNombre() : "----------";
+                        String comunidadResidencia = irag.getIdNotificacion().getMunicipioResidencia() != null ? irag.getIdNotificacion().getMunicipioResidencia().getNombre() : "----------";
                         String direccionResidencia = irag.getIdNotificacion().getDireccionResidencia() != null ? irag.getIdNotificacion().getDireccionResidencia() : "----------";
                         String telefono = irag.getIdNotificacion().getPersona().getTelefonoResidencia() != null ? irag.getIdNotificacion().getPersona().getTelefonoResidencia() : "----------";
                         String captacion = irag.getCodCaptacion() != null ? irag.getCodCaptacion().getCodigo() : null;

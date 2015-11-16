@@ -268,6 +268,10 @@ var CreateIrag = function () {
             //Validacion del formulario irag
             var $validator = $("#wizard-1").validate({
                 rules: {
+                    municipioResidencia:{
+                        required:true
+                    },
+
                     codSilaisAtencion: {
                         required: true
 
