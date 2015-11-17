@@ -558,7 +558,7 @@ public class ReportesResidenciaController {
         model.addAttribute("departamentos", departamentos);
         model.addAttribute("tipoNoti", tipoNoti);
         model.addAttribute("factor", factor);
-        return "reportes/porResultado";
+        return "reportes/residencia/porResultado";
     }
 
     /**
