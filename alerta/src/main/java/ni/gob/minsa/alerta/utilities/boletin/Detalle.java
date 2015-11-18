@@ -10,6 +10,7 @@ public class Detalle {
     String valor;
     String valorAcum;
     String tasa;
+    String ultimaSemana;
 
     public DatosAnio getAnio() { return anio; }
 
@@ -30,4 +31,8 @@ public class Detalle {
     public String getTasa() {  return tasa;  }
 
     public void setTasa(String tasa) { this.tasa = tasa; }
+
+    public String getUltimaSemana() { return ultimaSemana; }
+
+    public void setUltimaSemana(String ultimaSemana) { this.ultimaSemana = ultimaSemana; }
 }

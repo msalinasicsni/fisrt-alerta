@@ -165,7 +165,7 @@
 												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
 												<fieldset>
 													<div hidden="true">
-														<label class="input"> 
+                                                        <label class="input">
 															<i class="icon-prepend fa fa-male fa-fw"></i> 
 															<input value="${daSindFeb.idNotificacion.persona.personaId}" type="text" id="personaId" name="personaId" />
 														</label>
@@ -1162,7 +1162,12 @@
                                                 <input id="text_value" type="hidden" value="<spring:message code="lbl.result.value"/>"/>
                                                 <input id="text_date" type="hidden" value="<spring:message code="lbl.result.date"/>"/>
                                                 <input id="text_response" type="hidden" value="<spring:message code="lbl.result.response"/>"/>
-												<h3><spring:message code="sindfeb.step5.long" /></h3>
+                                                <input id="complete_t" type="hidden" value="<spring:message code="msg.sending.confirm.title"/>"/>
+                                                <input id="complete_c" type="hidden" value="<spring:message code="msg.complete.noti"/>"/>
+                                                <input id="opc_yes" type="hidden" value="<spring:message code="lbl.send.confirm.msg.opc.yes"/>"/>
+                                                <input id="opc_no" type="hidden" value="<spring:message code="lbl.send.confirm.msg.opc.no"/>"/>
+                                                <input type="text" hidden="hidden" name="completa" id="completa" value="${daSindFeb.idNotificacion.completa}" />
+                                                <h3><spring:message code="sindfeb.step5.long" /></h3>
 												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
                                                 <br/><br/>
                                                 <div class="widget-body no-padding">

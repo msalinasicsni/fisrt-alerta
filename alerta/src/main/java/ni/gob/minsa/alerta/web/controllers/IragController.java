@@ -498,6 +498,14 @@ public class IragController {
             , @RequestParam(value = "otraCondicion", required = false) String otraCondicion
             , @RequestParam(value = "semanasEmbarazo", required = false) Integer semanasEmbarazo
             , @RequestParam(value = "urgente", required = false) String urgente
+            , @RequestParam(value = "codClasFCaso", required = false) String codClasFCaso
+            , @RequestParam(value = "agenteBacteriano", required = false) String agenteBacteriano
+            , @RequestParam(value = "serotipificacion", required = false) String serotipificacion
+            , @RequestParam(value = "agenteViral", required = false) String agenteViral
+            , @RequestParam(value = "agenteEtiologico", required = false) String agenteEtiologico
+            , @RequestParam(value = "codClasFDetalleNV", required = false) String codClasFDetalleNV
+            , @RequestParam(value = "codClasFDetalleNB", required = false) String codClasFDetalleNB
+            , @RequestParam(value = "completa", required = false) String completa
             , HttpServletRequest request
 
 
@@ -619,15 +627,26 @@ public class IragController {
             daIragService.saveOrUpdateIrag(irag);*/
             if (irag.getIdNotificacion() == null) {
                 //crear nueva notificacion
-                DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion, urgente);
+                DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion, urgente,completa);
                 irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
             } else {
                 if (fechaInicioSintomas != null && !fechaInicioSintomas.equals("")) {
                     //actualizar notificacion
                      irag.getIdNotificacion().setFechaInicioSintomas(StringToDate(fechaInicioSintomas));
+                     irag.getIdNotificacion().setCompleta(Boolean.parseBoolean(completa));
                      daNotificacionService.updateNotificacion(irag.getIdNotificacion());
                     }
             }
+
+            irag.setCodClasFDetalleNB(catalogoService.getClasificacionFinalNB(codClasFDetalleNB));
+            irag.setCodClasFDetalleNV(catalogoService.getClasificacionFinalNV(codClasFDetalleNV));
+            irag.setCodClasFCaso(codClasFCaso);
+            irag.setAgenteBacteriano(agenteBacteriano);
+            irag.setSerotipificacion(serotipificacion);
+            irag.setAgenteViral(agenteViral);
+            irag.setAgenteEtiologico(agenteEtiologico);
+
+
             daIragService.saveOrUpdateIrag(irag);
 
 
@@ -640,7 +659,7 @@ public class IragController {
 
 
     @RequestMapping(value = "saveNotification", method = RequestMethod.GET)
-    public DaNotificacion guardarNotificacion(@PathVariable("personaId") Integer personaId, HttpServletRequest request, Integer silais, Integer unidad, String urgente) throws Exception {
+    public DaNotificacion guardarNotificacion(@PathVariable("personaId") Integer personaId, HttpServletRequest request, Integer silais, Integer unidad, String urgente, String completa) throws Exception {
 
         logger.debug("Guardando Notificacion");
         DaNotificacion noti = new DaNotificacion();
@@ -658,7 +677,7 @@ public class IragController {
             noti.setMunicipioResidencia(persona.getMunicipioResidencia());
             noti.setDireccionResidencia(persona.getDireccionResidencia());
             noti.setUrgente(catalogoService.getRespuesta(urgente));
-            noti.setCompleta(false);
+            noti.setCompleta(Boolean.parseBoolean(completa));
 
             daNotificacionService.addNotification(noti);
             return noti;
@@ -669,7 +688,7 @@ public class IragController {
     }
 
 
-    @RequestMapping(value = "completeIrag", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+   /* @RequestMapping(value = "completeIrag", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getProcessCreationFicha(
             @RequestParam(value = "codClasFCaso", required = false) String codClasFCaso
             , @RequestParam(value = "agenteBacteriano", required = false) String agenteBacteriano
@@ -678,7 +697,9 @@ public class IragController {
             , @RequestParam(value = "agenteEtiologico", required = false) String agenteEtiologico
             , @RequestParam(value = "idNotificacion", required = false) String idNotificacion
             , @RequestParam(value = "codClasFDetalleNV", required = false) String codClasFDetalleNV
-            , @RequestParam(value = "codClasFDetalleNB", required = false) String codClasFDetalleNB,
+            , @RequestParam(value = "codClasFDetalleNB", required = false) String codClasFDetalleNB
+            , @RequestParam(value = "completa", required = false) String completa,
+
             HttpServletRequest request
 
 
@@ -690,7 +711,6 @@ public class IragController {
 
         if (!idNotificacion.equals("")) {
             irag = daIragService.getFormById(idNotificacion);
-
 
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             irag.setUsuario(usuarioService.getUsuarioById((int) idUsuario));
@@ -714,7 +734,7 @@ public class IragController {
         }
 
 
-    }
+    }*/
 
     @RequestMapping(value = "updatePerson", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updatePerson(
@@ -723,7 +743,9 @@ public class IragController {
             , @RequestParam(value = "direccionResidencia", required = false) String direccionResidencia
             , @RequestParam(value = "telefonoResidencia", required = false) String telefonoResidencia
             , @RequestParam(value = "personaId", required = false) Integer personaId
-            , @RequestParam(value = "idNotificacion", required = false) String idNotificacion, HttpServletRequest request
+            , @RequestParam(value = "idNotificacion", required = false) String idNotificacion
+            , @RequestParam(value = "completa", required = false) String completa
+            , HttpServletRequest request
 
     ) throws Exception {
 
@@ -743,7 +765,7 @@ public class IragController {
 
                     infoResultado = personaService.guardarPersona(persona, seguridadService.obtenerNombreUsuario(request));
                     if (infoResultado.isOk() && infoResultado.getObjeto() != null) {
-                        updateNotificacion(idNotificacion, pers, false);
+                        updateNotificacion(idNotificacion, pers, completa);
                     } else
                         throw new Exception(infoResultado.getMensaje() + "----" + infoResultado.getMensajeDetalle());
                     personaService.commitTransaccion();
@@ -764,7 +786,7 @@ public class IragController {
                     }
                 }
             } else {
-                updateNotificacion(idNotificacion, pers, false);
+                updateNotificacion(idNotificacion, pers, completa);
             }
         }
         return createJsonResponse(pers);
@@ -785,7 +807,7 @@ public class IragController {
      * @param idNotificacion the ID of the form
      */
     @RequestMapping(value = "update/{idNotificacion}")
-    public void updateNotificacion(String idNotificacion, SisPersona persona, boolean completa) throws Exception {
+    public void updateNotificacion(String idNotificacion, SisPersona persona, String completa) throws Exception {
         DaIrag irag = null;
         DaNotificacion noti = null;
 
@@ -798,12 +820,7 @@ public class IragController {
             if (!noti.isCompleta()){
                 noti.setMunicipioResidencia(persona.getMunicipioResidencia());
                 noti.setDireccionResidencia(persona.getDireccionResidencia());
-
-                if(completa){
-                    noti.setCompleta(true);
-                }else{
-                    noti.setCompleta(false);
-                }
+                noti.setCompleta(Boolean.parseBoolean(completa));
 
                 daNotificacionService.updateNotificacion(noti);
             }

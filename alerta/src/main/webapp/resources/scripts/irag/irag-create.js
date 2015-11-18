@@ -133,7 +133,54 @@ var CreateIrag = function () {
                     return false;
                 } else {
                     if (autorizado == "true") {
-                        completeIrag();
+
+                        var opcSi = $("#opc_yes").val();
+                        var opcNo = $("#opc_no").val();
+                        if ($('#completa').val() == "false") {
+
+                            $.SmartMessageBox({
+                                title: $("#complete_t").val(),
+                                content: $("#complete_c").val(),
+                                buttons: '[' + opcSi + '][' + opcNo + ']'
+                            }, function (ButtonPressed) {
+                                if (ButtonPressed === opcSi) {
+                                    $('#completa').val(true);
+                                }
+                                var datos_form = $('#wizard-1').serialize();
+                                $.ajax({
+                                    type: "GET",
+                                    url: parametros.sAddIragUrl,
+                                    data: datos_form,
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function (data) {
+
+                                        $.smallBox({
+                                            title: $('#msjSuccessful').val(),
+                                            content: $('#disappear').val(),
+                                            color: "#739E73",
+                                            iconSmall: "fa fa-check-circle",
+                                            timeout: 2000
+                                        });
+
+                                        window.location.href = parametros.searchIragUrl + '/' + data.idNotificacion.persona.personaId;
+
+
+                                    },
+                                    error: function () {
+                                        $.smallBox({
+                                            title: $('#msjErrorSaving').val(),
+                                            content: $('#disappear').val(),
+                                            color: "#C46A69",
+                                            iconSmall: "fa fa-warning",
+                                            timeout: 2000
+                                        });
+                                    }
+                                });
+                            });
+                        }else{
+                            window.location.href = parametros.searchIragUrl + '/' + $('#personaId').val();
+                        }
                     }
                 }
 
@@ -152,7 +199,7 @@ var CreateIrag = function () {
 
 
             }
-
+/*
             function completeIrag() {
                 var datos_form = $('#wizard-1').serialize();
                 $.ajax({
@@ -185,7 +232,7 @@ var CreateIrag = function () {
                         });
                     }
                 });
-            }
+            }*/
 
             function fnguardar() {
                 var datos_form = $('#wizard-1').serialize();

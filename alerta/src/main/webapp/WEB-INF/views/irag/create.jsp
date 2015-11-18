@@ -231,7 +231,7 @@
 
     <label class="input"> <i
             class="icon-prepend fa fa-male fa-fw"></i> <input value="${irag.idNotificacion.persona.personaId}"
-                                                              type="text" name="personaId"
+                                                              type="text" id="personaId" name="personaId"
             />
     </label>
 
@@ -1534,6 +1534,11 @@
     </h3>
 
     <fieldset>
+        <input id="complete_t" type="hidden" value="<spring:message code="msg.sending.confirm.title"/>"/>
+        <input id="complete_c" type="hidden" value="<spring:message code="msg.complete.noti"/>"/>
+        <input id="opc_yes" type="hidden" value="<spring:message code="lbl.send.confirm.msg.opc.yes"/>"/>
+        <input id="opc_no" type="hidden" value="<spring:message code="lbl.send.confirm.msg.opc.no"/>"/>
+        <input type="text" hidden="hidden" name="completa" id="completa" value="${irag.idNotificacion.completa}" />
         <div class="row">
             <section class="col col-xs-12 col-sm-12 col-md-10 col-lg-5">
                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
@@ -2027,6 +2032,7 @@
             enfermedadUrl: "${enfermedadUrl}",
             sSemanaEpiUrl: "${semanaEpidemiologicaURL}",
             sResultsUrl: "${sResultsUrl}"
+
 
         };
 
