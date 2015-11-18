@@ -384,6 +384,7 @@ public class SindFebrilController {
             , @RequestParam(value = "direccionResidencia", required = false) String direccionResidencia
             , @RequestParam(value = "ocupacion", required = false) String ocupacion
             , @RequestParam(value = "urgente", required = false) String urgente
+            , @RequestParam(value = "completa", required = false) String completa
                                                                  ,HttpServletRequest request) throws Exception
 	{
     	DaSindFebril daSindFeb = new DaSindFebril();
@@ -417,12 +418,17 @@ public class SindFebrilController {
             //si se actualizó la persona se registra la notificación
             if (infoResultado.isOk() && infoResultado.getObjeto() != null ){
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                SisPersona persona = personaService.getPersona(personaId);
+                daNotificacion.setMunicipioResidencia(persona.getMunicipioResidencia());
                 daNotificacion.setFechaRegistro(new Timestamp(new Date().getTime()));
                 daNotificacion.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
                 daNotificacion.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
                 long idUsuario = seguridadService.obtenerIdUsuario(request);
                 daNotificacion.setUrgente(catalogoService.getRespuesta(urgente));
                 daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById((int)idUsuario));
+                daNotificacion.setCompleta(Boolean.parseBoolean(completa));
+
+
                 //	daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById(1));
                 daNotificacion.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|SINFEB"));
                 Date dateFIS = formatter.parse(fechaInicioSintomas);

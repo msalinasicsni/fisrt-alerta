@@ -61,6 +61,7 @@ public class ReportesResidenciaService {
                 queryCasos = session.createQuery(" select ent.nombre, " +
                         "(select count(noti.idNotificacion) from DaNotificacion noti " +
                         "where noti.municipioResidencia.dependenciaSilais.codigo =  ent.codigo " +
+                        " and noti.municipioResidencia is not null " +
                         " and noti.pasivo = false " +
                         "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                         "and noti.fechaRegistro between :fechaInicio and :fechaFin), " +
@@ -75,6 +76,7 @@ public class ReportesResidenciaService {
                 queryCasos = session.createQuery(" select divi.nombre, " +
                         "(select count(noti.idNotificacion) from DaNotificacion noti " +
                         "where noti.codTipoNotificacion.codigo = :tipoNoti " +
+                        " and noti.municipioResidencia is not null " +
                         " and noti.pasivo = false " +
                         "and noti.municipioResidencia.dependencia.divisionpoliticaId = divi.divisionpoliticaId  " +
                         "and noti.fechaRegistro between :fechaInicio and :fechaFin), " +
@@ -92,6 +94,7 @@ public class ReportesResidenciaService {
                     "(select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.pasivo = false " +
+                    " and noti.municipioResidencia is not null " +
                     "and noti.municipioResidencia.divisionpoliticaId = divi.divisionpoliticaId  " +
                     "and noti.fechaRegistro between :fechaInicio and :fechaFin), " +
                     "(select sum(pob.total) " +
@@ -109,6 +112,7 @@ public class ReportesResidenciaService {
                     " (select count(noti.idNotificacion) from DaNotificacion noti " +
                     " where noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.pasivo = false " +
+                    " and noti.municipioResidencia is not null " +
                     " and noti.municipioResidencia.divisionpoliticaId = divi.divisionpoliticaId  " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin), " +
                     " (Select sum(pob.total) as total " +
@@ -176,11 +180,13 @@ public class ReportesResidenciaService {
                     " and per.sexo.codigo = sex.codigo " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                    " and noti.municipioResidencia is not null " +
                     "group by per.sexo.valor),0),  " +
                     " coalesce( (select count(noti.idNotificacion) " +
                     "from DaNotificacion noti, SisPersona per " +
                     "where noti.persona.id = per.personaId " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.municipioResidencia is not null " +
                     "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     "),0) " +
                     " from Sexo sex where sex.pasivo = false" );
@@ -201,12 +207,14 @@ public class ReportesResidenciaService {
                     "where noti.persona.id = per.personaId " +
                     " and per.sexo.codigo = sex.codigo " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.municipioResidencia is not null " +
                     "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     "and noti.municipioResidencia.dependenciaSilais.codigo = :codSilais  " +
                     "group by per.sexo.valor),0),  " +
                     " coalesce( (select count(noti.idNotificacion) " +
                     "from DaNotificacion noti, SisPersona per " +
                     "where noti.persona.id = per.personaId " +
+                    " and noti.municipioResidencia is not null " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.municipioResidencia.dependenciaSilais.codigo = :codSilais " +
                     "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
@@ -229,6 +237,7 @@ public class ReportesResidenciaService {
                     "where noti.persona.id = per.personaId " +
                     " and per.sexo.codigo = sex.codigo " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.municipioResidencia is not null " +
                     "and noti.municipioResidencia.dependencia.divisionpoliticaId = :codDepartamento  " +
                     "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     "group by per.sexo.valor),0),  " +
@@ -236,6 +245,7 @@ public class ReportesResidenciaService {
                     "from DaNotificacion noti, SisPersona per " +
                     "where noti.persona.id = per.personaId " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
+                    " and noti.municipioResidencia is not null " +
                     "and noti.municipioResidencia.dependencia.divisionpoliticaId = :codDepartamento  " +
                     "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     "),0) " +

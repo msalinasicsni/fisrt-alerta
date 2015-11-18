@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,20 +49,15 @@ public class BoletinController {
     private BoletinService boletinService;
 
     @RequestMapping(value = "init", method = RequestMethod.GET)
-    public String initAgeSexPage(Model model) throws Exception {
+    public String initAgeSexPage(Model model, HttpServletRequest request) throws Exception {
         logger.debug("presentar analisis por edad y sexo");
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
         List<Anios> anios = catalogosService.getAnios();
         List<Semanas> semanas = catalogosService.getSemanas();
         List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
-        List<AreaRep> areas = new ArrayList<AreaRep>();
-        AreaRep pais = catalogosService.getAreaRep("AREAREP|PAIS");
-        AreaRep silais = catalogosService.getAreaRep("AREAREP|SILAIS");
-        AreaRep dep = catalogosService.getAreaRep("AREAREP|DEPTO");
-        areas.add(pais);
-        areas.add(silais);
-        areas.add(dep);
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
         model.addAttribute("areas", areas);
         model.addAttribute("semanas", semanas);
         model.addAttribute("anios", anios);

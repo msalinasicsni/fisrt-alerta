@@ -400,7 +400,7 @@ var Boletin = function () {
                                         if (data[i].anio.anio == anio - 1) {
                                             //datos de año anterior
                                             dataset.push(data[i].anio.entidad.nombreEntidad);
-                                            dataset.push("37/2014");
+                                            dataset.push(data[i].ultimaSemana);
                                             dataset.push(data[i].valor);
                                             dataset.push(data[i].valorAcum);
                                             dataset.push(data[i].tasa);
@@ -408,7 +408,7 @@ var Boletin = function () {
                                         } else {
                                             //en caso q no hayan registros de año anterior y si se encuentren datos del año seleccionado
                                             dataset.push(data[i].anio.entidad.nombreEntidad);
-                                            dataset.push("37/2014");
+                                            dataset.push(data[i].ultimaSemana);
                                             dataset.push("");
                                             dataset.push("");
                                             dataset.push("");
@@ -463,7 +463,7 @@ var Boletin = function () {
                                             if (data[i] == data[data.length - 1]) {
                                                 //datos de año anterior
                                                 dataset.push(data[i].anio.entidad.nombreEntidad);
-                                                dataset.push("37/2014");
+                                                dataset.push(data[i].ultimaSemana);
                                                 dataset.push(data[i].valor);
                                                 dataset.push(data[i].valorAcum);
                                                 dataset.push(data[i].tasa);
@@ -488,7 +488,7 @@ var Boletin = function () {
                                             } else {
                                                 //datos de año anterior
                                                 dataset.push(data[i].anio.entidad.nombreEntidad);
-                                                dataset.push("37/2014");
+                                                dataset.push(data[i].ultimaSemana);
                                                 dataset.push(data[i].valor);
                                                 dataset.push(data[i].valorAcum);
                                                 dataset.push(data[i].tasa);

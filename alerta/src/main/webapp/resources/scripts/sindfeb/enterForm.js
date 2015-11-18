@@ -148,7 +148,10 @@ var EnterFormSindFeb = function () {
 	                    },
 	                    fechaFallecido:{
 	                    	required: true
-	                    }
+	                    },
+                        municipioResidencia:{
+                            required:true
+                        }
 					},
 					// Do not change code below
 					errorPlacement : function(error, element) {
@@ -189,28 +192,48 @@ var EnterFormSindFeb = function () {
 	    	function guardarFicha()
 	    	{
                 if ($("#autorizado").val()=='true') {
-                    bloquearUI(parametros.blockMess);
-                    $.post(parametros.sAddFebrilUrl
-                        , form.serialize()
-                        , function (data) {
-                            if (data == "") {
-                                desbloquearUI();
-                                showMessage("Error", "Error desconocido", "#C46A69", "fa fa-warning", 4000);
-                            }
-                            else {
-                                desbloquearUI();
-                                ficha = JSON.parse(data);
-                                $('#idNotificacion').val(ficha.idNotificacion.idNotificacion);
-                                showMessage("Proceso completo!!", ficha.idNotificacion.persona.primerNombre + ' ' + ficha.idNotificacion.persona.primerApellido, "#5F895F", "fa fa-check-square-o bounce animated", 4000);
-                                setTimeout(function(){window.location.href = parametros.sFebrilSearchUrl + '/' + ficha.idNotificacion.persona.personaId;},3000);
 
+
+                    var opcSi = $("#opc_yes").val();
+                    var opcNo = $("#opc_no").val();
+                    if ($('#completa').val() == "false") {
+                        bloquearUI(parametros.blockMess);
+                        $.SmartMessageBox({
+                            title: $("#complete_t").val(),
+                            content: $("#complete_c").val(),
+                            buttons: '[' + opcSi + '][' + opcNo + ']'
+                        }, function (ButtonPressed) {
+                            if (ButtonPressed === opcSi) {
+                                $('#completa').val(true);
                             }
-                        }
-                        , 'text')
-                        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
-                            desbloquearUI();
-                            showMessage("FAIL", parametros.processError + " " + errorThrown, "#C46A69", "fa fa-warning", 8000);
+
+                            $.post(parametros.sAddFebrilUrl
+                                , form.serialize()
+                                , function (data) {
+                                    if (data == "") {
+                                        desbloquearUI();
+                                        showMessage("Error", "Error desconocido", "#C46A69", "fa fa-warning", 4000);
+                                    }
+                                    else {
+                                        desbloquearUI();
+                                        ficha = JSON.parse(data);
+                                        $('#idNotificacion').val(ficha.idNotificacion.idNotificacion);
+                                        showMessage("Proceso completo!!", ficha.idNotificacion.persona.primerNombre + ' ' + ficha.idNotificacion.persona.primerApellido, "#5F895F", "fa fa-check-square-o bounce animated", 4000);
+                                        setTimeout(function(){window.location.href = parametros.sFebrilSearchUrl + '/' + ficha.idNotificacion.persona.personaId;},3000);
+
+                                    }
+                                }
+                                , 'text')
+                                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                                    desbloquearUI();
+                                    showMessage("FAIL", parametros.processError + " " + errorThrown, "#C46A69", "fa fa-warning", 8000);
+                                });
+
                         });
+                    }else{
+                        window.location.href = parametros.sFebrilSearchUrl + '/' + $('#personaId').val();
+                    }
+
                 }else{
                     showMessage("Error", "No esta autorizado para actualizar la notificación", "#C46A69", "fa fa-warning", 4000);
                 }
