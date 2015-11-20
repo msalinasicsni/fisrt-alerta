@@ -22,8 +22,7 @@ public class AnalisisObsEsperadosService {
 	private SessionFactory sessionFactory;
 	private static final String sqlData = "Select inf.patologia.codigo as codigo, inf.patologia.nombre as patologia, inf.anio as anio, inf.semana as semana,  " +
 			"sum(inf.totalm) as totalm, sum(inf.totalf) as totalf, sum(inf.totalm+inf.totalf) as total";
-    private static final String sqlDataArea = "Select inf.silais as silais, inf.anio as anio, sum(inf.totalm+inf.totalf) as total";
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getDataCasosTasas(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,
 			String semI, String semF, String anioI,String anioF){
@@ -775,7 +774,7 @@ public class AnalisisObsEsperadosService {
 		return resultadoF;
 	}
 
-    public List<Object[]> getDataCasosTasasArea(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad, String semI, String semF, String anioI, String anioF)
+    public List<Object[]> getDataCasosTasasArea(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad, String semI, String semF, String anioI, String anioF, boolean porSILAIS, boolean conSubUnidades)
     {
         List<Object[]> resultadoFinal = new ArrayList<Object[]>();
         List<Object[]> resultadoTemp = new ArrayList<Object[]>();
@@ -793,11 +792,19 @@ public class AnalisisObsEsperadosService {
 
         if(codArea.equals("AREAREP|PAIS"))
         {
-            query = session.createQuery(sqlDataArea + " From SiveInformeDiario inf " +
-                    "where ("+ patoQuery +") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
-                    "group by inf.anio, inf.silais order by inf.silais, inf.anio");
+            if (porSILAIS) {
+                query = session.createQuery("Select inf.silais as silais, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+                        "where (" + patoQuery + ") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                        "group by inf.anio, inf.silais order by inf.silais, inf.anio");
 
-            queryInstancias = session.createQuery("select entidadAdtvaId, nombre from EntidadesAdtvas where pasivo = '0' order by entidadAdtvaId");
+                queryInstancias = session.createQuery("select entidadAdtvaId, nombre from EntidadesAdtvas where pasivo = '0' order by entidadAdtvaId");
+            }else{
+                query = session.createQuery("Select inf.municipio.dependencia.divisionpoliticaId as departamento, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+                        "where (" + patoQuery + ") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                        "group by inf.anio, inf.municipio.dependencia.divisionpoliticaId order by inf.municipio.dependencia.divisionpoliticaId, inf.anio");
+
+                queryInstancias = session.createQuery("select divi.divisionpoliticaId, divi.nombre from Divisionpolitica divi where divi.dependencia is null and  divi.pasivo = '0' order by divi.nombre");
+            }
 
         }else if (codArea.equals("AREAREP|SILAIS")){
             query = session.createQuery("Select inf.municipio.divisionpoliticaId as munici, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
@@ -832,14 +839,26 @@ public class AnalisisObsEsperadosService {
             queryInstancias.setParameter("codMunicipio", codMunicipio);
         }
         else if (codArea.equals("AREAREP|UNI")){
-            query = session.createQuery("Select inf.unidad.unidadId as unidadid, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-                    "where inf.unidad.unidadId =:codUnidad and ("+ patoQuery +") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
-                    "group by inf.anio, inf.unidad.unidadId order by inf.unidad.unidadId, inf.anio");
-            query.setParameter("codUnidad", codUnidad);
+            if (conSubUnidades){
+                query = session.createQuery("Select inf.unidad.unidadId as unidadid, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+                        "where (inf.unidad.unidadId =:codUnidad or inf.unidad.unidadAdtva in (select u.codigo from Unidades u where u.unidadId = :codUnidad )) and (" + patoQuery + ") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                        "group by inf.anio, inf.unidad.unidadId order by inf.unidad.unidadId, inf.anio");
 
-            queryInstancias = session.createQuery("select uni.unidadId, uni.nombre from Unidades uni " +
-                    "where uni.unidadId = :codUnidad " +
-                    "and uni.pasivo = '0' order by uni.unidadId");
+                queryInstancias = session.createQuery("select uni.unidadId, uni.nombre from Unidades uni " +
+                        "where (uni.unidadId = :codUnidad or uni.unidadAdtva in (select u.codigo from Unidades u where u.unidadId = :codUnidad )) " +
+                        "and uni.pasivo = '0' order by uni.unidadId");
+
+            }else {
+                query = session.createQuery("Select inf.unidad.unidadId as unidadid, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
+                        "where inf.unidad.unidadId =:codUnidad and (" + patoQuery + ") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                        "group by inf.anio, inf.unidad.unidadId order by inf.unidad.unidadId, inf.anio");
+
+                queryInstancias = session.createQuery("select uni.unidadId, uni.nombre from Unidades uni " +
+                        "where uni.unidadId = :codUnidad " +
+                        "and uni.pasivo = '0' order by uni.unidadId");
+
+            }
+            query.setParameter("codUnidad", codUnidad);
             queryInstancias.setParameter("codUnidad", codUnidad);
         }
         instancias.addAll(queryInstancias.list());

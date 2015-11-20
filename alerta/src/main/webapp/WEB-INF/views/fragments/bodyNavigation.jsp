@@ -149,7 +149,7 @@
                 <a href="#" title="<spring:message code="menu.reports" />"><i class="fa fa-lg fa-fw fa fa-line-chart"></i> <span class="menu-item-parent"><spring:message code="menu.reports" /></span></a>
                 <ul>
                     <li>
-                        <a href="#" title="<spring:message code="menu.reports.notification" />"><i class="fa fa-lg fa-fw fa-pencil"></i> <spring:message code="menu.reports.notification" /></a>
+                        <a href="#" title="<spring:message code="menu.reports.notification" />"><spring:message code="menu.reports.notification" /></a>
                         <ul>
                             <li class="area">
                                 <a href="<spring:url value="/reportes/area" htmlEscape="true "/>" title="<spring:message code="menu.report.by.area" />"><i class=""></i> <spring:message code="menu.report.by.area" /></a>
@@ -172,7 +172,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="#" title="<spring:message code="menu.reports.home" />"><i class="fa fa-lg fa-fw fa-pencil"></i> <spring:message code="menu.reports.home" /></a>
+                        <a href="#" title="<spring:message code="menu.reports.home" />"><spring:message code="menu.reports.home" /></a>
                         <ul>
                             <li class="homearea">
                                 <a href="<spring:url value="/reportesPorResidencia/area" htmlEscape="true "/>" title="<spring:message code="menu.report.by.area" />"><i class=""></i> <spring:message code="menu.report.by.area" /></a>

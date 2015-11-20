@@ -30,37 +30,26 @@ var ViewReport = function () {
             };
             var colors = ["#0066FF","#FF0000","#009900","#FF6600","#FF3399","#008B8B","#663399","#FFD700","#0000FF","#DC143C","#32CD32","#FF8C00","#C71585","#20B2AA","#6A5ACD","#9ACD32"];
 
-            var lineOptions = {
-                ///Boolean - Whether grid lines are shown across the chart
+            var barOptions = {
+                //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+                scaleBeginAtZero : true,
+                //Boolean - Whether grid lines are shown across the chart
                 scaleShowGridLines : true,
                 //String - Colour of the grid lines
-                scaleGridLineColor : "rgba(0,0,0,0.04)",
+                scaleGridLineColor : "rgba(0,0,0,.05)",
                 //Number - Width of the grid lines
                 scaleGridLineWidth : 1,
-                //Boolean - Whether the line is curved between points
-                bezierCurve : false,
-                //Number - Tension of the bezier curve between points
-                bezierCurveTension : 0.4,
-                //Boolean - Whether to show a dot for each point
-                pointDot : true,
-                //Number - Radius of each point dot in pixels
-                pointDotRadius : 4,
-                //Number - Pixel width of point dot stroke
-                pointDotStrokeWidth : 1,
-                //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-                pointHitDetectionRadius : 20,
-                //Boolean - Whether to show a stroke for datasets
-                datasetStroke : true,
-                //Number - Pixel width of dataset stroke
-                datasetStrokeWidth : 2,
-                //Boolean - Whether to fill the dataset with a colour
-                datasetFill : true,
+                //Boolean - If there is a stroke on each bar
+                barShowStroke : true,
+                //Number - Pixel width of the bar stroke
+                barStrokeWidth : 1,
+                //Number - Spacing between each of the X value sets
+                barValueSpacing : 5,
+                //Number - Spacing between data sets within X values
+                barDatasetSpacing : 1,
                 //Boolean - Re-draw chart on page resize
-                responsive: true,
-                //String - A legend template
-                legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+                responsive: true
             };
-
 
             $('#parameters_form').validate({
                 // Rules for form validation
@@ -113,61 +102,80 @@ var ViewReport = function () {
                         $('#departamento').hide();
                         $('#municipio').hide();
                         $('#unidad').hide();
+                        $('#dSubUnits').hide();
+                        $('#dNivelPais').show();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
                         $('#silais').show();
                         $('#departamento').hide();
                         $('#municipio').hide();
                         $('#unidad').hide();
+                        $('#dSubUnits').hide();
+                        $('#dNivelPais').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
                         $('#silais').hide();
                         $('#departamento').show();
                         $('#municipio').hide();
                         $('#unidad').hide();
+                        $('#dSubUnits').hide();
+                        $('#dNivelPais').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
                         $('#silais').show();
                         $('#departamento').hide();
                         $('#municipio').show();
                         $('#unidad').hide();
+                        $('#dSubUnits').hide();
+                        $('#dNivelPais').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
                         $('#silais').show();
                         $('#departamento').hide();
                         $('#municipio').show();
                         $('#unidad').show();
+                        $('#dSubUnits').show();
+                        $('#dNivelPais').hide();
                     }
                 });
 
             function getData() {
-
+                console.log($('#parameters_form').serialize());
                 bloquearUI(parametros.blockMess);
                 $.getJSON(parametros.sActionUrl, $('#parameters_form').serialize(), function(data) {
                     var long = data.length;
                     var hay = (long < 2)?false:true;
                     var descEntidad = '';
                     if (hay){
-                        title = $('#codPato option:selected').text()
+                        title = $('#codPato option:selected').text();
                         if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
                             title = title + '</br>'+parametros.nicaragua;
-                            descEntidad = 'SILAIS';
+                            if ($('input[name="rbNivelPais"]:checked', '#parameters_form').val()=='true'){
+                                descEntidad = parametros.silaisT;
+                            }else{
+                                descEntidad = parametros.depaT;
+                            }
+
                         }
                         else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
                             title = title + '</br>'+$('#codSilaisAtencion option:selected').text();
-                            descEntidad = 'Municipio';
+                            descEntidad = parametros.muniT;
                         }
                         else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
                             title = title + '</br>'+parametros.departamento+' '+$('#codDepartamento option:selected').text();
-                            descEntidad = 'Municipio';
+                            descEntidad = parametros.muniT;
                         }
                         else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
                             title = title + '</br>'+parametros.municipio+' '+$('#codMunicipio option:selected').text();
-                            descEntidad = 'Unidad de salud';
+                            descEntidad = parametros.unidadT;
                         }
                         else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
-                            title = title + '</br>' + parametros.unidad + " " + $('#codUnidadAtencion option:selected').text();
-                            descEntidad = 'Unidad de Salud';
+                            if ($('#ckUS').is(':checked')){
+                                title = title + '</br>' + parametros.areaS + " " + $('#codUnidadAtencion option:selected').text();
+                            }else{
+                                title = title + '</br>' + parametros.unidad + " " + $('#codUnidadAtencion option:selected').text();
+                            }
+                            descEntidad = parametros.unidadT;
                         }
                         title = title + '</br>'+parametros.semana+' '+$('#semI option:selected').text() +' a la '+$('#semF option:selected').text();
                         /* TABLETOOLS */
@@ -284,33 +292,29 @@ var ViewReport = function () {
                             var colorS = (row < colors.length)?colors[row]:getRandomColor();
                             datasets.push({
                                 label: anios[row],
-                                fillColor: convertHex(colorS,0),
+                                fillColor: convertHex(colorS,100),
                                 strokeColor: convertHex(colorS,100),
-                                pointColor: convertHex(colorS,100),
-                                pointStrokeColor: "#fff",
-                                pointHighlightFill: "#fff",
-                                pointHighlightStroke: convertHex(colorS,100),
+                                highlightFill: convertHex(colorS,75),
+                                highlightStroke:  convertHex(colorS,100),
                                 data: datosC
                             });
                             datasets2.push({
                                 label: anios[row],
-                                fillColor: convertHex(colorS,0),
+                                fillColor: convertHex(colorS,100),
                                 strokeColor: convertHex(colorS,100),
-                                pointColor: convertHex(colorS,100),
-                                pointStrokeColor: "#fff",
-                                pointHighlightFill: "#fff",
-                                pointHighlightStroke: convertHex(colorS,100),
+                                highlightFill: convertHex(colorS,75),
+                                highlightStroke:  convertHex(colorS,100),
                                 data: datosT
                             });
                         }
 
-                        lineChart(datasets,labelsx);
-                        lineChart2(datasets2,labelsx);
+                        barChart(datasets,labelsx);
+                        barChart2(datasets2,labelsx);
                     }
                     else{
                         showMessage("Sin datos", "No se encontraron datos como resultado de esta consulta", "#AF801C", "fa fa-warning", 3000);
-                        lineChart([],[]);
-                        lineChart2([],[]);
+                        barChart([],[]);
+                        barChart2([],[]);
                     }
                     setTimeout($.unblockUI, 100);
                 })
@@ -330,36 +334,36 @@ var ViewReport = function () {
                 });
             }
 
-            function lineChart(datasets,labels) {
-                // LINE CHART
-                // ref: http://www.chartjs.org/docs/#line-chart-introduction
-                $('#lineChart-title').html("<h5>"+title+"</h5>");
-                var lineData = { labels: labels,
+            function barChart(datasets,labels) {
+                // BAR CHART
+                $('#barChart-title').html("<h5>"+title+"</h5>");
+                var barData = { labels: labels,
                     datasets: datasets
                 };
+
                 // render chart
-                if( window.myLine!==undefined)
-                    window.myLine.destroy();
-                var ctx = document.getElementById("lineChart").getContext("2d");
-                window.myLine = new Chart(ctx).Line(lineData, lineOptions);
-                legend(document.getElementById("lineLegend"), lineData);
-                // END LINE CHART
+                if( window.myBar!==undefined)
+                    window.myBar.destroy();
+                var ctx = document.getElementById("barChart").getContext("2d");
+                window.myBar = new Chart(ctx).Bar(barData, barOptions);
+                // END BAR CHART
+
+                legend(document.getElementById("barLegend"), barData);
             }
 
-            function lineChart2(datasets2,labels2) {
-                // LINE CHART
-                // ref: http://www.chartjs.org/docs/#line-chart-introduction
-                $('#lineChart2-title').html("<h5>"+title+"</h5>");
-                var lineData2 = { labels: labels2,
+            function barChart2(datasets2,labels2) {
+                // BAR CHART
+                $('#barChart2-title').html("<h5>"+title+"</h5>");
+                var barData2 = { labels: labels2,
                     datasets: datasets2
                 };
                 // render chart
-                if( window.myLine2!==undefined)
-                    window.myLine2.destroy();
-                var ctx = document.getElementById("lineChart2").getContext("2d");
-                window.myLine2 = new Chart(ctx).Line(lineData2, lineOptions);
-                legend(document.getElementById("lineLegend2"), lineData2);
-                // END LINE CHART
+                if( window.myBar2!==undefined)
+                    window.myBar2.destroy();
+                var ctx = document.getElementById("barChart2").getContext("2d");
+                window.myBar2 = new Chart(ctx).Bar(barData2, barOptions);
+                legend(document.getElementById("barLegend2"), barData2);
+                // END BAR CHART
             }
 
             // Convert Hex color to RGB

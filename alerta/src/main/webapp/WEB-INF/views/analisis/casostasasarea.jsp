@@ -163,6 +163,24 @@
                             </div>
                             <!-- END ROW -->
                             <!-- START ROW -->
+                            <div id="dNivelPais" hidden="hidden" class="row">
+                                <section class="col col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="inline-group">
+                                        <section class="col col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                            <label class="radio">
+                                                <input type="radio" name="rbNivelPais" id="rbNPSILAIS" value="true" checked="checked">
+                                                <i></i><spring:message code="lbl.silais"/></label>
+                                        </section>
+                                        <section class="col col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                            <label class="radio">
+                                                <input type="radio" name="rbNivelPais" value="false" id="rbNPDepa">
+                                                <i></i><spring:message code="lbl.department"/></label>
+                                        </section>
+                                    </div>
+                                </section>
+                            </div>
+                            <!-- END ROW -->
+                            <!-- START ROW -->
                             <div class="row">
                                 <section id="silais" hidden="hidden">
                                     <div class="input-group">
@@ -213,6 +231,21 @@
                                             <option value=""></option>
                                         </select>
                                     </div>
+                                </section>
+                            </div>
+                            <!-- END ROW -->
+                            <!-- START ROW -->
+                            <div id="dSubUnits" hidden="hidden" class="row">
+                                <section class="col col-sm-6 col-md-6 col-lg-5">
+                                    <label class="text-left txt-color-blue font-sm"><spring:message code="lbl.include.subunits"/></label>
+
+                                </section>
+
+                                <section class="col col-sm-4 col-md-3 col-lg-2">
+                                    <label class="checkbox">
+                                        <input type="checkbox" checked name="ckUS" id="ckUS">
+                                        <i></i>
+                                    </label>
                                 </section>
                             </div>
                             <!-- END ROW -->
@@ -371,9 +404,9 @@
                     <!-- widget content -->
                     <div class="widget-body">
                         <!-- this is what the user will see -->
-                        <div id="lineChart-title" align="center"></div>
-                        <div id="lineLegend"></div>
-                        <canvas id="lineChart" height="120"></canvas>
+                        <div id="barChart-title" align="center"></div>
+                        <div id="barLegend"></div>
+                        <canvas id="barChart" height="120"></canvas>
                     </div>
                     <!-- end widget content -->
                 </div>
@@ -419,9 +452,9 @@
                     <!-- widget content -->
                     <div class="widget-body">
                         <!-- this is what the user will see -->
-                        <div id="lineChart2-title" align="center"></div>
-                        <div id="lineLegend2"></div>
-                        <canvas id="lineChart2" height="120"></canvas>
+                        <div id="barChart2-title" align="center"></div>
+                        <div id="barLegend2"></div>
+                        <canvas id="barChart2" height="120"></canvas>
                     </div>
                     <!-- end widget content -->
                 </div>
@@ -493,6 +526,13 @@
 <c:set var="semana"><spring:message code="lbl.week" /></c:set>
 <c:set var="casos"><spring:message code="lbl.cases" /></c:set>
 <c:set var="tasas"><spring:message code="lbl.rates" /></c:set>
+<c:set var="areaS"><spring:message code="lbl.health.area"/></c:set>
+<c:set var="silaisT"><spring:message code="lbl.silais"/></c:set>
+<c:set var="depaT"><spring:message code="lbl.department"/></c:set>
+<c:set var="muniT"><spring:message code="muni"/></c:set>
+<c:set var="unidadT"><spring:message code="lbl.health.unit"/></c:set>
+
+
 <spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
 <spring:url var="unidadesUrl"   value="/api/v1/unidadesPorSilaisyMuni"  />
 <script type="text/javascript">
@@ -509,7 +549,12 @@
             unidad : "${unidad}",
             semana : "${semana}",
             casos : "${casos}",
-            tasas : "${tasas}"
+            tasas : "${tasas}",
+            areaS : "${areaS}",
+            silaisT : "${silaisT}",
+            depaT : "${depaT}",
+            muniT : "${muniT}",
+            unidadT : "${unidadT}"
         };
         ViewReport.init(parametros);
         SeleccionRegionSIVE.init(parametros);

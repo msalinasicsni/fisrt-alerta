@@ -240,10 +240,12 @@ public class AnalisisObsEsperadosController {
                                             @RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
                                             @RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
                                             @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
-                                            @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException
+                                            @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+                                            @RequestParam(value = "ckUS", required = false) boolean conSubUnidades,
+                                            @RequestParam(value = "rbNivelPais", required = false) boolean porSILAIS) throws ParseException
     {
         logger.info("Obteniendo los datos de casos y tasas en JSON");
-        List datos = analisisObsEsperadosService.getDataCasosTasasArea(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semI, semF, anioI, anioF);
+        List datos = analisisObsEsperadosService.getDataCasosTasasArea(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semI, semF, anioI, anioF, porSILAIS, conSubUnidades);
         if(datos == null)
             logger.debug("Nulo");
         return datos;
