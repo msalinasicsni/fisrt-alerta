@@ -81,7 +81,7 @@ public class DaIrag implements Serializable {
     }
 
     @Basic
-    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "FECHA_CONSULTA", nullable = false, insertable = true, updatable = true)
     public Date getFechaConsulta() {
         return fechaConsulta;
@@ -92,7 +92,7 @@ public class DaIrag implements Serializable {
     }
 
     @Basic
-    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "FECHA_PRIMERA_CONSULTA", nullable = true, insertable = true, updatable = true)
     public Date getFechaPrimeraConsulta() {
         return fechaPrimeraConsulta;

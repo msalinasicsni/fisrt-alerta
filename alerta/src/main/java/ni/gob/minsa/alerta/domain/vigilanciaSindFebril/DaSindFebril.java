@@ -5,6 +5,7 @@ import ni.gob.minsa.alerta.domain.irag.Respuesta;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
 import org.hibernate.annotations.ForeignKey;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -112,7 +113,7 @@ public class DaSindFebril implements Serializable{
 		this.idLab = idLab;
 	}
 
-    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "FECHA_FICHA", nullable = false)
 	public Date getFechaFicha() {
 		return fechaFicha;
