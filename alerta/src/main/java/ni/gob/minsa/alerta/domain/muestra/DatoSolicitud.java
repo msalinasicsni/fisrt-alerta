@@ -52,7 +52,7 @@ public class DatoSolicitud implements Serializable{
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToOne(optional = true)
-    @JoinColumn(name = "DIAGNOSTICO", referencedColumnName = "ID_DIAGNOSTICO", nullable = true)
+    @JoinColumn(name = "DIAGNOSTICO", referencedColumnName = "ID_DIAGNOSTICO", nullable = false)
     @ForeignKey(name = "CONCEPTO_DX_FK")
     public Catalogo_Dx getDiagnostico() { return diagnostico; }
 
@@ -102,7 +102,7 @@ public class DatoSolicitud implements Serializable{
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "USUARIO_REGISTRO", referencedColumnName = "username")
-    @ForeignKey(name = "USUARIO_REG_FK")
+    @ForeignKey(name = "DS_USUARIO_REG_FK")
     public User getUsuarioRegistro() {
         return usuarioRegistro;
     }

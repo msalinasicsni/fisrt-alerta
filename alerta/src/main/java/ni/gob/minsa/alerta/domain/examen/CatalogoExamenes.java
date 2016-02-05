@@ -74,8 +74,7 @@ public class CatalogoExamenes {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "USUARIO_REGISTRO", referencedColumnName = "username")
-    @ForeignKey(name = "USUARIO_REG_FK")
-
+    @ForeignKey(name = "CE_USUARIO_REG_FK")
     public User getUsuarioRegistro() {
         return usuarioRegistro;
     }

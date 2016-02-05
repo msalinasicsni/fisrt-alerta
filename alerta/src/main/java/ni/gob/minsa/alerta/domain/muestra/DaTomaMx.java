@@ -21,7 +21,7 @@ public class DaTomaMx implements Serializable {
     private String idTomaMx;
     private DaNotificacion idNotificacion;
     private TipoMx codTipoMx;
-    private Timestamp fechaHTomaMx;
+    private Timestamp fechaHTomaMx;//solo tomar en cuenta la fecha
     private String horaRefrigeracion;
     private Integer canTubos;
     private Float volumen;
@@ -37,6 +37,7 @@ public class DaTomaMx implements Serializable {
     private String codigoLab;
     private EntidadesAdtvas codSilaisAtencion;
     private Unidades codUnidadAtencion;
+    private String horaTomaMx;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -238,5 +239,15 @@ public class DaTomaMx implements Serializable {
 
     public void setCodUnidadAtencion(Unidades codUnidadAtencion) {
         this.codUnidadAtencion = codUnidadAtencion;
+    }
+
+    @Basic
+    @Column(name = "HORA_TOMAMX", nullable = true, insertable = true, updatable = true, length = 8)
+    public String getHoraTomaMx() {
+        return horaTomaMx;
+    }
+
+    public void setHoraTomaMx(String horaTomaMx) {
+        this.horaTomaMx = horaTomaMx;
     }
 }
