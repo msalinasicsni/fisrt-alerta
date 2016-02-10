@@ -149,10 +149,21 @@ var IragResults = function () {
                             }
                         }
 
-
+                        //se formate la fecha de reporte de la ficha a un formato legible
+                        var fechaFormateada = '';
+                        if (data[i].fechaConsulta!=null) {
+                            var fechaFicha = new Date(data[i].fechaConsulta);
+                            fechaFormateada = (fechaFicha.getDate() < 10 ? '0' + fechaFicha.getDate() : fechaFicha.getDate())
+                                + '/' + (fechaFicha.getMonth() + 1 < 10 ? '0' + (fechaFicha.getMonth() + 1) : fechaFicha.getMonth() + 1)
+                                + '/' + fechaFicha.getFullYear();
+                        }
+                        //se valida si hay unidad de atención
+                        var nombreUnidad='';
+                        if (data[i].idNotificacion.codUnidadAtencion!=null){
+                            nombreUnidad = data[i].idNotificacion.codUnidadAtencion.nombre;
+                        }
                         table1.fnAddData(
-                            [data[i].fechaConsulta, pasivo, data[i].codExpediente, data[i].idNotificacion.codUnidadAtencion.nombre, data[i].idNotificacion.persona.primerNombre, data[i].idNotificacion.persona.primerApellido, data[i].idNotificacion.persona.segundoApellido, btnEdit, btnPdf, btnTomaMx, btnOverride  ]);
-
+                            [fechaFormateada, pasivo, data[i].codExpediente, nombreUnidad, data[i].idNotificacion.persona.primerNombre, data[i].idNotificacion.persona.primerApellido, data[i].idNotificacion.persona.segundoApellido, btnEdit, btnPdf, btnTomaMx, btnOverride  ]);
 
                     }
 

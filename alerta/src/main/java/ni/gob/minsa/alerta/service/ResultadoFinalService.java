@@ -2,7 +2,7 @@ package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
-import ni.gob.minsa.alerta.domain.resultados.Catalogo_Lista;
+import ni.gob.minsa.alerta.domain.concepto.Catalogo_Lista;
 import ni.gob.minsa.alerta.domain.resultados.DetalleResultadoFinal;
 import org.apache.commons.codec.language.Soundex;
 import org.hibernate.Criteria;

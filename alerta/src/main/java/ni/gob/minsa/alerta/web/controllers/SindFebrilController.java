@@ -12,7 +12,7 @@ import ni.gob.minsa.alerta.domain.persona.Ocupacion;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
-import ni.gob.minsa.alerta.domain.resultados.Catalogo_Lista;
+import ni.gob.minsa.alerta.domain.concepto.Catalogo_Lista;
 import ni.gob.minsa.alerta.domain.resultados.DetalleResultado;
 import ni.gob.minsa.alerta.domain.resultados.DetalleResultadoFinal;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
@@ -210,9 +210,13 @@ public class SindFebrilController {
                 List<String> fichasAutorizadas = new ArrayList<String>();
                 for(DaSindFebril febril: results){
                     if (idUsuario != 0) {
-                        if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, febril.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, febril.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
+                        if (febril.getIdNotificacion().getCodSilaisAtencion()==null && febril.getIdNotificacion().getCodUnidadAtencion()==null){
                             fichasAutorizadas.add(febril.getIdNotificacion().getIdNotificacion());
-                        }
+                        } else if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, febril.getIdNotificacion().getCodSilaisAtencion().getCodigo())
+                                    && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, febril.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
+                                fichasAutorizadas.add(febril.getIdNotificacion().getIdNotificacion());
+                            }
+
                     }
                 }
 	        	mav.addObject("fichas", results);
@@ -277,10 +281,14 @@ public class SindFebrilController {
                                seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodUnidadAtencion().getCodigo()));
 
                 }
-                List<Divisionpolitica> munic = divisionPoliticaService.getMunicipiosBySilais(daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo());
+                List<Divisionpolitica> munic = null;
+                if (daSindFeb.getIdNotificacion().getCodSilaisAtencion()!=null) {
+                   munic = divisionPoliticaService.getMunicipiosBySilais(daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo());
+                }
                 List<Unidades> uni = null;
                 if (seguridadService.esUsuarioNivelCentral(idUsuario,ConstantsSecurity.SYSTEM_CODE)) {
-                     uni = unidadesService.getPUnitsHospByMuniAndSilais(daSindFeb.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo());
+                    if (daSindFeb.getIdNotificacion().getCodSilaisAtencion()!=null && daSindFeb.getIdNotificacion().getCodUnidadAtencion()!=null)
+                        uni = unidadesService.getPUnitsHospByMuniAndSilais(daSindFeb.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo());
                 }else{
                     uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int)idUsuario,daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo(),daSindFeb.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(),ConstantsSecurity.SYSTEM_CODE,HealthUnitType.UnidadesPrimHosp.getDiscriminator());
                     if (!uni.contains(daSindFeb.getIdNotificacion().getCodUnidadAtencion())){
@@ -674,7 +682,7 @@ public class SindFebrilController {
                     BufferedImage image = ImageIO.read(new File(workingDir + "/fichaFebril.png"));
 
                     GeneralUtils.drawObject(stream,doc,image,20,30,545,745);
-                    String silais = febril.getIdNotificacion().getCodSilaisAtencion().getNombre();
+                    String silais = (febril.getIdNotificacion().getCodSilaisAtencion()!=null?febril.getIdNotificacion().getCodSilaisAtencion().getNombre():null);
 
                     String nombreS = silais != null ? silais.replace("SILAIS", ""): "----";
                     String municipio = febril.getIdNotificacion().getCodUnidadAtencion() != null ? febril.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getNombre(): "----";

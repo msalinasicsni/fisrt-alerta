@@ -254,7 +254,6 @@ var CreateIrag = function () {
                         });
                     },
                     error: function () {
-//                alert("Error " + result.status + '' + result.statusText);
                         $.smallBox({
                             title: $('#msjErrorSaving').val(),
                             content: $('#disappear').val(),
@@ -520,48 +519,6 @@ var CreateIrag = function () {
                 }
             });
 
-            //funcion guardar vacuna
-            /*function saveVaccine(idNotificacion) {
-                var datos_vac = $('#fVaccine').serialize();
-                $.ajax({
-                    type: "GET",
-                    url: parametros.sAddVaccineUrl,
-                    data: datos_vac,
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (data) {
-
-                        getVaccines(data.idNotificacion.idNotificacion.idNotificacion);
-
-                        codVacuna.val('').change();
-                        hib.val('').change();
-                        menin.val('').change();
-                        neumo.val('').change();
-                        flu.val('').change();
-                        neumo.attr("name", "");
-                        hib.attr("name", "");
-                        menin.attr("name", "");
-                        flu.attr("name", "");
-                        $("#dosis").val('');
-                        $("#fechaUltimaDosis").val('');
-                        $("#btnCancel").click();
-                    },
-                    error: function (result) {
-
-                        $.smallBox({
-                            title: $('#msjErrorSaving').val(),
-                            content: $('#disappear').val(),
-                            color: "#C46A69",
-                            iconSmall: "fa fa-warning",
-                            timeout: 2000
-                        });
-                    }
-                });
-            }
-*/
-
-
-
             function getVaccines(idNotificacion) {
                 var autorizado = $('#autorizado').val();
                 $.getJSON(parametros.vaccines, {
@@ -576,16 +533,19 @@ var CreateIrag = function () {
                         var btnOverride = '<button type="button" class="btn btn-danger btn-xs" data-id="' + data[i].idVacuna +
                             '" > <i class="fa fa-times"></i>';
 
+                        var fechaUltimaDosis='';
+                        if (data[i].fechaUltDosis!=null)
+                            fechaUltimaDosis = data[i].fechaUltDosis;
                         if (autorizado == "true") {
                             tableVac.fnAddData(
-                                [data[i].nombreVacuna, data[i].tipoVacuna, data[i].dosis, data[i].fechaUltDosis, btnOverride]);
+                                [data[i].nombreVacuna, data[i].tipoVacuna, data[i].dosis, fechaUltimaDosis, btnOverride]);
 
                         } else {
                             btnOverride = ' <button type="button" disabled class="btn btn-xs btn-danger"> <i class="fa fa-times"></i>';
 
                             tableVac.fnAddData(
 
-                            [data[i].nombreVacuna, data[i].tipoVacuna, data[i].dosis, data[i].fechaUltDosis, btnOverride]);
+                            [data[i].nombreVacuna, data[i].tipoVacuna, data[i].dosis, fechaUltimaDosis, btnOverride]);
 
                         }
 
@@ -1042,7 +1002,6 @@ var CreateIrag = function () {
                 var resultado = $(texto).val();
                 var json = JSON.parse(resultado);
                 var len = Object.keys(json).length;
-                console.log(json);
                 var childTable = '<table style="padding-left:20px;border-collapse: separate;border-spacing:  10px 3px;">' +
                     '<tr><td style="font-weight: bold">' + $('#text_response').val() + '</td><td style="font-weight: bold">' + $('#text_value').val() + '</td><td style="font-weight: bold">' + $('#text_date').val() + '</td></tr>';
                 for (var i = 0; i < len; i++) {

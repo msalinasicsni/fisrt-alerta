@@ -1,7 +1,7 @@
-package ni.gob.minsa.alerta.domain.resultados;
+package ni.gob.minsa.alerta.domain.concepto;
 
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
-import ni.gob.minsa.alerta.domain.portal.Usuarios;
+import ni.gob.minsa.alerta.domain.seguridadLab.User;
 import org.hibernate.annotations.ForeignKey;
 
 import javax.persistence.*;
@@ -19,7 +19,7 @@ public class Concepto implements Serializable {
     String nombre;
     boolean pasivo;
     TipoDatoCatalogo tipo;
-    Usuarios usuarioRegistro;
+    User usuarioRegistro;
     Timestamp fechahRegistro;
 
     @Id
@@ -68,13 +68,13 @@ public class Concepto implements Serializable {
 
 
     @ManyToOne(optional = true)
-    @JoinColumn(name = "USUARIO_REGISTRO", referencedColumnName = "USUARIO_ID")
-    @ForeignKey(name = "USUARIO_REG_FK")
-    public Usuarios getUsuarioRegistro() {
+    @JoinColumn(name = "USUARIO_REGISTRO", referencedColumnName = "username")
+    @ForeignKey(name = "CONCEPTO_USUARIO_REG_FK")
+    public User getUsuarioRegistro() {
         return usuarioRegistro;
     }
 
-    public void setUsuarioRegistro(Usuarios usuarioRegistro) {
+    public void setUsuarioRegistro(User usuarioRegistro) {
         this.usuarioRegistro = usuarioRegistro;
     }
 
@@ -87,6 +87,4 @@ public class Concepto implements Serializable {
     public void setFechahRegistro(Timestamp fechahRegistro) {
         this.fechahRegistro = fechahRegistro;
     }
-
-
 }

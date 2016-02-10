@@ -1,6 +1,8 @@
-package ni.gob.minsa.alerta.domain.resultados;
+package ni.gob.minsa.alerta.domain.concepto;
 
+import ni.gob.minsa.alerta.domain.concepto.Concepto;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
+import ni.gob.minsa.alerta.domain.seguridadLab.User;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -17,12 +19,13 @@ import java.sql.Timestamp;
 @Table(name = "catalogo_lista", schema = "laboratorio")
 public class Catalogo_Lista implements Serializable {
 
-   Integer idCatalogoLista;
-   String valor;
-   Concepto idConcepto;
-   boolean pasivo;
-   Usuarios usarioRegistro;
-   Timestamp fechaHRegistro;
+
+    Integer idCatalogoLista;
+    String valor;
+    Concepto idConcepto;
+    boolean pasivo;
+    User usarioRegistro;
+    Timestamp fechaHRegistro;
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
@@ -68,13 +71,13 @@ public class Catalogo_Lista implements Serializable {
     }
 
     @ManyToOne(optional = true)
-    @JoinColumn(name = "USUARIO_REGISTRO", referencedColumnName = "USUARIO_ID")
-    @ForeignKey(name = "USUARIO_REG_FK")
-    public Usuarios getUsarioRegistro() {
+    @JoinColumn(name = "USUARIO_REGISTRO", referencedColumnName = "username")
+    @ForeignKey(name = "CL_USUARIO_REG_FK")
+    public User getUsarioRegistro() {
         return usarioRegistro;
     }
 
-    public void setUsarioRegistro(Usuarios usarioRegistro) {
+    public void setUsarioRegistro(User usarioRegistro) {
         this.usarioRegistro = usarioRegistro;
     }
 

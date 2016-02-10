@@ -208,6 +208,7 @@ public class TomaMxController {
     public ResponseEntity<String> saveTomaMx(HttpServletRequest request,
               @RequestParam(value = "dx", required = false) String dx
             , @RequestParam(value = "fechaHTomaMx", required = false) String fechaHTomaMx
+            , @RequestParam(value = "horaTomaMx", required = false) String horaTomaMx
             , @RequestParam(value = "codTipoMx", required = false) String codTipoMx
             , @RequestParam(value = "canTubos", required = false) Integer canTubos
             , @RequestParam(value = "volumen", required = false) String volumen
@@ -226,6 +227,10 @@ public class TomaMxController {
         tomaMx.setIdNotificacion(notifi);
         if(fechaHTomaMx != null){
             tomaMx.setFechaHTomaMx(StringToTimestamp(fechaHTomaMx));
+        }
+
+        if(horaTomaMx != null){
+            tomaMx.setHoraTomaMx(horaTomaMx);
         }
 
         tomaMx.setCodTipoMx(tomaMxService.getTipoMxById(codTipoMx));
@@ -286,7 +291,7 @@ public class TomaMxController {
     }
 
     private Timestamp StringToTimestamp(String fechah) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         java.util.Date date = sdf.parse(fechah);
         return new Timestamp(date.getTime());
     }
@@ -421,9 +426,10 @@ public class TomaMxController {
         Integer canTubos=null;
         String volumen=null;
         String horaRefrigeracion="";
-        Integer  mxSeparada=null;
+        Integer mxSeparada=null;
         String estudios="";
         String categoriaMx="";
+        String horaTomaMx="";
         try {
             logger.debug("Guardando datos de Toma de Muestra");
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
@@ -444,6 +450,8 @@ public class TomaMxController {
                 mxSeparada = jsonpObject.get("mxSeparada").getAsInt();
             if (jsonpObject.get("categoriaMx")!=null && !jsonpObject.get("categoriaMx").getAsString().isEmpty())
                 categoriaMx = jsonpObject.get("categoriaMx").getAsString();
+            if (jsonpObject.get("horaTomaMx")!=null && !jsonpObject.get("horaTomaMx").getAsString().isEmpty())
+                horaTomaMx = jsonpObject.get("horaTomaMx").getAsString();
 
             horaRefrigeracion = jsonpObject.get("horaRefrigeracion").getAsString();
 
@@ -456,6 +464,9 @@ public class TomaMxController {
             tomaMx.setCodUnidadAtencion(notificacion.getCodUnidadAtencion());
             if(fechaHTomaMx != null){
                 tomaMx.setFechaHTomaMx(StringToTimestamp(fechaHTomaMx));
+            }
+            if (horaTomaMx != null){
+                tomaMx.setHoraTomaMx(horaTomaMx);
             }
 
             tomaMx.setCodTipoMx(tomaMxService.getTipoMxById(codTipoMx));
@@ -510,6 +521,7 @@ public class TomaMxController {
             map.put("mxSeparada",String.valueOf(mxSeparada));
             map.put("codTipoMx",codTipoMx);
             map.put("horaRefrigeracion", horaRefrigeracion);
+            map.put("horaTomaMx",horaTomaMx);
             String jsonResponse = new Gson().toJson(map);
             response.getOutputStream().write(jsonResponse.getBytes());
             response.getOutputStream().close();

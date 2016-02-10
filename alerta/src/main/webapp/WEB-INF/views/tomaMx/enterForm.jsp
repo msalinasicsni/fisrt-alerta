@@ -384,36 +384,42 @@
 
 
                                         <section class="col col-3">
-                                            <spring:message var="datet" code="lbl.sampling.datetime" />
+                                            <spring:message var="datet" code="lbl.sampling.date" />
                                             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
                                             <label  class="text-left txt-color-blue font-md">
                                                 ${datet}
                                             </label>
-
-
                                             <div class="form-group">
-
-                                                <div class='input-group date datetimepicker'>
+                                                <div class='input-group'>
                                                     <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
                                                     <label class="input">
                                                         <form:input name="fechaHTomaMx" id="fechaHTomaMx" path="fechaHTomaMx" type='text'
-                                                                    class="form-control"
-                                                                    placeholder="${datet} "/>
-
-                                                        <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.sampling.datetime"/></b>
-
+                                                                    class="form-control date date-picker"
+                                                                    placeholder="${datet}" data-date-end-date="+0d"/>
                                                     </label>
                                              <span class="input-group-addon"><span
                                                      class="glyphicon glyphicon-calendar"></span>
                                             </span>
                                                 </div>
-
-
                                             </div>
-
-
                                         </section>
-
+                                        <section class="col col-3">
+                                            <spring:message var="timeMx" code="lbl.sampling.time" />
+                                            <label class="text-left txt-color-blue font-md">
+                                                    ${timeMx}
+                                            </label>
+                                            <div class="form-group">
+                                                <div class='input-group'>
+                                                    <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+                                                <label class="input">
+                                                    <form:input id="horaTomaMx" name="horaTomaMx" path="horaTomaMx" type='text'
+                                                           class="form-control"
+                                                           placeholder="${timeMx}"/>
+                                                </label>
+                                                    <span class="input-group-addon"><i class="fa fa-clock-o fa-fw"></i></span>
+                                                </div>
+                                            </div>
+                                        </section>
                                         <section class="col col-4">
                                             <spring:message var="sampleType" code="lbl.sample.type"/>
                                             <spring:message code="msj.select.type.sample" var="selectTMx" />
@@ -435,7 +441,7 @@
 
                                         </section>
 
-                                        <section class="col col-5">
+                                        <section class="col col-6">
                                             <spring:message var="testSampleType" code="lbl.dx.sample.type"/>
                                             <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
                                             <label class="text-left txt-color-blue font-md">
@@ -639,6 +645,7 @@
             EnterFormTomaMx.init(parametros);
             SeleccionUnidad.init(parametros);
             handleInputMasks();
+            handleDatePickers("${pageContext.request.locale.language}");
             $("li.samples").addClass("open");
             $("li.tomaMx").addClass("active");
             if("top"!=localStorage.getItem("sm-setmenu")){

@@ -1,7 +1,7 @@
 
 package ni.gob.minsa.alerta.service;
 
-import ni.gob.minsa.alerta.domain.resultados.Catalogo_Lista;
+import ni.gob.minsa.alerta.domain.concepto.Catalogo_Lista;
 import ni.gob.minsa.alerta.domain.resultados.RespuestaExamen;
 import org.hibernate.Query;
 import org.hibernate.Session;

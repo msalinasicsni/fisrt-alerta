@@ -1,7 +1,9 @@
 package ni.gob.minsa.alerta.domain.resultados;
 
+import ni.gob.minsa.alerta.domain.concepto.Concepto;
 import ni.gob.minsa.alerta.domain.examen.CatalogoExamenes;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
+import ni.gob.minsa.alerta.domain.seguridadLab.User;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -26,7 +28,7 @@ public class RespuestaExamen implements Serializable {
     boolean pasivo;
     Integer minimo;
     Integer maximo;
-    Usuarios usuarioRegistro;
+    User usuarioRegistro;
     Timestamp fechahRegistro;
     String descripcion;
 
@@ -126,13 +128,13 @@ public class RespuestaExamen implements Serializable {
     }
 
     @ManyToOne(optional = true)
-    @JoinColumn(name = "USUARIO_REGISTRO", referencedColumnName = "USUARIO_ID")
-    @ForeignKey(name = "USUARIO_REG_FK")
-    public Usuarios getUsuarioRegistro() {
+    @JoinColumn(name = "USUARIO_REGISTRO", referencedColumnName = "username")
+    @ForeignKey(name = "RE_USUARIO_REG_FK")
+    public User getUsuarioRegistro() {
         return usuarioRegistro;
     }
 
-    public void setUsuarioRegistro(Usuarios usuarioRegistro) {
+    public void setUsuarioRegistro(User usuarioRegistro) {
         this.usuarioRegistro = usuarioRegistro;
     }
 
@@ -155,4 +157,5 @@ public class RespuestaExamen implements Serializable {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
 }

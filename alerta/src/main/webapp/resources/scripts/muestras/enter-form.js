@@ -26,14 +26,20 @@ var EnterFormTomaMx = function () {
     return {
         init: function (parametros) {
 
-            $('.datetimepicker').datetimepicker({
+            /*$('.datetimepicker').datetimepicker({
                 language: 'es',
                 format: 'DD/MM/YYYY h:m A'
 
-            });
+            });*/
 
             $('#horaRefrigeracion').datetimepicker({
-                pickDate: false
+                pickDate: false,
+                format: 'hh:mm A'
+            });
+
+            $('#horaTomaMx').datetimepicker({
+                pickDate: false,
+                format: 'hh:mm A'
             });
 
             $('#codTipoMx').change(function() {
@@ -193,18 +199,27 @@ var EnterFormTomaMxStudies = function () {
     return {
         init: function (parametros) {
 
-            $('.datetimepicker').datetimepicker({
+            /*$('.datetimepicker').datetimepicker({
                 language: 'es',
                 format: 'DD/MM/YYYY h:m A'
 
-            });
+            });*/
 
             $('#horaRefrigeracion').datetimepicker({
-                pickDate: false
+                pickDate: false,
+                format: 'hh:mm A'
+            });
+
+            $('#horaTomaMx').datetimepicker({
+                pickDate: false,
+                format: 'hh:mm A'
             });
 
             $('#codTipoMx').change(function() {
                 bloquearUI(parametros.blockMess);
+                if ($('#unidadId').val()!=""){
+
+                }
                 var html = '<option value="">' + $("#text_opt_select").val() + '...</option>';
                 if ($(this).val()!="") {
                     $.getJSON(parametros.sStudiesUrl, {
@@ -311,6 +326,7 @@ var EnterFormTomaMxStudies = function () {
                 var objetoTomaMx = {};
                 objetoTomaMx['idNotificacion'] = $("#idNotificacion").val();
                 objetoTomaMx['fechaHTomaMx'] = $("#fechaHTomaMx").val();
+                objetoTomaMx['horaTomaMx'] = $("#horaTomaMx").val();
                 objetoTomaMx['canTubos'] = $("#canTubos").val();
                 objetoTomaMx['volumen'] = $("#volumen").val();
                 objetoTomaMx['horaRefrigeracion'] = $("#horaRefrigeracion").val();

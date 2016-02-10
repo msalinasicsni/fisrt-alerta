@@ -13,7 +13,7 @@ import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
-import ni.gob.minsa.alerta.domain.resultados.Catalogo_Lista;
+import ni.gob.minsa.alerta.domain.concepto.Catalogo_Lista;
 import ni.gob.minsa.alerta.domain.resultados.DetalleResultado;
 import ni.gob.minsa.alerta.domain.resultados.DetalleResultadoFinal;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
@@ -276,7 +276,9 @@ public class IragController {
                 List<String> iragAutorizados = new ArrayList<String>();
                 for (DaIrag ira : results) {
                     if (idUsuario != 0) {
-                        if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
+                        if (ira.getIdNotificacion().getCodSilaisAtencion()==null && ira.getIdNotificacion().getCodUnidadAtencion()==null){
+                            iragAutorizados.add(ira.getIdNotificacion().getIdNotificacion());
+                        }else if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
                             iragAutorizados.add(ira.getIdNotificacion().getIdNotificacion());
                         }
                     }
@@ -397,7 +399,10 @@ public class IragController {
                     long idUsuario = seguridadService.obtenerIdUsuario(request);
                     irag.setUsuario(usuarioService.getUsuarioById((int) idUsuario));
                     if (idUsuario != 0) {
-                        autorizado = seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, irag.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, irag.getIdNotificacion().getCodUnidadAtencion().getCodigo());
+                        if (irag.getIdNotificacion().getCodSilaisAtencion()!=null && irag.getIdNotificacion().getCodUnidadAtencion()!=null) {
+                            autorizado = seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, irag.getIdNotificacion().getCodSilaisAtencion().getCodigo())
+                                    && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, irag.getIdNotificacion().getCodUnidadAtencion().getCodigo());
+                        }
                     }
 
                     entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
@@ -406,12 +411,19 @@ public class IragController {
                         entidades.add(irag.getIdNotificacion().getCodSilaisAtencion());
                     }
 
-                    Divisionpolitica municipio = divisionPoliticaService.getMunicipiosByUnidadSalud(irag.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional());
-                    List<Divisionpolitica> munic = divisionPoliticaService.getMunicipiosBySilais(irag.getIdNotificacion().getCodSilaisAtencion().getCodigo());
-                    List<Unidades> uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int) idUsuario, irag.getIdNotificacion().getCodSilaisAtencion().getCodigo(), irag.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+                    Divisionpolitica municipio = null;
+                    if (irag.getIdNotificacion().getCodUnidadAtencion()!=null)
+                        municipio = divisionPoliticaService.getMunicipiosByUnidadSalud(irag.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional());
 
-                    if (!uni.contains(irag.getIdNotificacion().getCodUnidadAtencion())) {
-                        uni.add(irag.getIdNotificacion().getCodUnidadAtencion());
+                    List<Divisionpolitica> munic = null;
+                    if (irag.getIdNotificacion().getCodSilaisAtencion()!=null)
+                        munic = divisionPoliticaService.getMunicipiosBySilais(irag.getIdNotificacion().getCodSilaisAtencion().getCodigo());
+                    List<Unidades> uni = null;
+                    if (irag.getIdNotificacion().getCodSilaisAtencion()!=null && irag.getIdNotificacion().getCodUnidadAtencion()!=null) {
+                        uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int) idUsuario, irag.getIdNotificacion().getCodSilaisAtencion().getCodigo(), irag.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+                        if (!uni.contains(irag.getIdNotificacion().getCodUnidadAtencion())) {
+                            uni.add(irag.getIdNotificacion().getCodUnidadAtencion());
+                        }
                     }
 
                     //datos persona
@@ -630,12 +642,15 @@ public class IragController {
                 DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion, urgente,completa);
                 irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
             } else {
+                irag.getIdNotificacion().setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
+                irag.getIdNotificacion().setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
                 if (fechaInicioSintomas != null && !fechaInicioSintomas.equals("")) {
-                    //actualizar notificacion
                      irag.getIdNotificacion().setFechaInicioSintomas(StringToDate(fechaInicioSintomas));
-                     irag.getIdNotificacion().setCompleta(Boolean.parseBoolean(completa));
-                     daNotificacionService.updateNotificacion(irag.getIdNotificacion());
-                    }
+                }
+                //actualizar notificacion
+                irag.getIdNotificacion().setCompleta(Boolean.parseBoolean(completa));
+                daNotificacionService.updateNotificacion(irag.getIdNotificacion());
+
             }
 
             irag.setCodClasFDetalleNB(catalogoService.getClasificacionFinalNB(codClasFDetalleNB));
@@ -2535,7 +2550,7 @@ public class IragController {
         String json = "";
         String resultado = "";
         Integer dosis = 0;
-        String fechaUltimaDosis = null;
+        String fechaUltimaDosis = "";
         String codVacuna = null;
         JsonArray tVacHib = null;
         JsonArray tVacMenin = null;

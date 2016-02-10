@@ -250,18 +250,32 @@
                                         </section>
                                         <section class="col col-3">
                                             <label  class="text-left txt-color-blue font-md">
-                                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.sampling.datetime" />
+                                                <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.sampling.date" />
                                             </label>
                                             <div class="">
                                                 <label class="input">
                                                     <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar fa-fw"></i>
                                                     <input type="text" name="fechaHTomaMx" id="fechaHTomaMx"
-                                                           placeholder="<spring:message code="lbl.sampling.datetime"/>"
-                                                           class="form-control datetimepicker" data-date-end-date="+0d" value=""/>
-                                                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.sampling.datetime"/></b>
+                                                           placeholder="<spring:message code="lbl.sampling.date"/>"
+                                                           class="form-control date-picker" data-date-end-date="+0d" value=""/>
                                                 </label>
                                             </div>
                                         </section>
+                                        <section class="col col-3">
+                                            <label class="text-left txt-color-blue font-md">
+                                                <spring:message code="lbl.sampling.time" />
+                                            </label>
+                                            <div class=''>
+                                                <label class="input">
+                                                    <i class="icon-prepend fa fa-pencil fa-fw"></i><i class="icon-append fa fa-clock-o fa-fw"></i>
+                                                    <input id="horaTomaMx" name="horaTomaMx" type='text'
+                                                                class="form-control"
+                                                                placeholder="<spring:message code="lbl.sampling.time" />"/>
+                                                </label>
+                                            </div>
+                                        </section>
+                                    </div>
+                                    <div class="row">
                                         <section class="col col-6">
                                             <label class="text-left txt-color-blue font-md">
                                                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.sample.type"/>
@@ -279,8 +293,6 @@
                                                 </select>
                                             </div>
                                         </section>
-                                    </div>
-                                    <div class="row">
                                         <section class="col col-6">
                                             <label class="text-left txt-color-blue font-md">
                                                 <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.study.sample.type"/>
@@ -468,6 +480,7 @@
             };
             EnterFormTomaMxStudies.init(parametros);
             handleInputMasks();
+            handleDatePickers("${pageContext.request.locale.language}");
             $("li.samples").addClass("open");
             $("li.tomaMxEstudio").addClass("active");
             if("top"!=localStorage.getItem("sm-setmenu")){
