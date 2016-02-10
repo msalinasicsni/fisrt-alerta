@@ -1053,7 +1053,7 @@ public class IragController {
                         }
 
                         String[] edad1 = edad != null ? edad.split("/") : null;
-                        String anios = edad1 != null ? edad1[0] : "--";
+                        String anios = edad1 != null ? edad1[0] : null;
                         String meses = edad1 != null ? edad1[1] : "--";
                         String dias = edad1 != null ? edad1[2] : "--";
 
@@ -1235,11 +1235,11 @@ public class IragController {
                         if (anios != null) {
                             int edadAnios = Integer.parseInt(anios);
                             if (edadAnios > 5) {
-                                x1 = x + 163;
+                                x1 = x + 303;
                                 GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
 
                             } else {
-                                x1 = x + 303;
+                                x1 = x + 163;
                                 GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 8, PDType1Font.TIMES_BOLD);
                             }
                         }
