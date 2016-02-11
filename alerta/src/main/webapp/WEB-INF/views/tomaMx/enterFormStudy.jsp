@@ -393,6 +393,8 @@
                                     <input id="text_opt_select" type="hidden" value="<spring:message code="lbl.select"/>"/>
                                     <input type="hidden" id="msjInvalidCodMxChd"  value="<spring:message code="msg.invalid.code.mx.study.chd"/>"/>
                                     <input type="hidden" id="msjInvalidCodMxCnd"  value="<spring:message code="msg.invalid.code.mx.study.cnd"/>"/>
+                                    <input type="hidden" id="msgSinUnidadSalud"  value="<spring:message code="msg.notification.without.health.unit"/>"/>
+                                    <input type="hidden" id="msgSinEstudios"  value="<spring:message code="msg.studies.not.found"/>"/>
                                 </form>
 								</div>
 								<!-- end widget content -->

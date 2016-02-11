@@ -217,30 +217,49 @@ var EnterFormTomaMxStudies = function () {
 
             $('#codTipoMx').change(function() {
                 bloquearUI(parametros.blockMess);
-                if ($('#unidadId').val()!=""){
-
-                }
                 var html = '<option value="">' + $("#text_opt_select").val() + '...</option>';
-                if ($(this).val()!="") {
-                    $.getJSON(parametros.sStudiesUrl, {
-                        codMx: $(this).val(),
-                        tipoNoti: $('#tipoNoti').val(),
-                        idUnidadSalud: $('#unidadId').val(),
-                        ajax: 'false'
-                    }, function (data) {
-                        var len = data.length;
-                        for (var i = 0; i < len; i++) {
-                            html += '<option value="' + data[i].estudio.idEstudio + '">'
-                                + data[i].estudio.nombre
-                                + '</option>';
-                        }
-                        $('#idEstudio').html(html);
+                if ($('#unidadId').val()!=""){
+                    if ($(this).val()!="") {
+                        $.getJSON(parametros.sStudiesUrl, {
+                            codMx: $(this).val(),
+                            tipoNoti: $('#tipoNoti').val(),
+                            idUnidadSalud: $('#unidadId').val(),
+                            ajax: 'false'
+                        }, function (data) {
+                            var len = data.length;
+                            for (var i = 0; i < len; i++) {
+                                html += '<option value="' + data[i].estudio.idEstudio + '">'
+                                    + data[i].estudio.nombre
+                                    + '</option>';
+                            }
+                            $('#idEstudio').html(html);
+                            desbloquearUI();
+                            if (len==0){
+                                $.smallBox({
+                                    title: $('#msgSinEstudios').val(),
+                                    content:  $('#disappear').val(),
+                                    color: "#C79121",
+                                    iconSmall: "fa fa-warning",
+                                    timeout: 4000
+                                });
+                            }
+                        });
+                    }else{
                         desbloquearUI();
-                    });
+                        $('#idEstudio').html(html).change("");
+                    }
                 }else{
                     desbloquearUI();
                     $('#idEstudio').html(html).change("");
+                    $.smallBox({
+                        title: $('#msgSinUnidadSalud').val(),
+                        content:  $('#disappear').val(),
+                        color: "#C79121",
+                        iconSmall: "fa fa-warning",
+                        timeout: 4000
+                    });
                 }
+
             });
 
             function validarFormatoCodigoUnicoMx (estudio) {
