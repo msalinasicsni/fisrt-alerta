@@ -1,6 +1,6 @@
 var handleDatePickers = function (idioma) {
     if (jQuery().datepicker) {
-        //para el resto de datetimepicker por defecto
+        //para el resto de datepicker por defecto
         $('.date-picker').datepicker({
             language: idioma,
             format:'dd/mm/yyyy',
@@ -27,7 +27,7 @@ var handleDatePickers = function (idioma) {
                         $('.to_date').datepicker('update', startDateCompare);
                     }
                 }
-                //se actualiza la fecha en que inicia el datetimepicker
+                //se actualiza la fecha en que inicia el datepicker
                 $('.to_date').datepicker('setStartDate', startDate);
             });
 
@@ -51,7 +51,7 @@ var handleDatePickers = function (idioma) {
                         $('.from_date').datepicker('update', endDateCompare);
                     }
                 }
-                //se actualiza la fecha en que inicia el datetimepicker
+                //se actualiza la fecha en que inicia el datepicker
                 $('.from_date').datepicker('setEndDate', FromEndDate);
             });
     }

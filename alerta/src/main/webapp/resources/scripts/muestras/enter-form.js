@@ -26,20 +26,12 @@ var EnterFormTomaMx = function () {
     return {
         init: function (parametros) {
 
-            /*$('.datetimepicker').datetimepicker({
-                language: 'es',
-                format: 'DD/MM/YYYY h:m A'
-
-            });*/
-
             $('#horaRefrigeracion').datetimepicker({
-                pickDate: false,
-                format: 'hh:mm A'
+                format: 'LT'
             });
 
             $('#horaTomaMx').datetimepicker({
-                pickDate: false,
-                format: 'hh:mm A'
+                format: 'LT'
             });
 
             $('#codTipoMx').change(function() {
@@ -199,20 +191,12 @@ var EnterFormTomaMxStudies = function () {
     return {
         init: function (parametros) {
 
-            /*$('.datetimepicker').datetimepicker({
-                language: 'es',
-                format: 'DD/MM/YYYY h:m A'
-
-            });*/
-
             $('#horaRefrigeracion').datetimepicker({
-                pickDate: false,
-                format: 'hh:mm A'
+                format: 'LT'
             });
 
             $('#horaTomaMx').datetimepicker({
-                pickDate: false,
-                format: 'hh:mm A'
+                format: 'LT'
             });
 
             $('#codTipoMx').change(function() {
