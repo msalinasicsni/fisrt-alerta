@@ -1,6 +1,6 @@
 package ni.gob.minsa.alerta.service;
 
-import ni.gob.minsa.alerta.domain.sive.SivePatologias;
+import ni.gob.minsa.alerta.domain.sive.*;
 import ni.gob.minsa.alerta.utilities.boletin.DatosAnio;
 import ni.gob.minsa.alerta.utilities.boletin.Detalle;
 import ni.gob.minsa.alerta.utilities.boletin.Entidad;
