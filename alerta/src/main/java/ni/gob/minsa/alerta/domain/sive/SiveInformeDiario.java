@@ -1,25 +1,23 @@
 package ni.gob.minsa.alerta.domain.sive;
 
-import javax.persistence.Basic;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import ni.gob.minsa.alerta.domain.estructura.Unidades;
+import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
- * Created by FIRSTICT on 2/15/2016.
+ * Created by FIRSTICT on 2/16/2016.
  * V1.0
  */
 @Entity
-@javax.persistence.Table(name = "sive_informe_diario", schema = "sive")
-public class SiveInformeDiario {
+@javax.persistence.Table(name = "sive_informe_diario", schema = "alerta")
+public class SiveInformeDiario implements Serializable {
     private String silais;
 
-    @EmbeddedId SiveInformeDiarioId id;
-
-    @Basic
-    @javax.persistence.Column(name = "SILAIS", nullable = true, insertable = true, updatable = true, length = 2)
+    @Id
+    @javax.persistence.Column(name = "SILAIS", nullable = false, insertable = true, updatable = true, length = 2)
     public String getSilais() {
         return silais;
     }
@@ -28,34 +26,36 @@ public class SiveInformeDiario {
         this.silais = silais;
     }
 
-    private String municipio;
+    private Divisionpolitica municipio;
 
-    @Basic
-    @javax.persistence.Column(name = "MUNICIPIO", nullable = true, insertable = true, updatable = true, length = 4)
-    public String getMunicipio() {
+    @Id
+    @ManyToOne
+    @JoinColumn(name="MUNICIPIO", referencedColumnName = "DIVISIONPOLITICA_ID")//@javax.persistence.Column(name = "MUNICIPIO", nullable = false, insertable = true, updatable = true, length = 4)
+    public Divisionpolitica getMunicipio() {
         return municipio;
     }
 
-    public void setMunicipio(String municipio) {
+    public void setMunicipio(Divisionpolitica municipio) {
         this.municipio = municipio;
     }
 
-    private BigDecimal unidadSalud;
+    private Unidades unidadSalud;
 
-    @Basic
-    @javax.persistence.Column(name = "UNIDAD_SALUD", nullable = true, insertable = true, updatable = true, precision = -127)
-    public BigDecimal getUnidadSalud() {
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "UNIDAD_SALUD", referencedColumnName = "UNIDAD_ID")//@javax.persistence.Column(name = "UNIDAD_SALUD", nullable = false, insertable = true, updatable = true, precision = -127)
+    public Unidades getUnidadSalud() {
         return unidadSalud;
     }
 
-    public void setUnidadSalud(BigDecimal unidadSalud) {
+    public void setUnidadSalud(Unidades unidadSalud) {
         this.unidadSalud = unidadSalud;
     }
 
     private Timestamp fecha;
 
-    @Basic
-    @javax.persistence.Column(name = "FECHA", nullable = true, insertable = true, updatable = true)
+    @Id
+    @javax.persistence.Column(name = "FECHA", nullable = false, insertable = true, updatable = true)
     public Timestamp getFecha() {
         return fecha;
     }
@@ -64,27 +64,28 @@ public class SiveInformeDiario {
         this.fecha = fecha;
     }
 
-    private BigInteger semanaEpi;
+    private Integer semanaEpi;
 
     @Basic
     @javax.persistence.Column(name = "SEMANA_EPI", nullable = true, insertable = true, updatable = true, precision = 0)
-    public BigInteger getSemanaEpi() {
+    public Integer getSemanaEpi() {
         return semanaEpi;
     }
 
-    public void setSemanaEpi(BigInteger semanaEpi) {
+    public void setSemanaEpi(Integer semanaEpi) {
         this.semanaEpi = semanaEpi;
     }
 
-    private String codPatologia;
+    private SivePatologias codPatologia;
 
-    @Basic
-    @javax.persistence.Column(name = "COD_PATOLOGIA", nullable = true, insertable = true, updatable = true, length = 6)
-    public String getCodPatologia() {
+    @Id
+    @ManyToOne
+    @JoinColumn(name="COD_PATOLOGIA",referencedColumnName = "CODIGO") //@javax.persistence.Column(name = "COD_PATOLOGIA", nullable = false, insertable = true, updatable = true, length = 6)
+    public SivePatologias getCodPatologia() {
         return codPatologia;
     }
 
-    public void setCodPatologia(String codPatologia) {
+    public void setCodPatologia(SivePatologias codPatologia) {
         this.codPatologia = codPatologia;
     }
 
@@ -448,15 +449,15 @@ public class SiveInformeDiario {
         this.totalM = totalM;
     }
 
-    private BigInteger bloqueado;
+    private Integer bloqueado;
 
     @Basic
     @javax.persistence.Column(name = "BLOQUEADO", nullable = true, insertable = true, updatable = true, precision = 0)
-    public BigInteger getBloqueado() {
+    public Integer getBloqueado() {
         return bloqueado;
     }
 
-    public void setBloqueado(BigInteger bloqueado) {
+    public void setBloqueado(Integer bloqueado) {
         this.bloqueado = bloqueado;
     }
 
@@ -520,15 +521,15 @@ public class SiveInformeDiario {
         this.numeroOrden = numeroOrden;
     }
 
-    private BigDecimal codSisniven;
+    private Integer codSisniven;
 
     @Basic
     @javax.persistence.Column(name = "COD_SISNIVEN", nullable = true, insertable = true, updatable = true, precision = -127)
-    public BigDecimal getCodSisniven() {
+    public Integer getCodSisniven() {
         return codSisniven;
     }
 
-    public void setCodSisniven(BigDecimal codSisniven) {
+    public void setCodSisniven(Integer codSisniven) {
         this.codSisniven = codSisniven;
     }
 
