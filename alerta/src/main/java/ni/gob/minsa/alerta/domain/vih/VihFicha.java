@@ -7,35 +7,36 @@ import org.hibernate.annotations.ForeignKey;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by USER on 13/10/2014.
  */
 @Entity
-@Table(name = "sive_vih_ficha", schema = "alerta")
+@Table(name = "sive_vih_ficha", schema = "sive")
 public class VihFicha {
 
-    private Integer id_ficha_vih;
+    private String id_ficha_vih;
     private String codigo_usuario_vih;
-    private Timestamp fecha;
-    private EntidadesAdtvas entidadesAdtva;
+    private Date fecha;
+    private String entidadesAdtva;
     private Unidades unidadSalud;
-    private Integer id_municipio;
-    private TipoAseguradovih id_categoria_afiliacion;
+    private String id_municipio;
+    private Integer id_categoria_afiliacion;
     private String responsable_ficha;
-    private Timestamp fechaAlta;
+    private Date fechaAlta;
     private String usuarioAlta;
-    private Timestamp fechaBaja;
+    private Date fechaBaja;
     private String usuarioBaja;
     private Integer id_metodo_captacion;
 
     @Id
-    @Column(name = "id_ficha_vih", nullable = false, insertable = true, updatable = true, precision = 0)
-    public Integer getId_ficha_vih() {
+    @Column(name = "codigo_ficha_vih", nullable = false, insertable = true, updatable = true, precision = 0)
+    public String getId_ficha_vih() {
         return id_ficha_vih;
     }
 
-    public void setId_ficha_vih(Integer id) {
+    public void setId_ficha_vih(String id) {
         this.id_ficha_vih = id;
     }
 
@@ -47,30 +48,30 @@ public class VihFicha {
         this.codigo_usuario_vih = codigo_usuario_vih;
     }
 
-    public Timestamp getFecha() {
+    @Temporal(TemporalType.DATE)
+    @Column(name = "FECHA")
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(Timestamp fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="ID_SILAIS", referencedColumnName = "CODIGO")
-    @ForeignKey(name = "VIHFICHA_ENTIDAD_FK")
-    public EntidadesAdtvas getEntidadesAdtva() {
+    @Column(name="ID_SILAIS")
+    public String getEntidadesAdtva() {
         return entidadesAdtva;
     }
 
-    public void setEntidadesAdtva(EntidadesAdtvas entidadesAdtva) {
+    public void setEntidadesAdtva(String entidadesAdtva) {
         this.entidadesAdtva = entidadesAdtva;
     }
 
-    public Integer getId_municipio() {
+    public String getId_municipio() {
         return id_municipio;
     }
 
-    public void setId_municipio(Integer id_municipio) {
+    public void setId_municipio(String id_municipio) {
         this.id_municipio = id_municipio;
     }
 
@@ -85,14 +86,11 @@ public class VihFicha {
         this.unidadSalud = unidadSalud;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class)
-    @JoinColumn(name="id_categoria_afiliacion", referencedColumnName = "CODIGO")
-    @ForeignKey(name = "COD_TIPOAS_FK")
-    public TipoAseguradovih getId_categoria_afiliacion() {
+    public Integer getId_categoria_afiliacion() {
         return this.id_categoria_afiliacion;
     }
 
-    public void setId_categoria_afiliacion(TipoAseguradovih id_categoria_afiliacion) {
+    public void setId_categoria_afiliacion(Integer id_categoria_afiliacion) {
         this.id_categoria_afiliacion = id_categoria_afiliacion;
     }
 
@@ -104,14 +102,17 @@ public class VihFicha {
         this.responsable_ficha = responsable_ficha;
     }
 
-    public Timestamp getFechaAlta() {
+    @Temporal(TemporalType.DATE)
+    @Column(name = "FECHA_ALTA")
+    public Date getFechaAlta() {
         return fechaAlta;
     }
 
-    public void setFechaAlta(Timestamp fechaAlta) {
+    public void setFechaAlta(Date fechaAlta) {
         this.fechaAlta = fechaAlta;
     }
 
+    @Column(name = "USUARIO_ALTA")
     public String getUsuarioAlta() {
         return usuarioAlta;
     }
@@ -120,14 +121,17 @@ public class VihFicha {
         this.usuarioAlta = usuarioAlta;
     }
 
-    public Timestamp getFechaBaja() {
+    @Temporal(TemporalType.DATE)
+    @Column(name = "FECHA_BAJA")
+    public Date getFechaBaja() {
         return fechaBaja;
     }
 
-    public void setFechaBaja(Timestamp fechaBaja) {
+    public void setFechaBaja(Date fechaBaja) {
         this.fechaBaja = fechaBaja;
     }
 
+    @Column(name = "USUARIO_BAJA")
     public String getUsuarioBaja() {
         return usuarioBaja;
     }
@@ -136,6 +140,7 @@ public class VihFicha {
         this.usuarioBaja = usuarioBaja;
     }
 
+    @Column(name = "ID_METODO_CAPTACION")
     public Integer getId_metodo_captacion() {
         return id_metodo_captacion;
     }

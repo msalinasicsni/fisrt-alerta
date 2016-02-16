@@ -84,21 +84,21 @@ public class BoletinService {
                 break;
             case "AREAREP|SILAIS":
                 queryCasos = session.createQuery("Select inf.patologia.codigo, inf.patologia.nombre, (select tipo.tipoPob from SivePatologiasTipo tipo where tipo.patologia.codigo = inf.patologia.codigo),  (select tipo.factor from SivePatologiasTipo tipo where tipo.patologia.codigo = inf.patologia.codigo), " +
-                        " inf.municipio.divisionpoliticaId as munici, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-                        " where inf.municipio.dependenciaSilais.entidadAdtvaId =:codSilais and (" + patoQuery + ") and (inf.semana = :semF) and (inf.anio >= :anio -1 and inf.anio <= :anio) " +
-                        " group by inf.patologia.codigo, inf.patologia.nombre, inf.anio, inf.municipio.divisionpoliticaId order by inf.patologia.codigo, inf.municipio.divisionpoliticaId, inf.anio ");
+                        " municipio.divisionpoliticaId as munici, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
+                        " where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.dependenciaSilais.entidadAdtvaId =:codSilais and (" + patoQuery + ") and (inf.semana = :semF) and (inf.anio >= :anio -1 and inf.anio <= :anio) " +
+                        " group by inf.patologia.codigo, inf.patologia.nombre, inf.anio, municipio.divisionpoliticaId order by inf.patologia.codigo, municipio.divisionpoliticaId, inf.anio ");
                 queryCasos.setParameter("codSilais", codSilais);
 
                 queryCasosTotal = session.createQuery("Select inf.patologia.codigo, inf.patologia.nombre, (select tipo.tipoPob from SivePatologiasTipo tipo where tipo.patologia.codigo = inf.patologia.codigo),  (select tipo.factor from SivePatologiasTipo tipo where tipo.patologia.codigo = inf.patologia.codigo), " +
-                        " inf.municipio.divisionpoliticaId as munici, inf.anio as anio," +
+                        " municipio.divisionpoliticaId as munici, inf.anio as anio," +
                         " (select concat(max (sive.semana)  , concat('/', max(sive.anio))) from SiveInformeDiario sive " +
                         " where sive.fechaNotificacion = (select max(si.fechaNotificacion) as last_record " +
                         " from SiveInformeDiario si) " +
                         " and sive.patologia.codigo = inf.patologia.codigo" +
                         " group by sive.anio, sive.semana),  " +
-                        " sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-                        " where inf.municipio.dependenciaSilais.entidadAdtvaId =:codSilais and (" + patoQuery + ") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anio -1 and inf.anio <= :anio) " +
-                        " group by inf.patologia.codigo, inf.patologia.nombre, inf.anio, inf.municipio.divisionpoliticaId order by inf.patologia.codigo, inf.municipio.divisionpoliticaId, inf.anio");
+                        " sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
+                        " where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.dependenciaSilais.entidadAdtvaId =:codSilais and (" + patoQuery + ") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anio -1 and inf.anio <= :anio) " +
+                        " group by inf.patologia.codigo, inf.patologia.nombre, inf.anio, municipio.divisionpoliticaId order by inf.patologia.codigo, municipio.divisionpoliticaId, inf.anio");
                 queryCasosTotal.setParameter("codSilais", codSilais);
 
                 queryEntidad = session.createQuery("select dp.divisionpoliticaId, dp.nombre from Divisionpolitica dp " +
@@ -107,21 +107,21 @@ public class BoletinService {
                 break;
             case "AREAREP|DEPTO":
                 queryCasos = session.createQuery(" Select inf.patologia.codigo, inf.patologia.nombre, (select tipo.tipoPob from SivePatologiasTipo tipo where tipo.patologia.codigo = inf.patologia.codigo),  (select tipo.factor from SivePatologiasTipo tipo where tipo.patologia.codigo = inf.patologia.codigo), " +
-                        " inf.municipio.divisionpoliticaId as munici, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-                        " where inf.municipio.dependencia.divisionpoliticaId =:codDepartamento and (" + patoQuery + ") and (inf.semana = :semF) and (inf.anio >= :anio -1 and inf.anio <= :anio) " +
-                        " group by inf.patologia.codigo, inf.patologia.nombre, inf.anio, inf.municipio.divisionpoliticaId order by inf.patologia.codigo, inf.municipio.divisionpoliticaId, inf.anio");
+                        " municipio.divisionpoliticaId as munici, inf.anio as anio, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
+                        " where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.dependencia.divisionpoliticaId =:codDepartamento and (" + patoQuery + ") and (inf.semana = :semF) and (inf.anio >= :anio -1 and inf.anio <= :anio) " +
+                        " group by inf.patologia.codigo, inf.patologia.nombre, inf.anio,  municipio.divisionpoliticaId order by inf.patologia.codigo,  municipio.divisionpoliticaId, inf.anio");
                 queryCasos.setParameter("codDepartamento", codDepartamento);
 
                 queryCasosTotal = session.createQuery(" Select inf.patologia.codigo, inf.patologia.nombre, (select tipo.tipoPob from SivePatologiasTipo tipo where tipo.patologia.codigo = inf.patologia.codigo),  (select tipo.factor from SivePatologiasTipo tipo where tipo.patologia.codigo = inf.patologia.codigo), " +
-                        " inf.municipio.divisionpoliticaId as munici, inf.anio as anio, " +
+                        " municipio.divisionpoliticaId as munici, inf.anio as anio, " +
                         " (select concat(max (sive.semana)  , concat('/', max(sive.anio))) from SiveInformeDiario sive " +
                         " where sive.fechaNotificacion = (select max(si.fechaNotificacion) as last_record " +
                         " from SiveInformeDiario si) " +
                         " and sive.patologia.codigo = inf.patologia.codigo" +
                         " group by sive.anio, sive.semana),  " +
-                        "sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-                        " where inf.municipio.dependencia.divisionpoliticaId =:codDepartamento and (" + patoQuery + ") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anio -1 and inf.anio <= :anio) " +
-                        " group by inf.patologia.codigo, inf.patologia.nombre, inf.anio, inf.municipio.divisionpoliticaId order by inf.patologia.codigo, inf.municipio.divisionpoliticaId, inf.anio");
+                        "sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
+                        " where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.dependencia.divisionpoliticaId =:codDepartamento and (" + patoQuery + ") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anio -1 and inf.anio <= :anio) " +
+                        " group by inf.patologia.codigo, inf.patologia.nombre, inf.anio, municipio.divisionpoliticaId order by inf.patologia.codigo, municipio.divisionpoliticaId, inf.anio");
                 queryCasosTotal.setParameter("codDepartamento", codDepartamento);
 
                 queryEntidad = session.createQuery("select dp.divisionpoliticaId, dp.nombre from Divisionpolitica dp " +

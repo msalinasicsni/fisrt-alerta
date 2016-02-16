@@ -2,19 +2,20 @@ package ni.gob.minsa.alerta.domain.vih;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by USER on 22/09/2014.
  */
 @Entity
-@Table(name = "sive_vih_tipo_inf_oport", schema = "alerta")
+@Table(name = "sive_vih_tipo_inf_oport", schema = "sive")
 public class VihTipoInfOport {
     private Integer id;
     private String nombre;
     private String descripcion;
-    private Timestamp fechaAlta;
+    private Date fechaAlta;
     private String usuarioAlta;
-    private Timestamp fechaBaja;
+    private Date fechaBaja;
     private String usuarioBaja;
 
 
@@ -48,13 +49,13 @@ public class VihTipoInfOport {
         this.descripcion = descripcion;
     }
 
-    @Basic
+    @Temporal(TemporalType.DATE)
     @Column(name = "FECHA_ALTA", nullable = true, insertable = true, updatable = true)
-    public Timestamp getFechaAlta() {
+    public Date getFechaAlta() {
         return fechaAlta;
     }
 
-    public void setFechaAlta(Timestamp fechaAlta) {
+    public void setFechaAlta(Date fechaAlta) {
         this.fechaAlta = fechaAlta;
     }
 
@@ -68,13 +69,13 @@ public class VihTipoInfOport {
         this.usuarioAlta = usuarioAlta;
     }
 
-    @Basic
+    @Temporal(TemporalType.DATE)
     @Column(name = "FECHA_BAJA", nullable = true, insertable = true, updatable = true)
-    public Timestamp getFechaBaja() {
+    public Date getFechaBaja() {
         return fechaBaja;
     }
 
-    public void setFechaBaja(Timestamp fechaBaja) {
+    public void setFechaBaja(Date fechaBaja) {
         this.fechaBaja = fechaBaja;
     }
 

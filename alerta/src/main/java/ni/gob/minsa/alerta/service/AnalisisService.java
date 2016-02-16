@@ -44,15 +44,15 @@ public class AnalisisService {
 			query.setParameter("codSilais", codSilais.toString());
 		}
 		else if (codArea.equals("AREAREP|DEPTO")){
-			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-					"where inf.municipio.dependencia.divisionpoliticaId =:codDepartamento and inf.patologia.codigo =:codPato " +
+			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
+					"where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.dependencia.divisionpoliticaId =:codDepartamento and inf.patologia.codigo =:codPato " +
 					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
 			query.setParameter("codPato", codPato);
 			query.setParameter("codDepartamento", codDepartamento);
 		}
 		else if (codArea.equals("AREAREP|MUNI")){
-			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-					"where inf.municipio.divisionpoliticaId =:codMunicipio and inf.patologia.codigo =:codPato " +
+			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
+					"where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.divisionpoliticaId =:codMunicipio and inf.patologia.codigo =:codPato " +
 					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
 			query.setParameter("codPato", codPato);
 			query.setParameter("codMunicipio", codMunicipio);

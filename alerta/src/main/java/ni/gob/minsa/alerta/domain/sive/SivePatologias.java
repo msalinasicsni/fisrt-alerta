@@ -3,14 +3,10 @@ package ni.gob.minsa.alerta.domain.sive;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "sive_patologias_vig", schema = "alerta", uniqueConstraints = @UniqueConstraint(columnNames = "CODIGO"))
+@Table(name = "sive_patologias_vig", schema = "sive", uniqueConstraints = @UniqueConstraint(columnNames = "CODIGO"))
 public class SivePatologias implements Serializable{
 	
 	/**
@@ -68,7 +64,8 @@ public class SivePatologias implements Serializable{
 	public void setGruposEdades(String gruposEdades) {
 		this.gruposEdades = gruposEdades;
 	}
-	@Column(name = "FECHABAJA", nullable = true)
+    @Temporal(TemporalType.DATE)
+    @Column(name = "FECHABAJA", nullable = true)
 	public Date getFechaBaja() {
 		return fechaBaja;
 	}

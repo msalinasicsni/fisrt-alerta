@@ -1,18 +1,18 @@
 package ni.gob.minsa.alerta.domain.sive;
 
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
-import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by FIRSTICT on 2/16/2016.
  * V1.0
  */
 @Entity
-@javax.persistence.Table(name = "sive_informe_diario", schema = "alerta")
+@javax.persistence.Table(name = "sive_informe_diario", schema = "sive")
 public class SiveInformeDiario implements Serializable {
     private String silais;
 
@@ -26,427 +26,427 @@ public class SiveInformeDiario implements Serializable {
         this.silais = silais;
     }
 
-    private Divisionpolitica municipio;
+    private String municipio;
 
     @Id
-    @ManyToOne
-    @JoinColumn(name="MUNICIPIO", referencedColumnName = "DIVISIONPOLITICA_ID")//@javax.persistence.Column(name = "MUNICIPIO", nullable = false, insertable = true, updatable = true, length = 4)
-    public Divisionpolitica getMunicipio() {
+    @javax.persistence.Column(name = "MUNICIPIO", nullable = false, insertable = true, updatable = true, length = 4)
+    public String getMunicipio() {
         return municipio;
     }
 
-    public void setMunicipio(Divisionpolitica municipio) {
+    public void setMunicipio(String municipio) {
         this.municipio = municipio;
     }
 
-    private Unidades unidadSalud;
+    private Unidades unidad;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "UNIDAD_SALUD", referencedColumnName = "UNIDAD_ID")//@javax.persistence.Column(name = "UNIDAD_SALUD", nullable = false, insertable = true, updatable = true, precision = -127)
-    public Unidades getUnidadSalud() {
-        return unidadSalud;
+    public Unidades getUnidad() {
+        return unidad;
     }
 
-    public void setUnidadSalud(Unidades unidadSalud) {
-        this.unidadSalud = unidadSalud;
+    public void setUnidad(Unidades unidadSalud) {
+        this.unidad = unidadSalud;
     }
 
-    private Timestamp fecha;
+    private Date fechaNotificacion;
 
     @Id
+    @Temporal(TemporalType.DATE)
     @javax.persistence.Column(name = "FECHA", nullable = false, insertable = true, updatable = true)
-    public Timestamp getFecha() {
-        return fecha;
+    public Date getFechaNotificacion() {
+        return fechaNotificacion;
     }
 
-    public void setFecha(Timestamp fecha) {
-        this.fecha = fecha;
+    public void setFechaNotificacion(Date fecha) {
+        this.fechaNotificacion = fecha;
     }
 
-    private Integer semanaEpi;
+    private Integer semana;
 
     @Basic
     @javax.persistence.Column(name = "SEMANA_EPI", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getSemanaEpi() {
-        return semanaEpi;
+    public Integer getSemana() {
+        return semana;
     }
 
-    public void setSemanaEpi(Integer semanaEpi) {
-        this.semanaEpi = semanaEpi;
+    public void setSemana(Integer semanaEpi) {
+        this.semana = semanaEpi;
     }
 
-    private SivePatologias codPatologia;
+    private SivePatologias patologia;
 
     @Id
     @ManyToOne
     @JoinColumn(name="COD_PATOLOGIA",referencedColumnName = "CODIGO") //@javax.persistence.Column(name = "COD_PATOLOGIA", nullable = false, insertable = true, updatable = true, length = 6)
-    public SivePatologias getCodPatologia() {
-        return codPatologia;
+    public SivePatologias getPatologia() {
+        return patologia;
     }
 
-    public void setCodPatologia(SivePatologias codPatologia) {
-        this.codPatologia = codPatologia;
+    public void setPatologia(SivePatologias patologia) {
+        this.patologia = patologia;
     }
 
-    private Integer grupo1F;
+    private Integer g01f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO1_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo1F() {
-        return grupo1F;
+    public Integer getG01f() {
+        return g01f;
     }
 
-    public void setGrupo1F(Integer grupo1F) {
-        this.grupo1F = grupo1F;
+    public void setG01f(Integer grupo1F) {
+        this.g01f = grupo1F;
     }
 
-    private Integer grupo1M;
+    private Integer g01m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO1_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo1M() {
-        return grupo1M;
+    public Integer getG01m() {
+        return g01m;
     }
 
-    public void setGrupo1M(Integer grupo1M) {
-        this.grupo1M = grupo1M;
+    public void setG01m(Integer grupo1M) {
+        this.g01m = grupo1M;
     }
 
-    private Integer grupo2F;
+    private Integer g02f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO2_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo2F() {
-        return grupo2F;
+    public Integer getG02f() {
+        return g02f;
     }
 
-    public void setGrupo2F(Integer grupo2F) {
-        this.grupo2F = grupo2F;
+    public void setG02f(Integer grupo2F) {
+        this.g02f = grupo2F;
     }
 
-    private Integer grupo2M;
+    private Integer g02m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO2_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo2M() {
-        return grupo2M;
+    public Integer getG02m() {
+        return g02m;
     }
 
-    public void setGrupo2M(Integer grupo2M) {
-        this.grupo2M = grupo2M;
+    public void setG02m(Integer grupo2M) {
+        this.g02m = grupo2M;
     }
 
-    private Integer grupo3F;
+    private Integer g03f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO3_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo3F() {
-        return grupo3F;
+    public Integer getG03f() {
+        return g03f;
     }
 
-    public void setGrupo3F(Integer grupo3F) {
-        this.grupo3F = grupo3F;
+    public void setG03f(Integer grupo3F) {
+        this.g03f = grupo3F;
     }
 
-    private Integer grupo3M;
+    private Integer g03m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO3_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo3M() {
-        return grupo3M;
+    public Integer getG03m() {
+        return g03m;
     }
 
-    public void setGrupo3M(Integer grupo3M) {
-        this.grupo3M = grupo3M;
+    public void setG03m(Integer grupo3M) {
+        this.g03m = grupo3M;
     }
 
-    private Integer grupo4F;
+    private Integer g04f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO4_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo4F() {
-        return grupo4F;
+    public Integer getG04f() {
+        return g04f;
     }
 
-    public void setGrupo4F(Integer grupo4F) {
-        this.grupo4F = grupo4F;
+    public void setG04f(Integer grupo4F) {
+        this.g04f = grupo4F;
     }
 
-    private Integer grupo4M;
+    private Integer g04m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO4_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo4M() {
-        return grupo4M;
+    public Integer getG04m() {
+        return g04m;
     }
 
-    public void setGrupo4M(Integer grupo4M) {
-        this.grupo4M = grupo4M;
+    public void setG04m(Integer grupo4M) {
+        this.g04m = grupo4M;
     }
 
-    private Integer grupo5F;
+    private Integer g05f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO5_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo5F() {
-        return grupo5F;
+    public Integer getG05f() {
+        return g05f;
     }
 
-    public void setGrupo5F(Integer grupo5F) {
-        this.grupo5F = grupo5F;
+    public void setG05f(Integer grupo5F) {
+        this.g05f = grupo5F;
     }
 
-    private Integer grupo5M;
+    private Integer g05m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO5_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo5M() {
-        return grupo5M;
+    public Integer getG05m() {
+        return g05m;
     }
 
-    public void setGrupo5M(Integer grupo5M) {
-        this.grupo5M = grupo5M;
+    public void setG05m(Integer grupo5M) {
+        this.g05m = grupo5M;
     }
 
-    private Integer grupo6F;
+    private Integer g06f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO6_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo6F() {
-        return grupo6F;
+    public Integer getG06f() {
+        return g06f;
     }
 
-    public void setGrupo6F(Integer grupo6F) {
-        this.grupo6F = grupo6F;
+    public void setG06f(Integer grupo6F) {
+        this.g06f = grupo6F;
     }
 
-    private Integer grupo6M;
+    private Integer g06m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO6_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo6M() {
-        return grupo6M;
+    public Integer getG06m() {
+        return g06m;
     }
 
-    public void setGrupo6M(Integer grupo6M) {
-        this.grupo6M = grupo6M;
+    public void setG06m(Integer grupo6M) {
+        this.g06m = grupo6M;
     }
 
-    private Integer grupo7F;
+    private Integer g07f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO7_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo7F() {
-        return grupo7F;
+    public Integer getG07f() {
+        return g07f;
     }
 
-    public void setGrupo7F(Integer grupo7F) {
-        this.grupo7F = grupo7F;
+    public void setG07f(Integer grupo7F) {
+        this.g07f = grupo7F;
     }
 
-    private Integer grupo7M;
+    private Integer g07m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO7_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo7M() {
-        return grupo7M;
+    public Integer getG07m() {
+        return g07m;
     }
 
-    public void setGrupo7M(Integer grupo7M) {
-        this.grupo7M = grupo7M;
+    public void setG07m(Integer grupo7M) {
+        this.g07m = grupo7M;
     }
 
-    private Integer grupo8F;
+    private Integer g08f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO8_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo8F() {
-        return grupo8F;
+    public Integer getG08f() {
+        return g08f;
     }
 
-    public void setGrupo8F(Integer grupo8F) {
-        this.grupo8F = grupo8F;
+    public void setG08f(Integer grupo8F) {
+        this.g08f = grupo8F;
     }
 
-    private Integer grupo8M;
+    private Integer g08m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO8_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo8M() {
-        return grupo8M;
+    public Integer getG08m() {
+        return g08m;
     }
 
-    public void setGrupo8M(Integer grupo8M) {
-        this.grupo8M = grupo8M;
+    public void setG08m(Integer grupo8M) {
+        this.g08m = grupo8M;
     }
 
-    private Integer grupo9F;
+    private Integer g09f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO9_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo9F() {
-        return grupo9F;
+    public Integer getG09f() {
+        return g09f;
     }
 
-    public void setGrupo9F(Integer grupo9F) {
-        this.grupo9F = grupo9F;
+    public void setG09f(Integer grupo9F) {
+        this.g09f = grupo9F;
     }
 
-    private Integer grupo9M;
+    private Integer g09m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO9_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo9M() {
-        return grupo9M;
+    public Integer getG09m() {
+        return g09m;
     }
 
-    public void setGrupo9M(Integer grupo9M) {
-        this.grupo9M = grupo9M;
+    public void setG09m(Integer grupo9M) {
+        this.g09m = grupo9M;
     }
 
-    private Integer grupo10F;
+    private Integer g10f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO10_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo10F() {
-        return grupo10F;
+    public Integer getG10f() {
+        return g10f;
     }
 
-    public void setGrupo10F(Integer grupo10F) {
-        this.grupo10F = grupo10F;
+    public void setG10f(Integer grupo10F) {
+        this.g10f = grupo10F;
     }
 
-    private Integer grupo10M;
+    private Integer g10m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO10_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo10M() {
-        return grupo10M;
+    public Integer getG10m() {
+        return g10m;
     }
 
-    public void setGrupo10M(Integer grupo10M) {
-        this.grupo10M = grupo10M;
+    public void setG10m(Integer grupo10M) {
+        this.g10m = grupo10M;
     }
 
-    private Integer grupo11F;
+    private Integer g11f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO11_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo11F() {
-        return grupo11F;
+    public Integer getG11f() {
+        return g11f;
     }
 
-    public void setGrupo11F(Integer grupo11F) {
-        this.grupo11F = grupo11F;
+    public void setG11f(Integer grupo11F) {
+        this.g11f = grupo11F;
     }
 
-    private Integer grupo11M;
+    private Integer g11m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO11_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo11M() {
-        return grupo11M;
+    public Integer getG11m() {
+        return g11m;
     }
 
-    public void setGrupo11M(Integer grupo11M) {
-        this.grupo11M = grupo11M;
+    public void setG11m(Integer grupo11M) {
+        this.g11m = grupo11M;
     }
 
-    private Integer grupo12F;
+    private Integer g12f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO12_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo12F() {
-        return grupo12F;
+    public Integer getG12f() {
+        return g12f;
     }
 
-    public void setGrupo12F(Integer grupo12F) {
-        this.grupo12F = grupo12F;
+    public void setG12f(Integer grupo12F) {
+        this.g12f = grupo12F;
     }
 
-    private Integer grupo12M;
+    private Integer g12m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO12_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo12M() {
-        return grupo12M;
+    public Integer getG12m() {
+        return g12m;
     }
 
-    public void setGrupo12M(Integer grupo12M) {
-        this.grupo12M = grupo12M;
+    public void setG12m(Integer grupo12M) {
+        this.g12m = grupo12M;
     }
 
-    private Integer grupo13F;
+    private Integer g13f;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO13_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo13F() {
-        return grupo13F;
+    public Integer getG13f() {
+        return g13f;
     }
 
-    public void setGrupo13F(Integer grupo13F) {
-        this.grupo13F = grupo13F;
+    public void setG13f(Integer grupo13F) {
+        this.g13f = grupo13F;
     }
 
-    private Integer grupo13M;
+    private Integer g13m;
 
     @Basic
     @javax.persistence.Column(name = "GRUPO13_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getGrupo13M() {
-        return grupo13M;
+    public Integer getG13m() {
+        return g13m;
     }
 
-    public void setGrupo13M(Integer grupo13M) {
-        this.grupo13M = grupo13M;
+    public void setG13m(Integer grupo13M) {
+        this.g13m = grupo13M;
     }
 
-    private Integer descF;
+    private Integer descf;
 
     @Basic
     @javax.persistence.Column(name = "DESC_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getDescF() {
-        return descF;
+    public Integer getDescf() {
+        return descf;
     }
 
-    public void setDescF(Integer descF) {
-        this.descF = descF;
+    public void setDescf(Integer descF) {
+        this.descf = descF;
     }
 
-    private Integer descM;
+    private Integer descm;
 
     @Basic
     @javax.persistence.Column(name = "DESC_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getDescM() {
-        return descM;
+    public Integer getDescm() {
+        return descm;
     }
 
-    public void setDescM(Integer descM) {
-        this.descM = descM;
+    public void setDescm(Integer descM) {
+        this.descm = descM;
     }
 
-    private Integer totalF;
+    private Integer totalf;
 
     @Basic
     @javax.persistence.Column(name = "TOTAL_F", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getTotalF() {
-        return totalF;
+    public Integer getTotalf() {
+        return totalf;
     }
 
-    public void setTotalF(Integer totalF) {
-        this.totalF = totalF;
+    public void setTotalf(Integer totalF) {
+        this.totalf = totalF;
     }
 
-    private Integer totalM;
+    private Integer totalm;
 
     @Basic
     @javax.persistence.Column(name = "TOTAL_M", nullable = true, insertable = true, updatable = true, precision = 0)
-    public Integer getTotalM() {
-        return totalM;
+    public Integer getTotalm() {
+        return totalm;
     }
 
-    public void setTotalM(Integer totalM) {
-        this.totalM = totalM;
+    public void setTotalm(Integer totalM) {
+        this.totalm = totalM;
     }
 
     private Integer bloqueado;
@@ -461,15 +461,16 @@ public class SiveInformeDiario implements Serializable {
         this.bloqueado = bloqueado;
     }
 
-    private Timestamp fecharegistro;
+    private Date fecharegistro;
 
     @Basic
+    @Temporal(TemporalType.DATE)
     @javax.persistence.Column(name = "FECHAREGISTRO", nullable = true, insertable = true, updatable = true)
-    public Timestamp getFecharegistro() {
+    public Date getFecharegistro() {
         return fecharegistro;
     }
 
-    public void setFecharegistro(Timestamp fecharegistro) {
+    public void setFecharegistro(Date fecharegistro) {
         this.fecharegistro = fecharegistro;
     }
 
@@ -485,15 +486,16 @@ public class SiveInformeDiario implements Serializable {
         this.usuarioregistro = usuarioregistro;
     }
 
-    private Timestamp fechamodificacion;
+    private Date fechamodificacion;
 
     @Basic
+    @Temporal(TemporalType.DATE)
     @javax.persistence.Column(name = "FECHAMODIFICACION", nullable = true, insertable = true, updatable = true)
-    public Timestamp getFechamodificacion() {
+    public Date getFechamodificacion() {
         return fechamodificacion;
     }
 
-    public void setFechamodificacion(Timestamp fechamodificacion) {
+    public void setFechamodificacion(Date fechamodificacion) {
         this.fechamodificacion = fechamodificacion;
     }
 
@@ -554,48 +556,48 @@ public class SiveInformeDiario implements Serializable {
 
         if (anio != null ? !anio.equals(that.anio) : that.anio != null) return false;
         if (bloqueado != null ? !bloqueado.equals(that.bloqueado) : that.bloqueado != null) return false;
-        if (codPatologia != null ? !codPatologia.equals(that.codPatologia) : that.codPatologia != null) return false;
+        if (patologia != null ? !patologia.equals(that.patologia) : that.patologia != null) return false;
         if (codSisniven != null ? !codSisniven.equals(that.codSisniven) : that.codSisniven != null) return false;
-        if (descF != null ? !descF.equals(that.descF) : that.descF != null) return false;
-        if (descM != null ? !descM.equals(that.descM) : that.descM != null) return false;
-        if (fecha != null ? !fecha.equals(that.fecha) : that.fecha != null) return false;
+        if (descf != null ? !descf.equals(that.descf) : that.descf != null) return false;
+        if (descm != null ? !descm.equals(that.descm) : that.descm != null) return false;
+        if (fechaNotificacion != null ? !fechaNotificacion.equals(that.fechaNotificacion) : that.fechaNotificacion != null) return false;
         if (fechamodificacion != null ? !fechamodificacion.equals(that.fechamodificacion) : that.fechamodificacion != null)
             return false;
         if (fecharegistro != null ? !fecharegistro.equals(that.fecharegistro) : that.fecharegistro != null)
             return false;
-        if (grupo10F != null ? !grupo10F.equals(that.grupo10F) : that.grupo10F != null) return false;
-        if (grupo10M != null ? !grupo10M.equals(that.grupo10M) : that.grupo10M != null) return false;
-        if (grupo11F != null ? !grupo11F.equals(that.grupo11F) : that.grupo11F != null) return false;
-        if (grupo11M != null ? !grupo11M.equals(that.grupo11M) : that.grupo11M != null) return false;
-        if (grupo12F != null ? !grupo12F.equals(that.grupo12F) : that.grupo12F != null) return false;
-        if (grupo12M != null ? !grupo12M.equals(that.grupo12M) : that.grupo12M != null) return false;
-        if (grupo13F != null ? !grupo13F.equals(that.grupo13F) : that.grupo13F != null) return false;
-        if (grupo13M != null ? !grupo13M.equals(that.grupo13M) : that.grupo13M != null) return false;
-        if (grupo1F != null ? !grupo1F.equals(that.grupo1F) : that.grupo1F != null) return false;
-        if (grupo1M != null ? !grupo1M.equals(that.grupo1M) : that.grupo1M != null) return false;
-        if (grupo2F != null ? !grupo2F.equals(that.grupo2F) : that.grupo2F != null) return false;
-        if (grupo2M != null ? !grupo2M.equals(that.grupo2M) : that.grupo2M != null) return false;
-        if (grupo3F != null ? !grupo3F.equals(that.grupo3F) : that.grupo3F != null) return false;
-        if (grupo3M != null ? !grupo3M.equals(that.grupo3M) : that.grupo3M != null) return false;
-        if (grupo4F != null ? !grupo4F.equals(that.grupo4F) : that.grupo4F != null) return false;
-        if (grupo4M != null ? !grupo4M.equals(that.grupo4M) : that.grupo4M != null) return false;
-        if (grupo5F != null ? !grupo5F.equals(that.grupo5F) : that.grupo5F != null) return false;
-        if (grupo5M != null ? !grupo5M.equals(that.grupo5M) : that.grupo5M != null) return false;
-        if (grupo6F != null ? !grupo6F.equals(that.grupo6F) : that.grupo6F != null) return false;
-        if (grupo6M != null ? !grupo6M.equals(that.grupo6M) : that.grupo6M != null) return false;
-        if (grupo7F != null ? !grupo7F.equals(that.grupo7F) : that.grupo7F != null) return false;
-        if (grupo7M != null ? !grupo7M.equals(that.grupo7M) : that.grupo7M != null) return false;
-        if (grupo8F != null ? !grupo8F.equals(that.grupo8F) : that.grupo8F != null) return false;
-        if (grupo8M != null ? !grupo8M.equals(that.grupo8M) : that.grupo8M != null) return false;
-        if (grupo9F != null ? !grupo9F.equals(that.grupo9F) : that.grupo9F != null) return false;
-        if (grupo9M != null ? !grupo9M.equals(that.grupo9M) : that.grupo9M != null) return false;
+        if (g10f != null ? !g10f.equals(that.g10f) : that.g10f != null) return false;
+        if (g10m != null ? !g10m.equals(that.g10m) : that.g10m != null) return false;
+        if (g11f != null ? !g11f.equals(that.g11f) : that.g11f != null) return false;
+        if (g11m != null ? !g11m.equals(that.g11m) : that.g11m != null) return false;
+        if (g12f != null ? !g12f.equals(that.g12f) : that.g12f != null) return false;
+        if (g12m != null ? !g12m.equals(that.g12m) : that.g12m != null) return false;
+        if (g13f != null ? !g13f.equals(that.g13f) : that.g13f != null) return false;
+        if (g13m != null ? !g13m.equals(that.g13m) : that.g13m != null) return false;
+        if (g01f != null ? !g01f.equals(that.g01f) : that.g01f != null) return false;
+        if (g01m != null ? !g01m.equals(that.g01m) : that.g01m != null) return false;
+        if (g02f != null ? !g02f.equals(that.g02f) : that.g02f != null) return false;
+        if (g02m != null ? !g02m.equals(that.g02m) : that.g02m != null) return false;
+        if (g03f != null ? !g03f.equals(that.g03f) : that.g03f != null) return false;
+        if (g03m != null ? !g03m.equals(that.g03m) : that.g03m != null) return false;
+        if (g04f != null ? !g04f.equals(that.g04f) : that.g04f != null) return false;
+        if (g04m != null ? !g04m.equals(that.g04m) : that.g04m != null) return false;
+        if (g05f != null ? !g05f.equals(that.g05f) : that.g05f != null) return false;
+        if (g05m != null ? !g05m.equals(that.g05m) : that.g05m != null) return false;
+        if (g06f != null ? !g06f.equals(that.g06f) : that.g06f != null) return false;
+        if (g06m != null ? !g06m.equals(that.g06m) : that.g06m != null) return false;
+        if (g07f != null ? !g07f.equals(that.g07f) : that.g07f != null) return false;
+        if (g07m != null ? !g07m.equals(that.g07m) : that.g07m != null) return false;
+        if (g08f != null ? !g08f.equals(that.g08f) : that.g08f != null) return false;
+        if (g08m != null ? !g08m.equals(that.g08m) : that.g08m != null) return false;
+        if (g09f != null ? !g09f.equals(that.g09f) : that.g09f != null) return false;
+        if (g09m != null ? !g09m.equals(that.g09m) : that.g09m != null) return false;
         if (municipio != null ? !municipio.equals(that.municipio) : that.municipio != null) return false;
         if (numeroOrden != null ? !numeroOrden.equals(that.numeroOrden) : that.numeroOrden != null) return false;
-        if (semanaEpi != null ? !semanaEpi.equals(that.semanaEpi) : that.semanaEpi != null) return false;
+        if (semana != null ? !semana.equals(that.semana) : that.semana != null) return false;
         if (silais != null ? !silais.equals(that.silais) : that.silais != null) return false;
-        if (totalF != null ? !totalF.equals(that.totalF) : that.totalF != null) return false;
-        if (totalM != null ? !totalM.equals(that.totalM) : that.totalM != null) return false;
-        if (unidadSalud != null ? !unidadSalud.equals(that.unidadSalud) : that.unidadSalud != null) return false;
+        if (totalf != null ? !totalf.equals(that.totalf) : that.totalf != null) return false;
+        if (totalm != null ? !totalm.equals(that.totalm) : that.totalm != null) return false;
+        if (unidad != null ? !unidad.equals(that.unidad) : that.unidad != null) return false;
         if (usuariomodificacion != null ? !usuariomodificacion.equals(that.usuariomodificacion) : that.usuariomodificacion != null)
             return false;
         if (usuarioregistro != null ? !usuarioregistro.equals(that.usuarioregistro) : that.usuarioregistro != null)
@@ -608,40 +610,40 @@ public class SiveInformeDiario implements Serializable {
     public int hashCode() {
         int result = silais != null ? silais.hashCode() : 0;
         result = 31 * result + (municipio != null ? municipio.hashCode() : 0);
-        result = 31 * result + (unidadSalud != null ? unidadSalud.hashCode() : 0);
-        result = 31 * result + (fecha != null ? fecha.hashCode() : 0);
-        result = 31 * result + (semanaEpi != null ? semanaEpi.hashCode() : 0);
-        result = 31 * result + (codPatologia != null ? codPatologia.hashCode() : 0);
-        result = 31 * result + (grupo1F != null ? grupo1F.hashCode() : 0);
-        result = 31 * result + (grupo1M != null ? grupo1M.hashCode() : 0);
-        result = 31 * result + (grupo2F != null ? grupo2F.hashCode() : 0);
-        result = 31 * result + (grupo2M != null ? grupo2M.hashCode() : 0);
-        result = 31 * result + (grupo3F != null ? grupo3F.hashCode() : 0);
-        result = 31 * result + (grupo3M != null ? grupo3M.hashCode() : 0);
-        result = 31 * result + (grupo4F != null ? grupo4F.hashCode() : 0);
-        result = 31 * result + (grupo4M != null ? grupo4M.hashCode() : 0);
-        result = 31 * result + (grupo5F != null ? grupo5F.hashCode() : 0);
-        result = 31 * result + (grupo5M != null ? grupo5M.hashCode() : 0);
-        result = 31 * result + (grupo6F != null ? grupo6F.hashCode() : 0);
-        result = 31 * result + (grupo6M != null ? grupo6M.hashCode() : 0);
-        result = 31 * result + (grupo7F != null ? grupo7F.hashCode() : 0);
-        result = 31 * result + (grupo7M != null ? grupo7M.hashCode() : 0);
-        result = 31 * result + (grupo8F != null ? grupo8F.hashCode() : 0);
-        result = 31 * result + (grupo8M != null ? grupo8M.hashCode() : 0);
-        result = 31 * result + (grupo9F != null ? grupo9F.hashCode() : 0);
-        result = 31 * result + (grupo9M != null ? grupo9M.hashCode() : 0);
-        result = 31 * result + (grupo10F != null ? grupo10F.hashCode() : 0);
-        result = 31 * result + (grupo10M != null ? grupo10M.hashCode() : 0);
-        result = 31 * result + (grupo11F != null ? grupo11F.hashCode() : 0);
-        result = 31 * result + (grupo11M != null ? grupo11M.hashCode() : 0);
-        result = 31 * result + (grupo12F != null ? grupo12F.hashCode() : 0);
-        result = 31 * result + (grupo12M != null ? grupo12M.hashCode() : 0);
-        result = 31 * result + (grupo13F != null ? grupo13F.hashCode() : 0);
-        result = 31 * result + (grupo13M != null ? grupo13M.hashCode() : 0);
-        result = 31 * result + (descF != null ? descF.hashCode() : 0);
-        result = 31 * result + (descM != null ? descM.hashCode() : 0);
-        result = 31 * result + (totalF != null ? totalF.hashCode() : 0);
-        result = 31 * result + (totalM != null ? totalM.hashCode() : 0);
+        result = 31 * result + (unidad != null ? unidad.hashCode() : 0);
+        result = 31 * result + (fechaNotificacion != null ? fechaNotificacion.hashCode() : 0);
+        result = 31 * result + (semana != null ? semana.hashCode() : 0);
+        result = 31 * result + (patologia != null ? patologia.hashCode() : 0);
+        result = 31 * result + (g01f != null ? g01f.hashCode() : 0);
+        result = 31 * result + (g01m != null ? g01m.hashCode() : 0);
+        result = 31 * result + (g02f != null ? g02f.hashCode() : 0);
+        result = 31 * result + (g02m != null ? g02m.hashCode() : 0);
+        result = 31 * result + (g03f != null ? g03f.hashCode() : 0);
+        result = 31 * result + (g03m != null ? g03m.hashCode() : 0);
+        result = 31 * result + (g04f != null ? g04f.hashCode() : 0);
+        result = 31 * result + (g04m != null ? g04m.hashCode() : 0);
+        result = 31 * result + (g05f != null ? g05f.hashCode() : 0);
+        result = 31 * result + (g05m != null ? g05m.hashCode() : 0);
+        result = 31 * result + (g06f != null ? g06f.hashCode() : 0);
+        result = 31 * result + (g06m != null ? g06m.hashCode() : 0);
+        result = 31 * result + (g07f != null ? g07f.hashCode() : 0);
+        result = 31 * result + (g07m != null ? g07m.hashCode() : 0);
+        result = 31 * result + (g08f != null ? g08f.hashCode() : 0);
+        result = 31 * result + (g08m != null ? g08m.hashCode() : 0);
+        result = 31 * result + (g09f != null ? g09f.hashCode() : 0);
+        result = 31 * result + (g09m != null ? g09m.hashCode() : 0);
+        result = 31 * result + (g10f != null ? g10f.hashCode() : 0);
+        result = 31 * result + (g10m != null ? g10m.hashCode() : 0);
+        result = 31 * result + (g11f != null ? g11f.hashCode() : 0);
+        result = 31 * result + (g11m != null ? g11m.hashCode() : 0);
+        result = 31 * result + (g12f != null ? g12f.hashCode() : 0);
+        result = 31 * result + (g12m != null ? g12m.hashCode() : 0);
+        result = 31 * result + (g13f != null ? g13f.hashCode() : 0);
+        result = 31 * result + (g13m != null ? g13m.hashCode() : 0);
+        result = 31 * result + (descf != null ? descf.hashCode() : 0);
+        result = 31 * result + (descm != null ? descm.hashCode() : 0);
+        result = 31 * result + (totalf != null ? totalf.hashCode() : 0);
+        result = 31 * result + (totalm != null ? totalm.hashCode() : 0);
         result = 31 * result + (bloqueado != null ? bloqueado.hashCode() : 0);
         result = 31 * result + (fecharegistro != null ? fecharegistro.hashCode() : 0);
         result = 31 * result + (usuarioregistro != null ? usuarioregistro.hashCode() : 0);
