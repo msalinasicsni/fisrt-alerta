@@ -69,7 +69,7 @@ public class AnalisisService {
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getDataMapas(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,
-			String semI, String semF, String anioI){
+			String semI, String semF, String anioI, String tipoIndicador){
 		// Retrieve session from Hibernate
 		List<Object[]> resultado = new ArrayList<Object[]>();
 		Session session = sessionFactory.getCurrentSession();
@@ -77,24 +77,39 @@ public class AnalisisService {
 		query =  session.createQuery("From SivePatologiasTipo patologia where patologia.patologia.codigo =:codPato");
 		query.setParameter("codPato", codPato);
 		SivePatologiasTipo patologia = (SivePatologiasTipo) query.uniqueResult();
-		if (codArea.equals("AREAREP|PAIS")){
-			query = session.createQuery(sqlData + " From SiveInformeDiario inf " +
-					"where inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anioI) " +
-					"group by inf.silais order by inf.silais");
-			query.setParameter("codPato", codPato);
-			query.setParameter("semI", Integer.parseInt(semI));
-			query.setParameter("semF", Integer.parseInt(semF));
-			query.setParameter("anioI", Integer.parseInt(anioI));
-		}
-		resultado.addAll(query.list());
-		if (codArea.equals("AREAREP|PAIS")){
-			query = session.createQuery("Select 'Pob' as poblacion, pob.divpol.dependenciaSilais.codigo as silais, sum(pob.total) as totales " +
-					"from SivePoblacionDivPol pob where pob.grupo =:tipoPob and pob.anio =:anio " +
-					"group by pob.divpol.dependenciaSilais.codigo order by pob.divpol.dependenciaSilais.codigo");
-			query.setParameter("tipoPob", patologia.getTipoPob());
-			query.setParameter("anio", Integer.parseInt(anioI));
-		}
-		resultado.addAll(query.list());
+        if (tipoIndicador.equals("CASOS")) {
+            if (codArea.equals("AREAREP|PAIS")) {
+                query = session.createQuery(sqlData + " From SiveInformeDiario inf " +
+                        "where inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anioI) " +
+                        "group by inf.silais order by inf.silais");
+                query.setParameter("codPato", codPato);
+                query.setParameter("semI", Integer.parseInt(semI));
+                query.setParameter("semF", Integer.parseInt(semF));
+                query.setParameter("anioI", Integer.parseInt(anioI));
+            }
+            resultado.addAll(query.list());
+            if (codArea.equals("AREAREP|PAIS")) {
+                query = session.createQuery("Select 'Pob' as poblacion, pob.divpol.dependenciaSilais.codigo as silais, sum(pob.total) as totales " +
+                        "from SivePoblacionDivPol pob where pob.grupo =:tipoPob and pob.anio =:anio " +
+                        "group by pob.divpol.dependenciaSilais.codigo order by pob.divpol.dependenciaSilais.codigo");
+                query.setParameter("tipoPob", patologia.getTipoPob());
+                query.setParameter("anio", Integer.parseInt(anioI));
+            }
+            resultado.addAll(query.list());
+            if (codArea.equals("AREAREP|SILAIS")) {
+                query = session.createQuery("Select municipio.codigoNacional as munici, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
+                        "where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.dependenciaSilais.entidadAdtvaId =:codSilais and inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio = :anioI) " +
+                        "group by municipio.codigoNacional order by municipio.codigoNacional");
+                query.setParameter("codSilais", codSilais);
+                query.setParameter("codPato", codPato);
+                query.setParameter("semI", Integer.parseInt(semI));
+                query.setParameter("semF", Integer.parseInt(semF));
+                query.setParameter("anioI", Integer.parseInt(anioI));
+            }
+            resultado.addAll(query.list());
+        }else{
+
+        }
 		return resultado;
 	}
 	

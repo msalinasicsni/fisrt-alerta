@@ -26,6 +26,9 @@ var ViewReport = function () {
 				tablet : 1024,
 				phone : 480
 			};
+
+            var colors = ["#0066FF","#FF0000","#009900","#FF6600","#FF3399","#008B8B","#663399","#FFD700","#0000FF","#DC143C","#32CD32","#FF8C00","#C71585","#20B2AA","#6A5ACD","#9ACD32"];
+
 			var title = "";
 			
 			/* TABLETOOLS */
@@ -53,7 +56,7 @@ var ViewReport = function () {
 	            	                                     "sTitle": ":fff:",
 	            	                                     "sPdfMessage": "FF",
              	                                     "oSelectorOpts": { filter: 'applied', order: 'current' },
-             	                                     "sPdfOrientation": "landscape",
+             	                                     "sPdfOrientation": "landscape"
              	                                 }
              	                                 ]
              	                }
@@ -103,7 +106,7 @@ var ViewReport = function () {
 	            	                                     "sTitle": ":fff:",
 	            	                                     "sPdfMessage": "FF",
              	                                     "oSelectorOpts": { filter: 'applied', order: 'current' },
-             	                                     "sPdfOrientation": "landscape",
+             	                                     "sPdfOrientation": "landscape"
              	                                 }
              	                                 ]
              	                }
@@ -339,7 +342,7 @@ var ViewReport = function () {
 				    //Number - Spacing between data sets within X values
 				    barDatasetSpacing : 1,
 				    //Boolean - Re-draw chart on page resize
-			        responsive: true,
+			        responsive: true
 			    };
 
 			    var barData = {
@@ -347,18 +350,18 @@ var ViewReport = function () {
 			         datasets: [
 				        {
 				            label: series1,
-				            fillColor: "rgba(220,220,220,0.5)",
-				            strokeColor: "rgba(220,220,220,0.8)",
-				            highlightFill: "rgba(220,220,220,0.75)",
-				            highlightStroke: "rgba(220,220,220,1)",
+                            fillColor: convertHex(colors[0],70), //"rgba(220,220,220,0.5)",
+                            strokeColor: convertHex(colors[0],95), //"rgba(220,220,220,0.8)",
+                            highlightFill: convertHex(colors[0],90), //"rgba(220,220,220,0.75)",
+                            highlightStroke: convertHex(colors[0],100), //"rgba(220,220,220,1)",
 				            data: values1
 				        },
 				        {
 				            label: series2,
-				            fillColor: "rgba(151,187,205,0.5)",
-				            strokeColor: "rgba(151,187,205,0.8)",
-				            highlightFill: "rgba(151,187,205,0.75)",
-				            highlightStroke: "rgba(151,187,205,1)",
+                            fillColor: convertHex(colors[1],70), //"rgba(151,187,205,0.5)",
+                            strokeColor: convertHex(colors[1],95), //"rgba(151,187,205,0.8)",
+                            highlightFill: convertHex(colors[1],90), //"rgba(151,187,205,0.75)",
+                            highlightStroke: convertHex(colors[1],100), //"rgba(151,187,205,1)",
 				            data: values2
 				        }
 				    ]
@@ -395,7 +398,7 @@ var ViewReport = function () {
 				    //Number - Spacing between data sets within X values
 				    barDatasetSpacing : 1,
 				    //Boolean - Re-draw chart on page resize
-			        responsive: true,
+			        responsive: true
 			    };
 
 			    var barData = {
@@ -403,18 +406,18 @@ var ViewReport = function () {
 			         datasets: [
 				        {
 				            label: series1,
-				            fillColor: "rgba(220,220,220,0.5)",
-				            strokeColor: "rgba(220,220,220,0.8)",
-				            highlightFill: "rgba(220,220,220,0.75)",
-				            highlightStroke: "rgba(220,220,220,1)",
+                            fillColor: convertHex(colors[0],70), //"rgba(220,220,220,0.5)",
+                            strokeColor: convertHex(colors[0],95), //"rgba(220,220,220,0.8)",
+                            highlightFill: convertHex(colors[0],90), //"rgba(220,220,220,0.75)",
+                            highlightStroke: convertHex(colors[0],100), //"rgba(220,220,220,1)",
 				            data: values1
 				        },
 				        {
 				            label: series2,
-				            fillColor: "rgba(151,187,205,0.5)",
-				            strokeColor: "rgba(151,187,205,0.8)",
-				            highlightFill: "rgba(151,187,205,0.75)",
-				            highlightStroke: "rgba(151,187,205,1)",
+                            fillColor: convertHex(colors[1],70), //"rgba(151,187,205,0.5)",
+                            strokeColor: convertHex(colors[1],95), //"rgba(151,187,205,0.8)",
+                            highlightFill: convertHex(colors[1],90), //"rgba(151,187,205,0.75)",
+                            highlightStroke: convertHex(colors[1],100), //"rgba(151,187,205,1)",
 				            data: values2
 				        }
 				    ]
@@ -451,7 +454,7 @@ var ViewReport = function () {
 				    //Number - Spacing between data sets within X values
 				    barDatasetSpacing : 1,
 				    //Boolean - Re-draw chart on page resize
-			        responsive: true,
+			        responsive: true
 			    };
 
 			    var barData = {
@@ -459,18 +462,18 @@ var ViewReport = function () {
 			         datasets: [
 				        {
 				            label: series1,
-				            fillColor: "rgba(220,220,220,0.5)",
-				            strokeColor: "rgba(220,220,220,0.8)",
-				            highlightFill: "rgba(220,220,220,0.75)",
-				            highlightStroke: "rgba(220,220,220,1)",
+				            fillColor: convertHex(colors[0],70), //"rgba(220,220,220,0.5)",
+				            strokeColor: convertHex(colors[0],95), //"rgba(220,220,220,0.8)",
+				            highlightFill: convertHex(colors[0],90), //"rgba(220,220,220,0.75)",
+				            highlightStroke: convertHex(colors[0],100), //"rgba(220,220,220,1)",
 				            data: values1
 				        },
 				        {
 				            label: series2,
-				            fillColor: "rgba(151,187,205,0.5)",
-				            strokeColor: "rgba(151,187,205,0.8)",
-				            highlightFill: "rgba(151,187,205,0.75)",
-				            highlightStroke: "rgba(151,187,205,1)",
+				            fillColor: convertHex(colors[1],70), //"rgba(151,187,205,0.5)",
+				            strokeColor: convertHex(colors[1],95), //"rgba(151,187,205,0.8)",
+				            highlightFill: convertHex(colors[1],90), //"rgba(151,187,205,0.75)",
+				            highlightStroke: convertHex(colors[1],100), //"rgba(151,187,205,1)",
 				            data: values2
 				        }
 				    ]
@@ -485,7 +488,18 @@ var ViewReport = function () {
 
                 legend(document.getElementById("lineLegend3"), barData);
             }
-            	
+
+            // Convert Hex color to RGB
+            function convertHex(hex,opacity){
+                hex = hex.replace('#','');
+                r = parseInt(hex.substring(0,2), 16);
+                g = parseInt(hex.substring(2,4), 16);
+                b = parseInt(hex.substring(4,6), 16);
+
+                // Add Opacity to RGB to obtain RGBA
+                result = 'rgba('+r+','+g+','+b+','+opacity/100+')';
+                return result;
+            }
         }
     };
 

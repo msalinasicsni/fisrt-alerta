@@ -268,6 +268,20 @@
 												</div>
                                             </section>
                                             </div>
+                                            <div class="row">
+                                                <section class="col col-3">
+                                                    <label class="text-left txt-color-blue font-sm">
+                                                        <spring:message code="year1" />
+                                                    </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"></span>
+                                                        <select name="tipoIndicador" id="tipoIndicador" class="select2">
+                                                            <option value="CASOS">Casos</option>
+                                                            <option value="TASAS">Tasas</option>
+                                                        </select>
+                                                    </div>
+                                                </section>
+                                            </div>
                                             <!-- END ROW -->
                                    		<footer>
 											<button type="submit" id="view-report" class="btn btn-info"><i class="fa fa-refresh"></i> <spring:message code="update" /></button>
@@ -340,7 +354,7 @@
 	<script src="${jqueryValidate}"></script>
 	<spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
 	<spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>				
-	<script src="${jQValidationLoc}"/></script>
+	<script src="${jQValidationLoc}"></script>
 	<!-- jQuery Select2 Input -->
 	<spring:url value="/resources/js/plugin/select2/select2.min.js" var="selectPlugin"/>
 	<script src="${selectPlugin}"></script>
@@ -356,6 +370,8 @@
 	<script src="${jqueryVectorMap}"></script>
 	<spring:url value="/resources/js/plugin/vectormap/nic-map-sil.js" var="jqueryVectorMapSilais" />
 	<script src="${jqueryVectorMapSilais}"></script>
+    <spring:url value="/resources/js/plugin/vectormap/nic-map-mun.js" var="jqueryVectorMapMunicipios" />
+    <script src="${jqueryVectorMapMunicipios}"></script>
 	<!-- END PAGE LEVEL PLUGINS -->
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
 	<spring:url value="/resources/scripts/analisis/mapas.js" var="mapas" />

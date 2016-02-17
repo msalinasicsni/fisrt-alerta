@@ -28,7 +28,7 @@ var ViewReport = function () {
 				tablet : 1024,
 				phone : 480
 			};
-			backColors = ["#E6E6E6","#A4A4A4","#6E6E6E","#E3E6AF","#BCC06E","#8F9248","#A0D7E9","#7BBACF","#4D889B","#EDCBE0","#D489B7","#A96890"];
+			var backColors = ["#0066FF","#FF0000","#009900","#FF6600","#FF3399","#008B8B","#663399","#FFD700","#0000FF","#DC143C","#32CD32","#FF8C00","#C71585","#20B2AA","#6A5ACD","#9ACD32"];
 			
 			var lineOptions = {
 				    ///Boolean - Whether grid lines are shown across the chart
@@ -201,7 +201,7 @@ var ViewReport = function () {
 	        	            	                                     "sTitle": ":fff:",
 	        	            	                                     "sPdfMessage": "FF",
 	                     	                                     "oSelectorOpts": { filter: 'applied', order: 'current' },
-	                     	                                     "sPdfOrientation": "landscape",
+	                     	                                     "sPdfOrientation": "landscape"
 	                     	                                 }
 	                     	                                 ]
 	                     	                }
@@ -269,8 +269,16 @@ var ViewReport = function () {
             		}
             		else{
             			showMessage("Sin datos", "No se encontraron datos como resultado de esta consulta", "#AF801C", "fa fa-warning", 3000);
-	        			lineChart([],[]);
+	        			title = '';
+                        lineChart([],[]);
 	        			lineChart2([],[]);
+                        /* TABLETOOLS */
+                        if (!(table1 == null)) {
+                            table1.fnClearTable();
+                            table1.fnDestroy();
+                            table1=null;
+                            $('#data_result').html('');
+                        }
             		}
             		setTimeout($.unblockUI, 100);
     			})

@@ -56,7 +56,7 @@ public class AnalisisDescService {
 		}
 		else if (codArea.equals("AREAREP|DEPTO")){
 			query = session.createQuery(sqlData + " From SiveInformeDiario inf, Divisionpolitica  municipio " +
-					"where cast(inf.municipioLong as long ) = municipio.divisionpoliticaId and  municipio.dependencia.divisionpoliticaId =:codDepartamento and inf.patologia.codigo =:codPato " +
+					"where cast(inf.municipio as long ) = municipio.divisionpoliticaId and  municipio.dependencia.divisionpoliticaId =:codDepartamento and inf.patologia.codigo =:codPato " +
 					"and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anioI or inf.anio=:anioF) group by inf.anio order by inf.anio");
 			query.setParameter("codPato", codPato);
 			query.setParameter("codDepartamento", codDepartamento);
@@ -67,7 +67,7 @@ public class AnalisisDescService {
 		}
 		else if (codArea.equals("AREAREP|MUNI")){
 			query = session.createQuery(sqlData + " From SiveInformeDiario inf, Divisionpolitica  municipio " +
-					"where cast(inf.municipioLong as long) = municipio.divisionpoliticaId and municipio.divisionpoliticaId =:codMunicipio and inf.patologia.codigo =:codPato " +
+					"where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.divisionpoliticaId =:codMunicipio and inf.patologia.codigo =:codPato " +
 					"and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anioI or inf.anio=:anioF) group by inf.anio order by inf.anio");
 			query.setParameter("codPato", codPato);
 			query.setParameter("codMunicipio", codMunicipio);

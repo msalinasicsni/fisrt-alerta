@@ -50,6 +50,9 @@ var ViewReport = function () {
     					},
     					codSilaisAtencion: {
     						required : true
+                        },
+                        tipoIndicador: {
+                            required : true
                         }
     				},
     				// Do not change code below
@@ -103,11 +106,19 @@ var ViewReport = function () {
             	$.getJSON(parametros.sActionUrl, $('#parameters_form').serialize(), function(data) {
             		countryData = []; 
             		for(var row in data){
-        				countryData[data[row][0]] = data[row][1];
+                        countryData[data[row][0]] = data[row][1];
         			}
+                    console.log(data);
+                    console.log(countryData);
+                    var nombreMapa = '';
+                    if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
+                        nombreMapa = 'nicaragua_mill_en';
+                    }else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
+                        nombreMapa = 'nicaragua_mun_mill_en';
+                    }
             		$('#vector-map').html('');
         			$('#vector-map').vectorMap({
-        				map : 'nicaragua_mill_en',
+        				map : nombreMapa,
         				backgroundColor : '#fff',
         				regionStyle : {
         					initial : {

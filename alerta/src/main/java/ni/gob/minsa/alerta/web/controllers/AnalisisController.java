@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.web.controllers;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -85,7 +86,9 @@ public class AnalisisController {
 		logger.debug("presentar mapas");
 		List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
     	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	List<AreaRep> areas = catalogosService.getAreaRep();
+    	List<AreaRep> areas = new ArrayList<AreaRep>();
+        areas.add(catalogosService.getAreaRep("AREAREP|PAIS"));
+        areas.add(catalogosService.getAreaRep("AREAREP|SILAIS"));
     	List<Semanas> semanas = catalogosService.getSemanas();
     	List<Anios> anios = catalogosService.getAnios();
     	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
@@ -112,9 +115,10 @@ public class AnalisisController {
     		@RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
-    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException {
+    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "tipoIndicador", required = false) String tipoIndicador) throws ParseException {
         logger.info("Obteniendo los datos de mapas en JSON");
-        List<Object[]> datos = analisisService.getDataMapas(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI);
+        List<Object[]> datos = analisisService.getDataMapas(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI, tipoIndicador);
         if (datos == null){
         	logger.debug("Nulo");
         }

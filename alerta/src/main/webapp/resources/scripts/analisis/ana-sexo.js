@@ -26,7 +26,7 @@ var ViewReport = function () {
 				phone : 480
 			};
 			var title = "";
-			
+            var colors = ["#0066FF","#FF0000","#009900","#FF6600","#FF3399","#008B8B","#663399","#FFD700","#0000FF","#DC143C","#32CD32","#FF8C00","#C71585","#20B2AA","#6A5ACD","#9ACD32"];
 			/* TABLETOOLS */
 			var table1 = $('#data_result').dataTable({
 				
@@ -52,7 +52,7 @@ var ViewReport = function () {
 	            	                                     "sTitle": ":fff:",
 	            	                                     "sPdfMessage": "FF",
              	                                     "oSelectorOpts": { filter: 'applied', order: 'current' },
-             	                                     "sPdfOrientation": "landscape",
+             	                                     "sPdfOrientation": "landscape"
              	                                 }
              	                                 ]
              	                }
@@ -261,20 +261,20 @@ var ViewReport = function () {
 			        //Boolean - Whether we animate scaling the Doughnut from the centre
 			        animateScale: false,
 			        //Boolean - Re-draw chart on page resize
-			        responsive: true,
+			        responsive: true
 			    };
 
 			    pieData = [
 				    {
 				        value: porcM1,
-				        color: "rgba(151,187,205,1)",
-				        highlight: "rgba(151,187,205,0.8)",
+				        color: convertHex(colors[0],100),// "rgba(151,187,205,1)",
+				        highlight: convertHex(colors[0],70),// "rgba(151,187,205,0.8)",
 				        label: "Masculino"
 				    },
 				    {
 				        value: porcF1,
-				        color: "rgba(169, 3, 41, 0.7)",
-				        highlight: "rgba(169, 3, 41, 0.7)",
+				        color: convertHex(colors[1],100), //"rgba(169, 3, 41, 0.7)",
+				        highlight: convertHex(colors[1],70),// "rgba(169, 3, 41, 0.7)",
 				        label: "Femenino"
 				    }
 			    ];
@@ -309,20 +309,20 @@ var ViewReport = function () {
 			        //Boolean - Whether we animate scaling the Doughnut from the centre
 			        animateScale: false,
 			        //Boolean - Re-draw chart on page resize
-			        responsive: true,
+			        responsive: true
 			    };
 
 			    pieData = [
 				    {
 				        value: porcM2,
-				        color: "rgba(151,187,205,1)",
-				        highlight: "rgba(151,187,205,0.8)",
+				        color: convertHex(colors[0],100),// "rgba(151,187,205,1)",
+				        highlight: convertHex(colors[0],70),// "rgba(151,187,205,0.8)",
 				        label: "Masculino"
 				    },
 				    {
 				        value: porcF2,
-				        color: "rgba(169, 3, 41, 0.7)",
-				        highlight: "rgba(169, 3, 41, 0.7)",
+				        color: convertHex(colors[1],100),// "rgba(169, 3, 41, 0.7)",
+				        highlight: convertHex(colors[1],70),// "rgba(169, 3, 41, 0.7)",
 				        label: "Femenino"
 				    }
 			    ];
@@ -357,20 +357,20 @@ var ViewReport = function () {
 			        //Boolean - Whether we animate scaling the Doughnut from the centre
 			        animateScale: false,
 			        //Boolean - Re-draw chart on page resize
-			        responsive: true,
+			        responsive: true
 			    };
 
 			    pieData = [
 				    {
 				        value: porcM3,
-				        color: "rgba(151,187,205,1)",
-				        highlight: "rgba(151,187,205,0.8)",
+				        color: convertHex(colors[0],100),// "rgba(151,187,205,1)",
+				        highlight: convertHex(colors[0],70), //"rgba(151,187,205,0.8)",
 				        label: "Masculino"
 				    },
 				    {
 				        value: porcF3,
-				        color: "rgba(169, 3, 41, 0.7)",
-				        highlight: "rgba(169, 3, 41, 0.7)",
+				        color: convertHex(colors[1],100),// "rgba(169, 3, 41, 0.7)",
+				        highlight: convertHex(colors[1],70),// "rgba(169, 3, 41, 0.7)",
 				        label: "Femenino"
 				    }
 			    ];
@@ -384,6 +384,18 @@ var ViewReport = function () {
 			    // END PIE CHART
 
                 legend(document.getElementById("pieLegend3"), pieData);
+            }
+
+            // Convert Hex color to RGB
+            function convertHex(hex,opacity){
+                hex = hex.replace('#','');
+                r = parseInt(hex.substring(0,2), 16);
+                g = parseInt(hex.substring(2,4), 16);
+                b = parseInt(hex.substring(4,6), 16);
+
+                // Add Opacity to RGB to obtain RGBA
+                result = 'rgba('+r+','+g+','+b+','+opacity/100+')';
+                return result;
             }
             	
         }
