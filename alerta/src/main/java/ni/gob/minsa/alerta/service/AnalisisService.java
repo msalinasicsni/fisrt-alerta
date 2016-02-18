@@ -69,34 +69,88 @@ public class AnalisisService {
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getDataMapas(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,
-			String semI, String semF, String anioI, String tipoIndicador){
+			String semI, String semF, String anioI, String tipoIndicador, boolean paisPorSILAIS){
 		// Retrieve session from Hibernate
 		List<Object[]> resultado = new ArrayList<Object[]>();
+        List<Object[]> resultadoCasos = new ArrayList<Object[]>();
+        List<Object[]> datosPoblacion = new ArrayList<Object[]>();
 		Session session = sessionFactory.getCurrentSession();
 		Query query = null;
 		query =  session.createQuery("From SivePatologiasTipo patologia where patologia.patologia.codigo =:codPato");
 		query.setParameter("codPato", codPato);
 		SivePatologiasTipo patologia = (SivePatologiasTipo) query.uniqueResult();
-        if (tipoIndicador.equals("CASOS")) {
             if (codArea.equals("AREAREP|PAIS")) {
-                query = session.createQuery(sqlData + " From SiveInformeDiario inf " +
-                        "where inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anioI) " +
-                        "group by inf.silais order by inf.silais");
-                query.setParameter("codPato", codPato);
-                query.setParameter("semI", Integer.parseInt(semI));
-                query.setParameter("semF", Integer.parseInt(semF));
-                query.setParameter("anioI", Integer.parseInt(anioI));
-            }
-            resultado.addAll(query.list());
-            if (codArea.equals("AREAREP|PAIS")) {
-                query = session.createQuery("Select 'Pob' as poblacion, pob.divpol.dependenciaSilais.codigo as silais, sum(pob.total) as totales " +
-                        "from SivePoblacionDivPol pob where pob.grupo =:tipoPob and pob.anio =:anio " +
-                        "group by pob.divpol.dependenciaSilais.codigo order by pob.divpol.dependenciaSilais.codigo");
-                query.setParameter("tipoPob", patologia.getTipoPob());
-                query.setParameter("anio", Integer.parseInt(anioI));
-            }
-            resultado.addAll(query.list());
-            if (codArea.equals("AREAREP|SILAIS")) {
+                if (paisPorSILAIS) {
+                    query = session.createQuery(sqlData + " From SiveInformeDiario inf " +
+                            "where inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anioI) " +
+                            "group by inf.silais order by inf.silais");
+                    query.setParameter("codPato", codPato);
+                    query.setParameter("semI", Integer.parseInt(semI));
+                    query.setParameter("semF", Integer.parseInt(semF));
+                    query.setParameter("anioI", Integer.parseInt(anioI));
+
+                    if (tipoIndicador.equals("CASOS")) {
+                        resultado.addAll(query.list());
+                    } else {
+                        resultadoCasos.addAll(query.list());
+                        query = session.createQuery("Select 'Pob' as poblacion, pob.divpol.dependenciaSilais.codigo as silais, sum(pob.total) as totales " +
+                                "from SivePoblacionDivPol pob where pob.grupo =:tipoPob and pob.anio =:anio " +
+                                "group by pob.divpol.dependenciaSilais.codigo order by pob.divpol.dependenciaSilais.codigo");
+                        query.setParameter("tipoPob", patologia.getTipoPob());
+                        query.setParameter("anio", Integer.parseInt(anioI));
+
+                        datosPoblacion.addAll(query.list());
+                        double tasa = 0d;
+                        for (Object[] casos : resultadoCasos) {
+                            for (Object[] poblacion : datosPoblacion) {
+                                if (casos[0].toString().equals(poblacion[1].toString())) {
+                                    tasa = (double) Math.round((Integer.valueOf(casos[1].toString()).doubleValue()) / Long.valueOf(poblacion[2].toString()) * patologia.getFactor() * 100) / 100;
+                                    break;
+                                }
+                            }
+                            Object[] tasas = new Object[2];
+                            tasas[0] = casos[0]; //codigo silais
+                            tasas[1] = tasa; // tasa calculada
+                            resultado.add(tasas);
+                        }
+                    }
+                }else{ //por municipios
+                    query = session.createQuery("Select municipio.codigoNacional as munici, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
+                            "where cast(inf.municipio as long) = municipio.divisionpoliticaId and inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio = :anioI) " +
+                            "group by municipio.codigoNacional order by municipio.codigoNacional");
+                    query.setParameter("codPato", codPato);
+                    query.setParameter("semI", Integer.parseInt(semI));
+                    query.setParameter("semF", Integer.parseInt(semF));
+                    query.setParameter("anioI", Integer.parseInt(anioI));
+
+                    if (tipoIndicador.equals("CASOS")) {
+                        resultado.addAll(query.list());
+                    }else{
+                        resultadoCasos.addAll(query.list());
+
+                        query = session.createQuery("Select 'Pob' as poblacion, pob.divpol.codigoNacional as muni, sum(pob.total) as totales " +
+                                "from SivePoblacionDivPol pob where pob.grupo =:tipoPob and pob.anio =:anio " +
+                                "group by pob.divpol.codigoNacional order by pob.divpol.codigoNacional");
+                        query.setParameter("tipoPob", patologia.getTipoPob());
+                        query.setParameter("anio", Integer.parseInt(anioI));
+
+                        datosPoblacion.addAll(query.list());
+                        double tasa = 0d;
+                        for(Object[] casos : resultadoCasos){
+                            for(Object[] poblacion : datosPoblacion){
+                                if (casos[0].toString().equals(poblacion[1].toString())){
+                                    tasa = (double) Math.round((Integer.valueOf(casos[1].toString()).doubleValue())/Long.valueOf(poblacion[2].toString())*patologia.getFactor()*100)/100;
+                                    break;
+                                }
+                            }
+                            Object[] tasas = new Object[2];
+                            tasas[0] = casos[0]; //codigo municipio
+                            tasas[1] = tasa; // tasa calculada
+                            resultado.add(tasas);
+                        }
+                    }
+                }
+            } else if (codArea.equals("AREAREP|SILAIS")) {
                 query = session.createQuery("Select municipio.codigoNacional as munici, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
                         "where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.dependenciaSilais.entidadAdtvaId =:codSilais and inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio = :anioI) " +
                         "group by municipio.codigoNacional order by municipio.codigoNacional");
@@ -105,11 +159,36 @@ public class AnalisisService {
                 query.setParameter("semI", Integer.parseInt(semI));
                 query.setParameter("semF", Integer.parseInt(semF));
                 query.setParameter("anioI", Integer.parseInt(anioI));
-            }
-            resultado.addAll(query.list());
-        }else{
 
-        }
+                if (tipoIndicador.equals("CASOS")) {
+                    resultado.addAll(query.list());
+                }else{
+                    resultadoCasos.addAll(query.list());
+
+                    query = session.createQuery("Select 'Pob' as poblacion, pob.divpol.codigoNacional as muni, sum(pob.total) as totales " +
+                            "from SivePoblacionDivPol pob where pob.grupo =:tipoPob and pob.anio =:anio and pob.divpol.dependenciaSilais.codigo =:codSilais " +
+                            "group by pob.divpol.codigoNacional order by pob.divpol.codigoNacional");
+                    query.setParameter("tipoPob", patologia.getTipoPob());
+                    query.setParameter("anio", Integer.parseInt(anioI));
+                    query.setParameter("codSilais", codSilais);
+
+                    datosPoblacion.addAll(query.list());
+                    double tasa = 0d;
+                    for(Object[] casos : resultadoCasos){
+                        for(Object[] poblacion : datosPoblacion){
+                            if (casos[0].toString().equals(poblacion[1].toString())){
+                                tasa = (double) Math.round((Integer.valueOf(casos[1].toString()).doubleValue())/Long.valueOf(poblacion[2].toString())*patologia.getFactor()*100)/100;
+                                break;
+                            }
+                        }
+                        Object[] tasas = new Object[2];
+                        tasas[0] = casos[0]; //codigo municipio
+                        tasas[1] = tasa; // tasa calculada
+                        resultado.add(tasas);
+                    }
+                }
+            }
+
 		return resultado;
 	}
 	

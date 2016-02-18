@@ -136,9 +136,10 @@
                                       		<div class="input-group">
 												<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
 												<select data-placeholder="<spring:message code="act.select" /> <spring:message code="level" />" name="codArea" id="codArea" class="select2">
-													<option value="AREAREP|PAIS">Pais</option>
 													<c:forEach items="${areas}" var="area">
-														<option value="${area.codigo}">${area.valor}</option>
+                                                        <c:if test="${area.codigo ne 'AREAREP|UNI'}">
+                                                            <option value="${area.codigo}">${area.valor}</option>
+                                                        </c:if>
 													</c:forEach>
 												</select>
 											</div>
@@ -208,7 +209,6 @@
 	                                        	<div class="input-group">
 													<span class="input-group-addon"></span>
 													<select name="anioI" id="anioI" class="select2">
-														<option value="2009">2009</option>
 														<c:forEach items="${anios}" var="anio">
 															<option value="${anio.valor}">${anio.valor}</option>
 														</c:forEach>
@@ -289,7 +289,7 @@
 	<script src="${jqueryValidate}"></script>
 	<spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
 	<spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>				
-	<script src="${jQValidationLoc}"/></script>
+	<script src="${jQValidationLoc}"></script>
 	<!-- jQuery Select2 Input -->
 	<spring:url value="/resources/js/plugin/select2/select2.min.js" var="selectPlugin"/>
 	<script src="${selectPlugin}"></script>

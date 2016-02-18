@@ -128,15 +128,17 @@ var ViewReport = function () {
             	$('#lineChart-title').html("<h5>"+title+"</h5>");
                 pseries = [
                   {
-                    label: 'Hombres',
-                    data: hombres
+                      label: 'Hombres',
+                      color: '#0066FF',
+                      data: hombres
                   },
                   {
-                    label: 'Mujeres',
-                    data: mujeres,
-                    pyramid: {
-                      direction: 'L'
-                    }
+                      label: 'Mujeres',
+                      color: '#FF0000',
+                      data: mujeres,
+                      pyramid: {
+                          direction: 'L'
+                      }
                   }
                 ];
 
@@ -145,6 +147,7 @@ var ViewReport = function () {
                       pyramid: {
                         show: true
                       },
+                        bars: { fillColor: { colors: [ { opacity: 1 }, { opacity: 1 } ] } }
                     },
                     xaxis: {
                       tickFormatter: function(v) {
@@ -153,7 +156,7 @@ var ViewReport = function () {
                     },
                     grid: {
                         hoverable: true
-                    },
+                    }
                 });
 
                 function showTooltip(x, y, contents) {
@@ -164,8 +167,8 @@ var ViewReport = function () {
                       left: x + 5,
                       border: "1px solid #fdd",
                       padding: "2px",
-                      "background-color": "#fee",
-                      opacity: .8
+                      "background-color": "#FACC2E",
+                      opacity: .9
                     }).appendTo("body").fadeIn(200);
                 }
 

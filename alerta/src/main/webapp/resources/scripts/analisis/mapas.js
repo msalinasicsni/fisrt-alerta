@@ -73,30 +73,35 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dNivelPais').show();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
             				$('#silais').show();
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dNivelPais').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
             				$('#silais').hide();
             				$('#departamento').show();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dNivelPais').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
             				$('#silais').show();
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').hide();
+                            $('#dNivelPais').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
             				$('#silais').show();
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').show();
+                            $('#dNivelPais').hide();
             			}
                     });
             
@@ -108,14 +113,20 @@ var ViewReport = function () {
             		for(var row in data){
                         countryData[data[row][0]] = data[row][1];
         			}
-                    console.log(data);
-                    console.log(countryData);
-                    var nombreMapa = '';
+                    var nombreMapa = '', tituloMapa = '';
                     if ($('#codArea option:selected').val() == "AREAREP|PAIS"){
-                        nombreMapa = 'nicaragua_mill_en';
+                        console.log($('input[name="nivelPais"]:checked', '#parameters_form').val());
+                        if ( $('input[name="nivelPais"]:checked', '#parameters_form').val()=='true') {
+                            nombreMapa = 'nicaragua_mill_en';
+                        }else{
+                            nombreMapa = 'nicaragua_mun_mill_en';
+                        }
                     }else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
                         nombreMapa = 'nicaragua_mun_mill_en';
                     }
+
+                    tituloMapa = $('#tipoIndicador option:selected').text();
+
             		$('#vector-map').html('');
         			$('#vector-map').vectorMap({
         				map : nombreMapa,
@@ -137,14 +148,14 @@ var ViewReport = function () {
         				        legend: {
         			                horizontal: true,
         			                cssClass: 'jvectormap-legend-icons',
-        			                title: 'Casos'
+        			                title: tituloMapa
         			              }
         					}]
         				},
         				onRegionTipShow: function(event, label, code){
         			        label.html(
         			          '<b>'+label.html()+'</b></br>'+
-        			          '<b>Casos: </b>'+countryData[code]
+        			          '<b>'+tituloMapa+': </b>'+countryData[code]
         			        );
         			      }
         			});

@@ -145,7 +145,6 @@
                                       		<div class="input-group">
 												<span class="input-group-addon"> <i class="fa fa-stethoscope"></i></span>
 												<select data-placeholder="<spring:message code="act.select" /> <spring:message code="pato" />" name="codPato" id="codPato" class="select2">
-													<option value="4620">4620</option>
 													<c:forEach items="${patologias}" var="patologia">
 														<option value="${patologia.codigo}">${patologia.codigo} - ${patologia.nombre}</option>
 													</c:forEach>
@@ -160,7 +159,6 @@
                                       		<div class="input-group">
 												<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
 												<select data-placeholder="<spring:message code="act.select" /> <spring:message code="level" />" name="codArea" id="codArea" class="select2">
-													<option value="AREAREP|PAIS">Pais</option>
 													<c:forEach items="${areas}" var="area">
 														<option value="${area.codigo}">${area.valor}</option>
 													</c:forEach>
@@ -169,6 +167,24 @@
 											</section>
                                    		</div>
                                    		<!-- END ROW -->
+                                            <!-- START ROW -->
+                                            <div id="dNivelPais" hidden="hidden" class="row">
+                                                <section class="col col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="inline-group">
+                                                        <section class="col col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                                            <label class="radio">
+                                                                <input type="radio" name="nivelPais" id="rbNPSILAIS" value="true" checked="checked">
+                                                                <i></i><spring:message code="lbl.silais"/></label>
+                                                        </section>
+                                                        <section class="col col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                                            <label class="radio">
+                                                                <input type="radio" name="nivelPais" value="false" id="rbNPMunicipio">
+                                                                <i></i><spring:message code="lbl.municps"/></label>
+                                                        </section>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                            <!-- END ROW -->
                                    		<!-- START ROW -->
                                    		<div class="row">
                                    			<section id="silais" hidden="hidden">
@@ -225,42 +241,39 @@
                                    		<!-- END ROW -->
                                    		<!-- START ROW -->
                                         <div class="row">
-                                            <section class="col col-3">
+                                            <section class="col col-4">
                                             	<label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="week1" />
                                             	</label>
 	                                        	<div class="input-group">
 													<span class="input-group-addon"></span>
 													<select name="semI" id="semI" class="select2">
-														<option value="1">1</option>
 														<c:forEach items="${semanas}" var="semana">
 															<option value="${semana.valor}">${semana.valor}</option>
 														</c:forEach>
 													</select>
 												</div>
                                         	</section>
-                                            <section class="col col-3">
+                                            <section class="col col-4">
 	                                            <label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="week2" />
                                             	</label>
 	                                        	<div class="input-group">
 													<span class="input-group-addon"></span>
 													<select name="semF" id="semF" class="select2">
-														<option value="36">36</option>
 														<c:forEach items="${semanas}" var="semana">
 															<option value="${semana.valor}">${semana.valor}</option>
 														</c:forEach>
 													</select>
 												</div>
                                        		</section>
-                                            <section class="col col-3">
+                                            <section class="col col-4">
                                             	<label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="year1" />
                                             	</label>
 	                                        	<div class="input-group">
 													<span class="input-group-addon"></span>
 													<select name="anioI" id="anioI" class="select2">
-														<option value="2014">2014</option>
 														<c:forEach items="${anios}" var="anio">
 															<option value="${anio.valor}">${anio.valor}</option>
 														</c:forEach>
@@ -269,15 +282,15 @@
                                             </section>
                                             </div>
                                             <div class="row">
-                                                <section class="col col-3">
+                                                <section class="col col-6">
                                                     <label class="text-left txt-color-blue font-sm">
-                                                        <spring:message code="year1" />
+                                                        <spring:message code="indicator" />
                                                     </label>
                                                     <div class="input-group">
                                                         <span class="input-group-addon"></span>
                                                         <select name="tipoIndicador" id="tipoIndicador" class="select2">
-                                                            <option value="CASOS">Casos</option>
-                                                            <option value="TASAS">Tasas</option>
+                                                            <option value="CASOS" selected><spring:message code="lbl.cases" /></option>
+                                                            <option value="TASAS"><spring:message code="lbl.rates" /></option>
                                                         </select>
                                                     </div>
                                                 </section>

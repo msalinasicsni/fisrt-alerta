@@ -12,11 +12,7 @@ import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.sive.SivePatologias;
-import ni.gob.minsa.alerta.service.AnalisisService;
-import ni.gob.minsa.alerta.service.CatalogoService;
-import ni.gob.minsa.alerta.service.DivisionPoliticaService;
-import ni.gob.minsa.alerta.service.EntidadAdmonService;
-import ni.gob.minsa.alerta.service.SivePatologiasService;
+import ni.gob.minsa.alerta.service.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,12 +112,13 @@ public class AnalisisController {
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
     		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
-            @RequestParam(value = "tipoIndicador", required = false) String tipoIndicador) throws ParseException {
+            @RequestParam(value = "tipoIndicador", required = false) String tipoIndicador,
+            @RequestParam(value = "nivelPais", required = false) boolean paisPorSILAIS) throws ParseException {
         logger.info("Obteniendo los datos de mapas en JSON");
-        List<Object[]> datos = analisisService.getDataMapas(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI, tipoIndicador);
-        if (datos == null){
-        	logger.debug("Nulo");
-        }
+        List<Object[]> datos =  analisisService.getDataMapas(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semI, semF, anioI, tipoIndicador, paisPorSILAIS);
+            if (datos == null) {
+                logger.debug("Nulo");
+            }
         return datos;
     }
     
