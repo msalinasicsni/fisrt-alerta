@@ -1418,16 +1418,16 @@ public class ReportesService {
         Date ultimaFecha = null;
         Long cantidadCasos = 0L;
         boolean agregar;
-        for(Object[] jaja : resultadoTemp ){
+        for(Object[] registro : resultadoTemp ){
             agregar = false;
             Object[] registroseman = new Object[2];
             //fecha de registro sin hora
-            Date fechaCompara = DateUtil.StringToDate(DateUtil.DateToString((Date) jaja[0], "dd/MM/yyyy"), "dd/MM/yyyy");
+            Date fechaCompara = DateUtil.StringToDate(DateUtil.DateToString((Date) registro[0], "dd/MM/yyyy"), "dd/MM/yyyy");
             if (ultimaFecha!=null) {
                 if (ultimaFecha.compareTo(fechaCompara)==0){//fechas son iguales, entonces sumar casos
-                    cantidadCasos+= (Long)jaja[1];
+                    cantidadCasos+= (Long) registro[1];
                     //es el´último registro, se debe agregar
-                    if (Arrays.equals(resultadoTemp.get(resultadoTemp.size() - 1), jaja)){
+                    if (Arrays.equals(resultadoTemp.get(resultadoTemp.size() - 1), registro)){
                         registroseman[0] = ultimaFecha;
                         registroseman[1] = cantidadCasos;
                         //agregar = true;
@@ -1437,20 +1437,26 @@ public class ReportesService {
                     registroseman[0] = ultimaFecha;
                     registroseman[1] = cantidadCasos;
                     ultimaFecha = fechaCompara;
-                    cantidadCasos = (Long)jaja[1];
+                    cantidadCasos = (Long) registro[1];
                     //agregar =true;
                     resultadoFinal.add(registroseman);
                     //no son iguales, pero es el último registro, agregarlo también
-                    if (Arrays.equals(resultadoTemp.get(resultadoTemp.size()-1),jaja)){
+                    if (Arrays.equals(resultadoTemp.get(resultadoTemp.size()-1), registro)){
                         registroseman = new Object[2];
                         registroseman[0] = fechaCompara;
-                        registroseman[1] = jaja[1];
+                        registroseman[1] = registro[1];
                         resultadoFinal.add(registroseman);
                     }
                 }
             }else{//primer registro
                 ultimaFecha = fechaCompara;
-                cantidadCasos = (Long)jaja[1];
+                cantidadCasos = (Long) registro[1];
+                //sólo es un registro
+                if (resultadoTemp.size()==1){
+                    registroseman[0] = ultimaFecha;
+                    registroseman[1] = cantidadCasos;
+                    resultadoFinal.add(registroseman);
+                }
             }
         }
         return resultadoFinal;

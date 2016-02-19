@@ -25,7 +25,9 @@ var StudiesUS  = function () {
                         '-moz-border-radius': '10px',
                         opacity: .5,
                         color: '#fff'
-                    }});
+                    },
+                    baseZ: 1051
+                });
             }
 
             function unBlockUI() {

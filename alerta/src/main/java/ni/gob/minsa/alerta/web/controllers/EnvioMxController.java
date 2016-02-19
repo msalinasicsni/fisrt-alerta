@@ -202,8 +202,8 @@ public class EnvioMxController {
             //map.put("fechaHoraOrden",DateToString(orden.getFechaHSolicitud(),"dd/MM/yyyy hh:mm:ss a"));
             map.put("fechaTomaMx",DateUtil.DateToString(tomaMx.getFechaHTomaMx(), "dd/MM/yyyy hh:mm:ss a"));
             map.put("estadoMx",tomaMx.getEstadoMx().getValor());
-            map.put("codSilais",tomaMx.getIdNotificacion().getCodSilaisAtencion().getNombre());
-            map.put("codUnidadSalud",tomaMx.getIdNotificacion().getCodUnidadAtencion().getNombre());
+            map.put("codSilais",(tomaMx.getIdNotificacion().getCodSilaisAtencion()!=null?tomaMx.getIdNotificacion().getCodSilaisAtencion().getNombre():""));
+            map.put("codUnidadSalud",(tomaMx.getIdNotificacion().getCodUnidadAtencion()!=null?tomaMx.getIdNotificacion().getCodUnidadAtencion().getNombre():""));
             map.put("separadaMx",(tomaMx.getMxSeparada()!=null?(tomaMx.getMxSeparada()?"Si":"No"):""));
             map.put("tipoMuestra",tomaMx.getCodTipoMx().getNombre());
 
