@@ -168,7 +168,7 @@
                                    		</div>
                                    		<!-- END ROW -->
                                             <!-- START ROW -->
-                                            <div id="dNivelPais" hidden="hidden" class="row">
+                                            <div id="dNivelPais" class="row">
                                                 <section class="col col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                                     <div class="inline-group">
                                                         <section class="col col-xs-6 col-sm-6 col-md-6 col-lg-6">

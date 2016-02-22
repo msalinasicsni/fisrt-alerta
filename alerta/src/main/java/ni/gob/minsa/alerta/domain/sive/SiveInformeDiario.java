@@ -12,7 +12,7 @@ import java.util.Date;
  * V1.0
  */
 @Entity
-@javax.persistence.Table(name = "sive_informe_diario", schema = "sive")
+@javax.persistence.Table(name = "sive_informe_diario", schema = "alerta")
 public class SiveInformeDiario implements Serializable {
     private String silais;
 
