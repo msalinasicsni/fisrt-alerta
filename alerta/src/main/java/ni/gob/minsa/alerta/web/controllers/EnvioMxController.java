@@ -200,7 +200,8 @@ public class EnvioMxController {
             Map<String, String> map = new HashMap<String, String>();
             map.put("idTomaMx",tomaMx.getIdTomaMx());
             //map.put("fechaHoraOrden",DateToString(orden.getFechaHSolicitud(),"dd/MM/yyyy hh:mm:ss a"));
-            map.put("fechaTomaMx",DateUtil.DateToString(tomaMx.getFechaHTomaMx(), "dd/MM/yyyy hh:mm:ss a"));
+            map.put("fechaTomaMx",DateUtil.DateToString(tomaMx.getFechaHTomaMx(), "dd/MM/yyyy")+
+                    (tomaMx.getHoraTomaMx()!=null?" "+tomaMx.getHoraTomaMx():""));
             map.put("estadoMx",tomaMx.getEstadoMx().getValor());
             map.put("codSilais",(tomaMx.getIdNotificacion().getCodSilaisAtencion()!=null?tomaMx.getIdNotificacion().getCodSilaisAtencion().getNombre():""));
             map.put("codUnidadSalud",(tomaMx.getIdNotificacion().getCodUnidadAtencion()!=null?tomaMx.getIdNotificacion().getCodUnidadAtencion().getNombre():""));

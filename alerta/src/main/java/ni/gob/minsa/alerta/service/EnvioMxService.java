@@ -98,7 +98,7 @@ public class EnvioMxService {
         //Se filtra por rango de fecha de toma de muestra
         if (filtro.getFechaInicioTomaMx()!=null && filtro.getFechaFinTomaMx()!=null){
             crit.add( Restrictions.and(
-                            Restrictions.between("tomaMx.fechaRegistro", filtro.getFechaInicioTomaMx(),filtro.getFechaFinTomaMx()))
+                            Restrictions.between("tomaMx.fechaHTomaMx", filtro.getFechaInicioTomaMx(),filtro.getFechaFinTomaMx()))
             );
         }
         // se filtra por tipo de muestra
