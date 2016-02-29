@@ -532,9 +532,9 @@
 			ViewReport.init(parametros);
             SeleccionUnidadReporte.init(parametros);
 	    	$("li.reportes").addClass("open");
-	    	$("li.homesemana").addClass("active");
+	    	$("li.homeweek").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
-	    		$("li.homesemana").parents("ul").slideDown(200);
+	    		$("li.homeweek").parents("ul").slideDown(200);
 	    	}
 		});
 	</script>

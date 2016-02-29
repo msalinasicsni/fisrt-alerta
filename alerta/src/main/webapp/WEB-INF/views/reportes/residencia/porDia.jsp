@@ -417,9 +417,9 @@
             SeleccionUnidadReporte.init(parametros);
             handleDatePickers("${pageContext.request.locale.language}");
             $("li.reportes").addClass("open");
-	    	$("li.homedia").addClass("active");
+	    	$("li.homeday").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
-	    		$("li.homedia").parents("ul").slideDown(200);
+	    		$("li.homeday").parents("ul").slideDown(200);
 	    	}
 		});
 	</script>

@@ -530,9 +530,9 @@
 			ViewReport.init(parametros);
             SeleccionUnidadReporte.init(parametros);
 	    	$("li.reportes").addClass("open");
-	    	$("li.semana").addClass("active");
+	    	$("li.week").addClass("active");
 	    	if("top"!=localStorage.getItem("sm-setmenu")){
-	    		$("li.semana").parents("ul").slideDown(200);
+	    		$("li.week").parents("ul").slideDown(200);
 	    	}
 		});
 	</script>

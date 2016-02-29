@@ -154,10 +154,10 @@
                             <li class="area">
                                 <a href="<spring:url value="/reportes/area" htmlEscape="true "/>" title="<spring:message code="menu.report.by.area" />"><i class=""></i> <spring:message code="menu.report.by.area" /></a>
                             </li>
-                            <li class="semana">
+                            <li class="week">
                                 <a href="<spring:url value="/reportes/porSemana" htmlEscape="true "/>" title="<spring:message code="menu.weekly.report" />"> <spring:message code="menu.weekly.report" /></a>
                             </li>
-                            <li class="dia">
+                            <li class="day">
                                 <a href="<spring:url value="/reportes/porDia" htmlEscape="true "/>" title="<spring:message code="menu.report.per.day" />"> <spring:message code="menu.report.per.day" /></a>
                             </li>
                             <li class="withoutRes">
@@ -177,10 +177,10 @@
                             <li class="homearea">
                                 <a href="<spring:url value="/reportesPorResidencia/area" htmlEscape="true "/>" title="<spring:message code="menu.report.by.area" />"><i class=""></i> <spring:message code="menu.report.by.area" /></a>
                             </li>
-                            <li class="homesemana">
+                            <li class="homeweek">
                                 <a href="<spring:url value="/reportesPorResidencia/porSemana" htmlEscape="true "/>" title="<spring:message code="menu.weekly.report" />"> <spring:message code="menu.weekly.report" /></a>
                             </li>
-                            <li class="homedia">
+                            <li class="homeday">
                                 <a href="<spring:url value="/reportesPorResidencia/porDia" htmlEscape="true "/>" title="<spring:message code="menu.report.per.day" />"> <spring:message code="menu.report.per.day" /></a>
                             </li>
                             <li class="homewithoutRes">
