@@ -394,7 +394,7 @@
                                                     <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
                                                     <label class="input">
                                                         <form:input name="fechaHTomaMx" id="fechaHTomaMx" path="fechaHTomaMx" type='text'
-                                                                    class="form-control date date-picker"
+                                                                    class="form-control date-picker"
                                                                     placeholder="${datet}" data-date-end-date="+0d"/>
                                                     </label>
                                              <span class="input-group-addon"><span
