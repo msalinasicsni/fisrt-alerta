@@ -482,9 +482,9 @@
             handleInputMasks();
             handleDatePickers("${pageContext.request.locale.language}");
             $("li.samples").addClass("open");
-            $("li.tomaMxEstudio").addClass("active");
+            $("li.tomaMxEstu").addClass("active");
             if("top"!=localStorage.getItem("sm-setmenu")){
-                $("li.tomaMxEstudio").parents("ul").slideDown(200);
+                $("li.tomaMxEstu").parents("ul").slideDown(200);
             }
             $("#divCategoriaMx").hide();
         });

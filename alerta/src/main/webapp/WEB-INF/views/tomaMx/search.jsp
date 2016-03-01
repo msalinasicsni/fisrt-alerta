@@ -240,9 +240,9 @@
 			SearchNotices.init(parametros);
 	    	$("li.samples").addClass("open");
             if ($("#esEstudio").val()=='true'){
-                $("li.tomaMxEstudio").addClass("active");
+                $("li.tomaMxEstu").addClass("active");
                 if ("top" != localStorage.getItem("sm-setmenu")) {
-                    $("li.tomaMxEstudio").parents("ul").slideDown(200);
+                    $("li.tomaMxEstu").parents("ul").slideDown(200);
                 }
             }else {
                 $("li.tomaMx").addClass("active");

@@ -92,7 +92,7 @@ var PatientDetail = function () {
             } );
 
             function getResultadosAprovados(){
-                $.getJSON(parametros.sFebrilResultsUrl, {
+                $.getJSON(parametros.sPacienteResultsUrl, {
                     strIdNotificacion: $('#idNotificacion').val(),
                     ajax : 'true'
                 }, function(dataToLoad) {
@@ -198,6 +198,12 @@ var PatientDetail = function () {
 
             getDatosSolicitudesNoti();
             /// FIN MOSTRAR TABLA DATOS SOLICITUDES
+
+            var wizard = $('#wizard').wizard();
+
+            wizard.on('finished', function (e, data) {
+                window.location.href = parametros.sPacienteSearchUrl + $('#personaId').val();
+            });
         }
     };
 

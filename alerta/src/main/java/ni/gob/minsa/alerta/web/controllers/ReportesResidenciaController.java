@@ -405,24 +405,38 @@ public class ReportesResidenciaController {
     @RequestMapping(value = "area", method = RequestMethod.GET)
     public String initArea(Model model,HttpServletRequest request) throws Exception {
         logger.debug("Reporte por Area");
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
-        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
-        List<Anios> anios = catalogosService.getAnios();
-        List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
-        TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
-        TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
-        tipoNoti.add(tipoNotificacionSF);
-        tipoNoti.add(tipoNotificacionIRA);
-        List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
-        model.addAttribute("areas", areas);
-        model.addAttribute("anios", anios);
-        model.addAttribute("entidades", entidades);
-        model.addAttribute("departamentos", departamentos);
-        model.addAttribute("tipoNoti", tipoNoti);
-        model.addAttribute("factor", factor);
-        return "reportes/residencia/porArea";
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 1);
+            List<Anios> anios = catalogosService.getAnios();
+            List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
+            TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
+            TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
+            tipoNoti.add(tipoNotificacionSF);
+            tipoNoti.add(tipoNotificacionIRA);
+            List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
+            model.addAttribute("areas", areas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("tipoNoti", tipoNoti);
+            model.addAttribute("factor", factor);
+            return "reportes/residencia/porArea";
+        }else{
+            return urlValidacion;
+        }
     }
 
     private FiltrosReporte jsonToFiltroReportes(String strJson) throws Exception {
@@ -500,24 +514,38 @@ public class ReportesResidenciaController {
     @RequestMapping(value = "sexReport", method = RequestMethod.GET)
     public String initSexReport(Model model,HttpServletRequest request) throws Exception {
         logger.debug("Reporte por Sexo");
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
-        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
-        List<Anios> anios = catalogosService.getAnios();
-        List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
-        TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
-        TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
-        tipoNoti.add(tipoNotificacionSF);
-        tipoNoti.add(tipoNotificacionIRA);
-        List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
-        model.addAttribute("areas", areas);
-        model.addAttribute("anios", anios);
-        model.addAttribute("entidades", entidades);
-        model.addAttribute("departamentos", departamentos);
-        model.addAttribute("tipoNoti", tipoNoti);
-        model.addAttribute("factor", factor);
-        return "reportes/residencia/porSexo";
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 1);
+            List<Anios> anios = catalogosService.getAnios();
+            List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
+            TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
+            TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
+            tipoNoti.add(tipoNotificacionSF);
+            tipoNoti.add(tipoNotificacionIRA);
+            List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
+            model.addAttribute("areas", areas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("tipoNoti", tipoNoti);
+            model.addAttribute("factor", factor);
+            return "reportes/residencia/porSexo";
+        }else{
+            return urlValidacion;
+        }
     }
 
     /**
@@ -541,24 +569,38 @@ public class ReportesResidenciaController {
     @RequestMapping(value = "reportResult", method = RequestMethod.GET)
     public String initReportResult(Model model,HttpServletRequest request) throws Exception {
         logger.debug("Reporte por Resultado");
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
-        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
-        List<Anios> anios = catalogosService.getAnios();
-        List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
-        TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
-        TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
-        tipoNoti.add(tipoNotificacionSF);
-        tipoNoti.add(tipoNotificacionIRA);
-        List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
-        model.addAttribute("areas", areas);
-        model.addAttribute("anios", anios);
-        model.addAttribute("entidades", entidades);
-        model.addAttribute("departamentos", departamentos);
-        model.addAttribute("tipoNoti", tipoNoti);
-        model.addAttribute("factor", factor);
-        return "reportes/residencia/porResultado";
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 1);
+            List<Anios> anios = catalogosService.getAnios();
+            List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
+            TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
+            TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
+            tipoNoti.add(tipoNotificacionSF);
+            tipoNoti.add(tipoNotificacionIRA);
+            List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
+            model.addAttribute("areas", areas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("tipoNoti", tipoNoti);
+            model.addAttribute("factor", factor);
+            return "reportes/residencia/porResultado";
+        }else{
+            return urlValidacion;
+        }
     }
 
     /**

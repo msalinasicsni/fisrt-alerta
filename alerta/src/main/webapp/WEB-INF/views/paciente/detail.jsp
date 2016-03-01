@@ -93,7 +93,7 @@
 								<!-- end widget edit box -->
 								<!-- widget content -->
 								<div class="widget-body fuelux">			
-									<div class="wizard">
+									<div id="wizard" class="wizard">
 										<ul class="steps">
 											<li data-target="#step1" class="active">
 												<span class="badge badge-info">1</span><spring:message code="patient.step1" /><span class="chevron"></span>
@@ -117,6 +117,7 @@
 									<div class="step-content">
 										<form id="sind_feb_form" class ="smart-form">
                                             <input value="${notificacion.idNotificacion}" type="hidden" id="idNotificacion" name="idNotificacion" />
+                                            <input value="${notificacion.persona.personaId}" type="hidden" id="personaId" name="personaId" />
 											<!-- wizard form starts here -->
 											<div class="step-pane active" id="step1">
 												<h3><spring:message code="patient.step1.long" /></h3>
@@ -471,9 +472,8 @@
 	<spring:url var="unidadesUrl"   value="/api/v1/unidadesPrimHosp"  />
 	<spring:url var="municipioByDepaUrl" value="/api/v1/municipio" />
 	<spring:url var="comunidadUrl" value="/api/v1/comunidad"/>
-	<spring:url var="sAddFebrilUrl" value="/febriles/save"/>
-    <spring:url var="sFebrilSearchUrl" value="/febriles/search"/>
-    <spring:url var="sFebrilResultsUrl" value="/api/v1/searchApproveResultsNoti"/>
+                 <spring:url var="sPacienteSearchUrl" value="/paciente/search/"/>
+    <spring:url var="sPacienteResultsUrl" value="/api/v1/searchApproveResultsNoti"/>
     <spring:url var="sDatosSolicitudUrl" value="/paciente/getDatosSolicitudDetalleByNotifi"/>
 	<!-- PARAMETROS LENGUAJE -->
 	<c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
@@ -484,10 +484,9 @@
 			var parametros = {
                     municipiosUrl:"${municipiosURL}",
                     unidadesUrl: "${unidadesUrl}",municipioByDepaUrl: "${municipioByDepaUrl}",comunidadUrl: "${comunidadUrl}",
-                    sAddFebrilUrl: "${sAddFebrilUrl}",
-                    sFebrilSearchUrl: "${sFebrilSearchUrl}",
+                    sPacienteSearchUrl: "${sPacienteSearchUrl}",
                     blockMess:"${blockMess}",
-                    sFebrilResultsUrl : "${sFebrilResultsUrl}",
+                    sPacienteResultsUrl : "${sPacienteResultsUrl}",
                 sDatosSolicitudUrl : "${sDatosSolicitudUrl}"
  			 };
 			PatientDetail.init(parametros);
