@@ -1,11 +1,5 @@
 package ni.gob.minsa.alerta.web.controllers;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import ni.gob.minsa.alerta.domain.catalogos.Anios;
 import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
@@ -13,7 +7,7 @@ import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.sive.SivePatologias;
 import ni.gob.minsa.alerta.service.*;
-
+import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -22,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.List;
 
 /**
  * Controlador web de peticiones relacionadas a analisis
@@ -42,13 +41,17 @@ public class AnalisisController {
 	private SivePatologiasService sivePatologiasService;
 	@Resource(name="divisionPoliticaService")
 	private DivisionPoliticaService divisionPoliticaService;
+    @Resource(name="seguridadService")
+    private SeguridadService seguridadService;
 	
 	@RequestMapping(value = "series", method = RequestMethod.GET)
-    public String initSeriesPage(Model model) throws Exception { 	
+    public String initSeriesPage(Model model, HttpServletRequest request) throws Exception {
 		logger.debug("presentar series temporales");
-    	List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+    	List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
     	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	List<AreaRep> areas = catalogosService.getAreaRep();
+    	//List<AreaRep> areas = catalogosService.getAreaRep();
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
     	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
     	model.addAttribute("areas", areas);
     	model.addAttribute("entidades", entidades);
@@ -78,13 +81,15 @@ public class AnalisisController {
     }   
     
     @RequestMapping(value = "mapas", method = RequestMethod.GET)
-    public String initMapasPage(Model model) throws Exception { 	
+    public String initMapasPage(Model model, HttpServletRequest request) throws Exception {
 		logger.debug("presentar mapas");
-		List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+		List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
     	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	List<AreaRep> areas = new ArrayList<AreaRep>();
+    	/*List<AreaRep> areas = new ArrayList<AreaRep>();
         areas.add(catalogosService.getAreaRep("AREAREP|PAIS"));
-        areas.add(catalogosService.getAreaRep("AREAREP|SILAIS"));
+        areas.add(catalogosService.getAreaRep("AREAREP|SILAIS"));*/
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
     	List<Semanas> semanas = catalogosService.getSemanas();
     	List<Anios> anios = catalogosService.getAnios();
     	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
@@ -123,11 +128,14 @@ public class AnalisisController {
     }
     
     @RequestMapping(value = "piramides", method = RequestMethod.GET)
-    public String initPiramidesPage(Model model) throws Exception { 	
+    public String initPiramidesPage(Model model,  HttpServletRequest request) throws Exception {
 		logger.debug("presentar piramides");
-		List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
-    	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	List<AreaRep> areas = catalogosService.getAreaRep();
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+    	//List<AreaRep> areas = catalogosService.getAreaRep();
+       // List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
     	List<Anios> anios = catalogosService.getAnios();
     	model.addAttribute("areas", areas);
     	model.addAttribute("anios", anios);

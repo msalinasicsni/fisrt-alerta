@@ -1,21 +1,13 @@
 package ni.gob.minsa.alerta.web.controllers;
 
-import java.text.ParseException;
-import java.util.List;
-
-import javax.annotation.Resource;
 import ni.gob.minsa.alerta.domain.catalogos.Anios;
 import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.sive.SivePatologias;
-import ni.gob.minsa.alerta.service.AnalisisObsEsperadosService;
-import ni.gob.minsa.alerta.service.CatalogoService;
-import ni.gob.minsa.alerta.service.DivisionPoliticaService;
-import ni.gob.minsa.alerta.service.EntidadAdmonService;
-import ni.gob.minsa.alerta.service.SivePatologiasService;
-
+import ni.gob.minsa.alerta.service.*;
+import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -24,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.List;
 
 /**
  * Controlador web de peticiones relacionadas a analisis
@@ -44,13 +41,17 @@ public class AnalisisObsEsperadosController {
 	private SivePatologiasService sivePatologiasService;
 	@Resource(name="divisionPoliticaService")
 	private DivisionPoliticaService divisionPoliticaService;
+    @Resource(name="seguridadService")
+    private SeguridadService seguridadService;
 
 	@RequestMapping(value = "casostasas", method = RequestMethod.GET)
-    public String initCasosTasasPage(Model model) throws Exception { 	
+    public String initCasosTasasPage(Model model, HttpServletRequest request) throws Exception {
 		logger.debug("presentar analisis por casos y tasas");
-    	List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
-    	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	List<AreaRep> areas = catalogosService.getAreaRep();
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+    	//List<AreaRep> areas = catalogosService.getAreaRep();
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
     	List<Semanas> semanas = catalogosService.getSemanas();
     	List<Anios> anios = catalogosService.getAnios();
     	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
@@ -88,11 +89,13 @@ public class AnalisisObsEsperadosController {
     }
     
     @RequestMapping(value = "razones", method = RequestMethod.GET)
-    public String initRazonesIndicesPage(Model model) throws Exception { 	
+    public String initRazonesIndicesPage(Model model, HttpServletRequest request) throws Exception {
 		logger.debug("presentar analisis de razones e indices");
-    	List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
-    	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	List<AreaRep> areas = catalogosService.getAreaRep();
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+    	//List<AreaRep> areas = catalogosService.getAreaRep();
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
     	List<Semanas> semanas = catalogosService.getSemanas();
     	List<Anios> anios = catalogosService.getAnios();
     	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
@@ -128,11 +131,13 @@ public class AnalisisObsEsperadosController {
     }
     
     @RequestMapping(value = "corredores", method = RequestMethod.GET)
-    public String initCorredoresPage(Model model) throws Exception { 	
+    public String initCorredoresPage(Model model, HttpServletRequest request) throws Exception {
 		logger.debug("presentar analisis de corredores endemicos");
-    	List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
-    	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	List<AreaRep> areas = catalogosService.getAreaRep();
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+    	//List<AreaRep> areas = catalogosService.getAreaRep();
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
     	List<Anios> anios = catalogosService.getAnios();
     	List<Semanas> semanas = catalogosService.getSemanas();
     	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
@@ -169,11 +174,13 @@ public class AnalisisObsEsperadosController {
     }
     
     @RequestMapping(value = "indice", method = RequestMethod.GET)
-    public String initIndicePage(Model model) throws Exception { 	
+    public String initIndicePage(Model model, HttpServletRequest request) throws Exception {
 		logger.debug("presentar analisis de indice endemicos");
-    	List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
-    	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	List<AreaRep> areas = catalogosService.getAreaRep();
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+    	//List<AreaRep> areas = catalogosService.getAreaRep();
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
     	List<Anios> anios = catalogosService.getAnios();
     	List<Semanas> semanas = catalogosService.getSemanas();
     	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
@@ -210,13 +217,15 @@ public class AnalisisObsEsperadosController {
     }
 
     @RequestMapping(value = "casostasasarea", method = RequestMethod.GET)
-    public String initCasosTasasAreaPage(Model model)
+    public String initCasosTasasAreaPage(Model model, HttpServletRequest request)
             throws Exception
     {
         logger.debug("presentar analisis por casos y tasas");
-        List entidades = entidadAdmonService.getAllEntidadesAdtvas();
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
         List departamentos = divisionPoliticaService.getAllDepartamentos();
-        List areas = catalogosService.getAreaRep();
+       // List areas = catalogosService.getAreaRep();
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
         List semanas = catalogosService.getSemanas();
         List anios = catalogosService.getAnios();
         List patologias = sivePatologiasService.getSivePatologias();
