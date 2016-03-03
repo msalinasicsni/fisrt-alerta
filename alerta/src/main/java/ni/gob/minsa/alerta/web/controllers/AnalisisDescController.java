@@ -47,6 +47,17 @@ public class AnalisisDescController {
 	@RequestMapping(value = "agesex", method = RequestMethod.GET)
     public String initAgeSexPage(Model model, HttpServletRequest request) throws Exception {
 		logger.debug("presentar analisis por edad y sexo");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
@@ -62,7 +73,10 @@ public class AnalisisDescController {
     	model.addAttribute("departamentos", departamentos);
     	model.addAttribute("patologias", patologias);
     	return "analisis/edadsexo";
-	}
+	}else{
+            return  urlValidacion;
+        }
+    }
 	
 	/**
      * Retorna una lista de datos. Acepta una solicitud GET para JSON
@@ -91,6 +105,17 @@ public class AnalisisDescController {
     @RequestMapping(value = "anasex", method = RequestMethod.GET)
     public String initAnaSexPage(Model model,HttpServletRequest request ) throws Exception {
 		logger.debug("presentar analisis por sexo");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
@@ -106,7 +131,10 @@ public class AnalisisDescController {
     	model.addAttribute("departamentos", departamentos);
     	model.addAttribute("patologias", patologias);
     	return "analisis/anasexo";
-	}
+	}else{
+            return  urlValidacion;
+        }
+    }
     
     /**
      * Retorna una lista de datos. Acepta una solicitud GET para JSON
@@ -134,6 +162,17 @@ public class AnalisisDescController {
     @RequestMapping(value = "anapato", method = RequestMethod.GET)
     public String initAnaPatoPage(Model model, HttpServletRequest request) throws Exception {
 		logger.debug("presentar analisis por patologias");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
@@ -149,7 +188,10 @@ public class AnalisisDescController {
     	model.addAttribute("departamentos", departamentos);
     	model.addAttribute("patologias", patologias);
     	return "analisis/anapato";
-	}
+	}else{
+            return  urlValidacion;
+        }
+    }
     
     /**
      * Retorna una lista de datos. Acepta una solicitud GET para JSON

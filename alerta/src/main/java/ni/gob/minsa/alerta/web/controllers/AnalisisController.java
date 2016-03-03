@@ -46,19 +46,34 @@ public class AnalisisController {
 	
 	@RequestMapping(value = "series", method = RequestMethod.GET)
     public String initSeriesPage(Model model, HttpServletRequest request) throws Exception {
-		logger.debug("presentar series temporales");
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-    	List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-    	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	//List<AreaRep> areas = catalogosService.getAreaRep();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
-    	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
-    	model.addAttribute("areas", areas);
-    	model.addAttribute("entidades", entidades);
-    	model.addAttribute("departamentos", departamentos);
-    	model.addAttribute("patologias", patologias);
-    	return "analisis/series";
-	}
+        logger.debug("presentar series temporales");
+        String urlValidacion = "";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
+
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            //List<AreaRep> areas = catalogosService.getAreaRep();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 3);
+            List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            model.addAttribute("areas", areas);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("patologias", patologias);
+            return "analisis/series";
+        } else {
+            return urlValidacion;
+        }
+    }
 	
 	/**
      * Retorna una lista de datos. Acepta una solicitud GET para JSON
@@ -83,6 +98,17 @@ public class AnalisisController {
     @RequestMapping(value = "mapas", method = RequestMethod.GET)
     public String initMapasPage(Model model, HttpServletRequest request) throws Exception {
 		logger.debug("presentar mapas");
+        String urlValidacion = "";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
 		List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
     	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
@@ -100,7 +126,10 @@ public class AnalisisController {
     	model.addAttribute("departamentos", departamentos);
     	model.addAttribute("patologias", patologias);
     	return "analisis/mapas";
-	}
+	}else {
+            return urlValidacion;
+        }
+    }
     
     /**
      * Retorna una lista de datos. Acepta una solicitud GET para JSON
@@ -130,6 +159,17 @@ public class AnalisisController {
     @RequestMapping(value = "piramides", method = RequestMethod.GET)
     public String initPiramidesPage(Model model,  HttpServletRequest request) throws Exception {
 		logger.debug("presentar piramides");
+        String urlValidacion = "";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
@@ -142,7 +182,10 @@ public class AnalisisController {
     	model.addAttribute("entidades", entidades);
     	model.addAttribute("departamentos", departamentos);
     	return "analisis/piramides";
-	}
+	}else {
+            return urlValidacion;
+        }
+    }
     
     /**
      * Retorna una lista de datos. Acepta una solicitud GET para JSON

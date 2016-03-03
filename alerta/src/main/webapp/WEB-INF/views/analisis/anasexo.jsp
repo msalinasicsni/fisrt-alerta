@@ -218,7 +218,7 @@
                                    		<!-- END ROW -->
                                    		<!-- START ROW -->
                                         <div class="row">
-                                            <section class="col col-3">
+                                            <section class="col col-sm-12 col-md-6 col-lg-6">
                                             	<label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="week1" />
                                             	</label>
@@ -232,7 +232,7 @@
 													</select>
 												</div>
                                         	</section>
-                                            <section class="col col-3">
+                                            <section class="col col-sm-12 col-md-6 col-lg-6">
 	                                            <label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="week2" />
                                             	</label>
@@ -246,7 +246,10 @@
 													</select>
 												</div>
                                        		</section>
-                                            <section class="col col-3">
+                                        </div>
+                                           <div class="row">
+
+                                            <section class="col col-sm-12 col-md-6 col-lg-6">
                                             	<label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="year1" />
                                             	</label>

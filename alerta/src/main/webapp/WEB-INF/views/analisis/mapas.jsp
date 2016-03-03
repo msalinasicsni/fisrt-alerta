@@ -145,7 +145,8 @@
                                       		<div class="input-group">
 												<span class="input-group-addon"> <i class="fa fa-stethoscope"></i></span>
 												<select data-placeholder="<spring:message code="act.select" /> <spring:message code="pato" />" name="codPato" id="codPato" class="select2">
-													<c:forEach items="${patologias}" var="patologia">
+                                                    <option value=""></option>
+                                                    <c:forEach items="${patologias}" var="patologia">
 														<option value="${patologia.codigo}">${patologia.codigo} - ${patologia.nombre}</option>
 													</c:forEach>
 												</select>
@@ -159,7 +160,8 @@
                                       		<div class="input-group">
 												<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
 												<select data-placeholder="<spring:message code="act.select" /> <spring:message code="level" />" name="codArea" id="codArea" class="select2">
-													<c:forEach items="${areas}" var="area">
+                                                    <option value=""></option>
+                                                    <c:forEach items="${areas}" var="area">
 														<option value="${area.codigo}">${area.valor}</option>
 													</c:forEach>
 												</select>
@@ -241,39 +243,45 @@
                                    		<!-- END ROW -->
                                    		<!-- START ROW -->
                                         <div class="row">
-                                            <section class="col col-4">
+                                            <section class="col col-sm-12 col-md-6 col-lg-6">
                                             	<label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="week1" />
                                             	</label>
 	                                        	<div class="input-group">
 													<span class="input-group-addon"></span>
 													<select name="semI" id="semI" class="select2">
+                                                        <option value=""></option>
 														<c:forEach items="${semanas}" var="semana">
 															<option value="${semana.valor}">${semana.valor}</option>
 														</c:forEach>
 													</select>
 												</div>
                                         	</section>
-                                            <section class="col col-4">
+                                            <section class="col col-sm-12 col-md-6 col-lg-6">
 	                                            <label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="week2" />
                                             	</label>
 	                                        	<div class="input-group">
 													<span class="input-group-addon"></span>
 													<select name="semF" id="semF" class="select2">
+                                                        <option value=""></option>
 														<c:forEach items="${semanas}" var="semana">
 															<option value="${semana.valor}">${semana.valor}</option>
 														</c:forEach>
 													</select>
 												</div>
                                        		</section>
-                                            <section class="col col-4">
+                                        </div>
+
+                                            <div class="row">
+                                            <section class="col col-sm-12 col-md-6 col-lg-6">
                                             	<label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="year1" />
                                             	</label>
 	                                        	<div class="input-group">
 													<span class="input-group-addon"></span>
 													<select name="anioI" id="anioI" class="select2">
+                                                        <option value=""></option>
 														<c:forEach items="${anios}" var="anio">
 															<option value="${anio.valor}">${anio.valor}</option>
 														</c:forEach>
@@ -282,14 +290,15 @@
                                             </section>
                                             </div>
                                             <div class="row">
-                                                <section class="col col-6">
+                                                <section class="col col-sm-12 col-md-6 col-lg-6">
                                                     <label class="text-left txt-color-blue font-sm">
                                                         <spring:message code="indicator" />
                                                     </label>
                                                     <div class="input-group">
                                                         <span class="input-group-addon"></span>
                                                         <select name="tipoIndicador" id="tipoIndicador" class="select2">
-                                                            <option value="CASOS" selected><spring:message code="lbl.cases" /></option>
+                                                            <option value=""></option>
+                                                            <option value="CASOS" ><spring:message code="lbl.cases" /></option>
                                                             <option value="TASAS"><spring:message code="lbl.rates" /></option>
                                                         </select>
                                                     </div>

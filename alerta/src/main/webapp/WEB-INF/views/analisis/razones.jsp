@@ -222,7 +222,7 @@
                                    		<!-- END ROW -->
                                    		<!-- START ROW -->
                                         <div class="row">
-                                            <section class="col col-3">
+                                            <section class="col col-sm-12 col-md-6 col-lg-6">
                                             	<label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="sp.week" />
                                             	</label>
@@ -236,7 +236,7 @@
 													</select>
 												</div>
                                         	</section>
-                                            <section class="col col-3">
+                                            <section class="col col-sm-12 col-md-6 col-lg-6">
                                             	<label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="year1" />
                                             	</label>
@@ -378,8 +378,8 @@
 	<spring:url value="/resources/js/plugin/jquery-validate/jquery.validate.min.js" var="jqueryValidate" />
 	<script src="${jqueryValidate}"></script>
 	<spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
-	<spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>				
-	<script src="${jQValidationLoc}"/></script>
+	<spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>
+	<script src="${jQValidationLoc}"></script>
 	<!-- jQuery Select2 Input -->
 	<spring:url value="/resources/js/plugin/select2/select2.min.js" var="selectPlugin"/>
 	<script src="${selectPlugin}"></script>

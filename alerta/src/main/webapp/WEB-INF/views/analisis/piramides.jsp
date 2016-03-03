@@ -136,7 +136,8 @@
                                       		<div class="input-group">
 												<span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
 												<select data-placeholder="<spring:message code="act.select" /> <spring:message code="level" />" name="codArea" id="codArea" class="select2">
-													<c:forEach items="${areas}" var="area">
+                                                    <option value=""></option>
+                                                    <c:forEach items="${areas}" var="area">
                                                         <c:if test="${area.codigo ne 'AREAREP|UNI'}">
                                                             <option value="${area.codigo}">${area.valor}</option>
                                                         </c:if>
@@ -209,7 +210,8 @@
 	                                        	<div class="input-group">
 													<span class="input-group-addon"></span>
 													<select name="anioI" id="anioI" class="select2">
-														<c:forEach items="${anios}" var="anio">
+                                                        <option value=""></option>
+                                                        <c:forEach items="${anios}" var="anio">
 															<option value="${anio.valor}">${anio.valor}</option>
 														</c:forEach>
 													</select>

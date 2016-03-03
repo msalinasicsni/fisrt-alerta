@@ -7,6 +7,7 @@ import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.sive.SivePatologias;
 import ni.gob.minsa.alerta.service.*;
+import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -51,6 +52,17 @@ public class BoletinController {
     @RequestMapping(value = "init", method = RequestMethod.GET)
     public String initAgeSexPage(Model model, HttpServletRequest request) throws Exception {
         logger.debug("presentar analisis por edad y sexo");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
@@ -65,6 +77,9 @@ public class BoletinController {
         model.addAttribute("departamentos", departamentos);
         model.addAttribute("patologias", patologias);
         return "analisis/boletin";
+    }else{
+            return  urlValidacion;
+        }
     }
 
 

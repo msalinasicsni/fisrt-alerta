@@ -106,7 +106,7 @@
 				<!-- row -->
 				<div class="row">
 					<!-- NEW WIDGET START -->
-					<article class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+					<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<!-- Widget ID (each widget will need unique ID)-->
 						<div class="jarviswidget" id="wid-id-0">
 							<!-- widget options:
@@ -222,7 +222,7 @@
                                    		<!-- END ROW -->
                                    		<!-- START ROW -->
                                         <div class="row">
-                                            <section class="col col-3">
+                                            <section class="col col-sm-12 col-md-4 col-lg-4">
                                             	<label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="hweek" />
                                             	</label>
@@ -236,7 +236,7 @@
 													</select>
 												</div>
                                         	</section>
-                                            <section class="col col-3">
+                                            <section class="col col-sm-12 col-md-4 col-lg-4">
                                             	<label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="year1" />
                                             	</label>
@@ -250,13 +250,14 @@
 													</select>
 												</div>
                                             </section>
-                                            <section class="col col-3">
+                                            <section class="col col-sm-12 col-md-4 col-lg-4">
                                             	<label class="text-left txt-color-blue font-sm">
                                             		<spring:message code="numyears" />
                                             	</label>
 	                                        	<div class="input-group">
 													<span class="input-group-addon"></span>
 													<select name="cantAnio" id="cantAnio" class="select2">
+                                                        <option value=""></option>
 														<option value="5">5</option>
 														<option value="6">6</option>
 														<option value="7">7</option>
@@ -400,7 +401,7 @@
 	<script src="${jqueryValidate}"></script>
 	<spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
 	<spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>				
-	<script src="${jQValidationLoc}"/></script>
+	<script src="${jQValidationLoc}"></script>
 	<!-- jQuery Select2 Input -->
 	<spring:url value="/resources/js/plugin/select2/select2.min.js" var="selectPlugin"/>
 	<script src="${selectPlugin}"></script>

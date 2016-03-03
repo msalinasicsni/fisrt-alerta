@@ -46,23 +46,37 @@ public class AnalisisObsEsperadosController {
 
 	@RequestMapping(value = "casostasas", method = RequestMethod.GET)
     public String initCasosTasasPage(Model model, HttpServletRequest request) throws Exception {
-		logger.debug("presentar analisis por casos y tasas");
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	//List<AreaRep> areas = catalogosService.getAreaRep();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
-    	List<Semanas> semanas = catalogosService.getSemanas();
-    	List<Anios> anios = catalogosService.getAnios();
-    	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
-    	model.addAttribute("areas", areas);
-    	model.addAttribute("semanas", semanas);
-    	model.addAttribute("anios", anios);
-    	model.addAttribute("entidades", entidades);
-    	model.addAttribute("departamentos", departamentos);
-    	model.addAttribute("patologias", patologias);
-    	return "analisis/casostasas";
-	}
+        logger.debug("presentar analisis por casos y tasas");
+        String urlValidacion = "";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            //List<AreaRep> areas = catalogosService.getAreaRep();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 3);
+            List<Semanas> semanas = catalogosService.getSemanas();
+            List<Anios> anios = catalogosService.getAnios();
+            List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            model.addAttribute("areas", areas);
+            model.addAttribute("semanas", semanas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("patologias", patologias);
+            return "analisis/casostasas";
+        } else {
+            return urlValidacion;
+        }
+    }
 	
 	/**
      * Retorna una lista de datos. Acepta una solicitud GET para JSON
@@ -91,6 +105,17 @@ public class AnalisisObsEsperadosController {
     @RequestMapping(value = "razones", method = RequestMethod.GET)
     public String initRazonesIndicesPage(Model model, HttpServletRequest request) throws Exception {
 		logger.debug("presentar analisis de razones e indices");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
@@ -106,7 +131,10 @@ public class AnalisisObsEsperadosController {
     	model.addAttribute("departamentos", departamentos);
     	model.addAttribute("patologias", patologias);
     	return "analisis/razones";
-	}
+	}else{
+            return  urlValidacion;
+        }
+    }
     
     /**
      * Retorna una lista de datos. Acepta una solicitud GET para JSON
@@ -133,6 +161,17 @@ public class AnalisisObsEsperadosController {
     @RequestMapping(value = "corredores", method = RequestMethod.GET)
     public String initCorredoresPage(Model model, HttpServletRequest request) throws Exception {
 		logger.debug("presentar analisis de corredores endemicos");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
@@ -148,7 +187,10 @@ public class AnalisisObsEsperadosController {
     	model.addAttribute("departamentos", departamentos);
     	model.addAttribute("patologias", patologias);
     	return "analisis/corredores";
-	}
+	}else{
+            return  urlValidacion;
+        }
+    }
     
     /**
      * Retorna una lista de datos. Acepta una solicitud GET para JSON
@@ -176,6 +218,17 @@ public class AnalisisObsEsperadosController {
     @RequestMapping(value = "indice", method = RequestMethod.GET)
     public String initIndicePage(Model model, HttpServletRequest request) throws Exception {
 		logger.debug("presentar analisis de indice endemicos");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
         List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
@@ -191,8 +244,12 @@ public class AnalisisObsEsperadosController {
     	model.addAttribute("departamentos", departamentos);
     	model.addAttribute("patologias", patologias);
     	return "analisis/indice";
-	}
-    
+	}else{
+            return  urlValidacion;
+        }
+    }
+
+
     /**
      * Retorna una lista de datos. Acepta una solicitud GET para JSON
      * @return Un arreglo JSON
@@ -221,6 +278,18 @@ public class AnalisisObsEsperadosController {
             throws Exception
     {
         logger.debug("presentar analisis por casos y tasas");
+        logger.debug("Reporte por Area");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
         List departamentos = divisionPoliticaService.getAllDepartamentos();
@@ -236,6 +305,9 @@ public class AnalisisObsEsperadosController {
         model.addAttribute("departamentos", departamentos);
         model.addAttribute("patologias", patologias);
         return "analisis/casostasasarea";
+    }else{
+            return  urlValidacion;
+        }
     }
 
     @RequestMapping(value = "casostasasareadata", method = RequestMethod.GET, produces = "application/json")
