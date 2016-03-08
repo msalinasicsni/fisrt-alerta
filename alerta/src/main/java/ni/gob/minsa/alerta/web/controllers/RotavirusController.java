@@ -320,7 +320,10 @@ public class RotavirusController {
                     long idUsuario = seguridadService.obtenerIdUsuario(request);
                     //irag.setUsuario(usuarioService.getUsuarioById((int) idUsuario));
                     if (idUsuario != 0) {
-                        autorizado = seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, fichaRotavirus.getDaNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, fichaRotavirus.getDaNotificacion().getCodUnidadAtencion().getCodigo());
+                        autorizado = seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE) ||
+                                ((fichaRotavirus.getDaNotificacion().getCodSilaisAtencion()!=null && fichaRotavirus.getDaNotificacion().getCodUnidadAtencion()!=null) &&
+                                        seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, fichaRotavirus.getDaNotificacion().getCodSilaisAtencion().getCodigo()) &&
+                                        seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, fichaRotavirus.getDaNotificacion().getCodUnidadAtencion().getCodigo()));
                     }
 
                     entidades = seguridadService.obtenerEntidadesPorUsuario((int)idUsuario, ConstantsSecurity.SYSTEM_CODE);
@@ -334,13 +337,17 @@ public class RotavirusController {
 
                     List<Unidades> uni = null;
                     if (seguridadService.esUsuarioNivelCentral(idUsuario,ConstantsSecurity.SYSTEM_CODE)) {
-                        uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int) idUsuario, fichaRotavirus.getDaNotificacion().getCodSilaisAtencion().getCodigo(),
-                                fichaRotavirus.getDaNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+                        if (fichaRotavirus.getDaNotificacion().getCodSilaisAtencion()!=null && fichaRotavirus.getDaNotificacion().getCodUnidadAtencion()!=null) {
+                            uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int) idUsuario, fichaRotavirus.getDaNotificacion().getCodSilaisAtencion().getCodigo(),
+                                    fichaRotavirus.getDaNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+                        }
                     }
                     else{
-                        uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int)idUsuario,fichaRotavirus.getDaNotificacion().getCodSilaisAtencion().getCodigo(),fichaRotavirus.getDaNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(),ConstantsSecurity.SYSTEM_CODE,HealthUnitType.UnidadesPrimHosp.getDiscriminator());
-                        if (!uni.contains(fichaRotavirus.getDaNotificacion().getCodUnidadAtencion())){
-                            uni.add(fichaRotavirus.getDaNotificacion().getCodUnidadAtencion());
+                        if (fichaRotavirus.getDaNotificacion().getCodSilaisAtencion()!=null && fichaRotavirus.getDaNotificacion().getCodUnidadAtencion()!=null) {
+                            uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int) idUsuario, fichaRotavirus.getDaNotificacion().getCodSilaisAtencion().getCodigo(), fichaRotavirus.getDaNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+                            if (!uni.contains(fichaRotavirus.getDaNotificacion().getCodUnidadAtencion())) {
+                                uni.add(fichaRotavirus.getDaNotificacion().getCodUnidadAtencion());
+                            }
                         }
                     }
 

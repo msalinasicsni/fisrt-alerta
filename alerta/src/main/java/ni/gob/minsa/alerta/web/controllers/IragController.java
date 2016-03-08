@@ -399,10 +399,11 @@ public class IragController {
                     long idUsuario = seguridadService.obtenerIdUsuario(request);
                     irag.setUsuario(usuarioService.getUsuarioById((int) idUsuario));
                     if (idUsuario != 0) {
-                        if (irag.getIdNotificacion().getCodSilaisAtencion()!=null && irag.getIdNotificacion().getCodUnidadAtencion()!=null) {
-                            autorizado = seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, irag.getIdNotificacion().getCodSilaisAtencion().getCodigo())
-                                    && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, irag.getIdNotificacion().getCodUnidadAtencion().getCodigo());
-                        }
+                        autorizado = seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE) ||
+                                ((irag.getIdNotificacion().getCodSilaisAtencion()!=null && irag.getIdNotificacion().getCodUnidadAtencion()!=null) &&
+                                        seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, irag.getIdNotificacion().getCodSilaisAtencion().getCodigo()) &&
+                                        seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, irag.getIdNotificacion().getCodUnidadAtencion().getCodigo()));
+
                     }
 
                     entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);

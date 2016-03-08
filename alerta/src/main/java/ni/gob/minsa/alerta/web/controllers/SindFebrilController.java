@@ -276,10 +276,10 @@ public class SindFebrilController {
                     }
                 }
                 if (idUsuario != 0) {
-                      autorizado = seguridadService.esUsuarioNivelCentral(idUsuario,ConstantsSecurity.SYSTEM_CODE) ||
-                              (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo()) &&
-                               seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodUnidadAtencion().getCodigo()));
-
+                    autorizado = seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE) ||
+                            ((daSindFeb.getIdNotificacion().getCodSilaisAtencion()!=null && daSindFeb.getIdNotificacion().getCodUnidadAtencion()!=null) &&
+                                    seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo()) &&
+                                    seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, daSindFeb.getIdNotificacion().getCodUnidadAtencion().getCodigo()));
                 }
                 List<Divisionpolitica> munic = null;
                 if (daSindFeb.getIdNotificacion().getCodSilaisAtencion()!=null) {
@@ -290,9 +290,11 @@ public class SindFebrilController {
                     if (daSindFeb.getIdNotificacion().getCodSilaisAtencion()!=null && daSindFeb.getIdNotificacion().getCodUnidadAtencion()!=null)
                         uni = unidadesService.getPUnitsHospByMuniAndSilais(daSindFeb.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo());
                 }else{
-                    uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int)idUsuario,daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo(),daSindFeb.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(),ConstantsSecurity.SYSTEM_CODE,HealthUnitType.UnidadesPrimHosp.getDiscriminator());
-                    if (!uni.contains(daSindFeb.getIdNotificacion().getCodUnidadAtencion())){
-                        uni.add(daSindFeb.getIdNotificacion().getCodUnidadAtencion());
+                    if (daSindFeb.getIdNotificacion().getCodSilaisAtencion()!=null && daSindFeb.getIdNotificacion().getCodUnidadAtencion()!=null) {
+                        uni = seguridadService.obtenerUnidadesPorUsuarioEntidadMunicipio((int) idUsuario, daSindFeb.getIdNotificacion().getCodSilaisAtencion().getCodigo(), daSindFeb.getIdNotificacion().getCodUnidadAtencion().getMunicipio().getCodigoNacional(), ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+                        if (!uni.contains(daSindFeb.getIdNotificacion().getCodUnidadAtencion())) {
+                            uni.add(daSindFeb.getIdNotificacion().getCodUnidadAtencion());
+                        }
                     }
                 }
 	        	List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
