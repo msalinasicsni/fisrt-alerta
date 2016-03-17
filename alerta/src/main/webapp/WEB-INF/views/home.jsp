@@ -337,6 +337,135 @@
                     </article>
                     <!-- WIDGET END -->
                 </div>
+            <div class="row">
+                <!-- NEW WIDGET START -->
+                <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <!-- Widget ID (each widget will need unique ID)-->
+                    <div class="jarviswidget jarviswidget-color-darken" id="wid-id-4">
+                        <header>
+                            <span class="widget-icon"> <i class="fa fa-reorder"></i> </span>
+                            <h2><spring:message code="lbl.noti.without.result" /> </h2>
+                        </header>
+                        <!-- widget div-->
+                        <div>
+                            <!-- widget edit box -->
+                            <div class="jarviswidget-editbox">
+                                <!-- This area used as dropdown edit box -->
+                                <input class="form-control" type="text">
+
+                            </div>
+                            <!-- end widget edit box -->
+                            <!-- widget content -->
+                            <div class="widget-body no-padding">
+                                <table id="noti_sinresultado" class="table table-striped table-bordered table-hover" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th data-class="expand"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.send.person.name"/></th>
+                                        <th data-hide="phone"><i class="fa fa-user fa-fw text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.age"/></th>
+                                        <th data-hide="phone"><i class="fa fa-user fa-fw text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="person.sexo"/></th>
+                                        <th data-hide="phone"><i class="fa fa-child fa-fw text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.pregnant"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw fa-map-marker text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.mun.res"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw fa-file-text-o text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.notification.type"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.notification.date"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.send.symptoms.start.date"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.silais"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.health.unit"/></th>
+                                        <th><spring:message code="act.go"/></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- end widget content -->
+                        </div>
+                    </div>
+                    <!-- end widget -->
+                </article>
+                <!-- WIDGET END -->
+                <!-- NEW WIDGET START -->
+                <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <!-- Widget ID (each widget will need unique ID)-->
+                    <div class="jarviswidget jarviswidget-color-darken" id="wid-id-5">
+                        <header>
+                            <span class="widget-icon"> <i class="fa fa-reorder"></i> </span>
+                            <h2><spring:message code="lbl.noti.pregnant" /> </h2>
+                        </header>
+                        <!-- widget div-->
+                        <div>
+                            <!-- widget edit box -->
+                            <div class="jarviswidget-editbox">
+                                <!-- This area used as dropdown edit box -->
+                                <input class="form-control" type="text">
+
+                            </div>
+                            <!-- end widget edit box -->
+                            <!-- widget content -->
+                            <div class="widget-body no-padding">
+                                <table id="noti_embarazadas" class="table table-striped table-bordered table-hover" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th data-class="expand"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.send.person.name"/></th>
+                                        <th data-hide="phone"><i class="fa fa-user fa-fw text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.age"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw fa-map-marker text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.mun.res"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw fa-file-text-o text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.notification.type"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.notification.date"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.send.symptoms.start.date"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.silais"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.health.unit"/></th>
+                                        <th><spring:message code="act.go"/></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- end widget content -->
+                        </div>
+                    </div>
+                    <!-- end widget -->
+                </article>
+                <!-- WIDGET END -->
+                <!-- NEW WIDGET START -->
+                <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <!-- Widget ID (each widget will need unique ID)-->
+                    <div class="jarviswidget jarviswidget-color-darken" id="wid-id-6">
+                        <header>
+                            <span class="widget-icon"> <i class="fa fa-reorder"></i> </span>
+                            <h2><spring:message code="lbl.noti.hospitalized" /> </h2>
+                        </header>
+                        <!-- widget div-->
+                        <div>
+                            <!-- widget edit box -->
+                            <div class="jarviswidget-editbox">
+                                <!-- This area used as dropdown edit box -->
+                                <input class="form-control" type="text">
+
+                            </div>
+                            <!-- end widget edit box -->
+                            <!-- widget content -->
+                            <div class="widget-body no-padding">
+                                <table id="noti_hospitalizados" class="table table-striped table-bordered table-hover" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th data-class="expand"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.send.person.name"/></th>
+                                        <th data-hide="phone"><i class="fa fa-user fa-fw text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.age"/></th>
+                                        <th data-hide="phone"><i class="fa fa-user fa-fw text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="person.sexo"/></th>
+                                        <th data-hide="phone"><i class="fa fa-child fa-fw text-muted hidden-md hidden-sm hidden-xs"></i><spring:message code="lbl.pregnant"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw fa-map-marker text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.mun.res"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw fa-file-text-o text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.notification.type"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.notification.date"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw fa-calendar text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.send.symptoms.start.date"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.silais"/></th>
+                                        <th data-hide="phone"><i class="fa fa-fw text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.health.unit"/></th>
+                                        <th><spring:message code="act.go"/></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- end widget content -->
+                        </div>
+                    </div>
+                    <!-- end widget -->
+                </article>
+                <!-- WIDGET END -->
+            </div>
 			</section>
 			<!-- end widget grid -->
 		</div>
@@ -349,15 +478,17 @@
 	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 	<jsp:include page="fragments/corePlugins.jsp" />
 	<!-- BEGIN PAGE LEVEL PLUGINS -->
-	<!-- Flot Chart Plugin: Flot Engine, Flot Resizer, Flot Tooltip -->
-	<spring:url value="/resources/js/plugin/flot/jquery.flot.cust.min.js" var="jqueryFlot" />
-	<script src="${jqueryFlot}"></script>
-	<spring:url value="/resources/js/plugin/flot/jquery.flot.resize.min.js" var="jqueryFlotResize" />
-	<script src="${jqueryFlotResize}"></script>
-	<spring:url value="/resources/js/plugin/flot/jquery.flot.time.min.js" var="jqueryFlotTime" />
-	<script src="${jqueryFlotTime}"></script>
-	<spring:url value="/resources/js/plugin/flot/jquery.flot.tooltip.min.js" var="jqueryFlotToolTip" />
-	<script src="${jqueryFlotToolTip}"></script>
+	<!-- Datatable-->
+    <spring:url value="/resources/js/plugin/datatables/jquery.dataTables.min.js" var="dataTables" />
+    <script src="${dataTables}"></script>
+    <spring:url value="/resources/js/plugin/datatables/dataTables.colVis.min.js" var="dataTablesColVis" />
+    <script src="${dataTablesColVis}"></script>
+    <spring:url value="/resources/js/plugin/datatables/dataTables.tableTools.min.js" var="dataTablesTableTools" />
+    <script src="${dataTablesTableTools}"></script>
+    <spring:url value="/resources/js/plugin/datatables/dataTables.bootstrap.min.js" var="dataTablesBootstrap" />
+    <script src="${dataTablesBootstrap}"></script>
+    <spring:url value="/resources/js/plugin/datatable-responsive/datatables.responsive.min.js" var="dataTablesResponsive" />
+    <script src="${dataTablesResponsive}"></script>
     <!-- jQuery Chart JS-->
     <spring:url value="/resources/js/plugin/chartjs/chart.min.js" var="chartJs"/>
     <script src="${chartJs}"></script>
@@ -380,7 +511,16 @@
     <script src="${inicio}"></script>
     <c:url var="sActionUrl" value="/inicio/casostasasdata"/>
     <c:url var="sMapasUrl" value="/inicio/mapasdata"/>
+    <c:url var="sSinResultadoUrl" value="/inicio/sinresultado"/>
+    <c:url var="sEmbarazadasUrl" value="/inicio/embarazadas"/>
+    <c:url var="sHospitalizadosUrl" value="/inicio/hospitalizados"/>
+    <!--SIEMPRE QUE SE AGREGUE UNA NUEVA NOTIFICACION, SERÁ NECESARIO AGREGAR ACA LA URL DE EDICIÓN Y LUEGO TRATARLA EN EL .js-->
+    <c:url var="febrilesUrl" value="/febriles/edit/"/>
+    <c:url var="iragUrl" value="/irag/edit/"/>
+    <c:url var="pacienteUrl" value="/paciente/detail/"/>
     <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
+    <c:set var="noData"><spring:message code="lbl.no.data" /></c:set>
+    <c:set var="msgNoData"><spring:message code="msg.no.data.found" /></c:set>
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -388,7 +528,16 @@
 
             var parametros = {sActionUrl: "${sActionUrl}",
                 sMapasUrl: "${sMapasUrl}",
-                blockMess:"${blockMess}"};
+                sSinResultadoUrl : "${sSinResultadoUrl}",
+                sEmbarazadasUrl : "${sEmbarazadasUrl}",
+                sHospitalizadosUrl : "${sHospitalizadosUrl}",
+                blockMess:"${blockMess}",
+                noData:"${noData}",
+                msgNoData:"${msgNoData}",
+                febrilesUrl : "${febrilesUrl}",
+                iragUrl : "${iragUrl}",
+                pacienteUrl : "${pacienteUrl}"
+            };
             PaginaInicio.init(parametros);
             $("li.home").addClass("active");
 		});

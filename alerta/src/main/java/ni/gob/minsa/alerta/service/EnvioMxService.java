@@ -161,9 +161,6 @@ public class EnvioMxService {
         String embarazo = "No";
         Session session = sessionFactory.getCurrentSession();
         //IRAG
-        /*String query = "select irag from DaIrag as irag, DaCondicionesPreviasIrag cIrag where irag.idNotificacion.idNotificacion = cIrag.idNotificacion.idNotificacion.idNotificacion" +
-                " and irag.idNotificacion.idNotificacion = :idNotificacion" +
-                " and cIrag.codCondicion.codigo = :codCondicion";*/
         String query = "from DaIrag where idNotificacion.idNotificacion = :idNotificacion and condiciones like :codCondicion";
         Query q = session.createQuery(query);
         q.setParameter("idNotificacion", strIdNotificacion);

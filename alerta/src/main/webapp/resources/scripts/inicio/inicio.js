@@ -113,7 +113,7 @@ var PaginaInicio = function () {
                         labelsDC = data[(data.length)-1];
                     }
                     else{
-                        showMessage("Sin datos", "No se encontraron datos como resultado de esta consulta", "#AF801C", "fa fa-warning", 3000);
+                        showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
                         //lineChart([],[]);
                         //lineChart2([],[]);
                         datasetsDCCasos = [];
@@ -193,7 +193,7 @@ var PaginaInicio = function () {
                         labelsDS = data[(data.length)-1];
                     }
                     else{
-                        showMessage("Sin datos", "No se encontraron datos como resultado de esta consulta", "#AF801C", "fa fa-warning", 3000);
+                        showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
                         //lineChart3([],[]);
                         //lineChart4([],[]);
                         datasetsDSCasos = [];
@@ -496,6 +496,207 @@ var PaginaInicio = function () {
             $('input[type=radio][name=nivelPais]').change(function() {
                 getDataMapaDengueSospechoso();
             });
+
+            /*TABLAS */
+            var responsiveHelper_dt_basic = undefined;
+            var breakpointDefinition = {
+                tablet: 1024,
+                phone: 480
+            };
+            var table1 = $('#noti_sinresultado').dataTable({
+                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>" +
+                    "t" +
+                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+                "autoWidth": true,
+                "preDrawCallback": function () {
+                    // Initialize the responsive datatables helper once.
+                    if (!responsiveHelper_dt_basic) {
+                        responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#noti_sinresultado'), breakpointDefinition);
+                    }
+                },
+                "rowCallback": function (nRow) {
+                    responsiveHelper_dt_basic.createExpandIcon(nRow);
+                },
+                "drawCallback": function (oSettings) {
+                    responsiveHelper_dt_basic.respond();
+                }
+            });
+            var table2 = $('#noti_embarazadas').dataTable({
+                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>" +
+                    "t" +
+                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+                "autoWidth": true,
+                "preDrawCallback": function () {
+                    // Initialize the responsive datatables helper once.
+                    if (!responsiveHelper_dt_basic) {
+                        responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#noti_embarazadas'), breakpointDefinition);
+                    }
+                },
+                "rowCallback": function (nRow) {
+                    responsiveHelper_dt_basic.createExpandIcon(nRow);
+                },
+                "drawCallback": function (oSettings) {
+                    responsiveHelper_dt_basic.respond();
+                }
+            });
+
+            var table3 = $('#noti_hospitalizados').dataTable({
+                "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>" +
+                    "t" +
+                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+                "autoWidth": true,
+                "preDrawCallback": function () {
+                    // Initialize the responsive datatables helper once.
+                    if (!responsiveHelper_dt_basic) {
+                        responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#noti_hospitalizados'), breakpointDefinition);
+                    }
+                },
+                "rowCallback": function (nRow) {
+                    responsiveHelper_dt_basic.createExpandIcon(nRow);
+                },
+                "drawCallback": function (oSettings) {
+                    responsiveHelper_dt_basic.respond();
+                }
+            });
+
+            function getNotiSinResultado() {
+                bloquearUI(parametros.blockMess);
+                table1.fnClearTable();
+                $.getJSON(parametros.sSinResultadoUrl, {
+                    nivel : $("#nivelUsuario").val(),
+                    conSubUnidades : false
+                }, function(data) {
+                    var encontrado;
+                    console.log(data);
+                    var mostrar=true;
+                    for(var row in data){
+                        var actionUrl;
+                        switch (data[row].codtipoNoti) {
+                            case 'TPNOTI|SINFEB':
+                                actionUrl = parametros.febrilesUrl+data[row].idNotificacion;
+                                break;
+                            case 'TPNOTI|IRAG':
+                                actionUrl = parametros.iragUrl+data[row].idNotificacion;
+                                break;
+                            case 'TPNOTI|PCNT':
+                                actionUrl = parametros.pacienteUrl+data[row].idNotificacion;
+                                break;
+                            default:
+                                actionUrl = '#';
+                                mostrar = false; //si es otro tipo de notificación no mostrar en la tabla
+                                break;
+                        }
+                        if (mostrar) {
+                            table1.fnAddData([data[row].persona, data[row].edad, data[row].sexo, data[row].embarazada, data[row].municipio, data[row].tipoNoti, data[row].fechaRegistro, data[row].fechaInicioSintomas, data[row].SILAIS, data[row].unidad, '<a href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-mail-forward"></i></a>']);
+                            encontrado = true;
+                        }
+                        mostrar=true; //se reinicia valor bandera
+                    }
+                    if(!encontrado){
+                        showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
+                        title='';
+                    }
+                    setTimeout($.unblockUI, 500);
+                })
+                    .fail(function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(" status: " + textStatus + " er:" + errorThrown);
+                        setTimeout($.unblockUI, 5);
+                    });
+            }
+
+            function getNotiEmbarazadas() {
+                bloquearUI(parametros.blockMess);
+                table2.fnClearTable();
+                $.getJSON(parametros.sEmbarazadasUrl, {
+                    nivel : $("#nivelUsuario").val(),
+                    conSubUnidades : false
+                }, function(data) {
+                    var encontrado;
+                    console.log(data);
+                    var mostrar=true;
+                    for(var row in data){
+                        var actionUrl;
+                        switch (data[row].codtipoNoti) {
+                            case 'TPNOTI|SINFEB':
+                                actionUrl = parametros.febrilesUrl+data[row].idNotificacion;
+                                break;
+                            case 'TPNOTI|IRAG':
+                                actionUrl = parametros.iragUrl+data[row].idNotificacion;
+                                break;
+                            case 'TPNOTI|PCNT':
+                                actionUrl = parametros.pacienteUrl+data[row].idNotificacion;
+                                break;
+                            default:
+                                actionUrl = '#';
+                                mostrar = false; //si es otro tipo de notificación no mostrar en la tabla
+                                break;
+                        }
+                        if (mostrar) {
+                            table2.fnAddData([data[row].persona, data[row].edad, data[row].municipio, data[row].tipoNoti, data[row].fechaRegistro, data[row].fechaInicioSintomas, data[row].SILAIS, data[row].unidad, '<a href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-mail-forward"></i></a>']);
+                            encontrado = true;
+                        }
+                        mostrar=true; //se reinicia valor bandera
+                    }
+                    if(!encontrado){
+                        showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
+                        title='';
+                    }
+                    setTimeout($.unblockUI, 500);
+                })
+                    .fail(function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(" status: " + textStatus + " er:" + errorThrown);
+                        setTimeout($.unblockUI, 5);
+                    });
+            }
+
+            function getNotiHospitalizados() {
+                bloquearUI(parametros.blockMess);
+                table3.fnClearTable();
+                $.getJSON(parametros.sHospitalizadosUrl, {
+                    nivel : $("#nivelUsuario").val(),
+                    conSubUnidades : false
+                }, function(data) {
+                    var encontrado;
+                    console.log(data);
+                    var mostrar=true;
+                    for(var row in data){
+                        var actionUrl;
+                        switch (data[row].codtipoNoti) {
+                            case 'TPNOTI|SINFEB':
+                                actionUrl = parametros.febrilesUrl+data[row].idNotificacion;
+                                break;
+                            case 'TPNOTI|IRAG':
+                                actionUrl = parametros.iragUrl+data[row].idNotificacion;
+                                break;
+                            case 'TPNOTI|PCNT':
+                                actionUrl = parametros.pacienteUrl+data[row].idNotificacion;
+                                break;
+                            default:
+                                actionUrl = '#';
+                                mostrar = false; //si es otro tipo de notificación no mostrar en la tabla
+                                break;
+                        }
+                        if (mostrar) {
+                            table3.fnAddData([data[row].persona, data[row].edad, data[row].sexo, data[row].embarazada, data[row].municipio, data[row].tipoNoti, data[row].fechaRegistro, data[row].fechaInicioSintomas, data[row].SILAIS, data[row].unidad, '<a href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-mail-forward"></i></a>']);
+                            encontrado = true;
+                        }
+                        mostrar=true; //se reinicia valor bandera
+                    }
+                    if(!encontrado){
+                        showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
+                        title='';
+                    }
+                    setTimeout($.unblockUI, 500);
+                })
+                    .fail(function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(" status: " + textStatus + " er:" + errorThrown);
+                        setTimeout($.unblockUI, 5);
+                    });
+            }
+
+            getNotiSinResultado();
+            getNotiEmbarazadas();
+            getNotiHospitalizados();
         }
     }
 }();
