@@ -481,14 +481,23 @@ var PaginaInicio = function () {
             }
 
             var nivel = $("#nivelUsuario").val();
-            if ( nivel == "PAIS" || nivel == "SILAIS"){
+            if ( nivel == "PAIS"){
                 $("#divMapas").show();
+                $("#rev-toggles").show();
+                $("#rev-toggles2").show();
                 getDataMapaDengueSospechoso();
                 getDataMapaDengueConfirmado();
-            }else {
+            }else if (nivel == "SILAIS") {
+                $("#divMapas").show();
+                $("#rev-toggles").hide();
+                $("#rev-toggles2").hide();
+                getDataMapaDengueSospechoso();
+                getDataMapaDengueConfirmado();
+
+            }else
+            {
                 $("#divMapas").hide();
             }
-
             $('input[type=radio][name=nivelPais2]').change(function() {
                 getDataMapaDengueConfirmado();
             });
@@ -539,7 +548,6 @@ var PaginaInicio = function () {
                     responsiveHelper_dt_basic.respond();
                 }
             });
-
             var table3 = $('#noti_hospitalizados').dataTable({
                 "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>" +
                     "t" +

@@ -226,7 +226,7 @@
 
                 <div class="row" id="divMapas">
                     <!-- NEW WIDGET START -->
-                    <article class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                    <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <!-- Widget ID (each widget will need unique ID)-->
                         <div class="jarviswidget" id="wid-id-3">
                             <!-- widget options:
@@ -281,7 +281,7 @@
                     </article>
                     <!-- WIDGET END -->
                     <!-- NEW WIDGET START -->
-                    <article class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                    <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <!-- Widget ID (each widget will need unique ID)-->
                         <div class="jarviswidget" id="wid-id-2">
                             <!-- widget options:
