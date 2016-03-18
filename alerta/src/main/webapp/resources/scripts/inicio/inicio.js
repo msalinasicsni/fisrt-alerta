@@ -572,10 +572,9 @@ var PaginaInicio = function () {
                 table1.fnClearTable();
                 $.getJSON(parametros.sSinResultadoUrl, {
                     nivel : $("#nivelUsuario").val(),
-                    conSubUnidades : false
+                    conSubUnidades : true
                 }, function(data) {
                     var encontrado;
-                    console.log(data);
                     var mostrar=true;
                     for(var row in data){
                         var actionUrl;
@@ -617,10 +616,9 @@ var PaginaInicio = function () {
                 table2.fnClearTable();
                 $.getJSON(parametros.sEmbarazadasUrl, {
                     nivel : $("#nivelUsuario").val(),
-                    conSubUnidades : false
+                    conSubUnidades : true
                 }, function(data) {
                     var encontrado;
-                    console.log(data);
                     var mostrar=true;
                     for(var row in data){
                         var actionUrl;
@@ -662,10 +660,9 @@ var PaginaInicio = function () {
                 table3.fnClearTable();
                 $.getJSON(parametros.sHospitalizadosUrl, {
                     nivel : $("#nivelUsuario").val(),
-                    conSubUnidades : false
+                    conSubUnidades : true
                 }, function(data) {
                     var encontrado;
-                    console.log(data);
                     var mostrar=true;
                     for(var row in data){
                         var actionUrl;

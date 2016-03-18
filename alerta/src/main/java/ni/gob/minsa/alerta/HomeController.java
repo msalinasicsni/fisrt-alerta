@@ -174,7 +174,7 @@ public class HomeController {
     public @ResponseBody String fetchHospitalizadosDataJson( HttpServletRequest request,
                                                           @RequestParam(value = "nivel", required = true) String nivelUsuario,
                                                           @RequestParam(value = "conSubUnidades", required = false) boolean conSubUnidades) throws ParseException {
-        logger.info("Obteniendo los datos de notificaciones para embarazadas");
+        logger.info("Obteniendo los datos de notificaciones para hospitalizados");
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<DaNotificacion> datos =  homeService.getDataHospitalizados(nivelUsuario, (int) idUsuario, conSubUnidades);
         if (datos == null) {
