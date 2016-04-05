@@ -67,7 +67,8 @@ public class HomeController {
             String semF="";
             String anioF="";
             String anioI="";
-            CalendarioEpi calendarioEpi = calendarioEpiService.getCalendarioEpiByFecha("14/12/2014");
+            //CalendarioEpi calendarioEpi = calendarioEpiService.getCalendarioEpiByFecha("14/12/2014");
+            CalendarioEpi calendarioEpi = calendarioEpiService.getCalendarioEpiByFecha(DateUtil.DateToString(new Date(),"dd/MM/yyyy"));
             if (calendarioEpi!=null) {
                 semF = String.valueOf(calendarioEpi.getNoSemana());
                 anioF = String.valueOf(calendarioEpi.getAnio());

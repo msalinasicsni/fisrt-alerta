@@ -47,11 +47,16 @@ public class HomeService {
                 patoQuery = patoQuery + " or inf.patologia.codigo = '"+patos[i]+"'";
             }
         }
-        for (int i = 0; i<=(Integer.parseInt(semF)-Integer.parseInt(semI)); i++){
-            semanas.add(Integer.parseInt(semI)+i);
+        if (!semF.isEmpty()) {
+            for (int i = 0; i <= (Integer.parseInt(semF) - Integer.parseInt(semI)); i++) {
+                semanas.add(Integer.parseInt(semI) + i);
+            }
         }
-        for (int i = 0; i<=(Integer.parseInt(anioF)-Integer.parseInt(anioI)); i++){
-            anios.add(Integer.parseInt(anioI)+i);
+
+        if (!anioF.isEmpty() && !anioI.isEmpty()) {
+            for (int i = 0; i <= (Integer.parseInt(anioF) - Integer.parseInt(anioI)); i++) {
+                anios.add(Integer.parseInt(anioI) + i);
+            }
         }
         if (nivelUsuario.equals("PAIS")){
             query = session.createQuery(sqlData + " From SiveInformeDiario inf " +
@@ -74,9 +79,9 @@ public class HomeService {
         }
 
         query.setParameter("semI", Integer.parseInt(semI));
-        query.setParameter("semF", Integer.parseInt(semF));
-        query.setParameter("anioI", Integer.parseInt(anioI));
-        query.setParameter("anioF", Integer.parseInt(anioF));
+        query.setParameter("semF", semF.isEmpty()?0:Integer.parseInt(semF));
+        query.setParameter("anioI", anioI.isEmpty()?0:Integer.parseInt(anioI));
+        query.setParameter("anioF", anioF.isEmpty()?0: Integer.parseInt(anioF));
         resultadoTemp.addAll(query.list());
 
         if(!resultadoTemp.isEmpty()){
@@ -190,8 +195,8 @@ public class HomeService {
                         "where ("+patoQuery+") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anio) " +
                         "group by inf.silais order by inf.silais");
                 query.setParameter("semI", Integer.parseInt(semI));
-                query.setParameter("semF", Integer.parseInt(semF));
-                query.setParameter("anio", Integer.parseInt(anio));
+                query.setParameter("semF", semF.isEmpty()?0:Integer.parseInt(semF));
+                query.setParameter("anio", anio.isEmpty()?0:Integer.parseInt(anio));
 
                 resultado.addAll(query.list());
 
@@ -200,8 +205,8 @@ public class HomeService {
                         "where cast(inf.municipio as long) = municipio.divisionpoliticaId and ("+ patoQuery +") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio = :anio) " +
                         "group by municipio.codigoNacional order by municipio.codigoNacional");
                 query.setParameter("semI", Integer.parseInt(semI));
-                query.setParameter("semF", Integer.parseInt(semF));
-                query.setParameter("anio", Integer.parseInt(anio));
+                query.setParameter("semF", semF.isEmpty()?0:Integer.parseInt(semF));
+                query.setParameter("anio", anio.isEmpty()?0:Integer.parseInt(anio));
 
                 resultado.addAll(query.list());
 
@@ -215,8 +220,8 @@ public class HomeService {
             query.setParameter("idUsuario", idUsuario);
             query.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
             query.setParameter("semI", Integer.parseInt(semI));
-            query.setParameter("semF", Integer.parseInt(semF));
-            query.setParameter("anio", Integer.parseInt(anio));
+            query.setParameter("semF", semF.isEmpty()?0:Integer.parseInt(semF));
+            query.setParameter("anio", anio.isEmpty()?0:Integer.parseInt(anio));
 
             resultado.addAll(query.list());
         }
@@ -343,12 +348,12 @@ public class HomeService {
         switch (nivelUsuario) {
             case "PAIS":
                 //IRAG
-                query = "select noti from DaIrag irag inner join irag.idNotificacion noti where irag.condiciones like :codCondicion";
+                query = "select noti from DaIrag irag inner join irag.idNotificacion noti where noti.pasivo = false and irag.condiciones like :codCondicion";
                 q = session.createQuery(query);
                 q.setParameter("codCondicion", "%" + "CONDPRE|EMB" + "%");//código para condición embarazo
 
                 //SINDROMES FEBRILES
-                query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti where sf.embarazo.codigo = :codigoEmb";
+                query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti where noti.pasivo = false and sf.embarazo.codigo = :codigoEmb";
                 q2 = session.createQuery(query2);
                 q2.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
 
@@ -359,7 +364,7 @@ public class HomeService {
                 //IRAG
                 query = "select noti from DaIrag irag inner join irag.idNotificacion noti, UsuarioEntidad ue " +
                         "where  noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
-                        "irag.condiciones like :codCondicion";
+                        "noti.pasivo = false and irag.condiciones like :codCondicion";
                 q = session.createQuery(query);
                 q.setParameter("codCondicion", "%" + "CONDPRE|EMB" + "%");//código para condición embarazo
                 q.setParameter("idUsuario", idUsuario);
@@ -368,7 +373,7 @@ public class HomeService {
                 //SINDROMES FEBRILES
                 query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti, UsuarioEntidad ue " +
                         "where  noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
-                        "sf.embarazo.codigo = :codigoEmb";
+                        "noti.pasivo = false and sf.embarazo.codigo = :codigoEmb";
                 q2 = session.createQuery(query2);
                 q2.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
                 q2.setParameter("idUsuario", idUsuario);
@@ -385,7 +390,7 @@ public class HomeService {
                             "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id  " +
                             "and sis.codigo = :sistema and usu.usuarioId = :idUsuario and uni.pasivo = '0' " +
                             "and (noti.codUnidadAtencion.unidadId = uni.unidadId or noti.codUnidadAtencion.unidadAdtva = uni.unidadId) " +
-                            "and irag.condiciones like :codCondicion";
+                            "and noti.pasivo = false and irag.condiciones like :codCondicion";
 
                     q = session.createQuery(query);
                     q.setParameter("codCondicion", "%" + "CONDPRE|EMB" + "%");//código para condición embarazo
@@ -397,7 +402,7 @@ public class HomeService {
                             "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id  " +
                             "and sis.codigo = :sistema and usu.usuarioId = :idUsuario and uni.pasivo = '0' " +
                             "and (noti.codUnidadAtencion.unidadId = uni.unidadId or noti.codUnidadAtencion.unidadAdtva = uni.unidadId) " +
-                            "and sf.embarazo.codigo = :codigoEmb";
+                            "and noti.pasivo = false and sf.embarazo.codigo = :codigoEmb";
 
                     q2 = session.createQuery(query2);
                     q2.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
@@ -410,7 +415,7 @@ public class HomeService {
                     //IRAG
                     query = "select noti from DaIrag irag inner join irag.idNotificacion noti, UsuarioUnidad uu " +
                             "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
-                            "irag.condiciones like :codCondicion";
+                            "noti.pasivo = false and irag.condiciones like :codCondicion";
                     q = session.createQuery(query);
                     q.setParameter("codCondicion", "%" + "CONDPRE|EMB" + "%");//código para condición embarazo
                     q.setParameter("idUsuario", idUsuario);
@@ -419,7 +424,7 @@ public class HomeService {
                     //SINDROMES FEBRILES
                     query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti, UsuarioUnidad uu " +
                             "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
-                            "sf.embarazo.codigo = :codigoEmb";
+                            "noti.pasivo = false and sf.embarazo.codigo = :codigoEmb";
                     q2 = session.createQuery(query2);
                     q2.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
                     q2.setParameter("idUsuario", idUsuario);
@@ -443,12 +448,12 @@ public class HomeService {
         switch (nivelUsuario) {
             case "PAIS":
                 //IRAG
-                query = "select noti from DaIrag irag inner join irag.idNotificacion noti where irag.uci = :uci ";
+                query = "select noti from DaIrag irag inner join irag.idNotificacion noti where noti.pasivo = false and irag.uci = :uci ";
                 q = session.createQuery(query);
                 q.setParameter("uci",1);//si estuvo en UCI
 
                 //SINDROMES FEBRILES
-                query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti where sf.hosp.codigo = :codigoHosp";
+                query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti where noti.pasivo = false and sf.hosp.codigo = :codigoHosp";
                 q2 = session.createQuery(query2);
                 q2.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
 
@@ -459,7 +464,7 @@ public class HomeService {
                 //IRAG
                 query = "select noti from DaIrag irag inner join irag.idNotificacion noti, UsuarioEntidad ue " +
                         "where  noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
-                        "irag.uci = :uci ";
+                        "noti.pasivo = false and irag.uci = :uci ";
                 q = session.createQuery(query);
                 q.setParameter("uci",1);//si estuvo en UCI
                 q.setParameter("idUsuario", idUsuario);
@@ -468,7 +473,7 @@ public class HomeService {
                 //SINDROMES FEBRILES
                 query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti, UsuarioEntidad ue " +
                         "where  noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
-                        "sf.hosp.codigo = :codigoHosp";
+                        "noti.pasivo = false and sf.hosp.codigo = :codigoHosp";
                 q2 = session.createQuery(query2);
                 q2.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
                 q2.setParameter("idUsuario", idUsuario);
@@ -484,7 +489,7 @@ public class HomeService {
                             "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id  " +
                             "and sis.codigo = :sistema and usu.usuarioId = :idUsuario and uni.pasivo = '0' " +
                             "and (noti.codUnidadAtencion.unidadId = uni.unidadId or noti.codUnidadAtencion.unidadAdtva = uni.unidadId) " +
-                            "and irag.uci = :uci";
+                            "and noti.pasivo = false and irag.uci = :uci";
 
                     q = session.createQuery(query);
                     q.setParameter("uci",1);//si estuvo en UCI
@@ -497,7 +502,7 @@ public class HomeService {
                             "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id  " +
                             "and sis.codigo = :sistema and usu.usuarioId = :idUsuario and uni.pasivo = '0' " +
                             "and (noti.codUnidadAtencion.unidadId = uni.unidadId or noti.codUnidadAtencion.unidadAdtva = uni.unidadId) " +
-                            "and sf.hosp.codigo = :codigoHosp";
+                            "and noti.pasivo = false and sf.hosp.codigo = :codigoHosp";
 
                     q2 = session.createQuery(query2);
                     q2.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
@@ -510,7 +515,7 @@ public class HomeService {
                     //IRAG
                     query = "select noti from DaIrag irag inner join irag.idNotificacion noti, UsuarioUnidad uu " +
                             "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
-                            "irag.uci = :uci";
+                            "noti.pasivo = false and irag.uci = :uci";
                     q = session.createQuery(query);
                     q.setParameter("uci",1);//si estuvo en UCI
                     q.setParameter("idUsuario", idUsuario);
@@ -519,7 +524,7 @@ public class HomeService {
                     //SINDROMES FEBRILES
                     query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti, UsuarioUnidad uu " +
                             "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
-                            "sf.hosp.codigo = :codigoHosp";
+                            "noti.pasivo = false and sf.hosp.codigo = :codigoHosp";
                     q2 = session.createQuery(query2);
                     q2.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
                     q2.setParameter("idUsuario", idUsuario);
