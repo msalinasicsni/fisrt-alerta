@@ -41,6 +41,9 @@ var SeleccionUnidadReporte = function () {
                         }
                         html += '</option>';
                         $('#codMunicipio').html(html);
+
+                        $('#codMunicipio').focus();
+                        $('#s2id_codMunicipio').addClass('select2-container-active');
                     });
                     setTimeout($.unblockUI, 500);
                 });
@@ -63,6 +66,8 @@ var SeleccionUnidadReporte = function () {
                         }
                         html += '</option>';
                         $('#codUnidadAtencion').html(html);
+                        $('#codUnidadAtencion').focus();
+                        $('#s2id_codUnidadAtencion').addClass('select2-container-active');
                         //console.log("unidades cargadas");
                     });
                     setTimeout($.unblockUI, 500);

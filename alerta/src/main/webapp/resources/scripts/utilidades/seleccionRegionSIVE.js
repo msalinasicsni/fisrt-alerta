@@ -40,6 +40,8 @@ var SeleccionRegionSIVE = function () {
             				}
             				html += '</option>';
             				$('#codMunicipio').html(html);
+                            $('#codMunicipio').focus();
+                            $('#s2id_codMunicipio').addClass('select2-container-active');
             			});
             			setTimeout($.unblockUI, 500);
             			});
@@ -63,6 +65,8 @@ var SeleccionRegionSIVE = function () {
             				html += '</option>';
             				$('#codUnidadAtencion').html(html);
                             //console.log("unidades cargadas");
+                            $('#codUnidadAtencion').focus();
+                            $('#s2id_codUnidadAtencion').addClass('select2-container-active');
             			});
             			setTimeout($.unblockUI, 500);
             			});

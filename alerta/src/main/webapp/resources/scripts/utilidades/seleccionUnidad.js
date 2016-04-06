@@ -40,6 +40,9 @@ var SeleccionUnidad = function () {
             				}
             				html += '</option>';
             				$('#codMunicipio').html(html);
+                            $('#codMunicipio').focus();
+                            $('#s2id_codMunicipio').addClass('select2-container-active');
+                            //select2-container-active select2-dropdown-open select2-drop-above
             			});
             			setTimeout($.unblockUI, 500);
             			});
@@ -63,6 +66,8 @@ var SeleccionUnidad = function () {
             				html += '</option>';
             				$('#codUnidadAtencion').html(html);
                             //console.log("unidades cargadas");
+                            $('#codUnidadAtencion').focus();
+                            $('#s2id_codUnidadAtencion').addClass('select2-container-active');
             			});
             			setTimeout($.unblockUI, 500);
             			});
@@ -86,6 +91,8 @@ var SeleccionUnidad = function () {
                     }
                     html += '</option>';
                     $('#municipioResidencia').html(html);
+                    $('#municipioResidencia').focus();
+                    $('#s2id_municipioResidencia').addClass('select2-container-active');
                 });
             });
             
@@ -113,6 +120,8 @@ var SeleccionUnidad = function () {
                     }
                     html += '</option>';
                     $('#comunidadResidencia').html(html);
+                    $('#comunidadResidencia').focus();
+                    $('#s2id_comunidadResidencia').addClass('select2-container-active');
                 });
                 
             });
