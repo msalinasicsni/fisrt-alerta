@@ -53,7 +53,7 @@ var PaginaInicio = function () {
             function getDataDengueConfiramdo() {
 
                 bloquearUI(parametros.blockMess);
-                $.getJSON(parametros.sActionUrl, { codPato: "0612,0613,J189",
+                $.getJSON(parametros.sActionUrl, { codPato: "0612,0613",
                     semI : $("#semanaI").val(),
                     semF : $("#semanaF").val(),
                     anioI : $("#anioI").val(),
