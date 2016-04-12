@@ -86,8 +86,6 @@ public class TomaMxController {
     Map<String, Object> mapModel;
     List<TipoMx_TipoNotificacion> catTipoMx;
 
-
-
     @RequestMapping(value = "search", method = RequestMethod.GET)
     public String initSearchForm(Model model, HttpServletRequest request) throws ParseException {
         logger.debug("Crear/Buscar Toma de Mx");
@@ -117,7 +115,7 @@ public class TomaMxController {
      */
     @RequestMapping(value = "notices", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List<DaNotificacion> personasJson(@RequestParam(value = "strFilter", required = true) String filtro) {
+    List<DaNotificacion> notices(@RequestParam(value = "strFilter", required = true) String filtro) {
         logger.info("Obteniendo las notificaciones en JSON");
 
         return daNotificacionService.getNoticesByPerson(filtro);
@@ -182,8 +180,11 @@ public class TomaMxController {
     }
 
     /**
-     * Retorna una lista de dx
+     * Retorna una lista de dx según el tipo de muestra y de notificación
+     * @param codMx tipo de muestra
+     * @param tipoNoti tipo de notificación
      * @return Un arreglo JSON de dx
+     * @throws Exception
      */
     @RequestMapping(value = "dxByMx", method = RequestMethod.GET, produces = "application/json")
     public
@@ -193,7 +194,12 @@ public class TomaMxController {
         return tomaMxService.getDx(codMx, tipoNoti);
     }
 
-
+    /**
+     * Obtener tomas de muestra de una notificación
+     * @param idNotificacion de la notificación a consultar
+     * @return List<DaTomaMx>
+     * @throws Exception
+     */
     @RequestMapping(value = "tomaMxByIdNoti", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
@@ -201,9 +207,13 @@ public class TomaMxController {
         logger.info("Realizando búsqueda de Toma de Mx.");
 
         return tomaMxService.getTomaMxByIdNoti(idNotificacion);
-
     }
 
+    /**
+     * Guardar toma de muestra de diagnóstico
+     * @return ResponseEntity<String>
+     * @throws Exception
+     */
     @RequestMapping(value = "/saveToma", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveTomaMx(HttpServletRequest request,
               @RequestParam(value = "dx", required = false) String dx
@@ -272,6 +282,13 @@ public class TomaMxController {
         return createJsonResponse(tomaMx);
     }
 
+    /**
+     * Guardar solicitudes de dx para una muestra
+     * @param idTomaMx a la que pertenecen las solicitudes
+     * @param dx códigod de los dx solicitados
+     * @param request con los datos de autenticación
+     * @throws Exception
+     */
     private void saveDxRequest(String idTomaMx, String dx, HttpServletRequest request) throws Exception {
 
         DaSolicitudDx soli = new DaSolicitudDx();
@@ -415,6 +432,13 @@ public class TomaMxController {
         return tomaMxService.getEstudiosByTipoMxTipoNoti(codMx, tipoNoti,Long.valueOf(idUnidadSalud));
     }
 
+    /**
+     * Guardar tomas de muestra de estudio
+     * @param request con los datos de autenticación y datos de la muestra a guardar
+     * @param response con el resultado de la operación
+     * @throws ServletException
+     * @throws IOException
+     */
     @RequestMapping(value = "saveTomaMxStudy", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json")
     protected void saveTomaMxStudy(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String json = "";

@@ -82,7 +82,19 @@ public class BoletinController {
         }
     }
 
-
+    /**
+     *
+     * @param codPato patologías a incluir en el boletin
+     * @param codArea Pais,  Departamento o SILAIS
+     * @param semF hasta que semana tomar en cuenta para consultar registros
+     * @param anio anio a tomar en cuenta para consultar registros
+     * @param codSilais Si es area SILAIS trae el id del SILAIS seleccionado
+     * @param codDepartamento Si es area Departamento trae el id del Departamento seleccionado
+     * @param codMunicipio sin uso
+     * @param codUnidad sin uso
+     * @return List
+     * @throws ParseException
+     */
     @RequestMapping(value = "dataBulletin", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public List fetchCasosTasasAreaDataJson(@RequestParam(value = "codPato", required = true) String codPato,

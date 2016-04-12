@@ -184,6 +184,11 @@ public class HomeController {
         return notificacionesHospToJson(datos);
     }
 
+    /**
+     * Convierte a formato JSON una lista de notificaciones sin resultado
+     * @param notificacions lista a convertir
+     * @return JSON
+     */
     private String notificacionesSRToJson(List<DaNotificacion> notificacions){
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
@@ -241,6 +246,11 @@ public class HomeController {
         return escaper.translate(jsonResponse);
     }
 
+    /**
+     * Convierte a formato JSON una lista de notificaciones de embarazadas
+     * @param notificacions lista a convertir
+     * @return JSON
+     */
     private String notificacionesEmbarazadasToJson(List<DaNotificacion> notificacions){
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
@@ -290,6 +300,11 @@ public class HomeController {
         return escaper.translate(jsonResponse);
     }
 
+    /**
+     * Convierte a formato JSON una lista de notificaciones de hospitalizados
+     * @param notificacions lista a convertir
+     * @return JSON
+     */
     private String notificacionesHospToJson(List<DaNotificacion> notificacions){
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();

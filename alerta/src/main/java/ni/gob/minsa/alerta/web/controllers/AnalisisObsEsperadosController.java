@@ -274,9 +274,7 @@ public class AnalisisObsEsperadosController {
     }
 
     @RequestMapping(value = "casostasasarea", method = RequestMethod.GET)
-    public String initCasosTasasAreaPage(Model model, HttpServletRequest request)
-            throws Exception
-    {
+    public String initCasosTasasAreaPage(Model model, HttpServletRequest request) throws Exception {
         logger.debug("presentar analisis por casos y tasas");
         logger.debug("Reporte por Area");
         String urlValidacion="";
@@ -310,6 +308,11 @@ public class AnalisisObsEsperadosController {
         }
     }
 
+    /**
+     * Retorna una lista de datos. Acepta una solicitud GET para JSON
+     * @return Un arreglo JSON
+     * @throws ParseException
+     */
     @RequestMapping(value = "casostasasareadata", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public List fetchCasosTasasAreaDataJson(@RequestParam(value = "codPato", required = true) String codPato,

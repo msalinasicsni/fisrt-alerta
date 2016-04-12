@@ -67,6 +67,12 @@ public class AdmonStudiesUSController {
     MessageSource messageSource;
 
 
+    /**
+     * Carga la pantalla inicial para la administración de estudios por unidades de salud
+      * @param request Con los datos de autenticación
+     * @return ModelAndView
+     * @throws Exception
+     */
     @RequestMapping(value = "init", method = RequestMethod.GET)
     public ModelAndView initForm(HttpServletRequest request) throws Exception {
         logger.debug("Cargando lista de estudios");
@@ -95,7 +101,11 @@ public class AdmonStudiesUSController {
     }
 
 
-    //Load Studies list
+    /**
+     * Carga el catálogo de estudios registrados. Acepta una solicitud GET para JSON
+     * @return JSON
+     * @throws Exception
+     */
     @RequestMapping(value = "getStudies", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     String getStudies() throws Exception {
@@ -106,6 +116,11 @@ public class AdmonStudiesUSController {
         return listToJson(estudioList);
     }
 
+    /**
+     * Convierte una lista de catálogos de estudios en formato JSON
+     * @param estudioList Catálogo de estudios
+     * @return JSON
+     */
     private String listToJson(List<Catalogo_Estudio> estudioList) {
         String jsonResponse = "";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
@@ -127,7 +142,12 @@ public class AdmonStudiesUSController {
         return escaper.translate(jsonResponse);
     }
 
-    //load associated us
+    /**
+     * Carga el catálogo de unidades de salud asociadas a un estudio. Acepta una solicitud GET para JSON
+     * @param idEstudio del Estudio a obtener unidades de salud asociadas
+     * @return JSON
+     * @throws Exception
+     */
     @RequestMapping(value = "getAssociatedUS", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     String fetchUSJson(@RequestParam(value = "idEstudio", required = true) Integer idEstudio) throws Exception{
@@ -140,7 +160,11 @@ public class AdmonStudiesUSController {
         return usToJson(usList);
     }
 
-
+    /**
+     * Convierte una lista unidades de salud asociadas al estudio en formato JSON
+     * @param usList Unidades de salud asociadas al estudio
+     * @return JSON
+     */
     private String usToJson(List<Estudio_UnidadSalud> usList) {
         String jsonResponse = "";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
@@ -162,6 +186,13 @@ public class AdmonStudiesUSController {
         return escaper.translate(jsonResponse);
     }
 
+    /***
+     * Agrega o actualiza un registro de unidad de salud asociada a un estudio. Si se envia idRecord se actualiza, en caso contrario se agrega
+     * . Acepta una solicitud POST para JSON
+     * @param request datos de autenticación y valores a guardar
+     * @param response resultado de la operación
+     * @throws Exception
+     */
     @RequestMapping(value = "addUpdateUs", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     protected void addUpdateTest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String json = "";

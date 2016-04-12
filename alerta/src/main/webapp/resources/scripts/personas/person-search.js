@@ -87,10 +87,9 @@ var SearchPerson = function () {
     				}
                     setTimeout($.unblockUI, 500);
     			})
-    			.fail(function() {
-				    alert( "error" );
+    			.fail(function(jqXHR) {
 				    setTimeout($.unblockUI, 5);
-                        alert(" status: " + status + " er:" + er);
+                        alert(" status: " + jqXHR.status + " - " + jqXHR.statusText);
 				});
             };
 

@@ -73,6 +73,13 @@ public class NotiPacienteController {
         }
     }
 
+    /**
+     * Si usuario  está autorizado muestra las notificaciones previas de la persona
+     * @param idPerson a consultar
+     * @param request datos de autenticación
+     * @return ModelAndView
+     * @throws Exception
+     */
     @RequestMapping("search/{idPerson}")
     public ModelAndView showPersonReport(@PathVariable("idPerson") long idPerson, HttpServletRequest request) throws Exception {
         String urlValidacion="";
@@ -87,8 +94,8 @@ public class NotiPacienteController {
         }
         ModelAndView mav = new ModelAndView();
         if(urlValidacion.isEmpty()){
-            List<DaNotificacion> results = getResults(idPerson);
-                mav.addObject("fichas", results);
+            //List<DaNotificacion> results = getResults(idPerson);
+                //mav.addObject("fichas", results);
                 mav.addObject("idPerson", idPerson);
                 mav.setViewName("paciente/results");
 
@@ -98,6 +105,12 @@ public class NotiPacienteController {
         return mav;
     }
 
+    /**
+     * Consultar las notificaciones previas tipo PACIENTE de la persona
+     * @param idPerson de la persona a consultar
+     * @return List<DaNotificacion>
+     * @throws Exception
+     */
     @RequestMapping(value = "getResults", method = RequestMethod.GET,  produces = "application/json")
     public @ResponseBody
     List<DaNotificacion> getResults(@RequestParam(value = "idPerson", required = true) long idPerson) throws Exception {
@@ -107,6 +120,13 @@ public class NotiPacienteController {
         return results;
     }
 
+    /**
+     * Mostrar en pantalla el detalle de la notificación seleccioonada
+     * @param idNotificacion de la notificación a mostrar
+     * @param request datos datos de autenticación
+     * @return ModelAndView
+     * @throws Exception
+     */
     @RequestMapping("detail/{idNotificacion}")
     public ModelAndView editReport(@PathVariable(value = "idNotificacion") String idNotificacion, HttpServletRequest request) throws Exception {
         String urlValidacion= "";
@@ -144,6 +164,12 @@ public class NotiPacienteController {
         return mav;
     }
 
+    /**
+     * Obtiene el detalle de la socilicitudes de dx asociados a la notificación
+     * @param strIdNotificacion notificación a consultar
+     * @return JSON
+     * @throws Exception
+     */
     @RequestMapping(value = "getDatosSolicitudDetalleByNotifi", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     String getDatosSolicitudDetalleBySolicitud(@RequestParam(value = "strIdNotificacion", required = true) String strIdNotificacion) throws Exception {
@@ -152,6 +178,11 @@ public class NotiPacienteController {
         return detalleDatoSolicitudToJson(diagnosticosList);
     }
 
+    /**
+     *  COnvierte una lista de solicitudes dx en formato JSON
+     * @param solicitudDxList lista de solicitud de diagnósticos
+     * @return JSON
+     */
     public String detalleDatoSolicitudToJson(List<DaSolicitudDx> solicitudDxList) {
         String jsonResponse = "";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();

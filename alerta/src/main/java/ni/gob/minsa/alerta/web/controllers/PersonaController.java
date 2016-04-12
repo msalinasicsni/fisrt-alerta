@@ -219,6 +219,13 @@ public class PersonaController {
         return mav;
     }
 
+    /**
+     * Agrega o actualiza una persona mediante el componente de persona del MINSA
+     * @param request con los datos de la persona
+     * @param response con el resultado de la acción
+     * @throws ServletException
+     * @throws IOException
+     */
     @RequestMapping(value = "agregarActualizarPersona", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
         protected void agregarActualizarPersona(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String json = "";
@@ -279,6 +286,12 @@ public class PersonaController {
         }
     }
 
+    /**
+     * Convierte un JSON a obtejo Persona
+     * @param strJsonPersona JSON
+     * @return Persona
+     * @throws Exception
+     */
     private Persona jsonToSisPersona(String strJsonPersona) throws Exception{
         JsonObject jObjectPerson = new Gson().fromJson(strJsonPersona, JsonObject.class);
         Persona persona = new Persona();

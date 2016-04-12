@@ -294,6 +294,13 @@ public class RotavirusController {
         return mav;
     }
 
+    /***
+     * Obetener la información de una notificación y cargarla en pantalla para su edición
+     * @param idNotificacion a cargar
+     * @param request con datos de autenticación
+     * @return ModelAndView
+     * @throws Exception
+     */
     @RequestMapping("edit/{idNotificacion}")
     public ModelAndView editIrag(@PathVariable("idNotificacion") String idNotificacion, HttpServletRequest request) throws Exception {
         String urlValidacion="";
@@ -391,9 +398,16 @@ public class RotavirusController {
         return mav;
     }
 
+    /**
+     * Anular notificación
+     * @param idNotificacion a anular
+     * @param request con datos de autenticación
+     * @return String
+     * @throws Exception
+     */
     @RequestMapping("/override/{idNotificacion}")
     public String overrideNoti(@PathVariable("idNotificacion") String idNotificacion,
-                               RedirectAttributes redirectAttributes, HttpServletRequest request) throws Exception {
+                               HttpServletRequest request) throws Exception {
         String urlValidacion= "";
         try {
             urlValidacion = seguridadService.validarLogin(request);
@@ -421,6 +435,13 @@ public class RotavirusController {
         }
     }
 
+    /**
+     * Guardar datos de una notificación rotavirus (agregar o actualizar)
+     * @param request con los datos de la notificación
+     * @param response con el resultado de la acción
+     * @throws ServletException
+     * @throws IOException
+     */
     @RequestMapping(value = "save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json")
     protected void save(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String json = "";
@@ -458,6 +479,17 @@ public class RotavirusController {
         }
     }
 
+    /**
+     * Si está habilitada la actualización de la persona mediante el componente de persona del MINSA se actualizan municipio, comunidad y dirección de residencia
+     * @param municipioResidencia nuevo municipio
+     * @param comunidadResidencia nueva comunidad
+     * @param direccionResidencia nueva dirección
+     * @param personaId persona a actualizar
+     * @param idNotificacion de la persona
+     * @param request con datos de autenticación
+     * @return resultado de la acción
+     * @throws Exception
+     */
     @RequestMapping(value = "updatePerson", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updatePerson(
             @RequestParam(value = "municipioResidencia", required = false) String municipioResidencia
@@ -510,7 +542,12 @@ public class RotavirusController {
         return createJsonResponse(pers);
     }
 
-    //Load results list
+    /**
+     * Obtiene las notificaciones de tipo Rotavirus para la persona seleccionada
+     * @param idPerson a consultar
+     * @return List<FichaRotavirus>
+     * @throws Exception
+     */
     @RequestMapping(value = "getResults", method = RequestMethod.GET,  produces = "application/json")
     public @ResponseBody
     List<FichaRotavirus> getResults(@RequestParam(value = "idPerson", required = true) long idPerson) throws Exception {
@@ -520,6 +557,13 @@ public class RotavirusController {
         return results;
     }
 
+    /**
+     * Agrega una notificación de tipo Rotavirus
+     * @param json con los datos de la ficha
+     * @param request con datos de autenticación
+     * @return DaNotificacion agregada
+     * @throws Exception
+     */
     public DaNotificacion guardarNotificacion(String json, HttpServletRequest request) throws Exception {
 
         logger.debug("Guardando Notificacion");
@@ -562,6 +606,12 @@ public class RotavirusController {
         }
     }
 
+    /**
+     * Actualiza una notificación de tipo Rotavirus
+     * @param idNotificacion de la notificación a actualizar
+     * @param persona a quien pertenece la notificación
+     * @throws Exception
+     */
     public void updateNotificacion(String idNotificacion, SisPersona persona ) throws Exception {
         DaNotificacion noti;
 
@@ -574,6 +624,12 @@ public class RotavirusController {
         }
     }
 
+    /***
+     * Convierte un JSON a objeto FichaRotavirus
+     * @param json con los datos de la ficha
+     * @return FichaRotavirus
+     * @throws ParseException
+     */
     private FichaRotavirus jSonToFichaRotavirus(String json) throws ParseException {
         FichaRotavirus fichaRotavirus = new FichaRotavirus();
         JsonObject jObjectJson = new Gson().fromJson(json, JsonObject.class);

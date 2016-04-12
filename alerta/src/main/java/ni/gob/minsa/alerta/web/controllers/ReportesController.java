@@ -110,6 +110,12 @@ public class ReportesController {
         return notificacionesToJson(notificacionList);
     }
 
+    /**
+     * Convierte un JSON con los filtros de búsqueda a objeto FiltroMx
+     * @param strJson JSON
+     * @return FiltroMx
+     * @throws Exception
+     */
     private FiltroMx jsonToFiltroMx(String strJson) throws Exception {
         JsonObject jObjectFiltro = new Gson().fromJson(strJson, JsonObject.class);
         FiltroMx filtroMx = new FiltroMx();
@@ -139,6 +145,11 @@ public class ReportesController {
         return filtroMx;
     }
 
+    /**
+     * Convierte una lista de notificaciones a formato JSON
+     * @param notificacions lista de nofiticaciones
+     * @return JSON
+     */
     private String notificacionesToJson(List<DaNotificacion> notificacions){
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
@@ -167,7 +178,7 @@ public class ReportesController {
                     nombreCompleto = nombreCompleto +" "+ notificacion.getPersona().getSegundoApellido();
                 map.put("persona",nombreCompleto);
                 //Se calcula la edad
-                int edad = calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
+                int edad = DateUtil.calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
                 map.put("edad",String.valueOf(edad));
                 //se obtiene el sexo
                 map.put("sexo",notificacion.getPersona().getSexo().getValor());
@@ -216,21 +227,6 @@ public class ReportesController {
         return escaper.translate(jsonResponse);
     }
 
-    public int calcularEdadAnios(Date dFechaNac){
-        Calendar today = Calendar.getInstance();
-        Calendar fechaNac = Calendar.getInstance();
-        fechaNac.setTime(dFechaNac);
-        int diff_year = today.get(Calendar.YEAR) - fechaNac.get(Calendar.YEAR);
-        int diff_month = today.get(Calendar.MONTH) - fechaNac.get(Calendar.MONTH);
-        int diff_day = today.get(Calendar.DAY_OF_MONTH) - fechaNac.get(Calendar.DAY_OF_MONTH);
-
-        //Si está en ese año pero todavía no los ha cumplido
-        if( diff_month < 0 || (diff_month==0 && diff_day < 0)){
-            diff_year--;
-        }
-        return diff_year;
-    }
-
     /*******************************************************************/
     /************************ REPORTE POR SEMANA ***********************/
     /*******************************************************************/
@@ -276,6 +272,22 @@ public class ReportesController {
         return mav;
     }
 
+    /**
+     * Método para obtener data para Reporte de semana
+     * @param factor factor poblacional
+     * @param codArea PAIS, Departamente, SILAIS, Municipìo o Unidad de Salud
+     * @param semI desde que semana consultar
+     * @param semF hasta que semana consultar
+     * @param anioI que anio consultar
+     * @param codSilais que silais consultar
+     * @param codDepartamento que departamento consultar
+     * @param codMunicipio que municipio consultar
+     * @param codUnidad que unidad de salud consultar
+     * @param tipoNotificacion que tipo notificación consultar
+     * @param ckUS incluir sub unidades (areas de salud)
+     * @return List<Object>
+     * @throws ParseException
+     */
     @RequestMapping(value = "getDataPorSemana", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody List<Object[]> getDataPorSemana(
             @RequestParam(value = "factor", required = false) Integer factor,
@@ -350,6 +362,21 @@ public class ReportesController {
         return mav;
     }
 
+    /**
+     * Método para obtener data para Reporte de dia
+     * @param factor factor poblacional
+     * @param codArea PAIS, Departamente, SILAIS, Municipìo o Unidad de Salud
+     * @param fechaInicial desde que fecha de notificación consultar
+     * @param fechaFinal hasta que fecha de notificación consultar
+     * @param codSilais que silais consultar
+     * @param codDepartamento que departamento consultar
+     * @param codMunicipio que municipio consultar
+     * @param codUnidad que unidad de salud consultar
+     * @param tipoNotificacion que tipo notificación consultar
+     * @param ckUS incluir sub unidades (areas de salud)
+     * @return List<Object>
+     * @throws ParseException
+     */
     @RequestMapping(value = "getDataPorDia", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody List<Object[]> getDataPorDia(
             @RequestParam(value = "factor", required = false) Integer factor,
@@ -424,6 +451,12 @@ public class ReportesController {
         }
     }
 
+    /**
+     * Convierte un JSON con los filtros de búsqueda a objeto FiltrosReporte
+     * @param strJson filtros
+     * @return FiltrosReporte
+     * @throws Exception
+     */
     private FiltrosReporte jsonToFiltroReportes(String strJson) throws Exception {
         JsonObject jObjectFiltro = new Gson().fromJson(strJson, JsonObject.class);
         FiltrosReporte filtroRep = new FiltrosReporte();
@@ -531,6 +564,20 @@ public class ReportesController {
         return mav;
     }
 
+    /**
+     * Método para obtener data para reporte de notificaciones sin resultados
+     * @param codArea PAIS, Departamente o SILAIS
+     * @param fechaInicial a filtrar registros
+     * @param fechaFinal a filtrar registros
+     * @param codSilais a consultar
+     * @param codDepartamento a consultar
+     * @param codMunicipio a consultar
+     * @param codUnidad a cosnultar
+     * @param tipoNotificacion a filtrar
+     * @param subunidades si deben incluirse las subunidades (area de salud)
+     * @return JSON
+     * @throws ParseException
+     */
     @RequestMapping(value = "getDataSinResultado", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String getDataSinResultado(
             @RequestParam(value = "codArea", required = true) String codArea,
@@ -562,6 +609,11 @@ public class ReportesController {
         return notificacionesSRToJson(datos);
     }
 
+    /**
+     * Convierte una lista de nofiticaciones sin resultado en formato JSON
+     * @param notificacions lista de nofiticaciones
+     * @return JSON
+     */
     private String notificacionesSRToJson(List<DaNotificacion> notificacions){
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
@@ -590,7 +642,7 @@ public class ReportesController {
                     nombreCompleto = nombreCompleto +" "+ notificacion.getPersona().getSegundoApellido();
                 map.put("persona",nombreCompleto);
                 //Se calcula la edad
-                int edad = calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
+                int edad = DateUtil.calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
                 map.put("edad",String.valueOf(edad));
                 //se obtiene el sexo
                 map.put("sexo",notificacion.getPersona().getSexo().getValor());

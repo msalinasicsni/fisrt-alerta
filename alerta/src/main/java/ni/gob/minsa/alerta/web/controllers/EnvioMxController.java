@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,7 +30,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -70,7 +68,7 @@ public class EnvioMxController {
     MessageSource messageSource;
 
     @RequestMapping(value = "create", method = RequestMethod.GET)
-    public ModelAndView initCreateFormTmp(Model model, HttpServletRequest request) throws Exception, ParseException {
+    public ModelAndView initCreateFormTmp(HttpServletRequest request) throws Exception {
         logger.debug("Crear un envio de ordenes de examen");
         String urlValidacion="";
         try {
@@ -104,15 +102,28 @@ public class EnvioMxController {
         return mav;
     }
 
+    /**
+     *  Obtiene las tomas de muestra según los filtros de búsqueda especificados
+     * @param filtro de búsqueda
+     * @return String JSON
+     * @throws Exception
+     */
     @RequestMapping(value = "orders", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     String fetchOrdersJson(@RequestParam(value = "strFilter", required = true) String filtro) throws Exception{
-        logger.info("Obteniendo las ordenes de examen pendienetes según filtros en JSON");
-        FiltroMx filtroMx = jsonToFiltroSolicitudDx(filtro);
+        logger.info("Obteniendo las ordenes de examen pendientes según filtros en JSON");
+        FiltroMx filtroMx = jsonToFiltroMx(filtro);
         List<DaTomaMx> tomaMxList = envioMxService.getMxPendientes(filtroMx);
         return tomaMxToJson(tomaMxList);
     }
 
+    /**
+     * registra el envio de las muestras.
+     * @param request con valores a registrar
+     * @param response con el resultado de la acción.
+     * @throws ServletException
+     * @throws IOException
+     */
     @RequestMapping(value = "agregarEnvioOrdenes", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     protected void agregarEnvioOrdenes(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String json = "";
@@ -192,6 +203,11 @@ public class EnvioMxController {
         }
     }
 
+    /**
+     * Convierte una lista de tomas de muestra en formato JSON
+     * @param tomaMxList lista de muestras
+     * @return JSON
+     */
     private String tomaMxToJson(List<DaTomaMx> tomaMxList){
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
@@ -214,7 +230,6 @@ public class EnvioMxController {
                 map.put("urgente", "--");
             }
 
-            //map.put("tipoExamen",orden.getCodDx().getNombre());
             //Si hay fecha de inicio de sintomas se muestra
             Date fechaInicioSintomas =  tomaMx.getIdNotificacion().getFechaInicioSintomas();//envioMxService.getFechaInicioSintomas(tomaMx.getIdNotificacion().getIdNotificacion());
             if (fechaInicioSintomas!=null)
@@ -251,7 +266,7 @@ public class EnvioMxController {
                     nombreCompleto = nombreCompleto +" "+ tomaMx.getIdNotificacion().getPersona().getSegundoApellido();
                 map.put("persona",nombreCompleto);
                 //Se calcula la edad
-                int edad = calcularEdadAnios(tomaMx.getIdNotificacion().getPersona().getFechaNacimiento());
+                int edad = DateUtil.calcularEdadAnios(tomaMx.getIdNotificacion().getPersona().getFechaNacimiento());
                 map.put("edad",String.valueOf(edad));
                 //se obtiene el sexo
                 map.put("sexo",tomaMx.getIdNotificacion().getPersona().getSexo().getValor());
@@ -302,39 +317,13 @@ public class EnvioMxController {
         return escaper.translate(jsonResponse);
     }
 
-
-    /*private long CalcularDiferenciaHorasFechas(Date fecha1, Date fecha2){
-        // Crear 2 instancias de Calendar
-        Calendar cal1 = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance();
-        cal1.setTime(fecha1);
-        cal2.setTime(fecha2);
-        // conseguir la representacion de la fecha en milisegundos
-        long milis1 = cal1.getTimeInMillis();
-        long milis2 = cal2.getTimeInMillis();
-        // calcular la diferencia en milisengundos
-        long diff = milis2 - milis1;
-        // calcular la diferencia en horas
-        long diffHours = diff / (60 * 60 * 1000);
-        return diffHours;
-    }*/
-
-    public int calcularEdadAnios(Date dFechaNac){
-        Calendar today = Calendar.getInstance();
-        Calendar fechaNac = Calendar.getInstance();
-        fechaNac.setTime(dFechaNac);
-        int diff_year = today.get(Calendar.YEAR) - fechaNac.get(Calendar.YEAR);
-        int diff_month = today.get(Calendar.MONTH) - fechaNac.get(Calendar.MONTH);
-        int diff_day = today.get(Calendar.DAY_OF_MONTH) - fechaNac.get(Calendar.DAY_OF_MONTH);
-
-        //Si está en ese año pero todavía no los ha cumplido
-        if( diff_month < 0 || (diff_month==0 && diff_day < 0)){
-            diff_year--;
-        }
-        return diff_year;
-    }
-
-    private FiltroMx jsonToFiltroSolicitudDx(String strJson) throws Exception {
+    /**
+     * Convierte String en formato JSON a objeto FiltroMx para realizar búsqueda de tomas de muestra
+     * @param strJson JSON
+     * @return FiltroMx
+     * @throws Exception
+     */
+    private FiltroMx jsonToFiltroMx(String strJson) throws Exception {
         JsonObject jObjectFiltro = new Gson().fromJson(strJson, JsonObject.class);
         FiltroMx filtroMx = new FiltroMx();
         String nombreApellido = null;

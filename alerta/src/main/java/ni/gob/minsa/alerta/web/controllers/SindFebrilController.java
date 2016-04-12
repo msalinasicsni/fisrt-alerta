@@ -348,7 +348,11 @@ public class SindFebrilController {
         }
         return mav;
     }
-    
+
+    /**
+     * Método para guardar datos de una notificación de sindrome febril
+     * @return ResponseEntity<String>
+     */
     @RequestMapping( value="save", method=RequestMethod.POST)
 	public ResponseEntity<String> processCreationSindFebrilForm( @RequestParam(value="codSilaisAtencion", required=true ) Integer codSilaisAtencion
 			, @RequestParam( value="codUnidadAtencion", required=true ) Integer codUnidadAtencion
@@ -656,11 +660,14 @@ public class SindFebrilController {
 	    return new ResponseEntity<String>( json, headers, HttpStatus.CREATED );
 	}
 
-
+    /**
+     * Generar ficha en archivo pdf en el formato oficial del MINSA
+     * @param idNotificacion a generar en pdf
+     * @return String base64
+     * @throws Exception
+     */
     @RequestMapping(value = "getPDF", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    String getPDF(@RequestParam(value = "idNotificacion", required = true) String idNotificacion,HttpServletRequest request) throws Exception {
+    public @ResponseBody String getPDF(@RequestParam(value = "idNotificacion", required = true) String idNotificacion) throws Exception {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         PDDocument doc = new PDDocument();
         DaNotificacion not = daNotificacionService.getNotifById(idNotificacion);
@@ -2063,6 +2070,15 @@ public class SindFebrilController {
         return res;
     }
 
+    /**
+     * Dibujar tabla de solicitudes en el pdf
+     * @param reqList datos de la tabla
+     * @param doc documento en que se dibujará la tabla
+     * @param page página actual del documento
+     * @param y coordenada "y" de la página
+     * @return nueva coordenada "y" justo donde termina la tabla
+     * @throws IOException
+     */
     private float drawTable(List<String[]> reqList, PDDocument doc, PDPage page, float y) throws IOException {
 
         //drawTable
@@ -2132,7 +2148,15 @@ public class SindFebrilController {
         return height;
     }
 
-
+    /**
+     * Dibujar tabla de resultado de examenes en el pdf
+     * @param reqList datos de la tabla
+     * @param doc documento en que se dibujará la tabla
+     * @param page página actual del documento
+     * @param y coordenada "y" de la página
+     * @return nueva coordenada "y" justo donde termina la tabla
+     * @throws IOException
+     */
     private float drawTable1(List<String[]> reqList, PDDocument doc, PDPage page, float y) throws IOException {
 
         //drawTable
