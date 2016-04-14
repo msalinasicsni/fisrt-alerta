@@ -218,7 +218,7 @@
 <div class="step-content">
 <form:form modelAttribute="irag" id="wizard-1" class="smart-form">
 <h2 class="row-seperator-header"><i class="fa fa-male "></i> <spring:message
-        code="lbl.patient"/> ${irag.idNotificacion.persona.primerNombre} ${irag.idNotificacion.persona.primerApellido}
+        code="lbl.patient"/> ${irag.idNotificacion.persona.primerNombre} ${irag.idNotificacion.persona.segundoNombre} ${irag.idNotificacion.persona.primerApellido} ${irag.idNotificacion.persona.segundoApellido}
 </h2>
 
 <div class="step-pane active" id="step1">

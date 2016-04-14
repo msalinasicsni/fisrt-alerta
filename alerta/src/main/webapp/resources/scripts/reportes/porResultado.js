@@ -66,6 +66,14 @@ var resultReport = function () {
                     "sSwfPath": parametros.dataTablesTTSWF
                 },
                 "aoColumns" : [ {sClass: "aw-left" },{sClass: "aw-right" },{sClass: "aw-right"},{sClass: "aw-right"},{sClass: "aw-right"},{sClass: "aw-right"},{sClass: "aw-right"},{sClass: "aw-right"}],
+                "createdRow": function ( row, data, index ) {
+                    if ( data[3] > 0 ) {
+                        $('td', row).eq(3).addClass('highlight');
+                    }
+                    if ( data[7]  > 0 ) {
+                        $('td', row).eq(7).addClass('highlight');
+                    }
+                },
                 "autoWidth" : true,
                 "preDrawCallback" : function() {
                     // Initialize the responsive datatables helper once.

@@ -234,7 +234,7 @@
                                                         </label>
                                                         <div class="input-group">
                                                             <span class="input-group-addon"> <i class="fa fa-wrench"></i></span>
-                                                            <select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.ocupacion" />" name="ocupacion" id="ocupacion" class="select2">
+                                                            <select disabled data-placeholder="<spring:message code="act.select" /> <spring:message code="person.ocupacion" />" name="ocupacion" id="ocupacion" class="select2">
                                                                 <option value=""></option>
                                                                 <c:forEach items="${ocupaciones}" var="ocupacion">
                                                                     <c:choose>
@@ -260,7 +260,7 @@
                                                         <div>
                                                             <label class="input">
                                                                 <i class="icon-prepend fa fa-map-marker"></i> <i class="icon-append fa fa-sort-alpha-asc"></i>
-                                                                <input class="form-control" type="text" name="direccionResidencia" id="direccionResidencia"
+                                                                <input disabled class="form-control" type="text" name="direccionResidencia" id="direccionResidencia"
                                                                        value="${notificacion.persona.direccionResidencia}"
                                                                        placeholder=" <spring:message code="person.direccion" />">
                                                                 <b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="person.direccion" /></b>
@@ -277,7 +277,7 @@
                                                         </label>
                                                         <div class="input-group">
                                                             <span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
-                                                            <select data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.person.depart.resi" />" name="departamento" id="departamento" class="select2">
+                                                            <select disabled data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.person.depart.resi" />" name="departamento" id="departamento" class="select2">
                                                                 <option value=""></option>
                                                                 <c:forEach items="${departamentos}" var="departamento">
                                                                     <c:choose>
@@ -298,7 +298,7 @@
                                                         </label>
                                                         <div class="input-group">
                                                             <span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
-                                                            <select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.muni" />" name="municipioResidencia" id="municipioResidencia" class="select2">
+                                                            <select disabled data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.muni" />" name="municipioResidencia" id="municipioResidencia" class="select2">
                                                                 <option value=""></option>
                                                                 <c:forEach items="${municipiosResi}" var="municipioResi">
                                                                     <c:choose>
@@ -319,7 +319,7 @@
                                                         </label>
                                                         <div class="input-group">
                                                             <span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
-                                                            <select data-placeholder="<spring:message code="act.select" /> <spring:message code="person.com.res" />" name="comunidadResidencia" id="comunidadResidencia" class="select2">
+                                                            <select disabled data-placeholder="<spring:message code="act.select" /> <spring:message code="person.com.res" />" name="comunidadResidencia" id="comunidadResidencia" class="select2">
                                                                 <option value=""></option>
                                                                 <c:forEach items="${comunidades}" var="comunid">
                                                                     <c:choose>
@@ -342,7 +342,7 @@
                                                 <input id="data_date" type="hidden" value="<spring:message code="lbl.register.date"/>"/>
                                                 <input id="data_response" type="hidden" value="<spring:message code="lbl.data.name"/>"/>
 												<h3><spring:message code="patient.step2.long" /></h3>
-                                                <h4><spring:message code="lbl.step2.short" />: ${notificacion.persona.primerNombre} ${notificacion.persona.primerApellido}</h4>
+                                                <h4><spring:message code="lbl.step2.short" />: ${notificacion.persona.primerNombre} ${notificacion.persona.segundoNombre} ${notificacion.persona.primerApellido} ${notificacion.persona.segundoApellido}</h4>
                                                 <br/><br/>
                                                 <div class="widget-body no-padding">
                                                     <div class="row">
@@ -369,7 +369,7 @@
                                                 <input id="text_date" type="hidden" value="<spring:message code="lbl.result.date"/>"/>
                                                 <input id="text_response" type="hidden" value="<spring:message code="lbl.result.response"/>"/>
 												<h3><spring:message code="patient.step3.long" /></h3>
-												<h4><spring:message code="lbl.step2.short" />: ${notificacion.persona.primerNombre} ${notificacion.persona.primerApellido}</h4>
+												<h4><spring:message code="lbl.step2.short" />: ${notificacion.persona.primerNombre} ${notificacion.persona.segundoNombre} ${notificacion.persona.primerApellido} ${notificacion.persona.segundoApellido}</h4>
                                                 <br/><br/>
                                                 <div class="widget-body no-padding">
                                                     <div class="row">

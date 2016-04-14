@@ -184,11 +184,12 @@ public class EnvioMxService {
     }
 
     public List<Laboratorio> getLaboratorios(Integer pUsuarioId, String pCodigoSis){
-        String query = "select lab from Laboratorio lab, EntidadAdtvaLaboratorio el, EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
+      String query = "select distinct lab from Laboratorio as lab, EntidadAdtvaLaboratorio as el, EntidadesAdtvas as ent, UsuarioEntidad as usuent, Usuarios as usu, Sistema as sis " +
                 "where lab.codigo = el.laboratorio.codigo and el.entidadAdtva.codigo = ent.codigo " +
-                "and ent.id = usuent.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuent.usuario.usuarioId and usuent.sistema.id = sis.id " +
+                "and ent.id = usuent.entidadAdtva.entidadAdtvaId and usuent.usuario.usuarioId=usu.usuarioId and usuent.sistema.id = sis.id " +
                 "and el.pasivo = false " +
-                "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo order by ent.nombre";
+                "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo order by lab.nombre";
+
         Query qr = sessionFactory.getCurrentSession().createQuery(query);
         qr.setParameter("pUsuarioId", pUsuarioId);
         qr.setParameter("pCodigoSis", pCodigoSis);
@@ -198,7 +199,7 @@ public class EnvioMxService {
     }
 
     public List<Laboratorio> getAllLaboratorios(){
-        String query = "from Laboratorio lab " +
+        String query = "select lab from Laboratorio lab where pasivo = false " +
                 "ORDER BY nombre";
 
         Query q = sessionFactory.getCurrentSession().createQuery(query);

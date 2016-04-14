@@ -162,7 +162,7 @@
 											<!-- wizard form starts here -->
 											<div class="step-pane active" id="step1">
 												<h3><spring:message code="sindfeb.step1.long" /></h3>
-												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
+												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.segundoNombre} ${daSindFeb.idNotificacion.persona.primerApellido} ${daSindFeb.idNotificacion.persona.segundoApellido}</h4>
 												<fieldset>
 													<div hidden="true">
                                                         <label class="input">
@@ -702,7 +702,7 @@
 											</div>
 											<div class="step-pane" id="step3">
 												<h3><spring:message code="sindfeb.step3.long" /></h3>
-												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
+												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.segundoNombre} ${daSindFeb.idNotificacion.persona.primerApellido} ${daSindFeb.idNotificacion.persona.segundoApellido}</h4>
 												<fieldset>
 													<!-- START ROW -->
                                       				<div class="row">
@@ -787,7 +787,7 @@
 											</div>
 											<div class="step-pane" id="step4">
 												<h3><spring:message code="sindfeb.step4.long" /></h3>
-												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
+												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.segundoNombre} ${daSindFeb.idNotificacion.persona.primerApellido} ${daSindFeb.idNotificacion.persona.segundoApellido}</h4>
 												<fieldset>
 													<!-- START ROW -->
                                       				<div class="row">
@@ -1168,7 +1168,7 @@
                                                 <input id="opc_no" type="hidden" value="<spring:message code="lbl.send.confirm.msg.opc.no"/>"/>
                                                 <input type="text" hidden="hidden" name="completa" id="completa" value="${daSindFeb.idNotificacion.completa}" />
                                                 <h3><spring:message code="sindfeb.step5.long" /></h3>
-												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.primerApellido}</h4>
+												<h4><spring:message code="lbl.step2.short" />: ${daSindFeb.idNotificacion.persona.primerNombre} ${daSindFeb.idNotificacion.persona.segundoNombre} ${daSindFeb.idNotificacion.persona.primerApellido} ${daSindFeb.idNotificacion.persona.segundoApellido}</h4>
                                                 <br/><br/>
                                                 <div class="widget-body no-padding">
                                                     <div class="row">

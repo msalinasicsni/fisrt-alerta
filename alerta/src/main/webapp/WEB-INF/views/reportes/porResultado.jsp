@@ -16,6 +16,10 @@
             padding-right: 10px;
             text-align: right;
         }
+        td.highlight {
+            font-weight: bold;
+            color: red;
+        }
     </style>
 </head>
 <!-- END HEAD -->

@@ -92,7 +92,13 @@ public class ReportesController {
             mav.setViewName("reportes/generalNotificaciones");
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
-            List<TipoNotificacion> tiposNotificacion = catalogosService.getTipoNotificacion();
+            List<TipoNotificacion> tiposNotificacion = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
+            TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
+            TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
+            TipoNotificacion tipoNotificacionPCT = catalogosService.getTipoNotificacion("TPNOTI|PCNT");
+            tiposNotificacion.add(tipoNotificacionSF);
+            tiposNotificacion.add(tipoNotificacionIRA);
+            tiposNotificacion.add(tipoNotificacionPCT);
             mav.addObject("entidades",entidadesAdtvases);
             mav.addObject("tiposNotificacion", tiposNotificacion);
         }else{
