@@ -106,6 +106,10 @@ var EnterFormTomaMx = function () {
 
             });
 
+            $('#back').click(function() {
+                window.history.back();
+            });
+
             function save() {
                 var datos_form = $('#registroMx').serialize();
                 bloquearUI(parametros.blockMess);
@@ -123,8 +127,9 @@ var EnterFormTomaMx = function () {
                             iconSmall: "fa fa-check-circle",
                             timeout: 2000
                         });
+                        clearFields();
                         desbloquearUI();
-                        window.location.href = parametros.searchUrl;
+                        //window.location.href = parametros.searchUrl;
 
                     },
                     error: function () {
@@ -139,6 +144,21 @@ var EnterFormTomaMx = function () {
                     }
                 });
 
+            }
+
+            function clearFields(){
+                //$('#ckChangeUS').prop("checked", false).change();
+                $("#fechaHTomaMx").val('').change();
+                $("#horaTomaMx").val('').change();
+                $('#codTipoMx option:first').prop("selected", true).change();
+                $('#dx').select2('data', null);
+                $("#canTubos").val('');
+                $("#volumen").val('');
+                $("#horaRefrigeracion").val('');
+                $("#mxSeparada").prop("checked", true).change();
+                $('#registroMx input[type="radio"]:checked').each(function(){
+                    $(this).prop("checked", false).change();
+                });
             }
 
             $("input[name$='ckChangeUS']").change(function () {
@@ -323,7 +343,9 @@ var EnterFormTomaMxStudies = function () {
 
             });
 
-
+            $('#back').click(function() {
+                window.history.back();
+            });
 
             function save() {
                 var objetoTomaMx = {};
@@ -365,9 +387,11 @@ var EnterFormTomaMxStudies = function () {
                                 iconSmall: "fa fa-check-circle",
                                 timeout: 4000
                             });
-                            setTimeout(function () {
+                            /*setTimeout(function () {
                                 window.location.href = parametros.searchUrl;
-                            }, 4000);
+                            }, 4000);*/
+                            clearFields();
+                            desbloquearUI();
                         }
 
                     },
@@ -384,7 +408,20 @@ var EnterFormTomaMxStudies = function () {
                 });
             }
 
-
+            function clearFields(){
+                $("#codigoUnicoMx").val('');
+                $("#fechaHTomaMx").val('').change();
+                $("#horaTomaMx").val('').change();
+                $('#codTipoMx option:first').prop("selected", true).change();
+                $('#idEstudio').select2('data', null);
+                $('#idEstudio option:first').prop("selected", true).change();
+                $("#canTubos").val('');
+                $("#volumen").val('');
+                $("#horaRefrigeracion").val('');
+                $('#registroMx input[type="radio"]:checked').each(function(){
+                    $(this).prop("checked", false).change();
+                });
+            }
 
 
         }

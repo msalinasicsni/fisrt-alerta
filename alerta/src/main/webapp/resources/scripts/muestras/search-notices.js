@@ -17,6 +17,11 @@ var SearchNotices = function () {
 	    });
 	};
 
+
+    var desbloquearUI = function () {
+        setTimeout($.unblockUI, 500);
+    };
+
     return {
         //main function to initiate the module
         init: function (parametros) {
@@ -108,6 +113,7 @@ var SearchNotices = function () {
 
 
             function getTomaMx (idNotificacion){
+                bloquearUI(parametros.blockMess);
                 $.getJSON(parametros.tomaMxUrl, {
                     idNotificacion: idNotificacion,
                     ajax: 'true'
@@ -118,6 +124,7 @@ var SearchNotices = function () {
                     }else {
                         actionUrl = parametros.actionUrl + '/' + idNotificacion;
                     }
+                    desbloquearUI();
                     if(data.length > 0){
                         var opcSi = $("#inYes").val();
                         var opcNo = $("#inNo").val();

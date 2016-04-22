@@ -381,8 +381,11 @@
                                         </section>
                                     </div>
                                     <footer style="background-color:white;">
-                                      <button type="button" id="submit" class="btn btn-primary fc-header-center">
+                                      <button type="button" id="submit" class="btn btn-success fc-header-center">
                                             <spring:message code="act.save"  />
+                                        </button>
+                                        <button type="button" id="back" class="btn btn-danger fc-header-center">
+                                            <spring:message code="act.cancel"  />
                                         </button>
                                     </footer>
                                 </fieldset>
