@@ -1,10 +1,12 @@
 package ni.gob.minsa.alerta.domain.vigilanciaSindFebril;
 
+import ni.gob.minsa.alerta.domain.audit.Auditable;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.irag.Respuesta;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
 import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -13,7 +15,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "da_ficha_sindfeb", schema = "alerta")
-public class DaSindFebril implements Serializable{
+public class DaSindFebril implements Serializable, Auditable{
 	
 	/**
 	 * 
@@ -69,14 +71,23 @@ public class DaSindFebril implements Serializable{
     private String dxFinal;
     
     private String nombreLlenoFicha;
-    
 
-	public DaSindFebril() {
+    private String actor;
+    private String id;
+
+    public DaSindFebril() {
 		super();
 	}
 
-	@Id
-    @OneToOne(targetEntity=DaNotificacion.class)
+    @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    @Column(name = "ID_FICHA", nullable = false, insertable = true, updatable = true, length = 36)
+    public String getId(){return this.id;}
+
+    public void setId(String id){this.id = id;}
+
+	@OneToOne(targetEntity=DaNotificacion.class)
     @JoinColumn(name = "ID_NOTIFICACION", referencedColumnName = "ID_NOTIFICACION")
     public DaNotificacion getIdNotificacion() {
         return idNotificacion;
@@ -438,6 +449,46 @@ public class DaSindFebril implements Serializable{
 	public void setNombreLlenoFicha(String nombreLlenoFicha) {
 		this.nombreLlenoFicha = nombreLlenoFicha;
 	}
-	
-    
+
+
+    @Override
+    public boolean isFieldAuditable(String fieldname) {
+        if (fieldname.matches("idNotificacion"))
+            return  false;
+        else
+            return true;
+    }
+
+    @Override
+    @Transient
+    public String getActor() {
+        return this.actor;
+    }
+
+    @Override
+    public void setActor(String actor) {
+        this.actor = actor;
+    }
+
+    @Override
+    public String toString() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DaSindFebril)) return false;
+
+        DaSindFebril that = (DaSindFebril) o;
+
+        if (!id.equals(that.id)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

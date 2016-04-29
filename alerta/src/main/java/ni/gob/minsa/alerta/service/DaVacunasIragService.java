@@ -32,7 +32,7 @@ public class DaVacunasIragService {
       @SuppressWarnings("unchecked")
       public List<DaVacunasIrag> getAllVaccinesByIdIrag(String id){
 
-          String query = "select vacu FROM DaVacunasIrag vacu where vacu.idNotificacion = :id and vacu.pasivo = :pasivo";
+          String query = "select vacu FROM DaVacunasIrag vacu where vacu.idNotificacion.idNotificacion.idNotificacion = :id and vacu.pasivo = :pasivo";
           org.hibernate.Session session = sessionFactory.getCurrentSession();
           Query q = session.createQuery(query);
           q.setParameter("pasivo", false);
@@ -48,14 +48,14 @@ public class DaVacunasIragService {
      */
     public DaVacunasIrag getVaccineById(Integer id) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM DaVacunasIrag vac where vac.idVacuna = '"+ id + "' ");
+        Query query = session.createQuery("FROM DaVacunasIrag vac where vac.idVacuna = "+ id + " ");
         return (DaVacunasIrag) query.uniqueResult();
     }
 
 
     public DaVacunasIrag searchVaccineRecord(String id, String vac){
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM DaVacunasIrag vac where vac.idNotificacion ='"+id+"'and vac.codVacuna = '"+vac+"' and vac.pasivo = false ");
+        Query query = session.createQuery("FROM DaVacunasIrag vac where vac.idNotificacion.idNotificacion.idNotificacion ='"+id+"'and vac.codVacuna = '"+vac+"' and vac.pasivo = false ");
         return (DaVacunasIrag) query.uniqueResult();
     }
 

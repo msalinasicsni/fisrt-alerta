@@ -450,6 +450,8 @@ public class SindFebrilController {
                 if (!idNotificacion.equals("")){
                     daNotificacion.setIdNotificacion(idNotificacion);
                 }
+                daSindFeb = sindFebrilService.getDaSindFebril(idNotificacion);
+                //daNotificacion.setActor(seguridadService.obtenerNombreUsuario(request));
                 daSindFeb.setIdNotificacion(daNotificacion);
                 Date dateFicha = formatter.parse(fechaFicha);
                 daSindFeb.setFechaFicha(dateFicha);
@@ -469,7 +471,7 @@ public class SindFebrilController {
                 daSindFeb.setOtraFuenteAgua(otraFuenteAgua);
                 daSindFeb.setAnimales(animales);
                 daSindFeb.setOtrosAnimales(otrosAnimales);
-
+                daSindFeb.setActor(seguridadService.obtenerNombreUsuario(request));
 
                 if (!fechaTomaMuestra.equals("")){
                     Date dateFTM = formatter.parse(fechaTomaMuestra);
@@ -553,6 +555,8 @@ public class SindFebrilController {
 	        	if (autorizado) {
                     daSindFeb.getIdNotificacion().setPasivo(true);
                     daSindFeb.getIdNotificacion().setFechaAnulacion(new Timestamp(new Date().getTime()));
+                    //daSindFeb.getIdNotificacion().setActor(seguridadService.obtenerNombreUsuario(request));
+                    daSindFeb.setActor(seguridadService.obtenerNombreUsuario(request));
                     sindFebrilService.saveSindFebril(daSindFeb);
                     return "redirect:/febriles/search/" + daSindFeb.getIdNotificacion().getPersona().getPersonaId();
                 }else {

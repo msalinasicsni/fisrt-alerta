@@ -244,6 +244,7 @@ public class AdmonStudiesUSController {
             } else {
                 Estudio_UnidadSalud rec = studiesUsService.getStudyUsByIdRecord(idRecord);
                 if (rec != null) {
+                    rec.setActor(seguridadService.obtenerNombreUsuario(request));
                     rec.setPasivo(true);
                     studiesUsService.addOrUpdateStudyUs(rec);
                 }

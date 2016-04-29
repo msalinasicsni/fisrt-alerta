@@ -22,11 +22,14 @@
     <!-- See http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/orm/hibernate3/annotation/AnnotationSessionFactoryBean.html --> 							
 	<!-- See http://docs.jboss.org/hibernate/stable/core/api/index.html?org/hibernate/SessionFactory.html -->
 	<!-- See http://docs.jboss.org/hibernate/stable/core/api/index.html?org/hibernate/Session.html class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" -->
-	<bean id="sessionFactory"  class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
+
+    <bean id="hibernateAuditLogListener" class="ni.gob.minsa.alerta.web.listener.HibernateAuditLogListener"/>
+
+    <bean id="sessionFactory"  class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
 				 p:dataSource-ref="dataSource"
 				 p:configLocation="${hibernate.config}"
 				 p:packagesToScan="ni.gob.minsa.alerta"/>
-	
+
 	<!-- Declare a datasource that has pooling capabilities-->	 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 				destroy-method="close"

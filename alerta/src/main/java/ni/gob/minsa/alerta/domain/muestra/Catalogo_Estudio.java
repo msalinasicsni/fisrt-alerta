@@ -99,4 +99,25 @@ public class Catalogo_Estudio implements Serializable {
         this.usuarioRegistro = usuarioRegistro;
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf(idEstudio);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Catalogo_Estudio)) return false;
+
+        Catalogo_Estudio that = (Catalogo_Estudio) o;
+
+        if (idEstudio != null ? !idEstudio.equals(that.idEstudio) : that.idEstudio != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return idEstudio != null ? idEstudio.hashCode() : 0;
+    }
 }

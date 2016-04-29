@@ -92,4 +92,10 @@ public class DaEnvioMx {
     public void setUsarioRegistro(Usuarios usarioRegistro) {
         this.usarioRegistro = usarioRegistro;
     }
+
+    @Override
+    public String toString() {
+        return "idEnvio='" + idEnvio + '\'';
+
+    }
 }

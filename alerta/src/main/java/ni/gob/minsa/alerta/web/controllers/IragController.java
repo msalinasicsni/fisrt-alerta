@@ -645,12 +645,13 @@ public class IragController {
             } else {
                 irag.getIdNotificacion().setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
                 irag.getIdNotificacion().setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
+                irag.getIdNotificacion().setUrgente(catalogoService.getRespuesta(urgente));
                 if (fechaInicioSintomas != null && !fechaInicioSintomas.equals("")) {
                      irag.getIdNotificacion().setFechaInicioSintomas(StringToDate(fechaInicioSintomas));
                 }
                 //actualizar notificacion
                 irag.getIdNotificacion().setCompleta(Boolean.parseBoolean(completa));
-                daNotificacionService.updateNotificacion(irag.getIdNotificacion());
+                //daNotificacionService.updateNotificacion(irag.getIdNotificacion());
 
             }
 
