@@ -451,7 +451,7 @@ public class SindFebrilController {
                     daNotificacion.setIdNotificacion(idNotificacion);
                 }
                 daSindFeb = sindFebrilService.getDaSindFebril(idNotificacion);
-                //daNotificacion.setActor(seguridadService.obtenerNombreUsuario(request));
+                daNotificacion.setActor(seguridadService.obtenerNombreUsuario(request));
                 daSindFeb.setIdNotificacion(daNotificacion);
                 Date dateFicha = formatter.parse(fechaFicha);
                 daSindFeb.setFechaFicha(dateFicha);
@@ -555,7 +555,7 @@ public class SindFebrilController {
 	        	if (autorizado) {
                     daSindFeb.getIdNotificacion().setPasivo(true);
                     daSindFeb.getIdNotificacion().setFechaAnulacion(new Timestamp(new Date().getTime()));
-                    //daSindFeb.getIdNotificacion().setActor(seguridadService.obtenerNombreUsuario(request));
+                    daSindFeb.getIdNotificacion().setActor(seguridadService.obtenerNombreUsuario(request));
                     daSindFeb.setActor(seguridadService.obtenerNombreUsuario(request));
                     sindFebrilService.saveSindFebril(daSindFeb);
                     return "redirect:/febriles/search/" + daSindFeb.getIdNotificacion().getPersona().getPersonaId();
