@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.domain.vigilanciaEntomologica;
 
+import ni.gob.minsa.alerta.domain.audit.Auditable;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
@@ -18,7 +19,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "da_mae_encuesta", schema = "alerta")
-public class DaMaeEncuesta {
+public class DaMaeEncuesta implements Auditable {
     private String encuestaId;
     private Divisionpolitica municipio;
     private String codDistrito;
@@ -35,6 +36,8 @@ public class DaMaeEncuesta {
     private Timestamp fechaRegistro;
     private EntidadesAdtvas entidadesAdtva;
     private Usuarios usuario;
+
+    private String actor;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -202,40 +205,43 @@ public class DaMaeEncuesta {
     }
 
     @Override
+    public boolean isFieldAuditable(String fieldname) {
+        if (fieldname.matches("fechaRegistro") || fieldname.matches("usuario")) return false;
+        else return  true;
+    }
+
+    @Override
+    @Transient
+    public String getActor() {
+        return this.actor;
+    }
+
+    @Override
+    public void setActor(String actor) {
+        this.actor = actor;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "encuestaId='" + encuestaId + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof DaMaeEncuesta)) return false;
 
         DaMaeEncuesta that = (DaMaeEncuesta) o;
 
-        if (anioEpi != that.anioEpi) return false;
-        if (encuestaId != that.encuestaId) return false;
-        if (codArea != null ? !codArea.equals(that.codArea) : that.codArea != null) return false;
-        if (codDistrito != null ? !codDistrito.equals(that.codDistrito) : that.codDistrito != null) return false;
-        if (feFinEncuesta != null ? !feFinEncuesta.equals(that.feFinEncuesta) : that.feFinEncuesta != null)
-            return false;
-        if (feInicioEncuesta != null ? !feInicioEncuesta.equals(that.feInicioEncuesta) : that.feInicioEncuesta != null)
-            return false;
-        if (fechaRegistro != null ? !fechaRegistro.equals(that.fechaRegistro) : that.fechaRegistro != null)
-            return false;
-        if (mesEpi != that.mesEpi) return false;
-        if (semanaEpi != that.semanaEpi) return false;
+        if (encuestaId != null ? !encuestaId.equals(that.encuestaId) : that.encuestaId != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = encuestaId.hashCode();
-        result = 31 * result + (codDistrito != null ? codDistrito.hashCode() : 0);
-        result = 31 * result + (codArea != null ? codArea.hashCode() : 0);
-        result = 31 * result + (feInicioEncuesta != null ? feInicioEncuesta.hashCode() : 0);
-        result = 31 * result + (feFinEncuesta != null ? feFinEncuesta.hashCode() : 0);
-        result = 31 * result + semanaEpi;
-        result = 31 * result + mesEpi;
-        result = 31 * result + anioEpi;
-        result = 31 * result + (fechaRegistro != null ? fechaRegistro.hashCode() : 0);
-        return result;
+        return encuestaId != null ? encuestaId.hashCode() : 0;
     }
-
 }

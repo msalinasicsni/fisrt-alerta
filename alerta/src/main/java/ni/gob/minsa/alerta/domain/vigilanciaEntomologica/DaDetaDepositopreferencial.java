@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.domain.vigilanciaEntomologica;
 
+import ni.gob.minsa.alerta.domain.audit.Auditable;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
@@ -13,7 +14,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "da_deta_depositopreferencial", schema = "alerta")
-public class DaDetaDepositopreferencial {
+public class DaDetaDepositopreferencial implements Auditable {
     private String detaEncuestaId;
     private Comunidades localidad;
     private Integer pilaInfestado;
@@ -37,6 +38,8 @@ public class DaDetaDepositopreferencial {
     private Timestamp feRegistro;
     private DaMaeEncuesta maeEncuesta;
     private Usuarios usuarioRegistro;
+
+    private String actor;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -274,72 +277,44 @@ public class DaDetaDepositopreferencial {
     }
 
     @Override
+    public boolean isFieldAuditable(String fieldname) {
+        if (fieldname.matches("maeEncuesta") || fieldname.matches("usuarioRegistro") || fieldname.matches("feRegistro")) return false;
+        else return  true;
+    }
+
+    @Override
+    @Transient
+    public String getActor() {
+        return this.actor;
+    }
+
+    @Override
+    public void setActor(String actor) {
+        this.actor = actor;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "DDdetaEncuestaId='" + detaEncuestaId + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof DaDetaDepositopreferencial)) return false;
 
         DaDetaDepositopreferencial that = (DaDetaDepositopreferencial) o;
 
-        if (detaEncuestaId != that.detaEncuestaId) return false;
-        if (arbolInfestado != null ? !arbolInfestado.equals(that.arbolInfestado) : that.arbolInfestado != null)
+        if (detaEncuestaId != null ? !detaEncuestaId.equals(that.detaEncuestaId) : that.detaEncuestaId != null)
             return false;
-        if (artEspecialInfes != null ? !artEspecialInfes.equals(that.artEspecialInfes) : that.artEspecialInfes != null)
-            return false;
-        if (barrilInfestado != null ? !barrilInfestado.equals(that.barrilInfestado) : that.barrilInfestado != null)
-            return false;
-        if (barroInfestado != null ? !barroInfestado.equals(that.barroInfestado) : that.barroInfestado != null)
-            return false;
-        if (cisterInfestado != null ? !cisterInfestado.equals(that.cisterInfestado) : that.cisterInfestado != null)
-            return false;
-        if (bebederoInfestado != null ? !bebederoInfestado.equals(that.bebederoInfestado) : that.bebederoInfestado != null)
-            return false;
-        if (decripOtroDeposito != null ? !decripOtroDeposito.equals(that.decripOtroDeposito) : that.decripOtroDeposito != null)
-            return false;
-        if (decripcionCister != null ? !decripcionCister.equals(that.decripcionCister) : that.decripcionCister != null)
-            return false;
-        if (floreroInfestado != null ? !floreroInfestado.equals(that.floreroInfestado) : that.floreroInfestado != null)
-            return false;
-        if (inodoroInfestado != null ? !inodoroInfestado.equals(that.inodoroInfestado) : that.inodoroInfestado != null)
-            return false;
-        if (llantaInfestado != null ? !llantaInfestado.equals(that.llantaInfestado) : that.llantaInfestado != null)
-            return false;
-        if (manzana != null ? !manzana.equals(that.manzana) : that.manzana != null) return false;
-        if (nombre != null ? !nombre.equals(that.nombre) : that.nombre != null) return false;
-        if (otrosDepositosInfes != null ? !otrosDepositosInfes.equals(that.otrosDepositosInfes) : that.otrosDepositosInfes != null)
-            return false;
-        if (pilaInfestado != null ? !pilaInfestado.equals(that.pilaInfestado) : that.pilaInfestado != null)
-            return false;
-        if (plantaInfestado != null ? !plantaInfestado.equals(that.plantaInfestado) : that.plantaInfestado != null)
-            return false;
-        if (pozoInfestado != null ? !pozoInfestado.equals(that.pozoInfestado) : that.pozoInfestado != null)
-            return false;
-        if (vivienda != null ? !vivienda.equals(that.vivienda) : that.vivienda != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = detaEncuestaId.hashCode();
-        result = 31 * result + (pilaInfestado != null ? pilaInfestado.hashCode() : 0);
-        result = 31 * result + (llantaInfestado != null ? llantaInfestado.hashCode() : 0);
-        result = 31 * result + (barrilInfestado != null ? barrilInfestado.hashCode() : 0);
-        result = 31 * result + (floreroInfestado != null ? floreroInfestado.hashCode() : 0);
-        result = 31 * result + (bebederoInfestado != null ? bebederoInfestado.hashCode() : 0);
-        result = 31 * result + (artEspecialInfes != null ? artEspecialInfes.hashCode() : 0);
-        result = 31 * result + (otrosDepositosInfes != null ? otrosDepositosInfes.hashCode() : 0);
-        result = 31 * result + (cisterInfestado != null ? cisterInfestado.hashCode() : 0);
-        result = 31 * result + (inodoroInfestado != null ? inodoroInfestado.hashCode() : 0);
-        result = 31 * result + (barroInfestado != null ? barroInfestado.hashCode() : 0);
-        result = 31 * result + (plantaInfestado != null ? plantaInfestado.hashCode() : 0);
-        result = 31 * result + (arbolInfestado != null ? arbolInfestado.hashCode() : 0);
-        result = 31 * result + (pozoInfestado != null ? pozoInfestado.hashCode() : 0);
-        result = 31 * result + (manzana != null ? manzana.hashCode() : 0);
-        result = 31 * result + (vivienda != null ? vivienda.hashCode() : 0);
-        result = 31 * result + (nombre != null ? nombre.hashCode() : 0);
-        result = 31 * result + (decripOtroDeposito != null ? decripOtroDeposito.hashCode() : 0);
-        result = 31 * result + (decripcionCister != null ? decripcionCister.hashCode() : 0);
-        return result;
+        return detaEncuestaId != null ? detaEncuestaId.hashCode() : 0;
     }
-
 }

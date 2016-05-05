@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.domain.vigilanciaEntomologica;
 
+import ni.gob.minsa.alerta.domain.audit.Auditable;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import org.hibernate.annotations.ForeignKey;
@@ -13,7 +14,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "da_detalle_encuesta_larvaria", schema = "alerta")
-public class DaDetalleEncuestaLarvaria {
+public class DaDetalleEncuestaLarvaria implements Auditable {
     private String detaEncuestaId;
     private Comunidades localidad;
     private Integer pilaInfestado;
@@ -41,6 +42,8 @@ public class DaDetalleEncuestaLarvaria {
     private Timestamp feRegistro;
     private DaMaeEncuesta maeEncuesta;
     private Usuarios usuarioRegistro;
+
+    private String actor;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -318,58 +321,37 @@ public class DaDetalleEncuestaLarvaria {
     }
 
     @Override
+    public boolean isFieldAuditable(String fieldname) {
+        if (fieldname.matches("maeEncuesta") || fieldname.matches("usuarioRegistro") || fieldname.matches("feRegistro")) return false;
+        else return  true;
+    }
+
+    @Override
+    @Transient
+    public String getActor() {
+        return this.actor;
+    }
+
+    @Override
+    public void setActor(String actor) {
+        this.actor = actor;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "LdetaEncuestaId='" + detaEncuestaId + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof DaDetalleEncuestaLarvaria)) return false;
 
         DaDetalleEncuestaLarvaria that = (DaDetalleEncuestaLarvaria) o;
 
-        if (detaEncuestaId != that.detaEncuestaId) return false;
-        if (arbolInfestado != null ? !arbolInfestado.equals(that.arbolInfestado) : that.arbolInfestado != null)
-            return false;
-        if (artEspecialInfes != null ? !artEspecialInfes.equals(that.artEspecialInfes) : that.artEspecialInfes != null)
-            return false;
-        if (barrilInfestado != null ? !barrilInfestado.equals(that.barrilInfestado) : that.barrilInfestado != null)
-            return false;
-        if (barroInfestado != null ? !barroInfestado.equals(that.barroInfestado) : that.barroInfestado != null)
-            return false;
-        if (cisterInfestado != null ? !cisterInfestado.equals(that.cisterInfestado) : that.cisterInfestado != null)
-            return false;
-        if (bebederoInfestado != null ? !bebederoInfestado.equals(that.bebederoInfestado) : that.bebederoInfestado != null)
-            return false;
-        if (especieAegypti != null ? !especieAegypti.equals(that.especieAegypti) : that.especieAegypti != null)
-            return false;
-        if (especieAlbopic != null ? !especieAlbopic.equals(that.especieAlbopic) : that.especieAlbopic != null)
-            return false;
-        if (especieCulexAlbim != null ? !especieCulexAlbim.equals(that.especieCulexAlbim) : that.especieCulexAlbim != null)
-            return false;
-        if (especieCulexCoronat != null ? !especieCulexCoronat.equals(that.especieCulexCoronat) : that.especieCulexCoronat != null)
-            return false;
-        if (especieCulexErratico != null ? !especieCulexErratico.equals(that.especieCulexErratico) : that.especieCulexErratico != null)
-            return false;
-        if (especieCulexFatigans != null ? !especieCulexFatigans.equals(that.especieCulexFatigans) : that.especieCulexFatigans != null)
-            return false;
-        if (especieCulexNigrip != null ? !especieCulexNigrip.equals(that.especieCulexNigrip) : that.especieCulexNigrip != null)
-            return false;
-        if (especieCulexQuinque != null ? !especieCulexQuinque.equals(that.especieCulexQuinque) : that.especieCulexQuinque != null)
-            return false;
-        if (especieCulexTarsalis != null ? !especieCulexTarsalis.equals(that.especieCulexTarsalis) : that.especieCulexTarsalis != null)
-            return false;
-        if (floreroInfestado != null ? !floreroInfestado.equals(that.floreroInfestado) : that.floreroInfestado != null)
-            return false;
-        if (inodoroInfestado != null ? !inodoroInfestado.equals(that.inodoroInfestado) : that.inodoroInfestado != null)
-            return false;
-        if (llantaInfestado != null ? !llantaInfestado.equals(that.llantaInfestado) : that.llantaInfestado != null)
-            return false;
-        if (otrosDepositosInfes != null ? !otrosDepositosInfes.equals(that.otrosDepositosInfes) : that.otrosDepositosInfes != null)
-            return false;
-        if (pilaInfestado != null ? !pilaInfestado.equals(that.pilaInfestado) : that.pilaInfestado != null)
-            return false;
-        if (plantaInfestado != null ? !plantaInfestado.equals(that.plantaInfestado) : that.plantaInfestado != null)
-            return false;
-        if (pozoInfestado != null ? !pozoInfestado.equals(that.pozoInfestado) : that.pozoInfestado != null)
-            return false;
-        if (feRegistro != null ? !feRegistro.equals(that.feRegistro) : that.feRegistro != null)
+        if (detaEncuestaId != null ? !detaEncuestaId.equals(that.detaEncuestaId) : that.detaEncuestaId != null)
             return false;
 
         return true;
@@ -377,30 +359,6 @@ public class DaDetalleEncuestaLarvaria {
 
     @Override
     public int hashCode() {
-        int result = detaEncuestaId.hashCode();
-        result = 31 * result + (pilaInfestado != null ? pilaInfestado.hashCode() : 0);
-        result = 31 * result + (llantaInfestado != null ? llantaInfestado.hashCode() : 0);
-        result = 31 * result + (barrilInfestado != null ? barrilInfestado.hashCode() : 0);
-        result = 31 * result + (floreroInfestado != null ? floreroInfestado.hashCode() : 0);
-        result = 31 * result + (bebederoInfestado != null ? bebederoInfestado.hashCode() : 0);
-        result = 31 * result + (artEspecialInfes != null ? artEspecialInfes.hashCode() : 0);
-        result = 31 * result + (otrosDepositosInfes != null ? otrosDepositosInfes.hashCode() : 0);
-        result = 31 * result + (cisterInfestado != null ? cisterInfestado.hashCode() : 0);
-        result = 31 * result + (inodoroInfestado != null ? inodoroInfestado.hashCode() : 0);
-        result = 31 * result + (barroInfestado != null ? barroInfestado.hashCode() : 0);
-        result = 31 * result + (plantaInfestado != null ? plantaInfestado.hashCode() : 0);
-        result = 31 * result + (arbolInfestado != null ? arbolInfestado.hashCode() : 0);
-        result = 31 * result + (pozoInfestado != null ? pozoInfestado.hashCode() : 0);
-        result = 31 * result + (especieAegypti != null ? especieAegypti.hashCode() : 0);
-        result = 31 * result + (especieAlbopic != null ? especieAlbopic.hashCode() : 0);
-        result = 31 * result + (especieCulexQuinque != null ? especieCulexQuinque.hashCode() : 0);
-        result = 31 * result + (especieCulexNigrip != null ? especieCulexNigrip.hashCode() : 0);
-        result = 31 * result + (especieCulexCoronat != null ? especieCulexCoronat.hashCode() : 0);
-        result = 31 * result + (especieCulexErratico != null ? especieCulexErratico.hashCode() : 0);
-        result = 31 * result + (especieCulexTarsalis != null ? especieCulexTarsalis.hashCode() : 0);
-        result = 31 * result + (especieCulexFatigans != null ? especieCulexFatigans.hashCode() : 0);
-        result = 31 * result + (especieCulexAlbim != null ? especieCulexAlbim.hashCode() : 0);
-        result = 31 * result + (feRegistro != null ? feRegistro.hashCode() : 0);
-        return result;
+        return detaEncuestaId != null ? detaEncuestaId.hashCode() : 0;
     }
 }

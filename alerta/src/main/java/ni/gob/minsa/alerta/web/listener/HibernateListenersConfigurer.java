@@ -29,7 +29,7 @@ public class HibernateListenersConfigurer {
     public void registerListeners() {
         EventListenerRegistry registry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
         registry.getEventListenerGroup(EventType.POST_UPDATE).appendListener(hibernateAuditLogListener);
-        //registry.getEventListenerGroup(EventType.POST_DELETE).appendListener(hibernateAuditLogListener);
+        registry.getEventListenerGroup(EventType.POST_DELETE).appendListener(hibernateAuditLogListener);
 
     }
 }

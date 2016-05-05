@@ -1,10 +1,12 @@
 package ni.gob.minsa.alerta.domain.rotavirus;
 
+import ni.gob.minsa.alerta.domain.audit.Auditable;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.irag.CondicionEgreso;
 import ni.gob.minsa.alerta.domain.irag.Respuesta;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,7 +14,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "ficha_rotavirus", schema = "alerta")
-public class FichaRotavirus implements Serializable {
+public class FichaRotavirus implements Serializable, Auditable {
     private static final long serialVersionUID = 1L;
 
     private DaNotificacion daNotificacion;
@@ -69,7 +71,17 @@ public class FichaRotavirus implements Serializable {
     SalaRotaVirus sala;
     Date fechaIngreso;
 
+    private String actor;
+    private String id;
+
     @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    @Column(name = "ID_FICHA", nullable = false, insertable = true, updatable = true, length = 36)
+    public String getId(){return this.id;}
+
+    public void setId(String id){this.id = id;}
+
     @OneToOne(targetEntity=DaNotificacion.class)
     @JoinColumn(name = "ID_NOTIFICACION", referencedColumnName = "ID_NOTIFICACION")
     public DaNotificacion getDaNotificacion() {
@@ -531,5 +543,46 @@ public class FichaRotavirus implements Serializable {
 
     public void setTelefonoTutor(String telefonoTutor) {
         this.telefonoTutor = telefonoTutor;
+    }
+
+    @Override
+    public boolean isFieldAuditable(String fieldname) {
+        if (fieldname.matches("daNotificacion")) return false;
+        else  return true;
+    }
+
+    @Override
+    @Transient
+    public String getActor() {
+        return this.actor;
+    }
+
+    @Override
+    public void setActor(String actor) {
+        this.actor = actor;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "idFichaRotavirus='" + id + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FichaRotavirus)) return false;
+
+        FichaRotavirus that = (FichaRotavirus) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

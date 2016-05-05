@@ -201,7 +201,7 @@ public class EntomologiaController {
             //se obtiene el id del usuario logueado
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
-
+                daMaeEncuesta.setActor(seguridadService.obtenerNombreUsuario(request));
                 if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
                     idMaestro = daMaeEncuesta.getEncuestaId();
                 } else {
@@ -220,6 +220,7 @@ public class EntomologiaController {
                         //Se guada el detalle y se setea el id del maestro recien guardado
                         daDetalleEncuestaAedes.setMaeEncuesta(daMaeEncuesta);
                         daDetalleEncuestaAedes.setFeRegistro(fechaRegistro);
+                        daDetalleEncuestaAedes.setActor(seguridadService.obtenerNombreUsuario(request));
                         detalleEncuestaAedesService.addDaDetalleEncuestaAedes(daDetalleEncuestaAedes);
                     } catch (Exception ex) {
                         //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
@@ -432,6 +433,7 @@ public class EntomologiaController {
             //se obtiene el id del usuario logueado
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
+                daMaeEncuesta.setActor(seguridadService.obtenerNombreUsuario(request));
                 if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
                     idMaestro = daMaeEncuesta.getEncuestaId();
                 } else {
@@ -452,6 +454,7 @@ public class EntomologiaController {
                         //Se guada el detalle y se setea el id del maestro recien guardado
                         daDetalleEncuestaLarvaria.setMaeEncuesta(daMaeEncuesta);
                         daDetalleEncuestaLarvaria.setFeRegistro(fechaRegistro);
+                        daDetalleEncuestaLarvaria.setActor(seguridadService.obtenerNombreUsuario(request));
                         detalleEncuestaLarvariaService.addDaDetalleEncuestaLarvaria(daDetalleEncuestaLarvaria);
                     } catch (Exception ex) {
                         //Si hay error se elimina el maestro, s�lo si no existe, es decir es un maestro nuevo
@@ -639,6 +642,7 @@ public class EntomologiaController {
 //se obtiene el id del usuario logueado
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
+                daMaeEncuesta.setActor(seguridadService.obtenerNombreUsuario(request));
                 if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
                     idMaestro = daMaeEncuesta.getEncuestaId();
                 } else {
@@ -659,6 +663,7 @@ public class EntomologiaController {
                         //Se guada el detalle y se setea el maestro recien guardado
                         detaDepositopreferencial.setMaeEncuesta(daMaeEncuesta);
                         detaDepositopreferencial.setFeRegistro(fechaRegistro);
+                        detaDepositopreferencial.setActor(seguridadService.obtenerNombreUsuario(request));
                         detalleDepositoPreferencialService.addDaDetaDepositopreferencial(detaDepositopreferencial);
                     } catch (Exception ex) {
                         //Si hay error se elimina el maestro, sólo si no existe, es decir es un maestro nuevo
@@ -1084,6 +1089,7 @@ public class EntomologiaController {
             //se obtiene el id del usuario logueado
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
+                daMaeEncuesta.setActor(seguridadService.obtenerNombreUsuario(request));
                 if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
                     idMaestro = daMaeEncuesta.getEncuestaId();
                     daMaeEncuestaService.updateDaMaeEncuesta(daMaeEncuesta);
@@ -1102,6 +1108,7 @@ public class EntomologiaController {
 
                         //Se actualiza el detalle y se setea el id del maestro
                         daDetalleEncuestaAedes.setMaeEncuesta(daMaeEncuesta);
+                        daDetalleEncuestaAedes.setActor(seguridadService.obtenerNombreUsuario(request));
                         if (daDetalleEncuestaAedes.getDetaEncuestaId() != null && !daDetalleEncuestaAedes.getDetaEncuestaId().isEmpty()) {
                             detalleEncuestaAedesService.updateDaDetalleEncuestaAedes(daDetalleEncuestaAedes);
                         } else {
@@ -1180,6 +1187,7 @@ public class EntomologiaController {
             //se obtiene el id del usuario logueado
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
+                daMaeEncuesta.setActor(seguridadService.obtenerNombreUsuario(request));
                 if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
                     idMaestro = daMaeEncuesta.getEncuestaId();
                 } else {
@@ -1198,7 +1206,7 @@ public class EntomologiaController {
 
                         //Se actualiza el detalle y se setea el id del maestro
                         daDetalleEncuestaLarvaria.setMaeEncuesta(daMaeEncuesta);
-
+                        daDetalleEncuestaLarvaria.setActor(seguridadService.obtenerNombreUsuario(request));
                         if (daDetalleEncuestaLarvaria.getDetaEncuestaId() != null && !daDetalleEncuestaLarvaria.getDetaEncuestaId().isEmpty()) {
                             detalleEncuestaLarvariaService.updateDaDetalleEncuestaLarvaria(daDetalleEncuestaLarvaria);
                         } else {
@@ -1305,6 +1313,7 @@ public class EntomologiaController {
             //se obtiene el id del usuario logueado
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             if (usuarioAutorizadoEntidadUnidad((int)idUsuario,daMaeEncuesta.getEntidadesAdtva().getCodigo(),daMaeEncuesta.getUnidadSalud().getCodigo())) {
+                daMaeEncuesta.setActor(seguridadService.obtenerNombreUsuario(request));
                 if (daMaeEncuesta.getEncuestaId() != null && !daMaeEncuesta.getEncuestaId().isEmpty()) {
                     idMaestro = daMaeEncuesta.getEncuestaId();
                 } else {
@@ -1323,7 +1332,7 @@ public class EntomologiaController {
 
                         //Se actualiza el detalle y se setea el id del maestro
                         detaDepositopreferencial.setMaeEncuesta(daMaeEncuesta);
-
+                        detaDepositopreferencial.setActor(seguridadService.obtenerNombreUsuario(request));
                         if (detaDepositopreferencial.getDetaEncuestaId() != null && !detaDepositopreferencial.getDetaEncuestaId().isEmpty()) {
                             detalleDepositoPreferencialService.updateDaDetaDepositopreferencial(detaDepositopreferencial);
                         } else {

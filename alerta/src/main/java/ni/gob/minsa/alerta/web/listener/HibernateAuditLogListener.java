@@ -45,7 +45,7 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
 
     /**
      * Log deletions made to the current model in the the Audit Trail. 
-     *  
+     * (No implementado)
      * @param event 
      *            the post-deletion event
      */ 
@@ -58,8 +58,8 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
             
             // need to have a separate session for audit save  
             if (event.getEntity() instanceof Auditable){
-            	//Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                final String actorId = "msalinas"; //authentication.getName();
+                Auditable obj = (Auditable) event.getEntity();
+                final String actorId = obj.getActor();
 	            StatelessSession session = event.getPersister().getFactory().openStatelessSession();  
 	            session.beginTransaction();  
 	  
@@ -77,7 +77,8 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
 	}
 
 	/** 
-     * Log insertions made to the current model in the the Audit Trail. 
+     * Log insertions made to the current model in the the Audit Trail.
+     * (No implementado)
      *  
      * @param event 
      *            the post-insertion event 
@@ -89,21 +90,19 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
                     .toString() : "";  
             final String entityName = event.getEntity().getClass().toString();  
             final Date transTime = new Date(); // new Date(event.getSource().getTimestamp());  
-            //final EntityMode entityMode = event.getPersister().getEntityMode(); //.guessEntityMode(event.getEntity());
-            Object newPropValue = null;  
+            Object newPropValue = null;
             
             if (event.getEntity() instanceof Auditable){
             	Auditable obj = (Auditable) event.getEntity();
             	//Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                final String actorId = "msalinas"; //authentication.getName();
+                final String actorId = obj.getActor();
 	            // need to have a separate session for audit save  
 	            StatelessSession session = event.getPersister().getFactory().openStatelessSession();  
 	            session.beginTransaction();  
 	  
 	            for (String propertyName : event.getPersister().getPropertyNames()) { 
 	            	if (obj.isFieldAuditable(propertyName)){
-		                //newPropValue = event.getPersister().getPropertyValue(event.getEntity(), propertyName, entityMode);
-                        newPropValue = event.getPersister().getPropertyValue(event.getEntity(), propertyName);
+		                newPropValue = event.getPersister().getPropertyValue(event.getEntity(), propertyName);
 		                // because we are performing an insert we only need to be concerned will non-null values  
 		                if (newPropValue != null) {  
 		                    // collections will fire their own events  
@@ -120,7 +119,8 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
 	            session.getTransaction().commit();  
 	            session.close(); 
             }
-        } catch (HibernateException e) {  
+        } catch (HibernateException e) {
+            e.printStackTrace();
             LOG.error("Unable to process audit log for INSERT operation", e);  
         }  
 	}
@@ -134,19 +134,15 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
 		try {  
-            final Serializable entityId = event.getId(); //event.getPersister().hasIdentifierProperty() ? event.getPersister().getIdentifier(event.getEntity(), event.getSession())
-                    //: null;
-
+            final Serializable entityId = event.getId();
             final String entityName = event.getEntity().getClass().toString();  
             final Date transTime = new Date(); // new Date(event.getSource().getTimestamp());  
-            //final EntityMode entityMode = event.getPersister().getEntityMode(); //.guessEntityMode(event.getEntity());
-            Object oldPropValue = null;  
+            Object oldPropValue = null;
             Object newPropValue = null;
             if (event.getEntity() instanceof Auditable){
                 Auditable obj = (Auditable) event.getEntity();
 
-                //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                final String actorId = obj.getActor();//authentication.getName();
+                final String actorId = obj.getActor();
                 // need to have a separate session for audit save  
 	            StatelessSession session = event.getPersister().getFactory().openStatelessSession();  
 	            session.beginTransaction();
@@ -157,24 +153,20 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
 	            // cycle through property names, extract corresponding property values and insert new entry in audit trail  
 	            for (String propertyName : event.getPersister().getPropertyNames()) {  
 	            	if (obj.isFieldAuditable(propertyName)){
-		                //newPropValue = event.getPersister().getPropertyValue(event.getEntity(), propertyName, entityMode);
                         newPropValue = event.getPersister().getPropertyValue(event.getEntity(), propertyName);
 		                if (newPropValue != null) {  
 			                // collections will fire their own events  
-		                    if (!(newPropValue instanceof Collection)) {  
-		                        //oldPropValue = event.getPersister().getPropertyValue(existingEntity, propertyName, entityMode);
-                                ///if (existingEntity!=null) {
-                                    oldPropValue = event.getPersister().getPropertyValue(existingEntity, propertyName);
-                                    if (!(oldPropValue == null && newPropValue.equals(""))) {
-                                        if (!newPropValue.equals(oldPropValue)) {
-                                            if (LOG.isDebugEnabled()) {
-                                                LOG.debug("{} for: {}, ID: {}, property: {}, old value: {}, new value: {}, actor: {}, date: {}", new Object[]{OPERATION_TYPE_UPDATE, entityName, entityId, propertyName, oldPropValue, newPropValue, actorId, transTime});
-                                            }
-                                            session.insert(new AuditTrail(entityId.toString(), entityName, propertyName, oldPropValue != null ? oldPropValue.toString() : null, newPropValue != null ? newPropValue
-                                                    .toString() : null, OPERATION_TYPE_UPDATE, actorId, transTime));
+		                    if (!(newPropValue instanceof Collection)) {
+                                oldPropValue = event.getPersister().getPropertyValue(existingEntity, propertyName);
+                                if (!(oldPropValue == null && newPropValue.equals(""))) {
+                                    if (!newPropValue.equals(oldPropValue)) {
+                                        if (LOG.isDebugEnabled()) {
+                                            LOG.debug("{} for: {}, ID: {}, property: {}, old value: {}, new value: {}, actor: {}, date: {}", new Object[]{OPERATION_TYPE_UPDATE, entityName, entityId, propertyName, oldPropValue, newPropValue, actorId, transTime});
                                         }
+                                        session.insert(new AuditTrail(entityId.toString(), entityName, propertyName, oldPropValue != null ? oldPropValue.toString() : null, newPropValue != null ? newPropValue
+                                                .toString() : null, OPERATION_TYPE_UPDATE, actorId, transTime));
                                     }
-                                //}
+                                }
 		                	}
 		                }  
 	            	}
