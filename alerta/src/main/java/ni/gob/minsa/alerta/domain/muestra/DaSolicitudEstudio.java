@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.domain.muestra;
 
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
+import ni.gob.minsa.alerta.domain.seguridadLab.User;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -21,7 +22,7 @@ public class DaSolicitudEstudio {
     private Catalogo_Estudio tipoEstudio;
     private Usuarios usarioRegistro;
     private Date fechaAprobacion;
-    private Usuarios usuarioAprobacion;
+    private User usuarioAprobacion;
     private Boolean aprobada;
 
 
@@ -93,13 +94,13 @@ public class DaSolicitudEstudio {
     }
 
     @ManyToOne(optional = true)
-    @JoinColumn(name = "USUARIO_APROBACION", referencedColumnName = "USUARIO_ID")
-    @ForeignKey(name = "USUARIO_APROBACION_FK")
-    public Usuarios getUsuarioAprobacion() {
+    @JoinColumn(name = "USUARIO_APROBACION", referencedColumnName = "username")
+    @ForeignKey(name = "USUARIO_APROBACION_EST_FK")
+    public User getUsuarioAprobacion() {
         return usuarioAprobacion;
     }
 
-    public void setUsuarioAprobacion(Usuarios usuarioAprobacion) {
+    public void setUsuarioAprobacion(User usuarioAprobacion) {
         this.usuarioAprobacion = usuarioAprobacion;
     }
 
