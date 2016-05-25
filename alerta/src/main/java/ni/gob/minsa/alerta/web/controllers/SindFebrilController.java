@@ -449,8 +449,8 @@ public class SindFebrilController {
                 daNotificacion.setFechaInicioSintomas(dateFIS);
                 if (!idNotificacion.equals("")){
                     daNotificacion.setIdNotificacion(idNotificacion);
+                    daSindFeb = sindFebrilService.getDaSindFebril(idNotificacion);
                 }
-                daSindFeb = sindFebrilService.getDaSindFebril(idNotificacion);
                 daNotificacion.setActor(seguridadService.obtenerNombreUsuario(request));
                 daSindFeb.setIdNotificacion(daNotificacion);
                 Date dateFicha = formatter.parse(fechaFicha);
