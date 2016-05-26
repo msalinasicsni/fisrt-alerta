@@ -10,5 +10,5 @@ public class ConstantsSecurity {
     public static final boolean ENABLE_SECURITY = false;
     public static final String EJB_BIN_PERSON_UTM = "ejb/PersonaUTM";
     public static final String EJB_BIN_PERSON_BTM = "ejb/PersonaBTM";
-    public static final boolean ENABLE_PERSON_COMPONENT = false;
+    public static final boolean ENABLE_PERSON_COMPONENT = true;
 }

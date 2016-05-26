@@ -1,7 +1,5 @@
 package ni.gob.minsa.alerta.domain.concepto;
 
-import ni.gob.minsa.alerta.domain.concepto.Concepto;
-import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.domain.seguridadLab.User;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.LazyCollection;

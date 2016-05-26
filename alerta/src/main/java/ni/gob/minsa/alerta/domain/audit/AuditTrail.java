@@ -3,13 +3,10 @@ package ni.gob.minsa.alerta.domain.audit;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "alerta_audit_trail", schema = "alerta")
@@ -104,7 +101,10 @@ public class AuditTrail {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
+    @Basic
 	@Column(name = "OPERATION_DATE", nullable = true)
+    @Temporal(TemporalType.DATE)
 	public Date getOperationDate() {
 		return operationDate;
 	}
