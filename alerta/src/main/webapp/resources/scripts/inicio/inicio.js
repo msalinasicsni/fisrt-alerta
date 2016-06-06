@@ -417,7 +417,7 @@ var PaginaInicio = function () {
 
                 bloquearUI(parametros.blockMess);
                 $.getJSON(parametros.sMapasUrl, {
-                    codPato: "0612,0613,J189",
+                    codPato: "0612,0613",
                     semI : $("#semanaI").val(),
                     semF : $("#semanaF").val(),
                     anio : $("#anioF").val(),
