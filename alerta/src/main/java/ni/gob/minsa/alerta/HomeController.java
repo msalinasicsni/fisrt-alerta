@@ -120,12 +120,12 @@ public class HomeController {
                                                  @RequestParam(value = "anioF", required = true) String anioF,
                                                  @RequestParam(value = "nivel", required = true) String nivelUsuario) throws Exception  {
         logger.info("Obteniendo los datos de casos y tasas en JSON");
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<Object[]> datos = homeService.getDataCasosTasas(codPato, nivelUsuario, idUsuario, semI, semF, anioI, anioF);
-        if (datos == null) {
-            logger.debug("Nulo");
-        }
-       return datos;
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<Object[]> datos = homeService.getDataCasosTasas(codPato, nivelUsuario, idUsuario, semI, semF, anioI, anioF);
+            if (datos == null) {
+                logger.debug("Nulo");
+            }
+        return datos;
     }
 
     @RequestMapping(value = "inicio/mapasdata", method = RequestMethod.GET, produces = "application/json")
@@ -193,54 +193,55 @@ public class HomeController {
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
         Integer indice=0;
-        for(DaNotificacion notificacion : notificacions){
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("idNotificacion",notificacion.getIdNotificacion());
-            if (notificacion.getFechaInicioSintomas()!=null)
-                map.put("fechaInicioSintomas",DateUtil.DateToString(notificacion.getFechaInicioSintomas(), "dd/MM/yyyy"));
-            else
-                map.put("fechaInicioSintomas"," ");
-            map.put("codtipoNoti",notificacion.getCodTipoNotificacion().getCodigo());
-            map.put("tipoNoti",notificacion.getCodTipoNotificacion().getValor());
-            map.put("fechaRegistro",DateUtil.DateToString(notificacion.getFechaRegistro(), "dd/MM/yyyy"));
-            map.put("SILAIS",(notificacion.getCodSilaisAtencion()!=null?notificacion.getCodSilaisAtencion().getNombre():""));
-            map.put("unidad",(notificacion.getCodUnidadAtencion()!=null?notificacion.getCodUnidadAtencion().getNombre():""));
-            //Si hay persona
-            if (notificacion.getPersona()!=null){
-                /// se obtiene el nombre de la persona asociada a la ficha
-                String nombreCompleto = "";
-                nombreCompleto = notificacion.getPersona().getPrimerNombre();
-                if (notificacion.getPersona().getSegundoNombre()!=null)
-                    nombreCompleto = nombreCompleto +" "+ notificacion.getPersona().getSegundoNombre();
-                nombreCompleto = nombreCompleto+" "+notificacion.getPersona().getPrimerApellido();
-                if (notificacion.getPersona().getSegundoApellido()!=null)
-                    nombreCompleto = nombreCompleto +" "+ notificacion.getPersona().getSegundoApellido();
-                map.put("persona",nombreCompleto);
-                //Se calcula la edad
-                int edad = DateUtil.calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
-                map.put("edad",String.valueOf(edad));
-                //se obtiene el sexo
-                map.put("sexo",notificacion.getPersona().getSexo().getValor());
-                if(edad > 12 && notificacion.getPersona().isSexoFemenino()){
-                    map.put("embarazada", envioMxService.estaEmbarazada(notificacion.getIdNotificacion()));
-                }else
-                    map.put("embarazada","--");
-                if (notificacion.getPersona().getMunicipioResidencia()!=null){
-                    map.put("municipio",notificacion.getPersona().getMunicipioResidencia().getNombre());
-                }else{
-                    map.put("municipio","--");
+            for (DaNotificacion notificacion : notificacions) {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("idNotificacion", notificacion.getIdNotificacion());
+                if (notificacion.getFechaInicioSintomas() != null)
+                    map.put("fechaInicioSintomas", DateUtil.DateToString(notificacion.getFechaInicioSintomas(), "dd/MM/yyyy"));
+                else
+                    map.put("fechaInicioSintomas", " ");
+                map.put("codtipoNoti", notificacion.getCodTipoNotificacion().getCodigo());
+                map.put("tipoNoti", notificacion.getCodTipoNotificacion().getValor());
+                map.put("fechaRegistro", DateUtil.DateToString(notificacion.getFechaRegistro(), "dd/MM/yyyy"));
+                map.put("SILAIS", (notificacion.getCodSilaisAtencion() != null ? notificacion.getCodSilaisAtencion().getNombre() : ""));
+                map.put("unidad", (notificacion.getCodUnidadAtencion() != null ? notificacion.getCodUnidadAtencion().getNombre() : ""));
+                //Si hay persona
+                if (notificacion.getPersona() != null) {
+                    /// se obtiene el nombre de la persona asociada a la ficha
+                    String nombreCompleto = "";
+                    nombreCompleto = notificacion.getPersona().getPrimerNombre();
+                    if (notificacion.getPersona().getSegundoNombre() != null)
+                        nombreCompleto = nombreCompleto + " " + notificacion.getPersona().getSegundoNombre();
+                    nombreCompleto = nombreCompleto + " " + notificacion.getPersona().getPrimerApellido();
+                    if (notificacion.getPersona().getSegundoApellido() != null)
+                        nombreCompleto = nombreCompleto + " " + notificacion.getPersona().getSegundoApellido();
+                    map.put("persona", nombreCompleto);
+                    //Se calcula la edad
+                    int edad = DateUtil.calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
+                    map.put("edad", String.valueOf(edad));
+                    //se obtiene el sexo
+                    map.put("sexo", notificacion.getPersona().getSexo().getValor());
+                    if (edad > 12 && notificacion.getPersona().isSexoFemenino()) {
+                        map.put("embarazada", envioMxService.estaEmbarazada(notificacion.getIdNotificacion()));
+                    } else
+                        map.put("embarazada", "--");
+                    if (notificacion.getPersona().getMunicipioResidencia() != null) {
+                        map.put("municipio", notificacion.getPersona().getMunicipioResidencia().getNombre());
+                    } else {
+                        map.put("municipio", "--");
+                    }
+                } else {
+                    map.put("persona", " ");
+                    map.put("edad", " ");
+                    map.put("sexo", " ");
+                    map.put("embarazada", "--");
+                    map.put("municipio", "");
                 }
-            }else{
-                map.put("persona"," ");
-                map.put("edad"," ");
-                map.put("sexo"," ");
-                map.put("embarazada","--");
-                map.put("municipio","");
+
+                mapResponse.put(indice, map);
+                indice++;
             }
 
-            mapResponse.put(indice, map);
-            indice ++;
-        }
         jsonResponse = new Gson().toJson(mapResponse);
         UnicodeEscaper escaper     = UnicodeEscaper.above(127);
         return escaper.translate(jsonResponse);
@@ -255,46 +256,47 @@ public class HomeController {
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
         Integer indice=0;
-        for(DaNotificacion notificacion : notificacions){
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("idNotificacion",notificacion.getIdNotificacion());
-            if (notificacion.getFechaInicioSintomas()!=null)
-                map.put("fechaInicioSintomas",DateUtil.DateToString(notificacion.getFechaInicioSintomas(), "dd/MM/yyyy"));
-            else
-                map.put("fechaInicioSintomas"," ");
-            map.put("codtipoNoti",notificacion.getCodTipoNotificacion().getCodigo());
-            map.put("tipoNoti",notificacion.getCodTipoNotificacion().getValor());
-            map.put("fechaRegistro",DateUtil.DateToString(notificacion.getFechaRegistro(), "dd/MM/yyyy"));
-            map.put("SILAIS",(notificacion.getCodSilaisAtencion()!=null?notificacion.getCodSilaisAtencion().getNombre():""));
-            map.put("unidad",(notificacion.getCodUnidadAtencion()!=null?notificacion.getCodUnidadAtencion().getNombre():""));
-            //Si hay persona
-            if (notificacion.getPersona()!=null){
-                /// se obtiene el nombre de la persona asociada a la ficha
-                String nombreCompleto = "";
-                nombreCompleto = notificacion.getPersona().getPrimerNombre();
-                if (notificacion.getPersona().getSegundoNombre()!=null)
-                    nombreCompleto = nombreCompleto +" "+ notificacion.getPersona().getSegundoNombre();
-                nombreCompleto = nombreCompleto+" "+notificacion.getPersona().getPrimerApellido();
-                if (notificacion.getPersona().getSegundoApellido()!=null)
-                    nombreCompleto = nombreCompleto +" "+ notificacion.getPersona().getSegundoApellido();
-                map.put("persona",nombreCompleto);
-                //Se calcula la edad
-                int edad = DateUtil.calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
-                map.put("edad",String.valueOf(edad));
-                if (notificacion.getPersona().getMunicipioResidencia()!=null){
-                    map.put("municipio",notificacion.getPersona().getMunicipioResidencia().getNombre());
-                }else{
-                    map.put("municipio","--");
+            for (DaNotificacion notificacion : notificacions) {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("idNotificacion", notificacion.getIdNotificacion());
+                if (notificacion.getFechaInicioSintomas() != null)
+                    map.put("fechaInicioSintomas", DateUtil.DateToString(notificacion.getFechaInicioSintomas(), "dd/MM/yyyy"));
+                else
+                    map.put("fechaInicioSintomas", " ");
+                map.put("codtipoNoti", notificacion.getCodTipoNotificacion().getCodigo());
+                map.put("tipoNoti", notificacion.getCodTipoNotificacion().getValor());
+                map.put("fechaRegistro", DateUtil.DateToString(notificacion.getFechaRegistro(), "dd/MM/yyyy"));
+                map.put("SILAIS", (notificacion.getCodSilaisAtencion() != null ? notificacion.getCodSilaisAtencion().getNombre() : ""));
+                map.put("unidad", (notificacion.getCodUnidadAtencion() != null ? notificacion.getCodUnidadAtencion().getNombre() : ""));
+                //Si hay persona
+                if (notificacion.getPersona() != null) {
+                    /// se obtiene el nombre de la persona asociada a la ficha
+                    String nombreCompleto = "";
+                    nombreCompleto = notificacion.getPersona().getPrimerNombre();
+                    if (notificacion.getPersona().getSegundoNombre() != null)
+                        nombreCompleto = nombreCompleto + " " + notificacion.getPersona().getSegundoNombre();
+                    nombreCompleto = nombreCompleto + " " + notificacion.getPersona().getPrimerApellido();
+                    if (notificacion.getPersona().getSegundoApellido() != null)
+                        nombreCompleto = nombreCompleto + " " + notificacion.getPersona().getSegundoApellido();
+                    map.put("persona", nombreCompleto);
+                    //Se calcula la edad
+                    int edad = DateUtil.calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
+                    map.put("edad", String.valueOf(edad));
+                    if (notificacion.getPersona().getMunicipioResidencia() != null) {
+                        map.put("municipio", notificacion.getPersona().getMunicipioResidencia().getNombre());
+                    } else {
+                        map.put("municipio", "--");
+                    }
+                } else {
+                    map.put("persona", " ");
+                    map.put("edad", " ");
+                    map.put("municipio", "");
                 }
-            }else{
-                map.put("persona"," ");
-                map.put("edad"," ");
-                map.put("municipio","");
+
+                mapResponse.put(indice, map);
+                indice++;
             }
 
-            mapResponse.put(indice, map);
-            indice ++;
-        }
         jsonResponse = new Gson().toJson(mapResponse);
         UnicodeEscaper escaper     = UnicodeEscaper.above(127);
         return escaper.translate(jsonResponse);
@@ -309,53 +311,54 @@ public class HomeController {
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
         Integer indice=0;
-        for(DaNotificacion notificacion : notificacions){
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("idNotificacion",notificacion.getIdNotificacion());
-            if (notificacion.getFechaInicioSintomas()!=null)
-                map.put("fechaInicioSintomas",DateUtil.DateToString(notificacion.getFechaInicioSintomas(), "dd/MM/yyyy"));
-            else
-                map.put("fechaInicioSintomas"," ");
-            map.put("codtipoNoti",notificacion.getCodTipoNotificacion().getCodigo());
-            map.put("tipoNoti",notificacion.getCodTipoNotificacion().getValor());
-            map.put("fechaRegistro",DateUtil.DateToString(notificacion.getFechaRegistro(), "dd/MM/yyyy"));
-            map.put("SILAIS",(notificacion.getCodSilaisAtencion()!=null?notificacion.getCodSilaisAtencion().getNombre():""));
-            map.put("unidad",(notificacion.getCodUnidadAtencion()!=null?notificacion.getCodUnidadAtencion().getNombre():""));
-            //Si hay persona
-            if (notificacion.getPersona()!=null){
-                /// se obtiene el nombre de la persona asociada a la ficha
-                String nombreCompleto = "";
-                nombreCompleto = notificacion.getPersona().getPrimerNombre();
-                if (notificacion.getPersona().getSegundoNombre()!=null)
-                    nombreCompleto = nombreCompleto +" "+ notificacion.getPersona().getSegundoNombre();
-                nombreCompleto = nombreCompleto+" "+notificacion.getPersona().getPrimerApellido();
-                if (notificacion.getPersona().getSegundoApellido()!=null)
-                    nombreCompleto = nombreCompleto +" "+ notificacion.getPersona().getSegundoApellido();
-                map.put("persona",nombreCompleto);
-                //Se calcula la edad
-                int edad = DateUtil.calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
-                map.put("edad",String.valueOf(edad));
-                map.put("sexo",notificacion.getPersona().getSexo().getValor());
-                if(edad > 12 && notificacion.getPersona().isSexoFemenino()){
-                    map.put("embarazada", envioMxService.estaEmbarazada(notificacion.getIdNotificacion()));
-                }else
-                    map.put("embarazada","--");
-                if (notificacion.getPersona().getMunicipioResidencia()!=null){
-                    map.put("municipio",notificacion.getPersona().getMunicipioResidencia().getNombre());
-                }else{
-                    map.put("municipio","--");
+            for (DaNotificacion notificacion : notificacions) {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("idNotificacion", notificacion.getIdNotificacion());
+                if (notificacion.getFechaInicioSintomas() != null)
+                    map.put("fechaInicioSintomas", DateUtil.DateToString(notificacion.getFechaInicioSintomas(), "dd/MM/yyyy"));
+                else
+                    map.put("fechaInicioSintomas", " ");
+                map.put("codtipoNoti", notificacion.getCodTipoNotificacion().getCodigo());
+                map.put("tipoNoti", notificacion.getCodTipoNotificacion().getValor());
+                map.put("fechaRegistro", DateUtil.DateToString(notificacion.getFechaRegistro(), "dd/MM/yyyy"));
+                map.put("SILAIS", (notificacion.getCodSilaisAtencion() != null ? notificacion.getCodSilaisAtencion().getNombre() : ""));
+                map.put("unidad", (notificacion.getCodUnidadAtencion() != null ? notificacion.getCodUnidadAtencion().getNombre() : ""));
+                //Si hay persona
+                if (notificacion.getPersona() != null) {
+                    /// se obtiene el nombre de la persona asociada a la ficha
+                    String nombreCompleto = "";
+                    nombreCompleto = notificacion.getPersona().getPrimerNombre();
+                    if (notificacion.getPersona().getSegundoNombre() != null)
+                        nombreCompleto = nombreCompleto + " " + notificacion.getPersona().getSegundoNombre();
+                    nombreCompleto = nombreCompleto + " " + notificacion.getPersona().getPrimerApellido();
+                    if (notificacion.getPersona().getSegundoApellido() != null)
+                        nombreCompleto = nombreCompleto + " " + notificacion.getPersona().getSegundoApellido();
+                    map.put("persona", nombreCompleto);
+                    //Se calcula la edad
+                    int edad = DateUtil.calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
+                    map.put("edad", String.valueOf(edad));
+                    map.put("sexo", notificacion.getPersona().getSexo().getValor());
+                    if (edad > 12 && notificacion.getPersona().isSexoFemenino()) {
+                        map.put("embarazada", envioMxService.estaEmbarazada(notificacion.getIdNotificacion()));
+                    } else
+                        map.put("embarazada", "--");
+                    if (notificacion.getPersona().getMunicipioResidencia() != null) {
+                        map.put("municipio", notificacion.getPersona().getMunicipioResidencia().getNombre());
+                    } else {
+                        map.put("municipio", "--");
+                    }
+                } else {
+                    map.put("persona", " ");
+                    map.put("edad", " ");
+                    map.put("sexo", " ");
+                    map.put("embarazada", "--");
+                    map.put("municipio", "");
                 }
-            }else{
-                map.put("persona"," ");
-                map.put("edad"," ");
-                map.put("sexo"," ");
-                map.put("embarazada","--");
-                map.put("municipio","");
+
+                mapResponse.put(indice, map);
+                indice++;
             }
 
-             mapResponse.put(indice, map);
-            indice ++;
-        }
         jsonResponse = new Gson().toJson(mapResponse);
         UnicodeEscaper escaper     = UnicodeEscaper.above(127);
         return escaper.translate(jsonResponse);

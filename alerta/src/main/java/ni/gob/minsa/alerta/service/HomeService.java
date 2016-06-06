@@ -28,6 +28,9 @@ public class HomeService {
             "sum(inf.totalm) as totalm, sum(inf.totalf) as totalf, sum(inf.totalm+inf.totalf) as total";
 
     public List<Object[]> getDataCasosTasas(String codPato, String nivelUsuario, Long idUsuario, String semI, String semF, String anioI,String anioF){
+       if (nivelUsuario.isEmpty() || semI.isEmpty() || semF.isEmpty() || anioI.isEmpty() || anioF.isEmpty())
+           return new ArrayList<Object[]>();
+
         // Retrieve session from Hibernate
         List<Object[]> resultado = new ArrayList<Object[]>();
         List<Object[]> resultadoTemp = new ArrayList<Object[]>();
@@ -170,6 +173,9 @@ public class HomeService {
 
     @SuppressWarnings("unchecked")
     public List<Object[]> getDataMapas(String codPato, String nivelUsuario, int idUsuario, String semI, String semF, String anio, boolean paisPorSILAIS){
+        if (nivelUsuario.isEmpty() || semI.isEmpty() || semF.isEmpty() || anio.isEmpty())
+            return new ArrayList<Object[]>();
+
         // Retrieve session from Hibernate
         List<Object[]> resultado = new ArrayList<Object[]>();
         List<Object[]> resultadoCasos = new ArrayList<Object[]>();
@@ -241,6 +247,8 @@ public class HomeService {
      */
     @SuppressWarnings("unchecked")
     public List<DaNotificacion> getDataSinResultado(String nivelUsuario, int idUsuario, boolean conSubUnidades) throws ParseException {
+        if (nivelUsuario.isEmpty())
+            return new ArrayList<DaNotificacion>();
 
         Session session = sessionFactory.getCurrentSession();
         Query queryCasos = null;
@@ -331,7 +339,7 @@ public class HomeService {
 
         //estudios
         queryCasos = session.createQuery(sqlCasosEstudios);
-        if (filtrarUsuario){
+        if (filtrarUsuario && !sqlCasosEstudios.isEmpty()){
             queryCasos.setParameter("idUsuario", idUsuario);
             queryCasos.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
         }
@@ -341,6 +349,9 @@ public class HomeService {
     }
 
     public List<DaNotificacion> getDataEmbarazadas(String nivelUsuario, int idUsuario, boolean conSubUnidades){
+        if (nivelUsuario.isEmpty())
+            return new ArrayList<DaNotificacion>();
+
         List<DaNotificacion> resultado = new ArrayList<DaNotificacion>();
         Session session = sessionFactory.getCurrentSession();
         String query = "", query2 = "";
@@ -441,6 +452,9 @@ public class HomeService {
     }
 
     public List<DaNotificacion> getDataHospitalizados(String nivelUsuario, int idUsuario, boolean conSubUnidades){
+        if (nivelUsuario.isEmpty())
+            return new ArrayList<DaNotificacion>();
+
         List<DaNotificacion> resultado = new ArrayList<DaNotificacion>();
         Session session = sessionFactory.getCurrentSession();
         String query = "", query2 = "";
