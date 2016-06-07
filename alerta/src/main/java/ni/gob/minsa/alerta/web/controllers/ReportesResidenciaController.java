@@ -360,8 +360,8 @@ public class ReportesResidenciaController {
             map.put("codtipoNoti",notificacion.getCodTipoNotificacion().getCodigo());
             map.put("tipoNoti",notificacion.getCodTipoNotificacion().getValor());
             map.put("fechaRegistro",DateUtil.DateToString(notificacion.getFechaRegistro(), "dd/MM/yyyy"));
-            map.put("SILAIS",notificacion.getCodSilaisAtencion().getNombre());
-            map.put("unidad",notificacion.getCodUnidadAtencion().getNombre());
+            map.put("SILAIS",notificacion.getCodSilaisAtencion()!=null?notificacion.getCodSilaisAtencion().getNombre():"");
+            map.put("unidad",notificacion.getCodUnidadAtencion()!=null?notificacion.getCodUnidadAtencion().getNombre():"");
             //Si hay persona
             if (notificacion.getPersona()!=null){
                 /// se obtiene el nombre de la persona asociada a la ficha
