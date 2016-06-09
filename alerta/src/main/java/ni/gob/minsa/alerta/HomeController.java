@@ -100,7 +100,7 @@ public class HomeController {
 
     @RequestMapping(value="/logout", method = RequestMethod.GET)
     public String salir(HttpServletRequest request) {
-        seguridadService.logOut(request.getSession());
+        seguridadService.logOut(request);
         return "redirect:"+seguridadService.obtenerUrlPortal();
     }
 

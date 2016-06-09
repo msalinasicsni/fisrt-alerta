@@ -130,6 +130,8 @@ public class SeguridadService {
                     }
                     if (infoSesion != null) {
                         request.getSession().setAttribute("infoSesionActual", infoSesion);
+                    }else {
+                        urlRetorno = "redirect:" + obtenerUrlPortal();
                     }
                 } else {
                     urlRetorno = "redirect:" + obtenerUrlPortal();
@@ -220,8 +222,7 @@ public class SeguridadService {
                 nivelCentral = false;
             }
         }
-      //  return nivelCentral;
-        return true;
+       return nivelCentral;
     }
 
     /**
@@ -348,9 +349,10 @@ public class SeguridadService {
 
     /**
      * Método que se ejecuta cuando se selecciona la opción "Salir" del sistema
-     * @param session sesión actual para limpiarla
+     * @param request sesión actual para limpiarla
      */
-    public void logOut(HttpSession session) {
+    public void logOut(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
         session.setAttribute("infoSesionActual", null);
         session.setAttribute("menuSistema", null);
         session.removeAttribute("infoSesionActual");
