@@ -141,6 +141,9 @@ var resultReport = function () {
                     },
                     endDate:{
                         required:true
+                    },
+                    codZona: {
+                        required : true
                     }
                 },
                 // Do not change code below
@@ -165,6 +168,7 @@ var resultReport = function () {
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
                         $('#dNivelPais').show();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
                         $('#silais').show();
@@ -173,6 +177,7 @@ var resultReport = function () {
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
                         $('#dNivelPais').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
                         $('#silais').hide();
@@ -181,6 +186,7 @@ var resultReport = function () {
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
                         $('#dNivelPais').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
                         $('#silais').show();
@@ -189,6 +195,7 @@ var resultReport = function () {
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
                         $('#dNivelPais').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
                         $('#silais').show();
@@ -197,6 +204,17 @@ var resultReport = function () {
                         $('#unidad').show();
                         $('#dSubUnits').show();
                         $('#dNivelPais').hide();
+                        $('#zona').hide();
+                    }
+                    else if ($('#codArea option:selected').val() == "AREAREP|ZE"){
+                        $('#silais').hide();
+                        $('#departamento').hide();
+                        $('#municipio').hide();
+                        $('#unidad').hide();
+                        $('#dSubUnits').hide();
+                        $('#dNivelPais').hide();
+                        $('#zona').show();
+                        $("#codZona").val("").change();
                     }
                 });
 
@@ -212,6 +230,7 @@ var resultReport = function () {
                 filtro['codArea'] = $('#codArea').find('option:selected').val();
                 filtro['tipoNotificacion'] = $('#codTipoNoti').find('option:selected').val();
                 filtro['porSilais'] = $('input[name="rbNivelPais"]:checked', '#result_form').val();
+                filtro['codZona'] = $('#codZona').find('option:selected').val();
 
                 bloquearUI(parametros.blockMess);
                 $.getJSON(parametros.sActionUrl, {
@@ -260,6 +279,10 @@ var resultReport = function () {
 
                         }
 
+                    }
+                    else if ($('#codArea option:selected').val() == "AREAREP|ZE") {
+                        title = title + '</br>'+ $('#lblZona').val() + " "  +$('#codZona option:selected').text();
+                        $('#firstTh').html( $('#usT').val() );
                     }
                     title = title + '</br>' + $('#from').val() +" " +$('#initDate').val()  + " "+ "-" + " " + $('#to').val() + " " +$('#endDate').val();
 

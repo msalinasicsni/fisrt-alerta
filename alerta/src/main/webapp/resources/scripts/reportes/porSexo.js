@@ -157,6 +157,9 @@ var sexReport = function () {
                     },
                     endDate:{
                         required:true
+                    },
+                    codZona: {
+                        required : true
                     }
                 },
                 // Do not change code below
@@ -180,6 +183,7 @@ var sexReport = function () {
                         $('#municipio').hide();
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
                         $('#silais').show();
@@ -187,6 +191,7 @@ var sexReport = function () {
                         $('#municipio').hide();
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
                         $('#silais').hide();
@@ -194,6 +199,7 @@ var sexReport = function () {
                         $('#municipio').hide();
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
                         $('#silais').show();
@@ -201,6 +207,7 @@ var sexReport = function () {
                         $('#municipio').show();
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
                         $('#silais').show();
@@ -208,6 +215,16 @@ var sexReport = function () {
                         $('#municipio').show();
                         $('#unidad').show();
                         $('#dSubUnits').show();
+                        $('#zona').hide();
+                    }
+                    else if ($('#codArea option:selected').val() == "AREAREP|ZE"){
+                        $('#silais').hide();
+                        $('#departamento').hide();
+                        $('#municipio').hide();
+                        $('#unidad').hide();
+                        $('#dSubUnits').hide();
+                        $('#zona').show();
+                        $("#codZona").val("").change();
                     }
                 });
 
@@ -223,6 +240,7 @@ var sexReport = function () {
                 filtro['codMunicipio'] = $('#codMunicipio').find('option:selected').val();
                 filtro['codArea'] = $('#codArea').find('option:selected').val();
                 filtro['tipoNotificacion'] = $('#codTipoNoti').find('option:selected').val();
+                filtro['codZona'] = $('#codZona').find('option:selected').val();
 
                 bloquearUI(parametros.blockMess);
                 $.getJSON(parametros.sActionUrl, {
@@ -260,6 +278,9 @@ var sexReport = function () {
 
                         }
 
+                    }
+                    else if ($('#codArea option:selected').val() == "AREAREP|ZE") {
+                        title = title + '</br>'+ $('#lblZona').val() + " "  +$('#codZona option:selected').text();
                     }
                     title = title + '</br>' + $('#from').val() +" " +$('#initDate').val()  + " "+ "-" + " " + $('#to').val() + " " +$('#endDate').val();
 

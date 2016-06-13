@@ -7,6 +7,7 @@ import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.FactorPoblacion;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
+import ni.gob.minsa.alerta.domain.estructura.ZonaEspecial;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
 import ni.gob.minsa.alerta.domain.muestra.FiltroMx;
@@ -264,6 +265,7 @@ public class ReportesController {
             List<Semanas> semanas = catalogosService.getSemanas();
             List<Anios> anios = catalogosService.getAnios();
             List<FactorPoblacion> factores = catalogosService.getFactoresPoblacion();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
             mav.addObject("areas", areas);
             mav.addObject("semanas", semanas);
             mav.addObject("anios", anios);
@@ -271,6 +273,7 @@ public class ReportesController {
             mav.addObject("entidades",entidadesAdtvases);
             mav.addObject("tiposNotificacion", tiposNotificacion);
             mav.addObject("factores",factores);
+            mav.addObject("zonas",zonas);
 
         }else{
             mav.setViewName(urlValidacion);
@@ -306,7 +309,8 @@ public class ReportesController {
             @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
             @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
             @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion,
-            @RequestParam(value= "ckUS", required = false) boolean ckUS) throws ParseException {
+            @RequestParam(value= "ckUS", required = false) boolean ckUS,
+            @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
 
         logger.info("Obteniendo los datos de casos de notificaciones por semana");
         FiltrosReporte filtrosReporte = new FiltrosReporte();
@@ -322,6 +326,7 @@ public class ReportesController {
         filtrosReporte.setFactor(factor);
         filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
         filtrosReporte.setSubunidades((ckUS));//Incluir subunidades
+        filtrosReporte.setCodZona(codZona);
         List<Object[]> datos = reportesService.getDataPorSemana(filtrosReporte);
         if (datos == null){
             logger.debug("Nulo");
@@ -357,10 +362,12 @@ public class ReportesController {
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
             List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
             mav.addObject("entidades",entidadesAdtvases);
             mav.addObject("tiposNotificacion", tiposNotificacion);
+            mav.addObject("zonas",zonas);
 
         }else{
             mav.setViewName(urlValidacion);
@@ -394,7 +401,8 @@ public class ReportesController {
             @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
             @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
             @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion,
-            @RequestParam(value= "ckUS", required = false) boolean ckUS) throws ParseException {
+            @RequestParam(value= "ckUS", required = false) boolean ckUS,
+            @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
 
         logger.info("Obteniendo los datos de casos de notificaciones por semana");
         FiltrosReporte filtrosReporte = new FiltrosReporte();
@@ -409,6 +417,7 @@ public class ReportesController {
         filtrosReporte.setFechaFin(DateUtil.StringToDate(fechaFinal+" 23:59:59","dd/MM/yyyy HH:mm:ss"));
         //filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
         filtrosReporte.setSubunidades((ckUS));//Incluir subunidades
+        filtrosReporte.setCodZona(codZona);
         List<Object[]> datos = reportesService.getDataPorDia(filtrosReporte);
         if (datos == null){
             logger.debug("Nulo");
@@ -445,12 +454,14 @@ public class ReportesController {
             tipoNoti.add(tipoNotificacionSF);
             tipoNoti.add(tipoNotificacionIRA);
             List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
             model.addAttribute("areas", areas);
             model.addAttribute("anios", anios);
             model.addAttribute("entidades", entidades);
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("tipoNoti", tipoNoti);
             model.addAttribute("factor", factor);
+            model.addAttribute("zonas",zonas);
             return "reportes/area";
         }else{
             return  urlValidacion;
@@ -477,6 +488,7 @@ public class ReportesController {
         String codArea = null;
         boolean subunidad = false;
         boolean porSilais = true;//por defecto true
+        String codZona = null;
 
         if (jObjectFiltro.get("codSilais") != null && !jObjectFiltro.get("codSilais").getAsString().isEmpty())
             codSilais = jObjectFiltro.get("codSilais").getAsLong();
@@ -500,6 +512,8 @@ public class ReportesController {
             subunidad = jObjectFiltro.get("subunidades").getAsBoolean();
         if (jObjectFiltro.get("porSilais") != null && !jObjectFiltro.get("porSilais").getAsString().isEmpty())
             porSilais = jObjectFiltro.get("porSilais").getAsBoolean();
+        if (jObjectFiltro.get("codZona") != null && !jObjectFiltro.get("codZona").getAsString().isEmpty())
+            codZona = jObjectFiltro.get("codZona").getAsString();
 
         filtroRep.setSubunidades(subunidad);
         filtroRep.setCodSilais(codSilais);
@@ -513,6 +527,7 @@ public class ReportesController {
         filtroRep.setCodArea(codArea);
         filtroRep.setAnioInicial(DateUtil.DateToString(fechaInicio, "yyyy"));
         filtroRep.setPorSilais(porSilais);
+        filtroRep.setCodZona(codZona);
 
         return filtroRep;
     }
@@ -559,10 +574,12 @@ public class ReportesController {
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
             List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
             mav.addObject("entidades",entidadesAdtvases);
             mav.addObject("tiposNotificacion", tiposNotificacion);
+            mav.addObject("zonas",zonas);
 
         }else{
             mav.setViewName(urlValidacion);
@@ -594,7 +611,8 @@ public class ReportesController {
             @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
             @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
             @RequestParam(value = "tipoNotificacion", required = true) String tipoNotificacion,
-            @RequestParam(value = "ckUS", required = false) boolean subunidades) throws ParseException {
+            @RequestParam(value = "ckUS", required = false) boolean subunidades,
+            @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
 
         logger.info("Obteniendo los datos de casos de notificaciones por semana");
         FiltrosReporte filtrosReporte = new FiltrosReporte();
@@ -607,6 +625,7 @@ public class ReportesController {
         filtrosReporte.setFechaInicio(DateUtil.StringToDate(fechaInicial+" 00:00:00","dd/MM/yyyy HH:mm:ss"));
         filtrosReporte.setFechaFin(DateUtil.StringToDate(fechaFinal+" 23:59:59","dd/MM/yyyy HH:mm:ss"));
         filtrosReporte.setSubunidades(subunidades);
+        filtrosReporte.setCodZona(codZona);
         //filtrosReporte.setTipoPoblacion("Todos");//por defecto se toma toda la población
         List<DaNotificacion> datos = reportesService.getDataSinResultado(filtrosReporte);
         if (datos == null){
@@ -706,12 +725,16 @@ public class ReportesController {
             tipoNoti.add(tipoNotificacionSF);
             tipoNoti.add(tipoNotificacionIRA);
             List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+
             model.addAttribute("areas", areas);
             model.addAttribute("anios", anios);
             model.addAttribute("entidades", entidades);
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("tipoNoti", tipoNoti);
             model.addAttribute("factor", factor);
+            model.addAttribute("zonas",zonas);
+
             return "reportes/porSexo";
         }else{
             return  urlValidacion;
@@ -761,12 +784,14 @@ public class ReportesController {
             tipoNoti.add(tipoNotificacionSF);
             tipoNoti.add(tipoNotificacionIRA);
             List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
             model.addAttribute("areas", areas);
             model.addAttribute("anios", anios);
             model.addAttribute("entidades", entidades);
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("tipoNoti", tipoNoti);
             model.addAttribute("factor", factor);
+            model.addAttribute("zonas",zonas);
             return "reportes/porResultado";
         }else{
             return  urlValidacion;

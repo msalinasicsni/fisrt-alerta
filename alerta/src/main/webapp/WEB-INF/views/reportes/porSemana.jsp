@@ -203,6 +203,21 @@
 											</section>
                                    		</div>
                                    		<!-- END ROW -->
+                                            <!-- START ROW -->
+                                            <div class="row">
+                                                <section id="zona" hidden="hidden">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                        <select data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.special.area" />"
+                                                                name="codZona" id="codZona" class="select2">
+                                                            <option value=""></option>
+                                                            <c:forEach items="${zonas}" var="zona">
+                                                                <option value="${zona.codigo}">${zona.valor}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </div>
+                                                </section>
+                                            </div>
                                    		<!-- START ROW -->
                                         <div class="row">
                                    			<section id="unidad" hidden="hidden">
@@ -488,6 +503,7 @@
 	<!-- END PAGE LEVEL PLUGINS -->
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
 	<spring:url value="/resources/scripts/reportes/porSemana.js" var="semana" />
+
 	<script src="${semana}"></script>
     <spring:url value="/resources/scripts/utilidades/seleccionUnidadReporte.js" var="seleccionUnidadReporte" />
     <script src="${seleccionUnidadReporte}"></script>
@@ -505,6 +521,7 @@
     <c:set var="msg_lessOrEqualThan"><spring:message code="validation.lessOrEqualThan"/> </c:set>
     <c:set var="semana1"><spring:message code="week1" /> </c:set>
     <c:set var="semana2"><spring:message code="week2" /> </c:set>
+    <c:set var="zona"><spring:message code="lbl.special.area" />:</c:set>
 	<spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
 	<spring:url var="unidadesUrl"   value="/api/v1/uniRepPorSilaisyMuni"  />
 	<script type="text/javascript">
@@ -525,9 +542,10 @@
                 msg_greaterOrEqualThan : ${msg_greaterOrEqualThan},
                 msg_lessOrEqualThan : ${msg_lessOrEqualThan},
                 semana1 : "${semana1}",
-                semana2 : "${semana2}"
+                semana2 : "${semana2}",
+                zona : "${zona}"
             };
-			ViewReport.init(parametros);
+            ViewReportWeek.init(parametros);
             SeleccionUnidadReporte.init(parametros);
 	    	$("li.reportes").addClass("open");
 	    	$("li.week").addClass("active");

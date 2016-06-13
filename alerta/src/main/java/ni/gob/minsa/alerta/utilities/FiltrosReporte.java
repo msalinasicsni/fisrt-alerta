@@ -23,6 +23,7 @@ public class FiltrosReporte {
     String tipoPoblacion;
     boolean subunidades;
     boolean porSilais;
+    String codZona;
 
     public String getCodArea() {
         return codArea;
@@ -134,5 +135,13 @@ public class FiltrosReporte {
 
     public void setPorSilais(boolean porSilais) {
         this.porSilais = porSilais;
+    }
+
+    public String getCodZona() {
+        return codZona;
+    }
+
+    public void setCodZona(String codZona) {
+        this.codZona = codZona;
     }
 }

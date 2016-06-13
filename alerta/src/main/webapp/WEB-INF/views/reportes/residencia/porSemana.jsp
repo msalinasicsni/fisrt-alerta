@@ -529,7 +529,7 @@
                 semana1 : "${semana1}",
                 semana2 : "${semana2}"
             };
-			ViewReport.init(parametros);
+            ViewReportWeek.init(parametros);
             SeleccionUnidadReporte.init(parametros);
 	    	$("li.reportes").addClass("open");
 	    	$("li.homeweek").addClass("active");

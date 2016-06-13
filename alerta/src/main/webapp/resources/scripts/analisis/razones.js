@@ -119,6 +119,9 @@ var ViewReport = function () {
     					},
     					codSilaisAtencion: {
     						required : true
+                        },
+                        codZona: {
+                            required : true
                         }
     				},
     				// Do not change code below
@@ -139,31 +142,44 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
             				$('#silais').show();
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
             				$('#silais').hide();
             				$('#departamento').show();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
             				$('#silais').show();
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').hide();
+                            $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
             				$('#silais').show();
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').show();
+                            $('#zona').hide();
             			}
+                        else if ($('#codArea option:selected').val() == "AREAREP|ZE"){
+                            $('#silais').hide();
+                            $('#departamento').hide();
+                            $('#municipio').hide();
+                            $('#unidad').hide();
+                            $('#zona').show();
+                            $("#codZona").val("").change();
+                        }
                     });
             
             function getData() {

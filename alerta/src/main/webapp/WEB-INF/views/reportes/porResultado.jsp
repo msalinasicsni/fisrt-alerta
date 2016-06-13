@@ -143,7 +143,7 @@
                 <input id="usT" type="hidden" value="<spring:message code="lbl.health.unit"/>"/>
                 <input id="areaL" type="hidden" value="<spring:message code="lbl.health.area"/>"/>
                 <input id="departaT" type="hidden" value="<spring:message code="lbl.department"/>"/>
-
+                <input id="lblZona" type="hidden" value="<spring:message code="lbl.special.area"/>:"/>
 
                 <form id="result_form" class ="smart-form">
                     <fieldset>
@@ -237,6 +237,21 @@
                             </section>
                         </div>
                         <!-- END ROW -->
+                        <!-- START ROW -->
+                        <div class="row">
+                            <section class="col col-sm-12 col-md-12 col-lg-12" id="zona" hidden="hidden">
+                                <div class="input-group">
+                                    <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                    <select data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.special.area" />"
+                                            name="codZona" id="codZona" class="select2">
+                                        <option value=""></option>
+                                        <c:forEach items="${zonas}" var="zona">
+                                            <option value="${zona.codigo}">${zona.valor}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </section>
+                        </div>
                         <!-- START ROW -->
                         <div class="row">
                             <section class="col col-sm-12 col-md-12 col-lg-12" id="unidad" hidden="hidden">

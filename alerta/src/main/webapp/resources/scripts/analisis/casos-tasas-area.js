@@ -83,6 +83,9 @@ var ViewReport = function () {
                     },
                     codSilaisAtencion: {
                         required : true
+                    },
+                    codZona: {
+                        required : true
                     }
                 },
                 // Do not change code below
@@ -104,6 +107,7 @@ var ViewReport = function () {
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
                         $('#dNivelPais').show();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
                         $('#silais').show();
@@ -112,6 +116,7 @@ var ViewReport = function () {
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
                         $('#dNivelPais').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
                         $('#silais').hide();
@@ -120,6 +125,7 @@ var ViewReport = function () {
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
                         $('#dNivelPais').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
                         $('#silais').show();
@@ -128,6 +134,7 @@ var ViewReport = function () {
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
                         $('#dNivelPais').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
                         $('#silais').show();
@@ -136,6 +143,17 @@ var ViewReport = function () {
                         $('#unidad').show();
                         $('#dSubUnits').show();
                         $('#dNivelPais').hide();
+                        $('#zona').hide();
+                    }
+                    else if ($('#codArea option:selected').val() == "AREAREP|ZE"){
+                        $('#silais').hide();
+                        $('#departamento').hide();
+                        $('#municipio').hide();
+                        $('#unidad').hide();
+                        $('#dSubUnits').hide();
+                        $('#dNivelPais').hide();
+                        $('#zona').show();
+                        $("#codZona").val("").change();
                     }
                 });
 
@@ -175,6 +193,10 @@ var ViewReport = function () {
                             }else{
                                 title = title + '</br>' + parametros.unidad + " " + $('#codUnidadAtencion option:selected').text();
                             }
+                            descEntidad = parametros.unidadT;
+                        }
+                        else if ($('#codArea option:selected').val() == "AREAREP|ZE"){
+                            title = title + '</br>'+parametros.zona + " " +$('#codZona option:selected').text();
                             descEntidad = parametros.unidadT;
                         }
                         title = title + '</br>'+parametros.semana+' '+$('#semI option:selected').text() +' a la '+$('#semF option:selected').text();

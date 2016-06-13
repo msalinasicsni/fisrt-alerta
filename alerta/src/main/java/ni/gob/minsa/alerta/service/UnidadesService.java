@@ -125,6 +125,7 @@ public class UnidadesService {
             Criteria criteria = session.createCriteria(Unidades.class);
             criteria.add(Restrictions.eq("municipio.codigoNacional",codMunicipio));
             criteria.add(Restrictions.eq("entidadAdtva.codigo",codSilais));
+            criteria.add(Restrictions.eq("pasivo",'0'));
             Long[] dataTipUnidades = new Long[codTiposUnidades.length];
             for(int i=0; i < codTiposUnidades.length; i++){
                 dataTipUnidades[i] = Long.parseLong(codTiposUnidades[i]);

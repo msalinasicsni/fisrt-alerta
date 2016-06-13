@@ -4,6 +4,7 @@ import ni.gob.minsa.alerta.domain.catalogos.Anios;
 import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
+import ni.gob.minsa.alerta.domain.estructura.ZonaEspecial;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.sive.SivePatologias;
 import ni.gob.minsa.alerta.service.*;
@@ -66,12 +67,14 @@ public class AnalisisObsEsperadosController {
             List<Semanas> semanas = catalogosService.getSemanas();
             List<Anios> anios = catalogosService.getAnios();
             List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
             model.addAttribute("areas", areas);
             model.addAttribute("semanas", semanas);
             model.addAttribute("anios", anios);
             model.addAttribute("entidades", entidades);
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("patologias", patologias);
+            model.addAttribute("zonas",zonas);
             return "analisis/casostasas";
         } else {
             return urlValidacion;
@@ -93,9 +96,10 @@ public class AnalisisObsEsperadosController {
     		@RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
-    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException {
+    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos de casos y tasas en JSON");
-        List<Object[]> datos = analisisObsEsperadosService.getDataCasosTasas(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,anioF);
+        List<Object[]> datos = analisisObsEsperadosService.getDataCasosTasas(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,anioF,codZona);
         if (datos == null){
         	logger.debug("Nulo");
         }
@@ -116,22 +120,24 @@ public class AnalisisObsEsperadosController {
             urlValidacion = "404";
         }
         if (urlValidacion.isEmpty()) {
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	//List<AreaRep> areas = catalogosService.getAreaRep();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
-    	List<Semanas> semanas = catalogosService.getSemanas();
-    	List<Anios> anios = catalogosService.getAnios();
-    	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
-    	model.addAttribute("areas", areas);
-    	model.addAttribute("semanas", semanas);
-    	model.addAttribute("anios", anios);
-    	model.addAttribute("entidades", entidades);
-    	model.addAttribute("departamentos", departamentos);
-    	model.addAttribute("patologias", patologias);
-    	return "analisis/razones";
-	}else{
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            //List<AreaRep> areas = catalogosService.getAreaRep();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
+            List<Semanas> semanas = catalogosService.getSemanas();
+            List<Anios> anios = catalogosService.getAnios();
+            List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            model.addAttribute("areas", areas);
+            model.addAttribute("semanas", semanas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("patologias", patologias);
+            model.addAttribute("zonas",zonas);
+            return "analisis/razones";
+        }else{
             return  urlValidacion;
         }
     }
@@ -149,9 +155,10 @@ public class AnalisisObsEsperadosController {
     		@RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
-    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException {
+    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos de razones e indices en JSON");
-        List<Object[]> datos = analisisObsEsperadosService.getDataRazonesIndices(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semana,anio);
+        List<Object[]> datos = analisisObsEsperadosService.getDataRazonesIndices(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semana,anio,codZona);
         if (datos == null){
         	logger.debug("Nulo");
         }
@@ -172,20 +179,22 @@ public class AnalisisObsEsperadosController {
             urlValidacion = "404";
         }
         if (urlValidacion.isEmpty()) {
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	//List<AreaRep> areas = catalogosService.getAreaRep();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
-    	List<Anios> anios = catalogosService.getAnios();
-    	List<Semanas> semanas = catalogosService.getSemanas();
-    	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
-    	model.addAttribute("areas", areas);
-    	model.addAttribute("anios", anios);
-    	model.addAttribute("semanas", semanas);
-    	model.addAttribute("entidades", entidades);
-    	model.addAttribute("departamentos", departamentos);
-    	model.addAttribute("patologias", patologias);
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            //List<AreaRep> areas = catalogosService.getAreaRep();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
+            List<Anios> anios = catalogosService.getAnios();
+            List<Semanas> semanas = catalogosService.getSemanas();
+            List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            model.addAttribute("areas", areas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("semanas", semanas);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("patologias", patologias);
+            model.addAttribute("zonas",zonas);
     	return "analisis/corredores";
 	}else{
             return  urlValidacion;
@@ -206,9 +215,10 @@ public class AnalisisObsEsperadosController {
     		@RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
-    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException {
+    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos corredores endemicos en JSON");
-        List<Object[]> datos = analisisObsEsperadosService.getDataCorredores(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semana, anio, cantAnio);
+        List<Object[]> datos = analisisObsEsperadosService.getDataCorredores(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semana, anio, cantAnio, codZona);
         if (datos == null){
         	logger.debug("Nulo");
         }
@@ -229,22 +239,24 @@ public class AnalisisObsEsperadosController {
             urlValidacion = "404";
         }
         if (urlValidacion.isEmpty()) {
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	//List<AreaRep> areas = catalogosService.getAreaRep();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
-    	List<Anios> anios = catalogosService.getAnios();
-    	List<Semanas> semanas = catalogosService.getSemanas();
-    	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
-    	model.addAttribute("areas", areas);
-    	model.addAttribute("anios", anios);
-    	model.addAttribute("semanas", semanas);
-    	model.addAttribute("entidades", entidades);
-    	model.addAttribute("departamentos", departamentos);
-    	model.addAttribute("patologias", patologias);
-    	return "analisis/indice";
-	}else{
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            //List<AreaRep> areas = catalogosService.getAreaRep();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
+            List<Anios> anios = catalogosService.getAnios();
+            List<Semanas> semanas = catalogosService.getSemanas();
+            List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            model.addAttribute("areas", areas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("semanas", semanas);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("patologias", patologias);
+            model.addAttribute("zonas",zonas);
+            return "analisis/indice";
+        }else{
             return  urlValidacion;
         }
     }
@@ -264,9 +276,10 @@ public class AnalisisObsEsperadosController {
     		@RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
-    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException {
+    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos indice endemico en JSON");
-        List<Object[]> datos = analisisObsEsperadosService.getDataIndice(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semana, anio, cantAnio);
+        List<Object[]> datos = analisisObsEsperadosService.getDataIndice(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semana, anio, cantAnio, codZona);
         if (datos == null){
         	logger.debug("Nulo");
         }
@@ -288,22 +301,24 @@ public class AnalisisObsEsperadosController {
             urlValidacion = "404";
         }
         if (urlValidacion.isEmpty()) {
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-        List departamentos = divisionPoliticaService.getAllDepartamentos();
-       // List areas = catalogosService.getAreaRep();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
-        List semanas = catalogosService.getSemanas();
-        List anios = catalogosService.getAnios();
-        List patologias = sivePatologiasService.getSivePatologias();
-        model.addAttribute("areas", areas);
-        model.addAttribute("semanas", semanas);
-        model.addAttribute("anios", anios);
-        model.addAttribute("entidades", entidades);
-        model.addAttribute("departamentos", departamentos);
-        model.addAttribute("patologias", patologias);
-        return "analisis/casostasasarea";
-    }else{
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List departamentos = divisionPoliticaService.getAllDepartamentos();
+           // List areas = catalogosService.getAreaRep();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
+            List semanas = catalogosService.getSemanas();
+            List anios = catalogosService.getAnios();
+            List patologias = sivePatologiasService.getSivePatologias();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            model.addAttribute("areas", areas);
+            model.addAttribute("semanas", semanas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("patologias", patologias);
+            model.addAttribute("zonas",zonas);
+            return "analisis/casostasasarea";
+        }else{
             return  urlValidacion;
         }
     }
@@ -326,10 +341,11 @@ public class AnalisisObsEsperadosController {
                                             @RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
                                             @RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
                                             @RequestParam(value = "ckUS", required = false) boolean conSubUnidades,
-                                            @RequestParam(value = "rbNivelPais", required = false) boolean porSILAIS) throws ParseException
+                                            @RequestParam(value = "rbNivelPais", required = false) boolean porSILAIS,
+                                            @RequestParam(value = "codZona", required = false) String codZona) throws ParseException
     {
         logger.info("Obteniendo los datos de casos y tasas en JSON");
-        List datos = analisisObsEsperadosService.getDataCasosTasasArea(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semI, semF, anioI, anioF, porSILAIS, conSubUnidades);
+        List datos = analisisObsEsperadosService.getDataCasosTasasArea(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semI, semF, anioI, anioF, porSILAIS, conSubUnidades, codZona);
         if(datos == null)
             logger.debug("Nulo");
         return datos;

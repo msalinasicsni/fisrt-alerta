@@ -1,4 +1,4 @@
-var ViewReport = function () {
+var ViewReportWeek = function () {
 
 	var bloquearUI = function(mensaje){
 		var loc = window.location;
@@ -178,6 +178,9 @@ var ViewReport = function () {
                         },
                         tipoNotificacion: {
                             required : true
+                        },
+                        codZona: {
+                            required : true
                         }
     				},
     				// Do not change code below
@@ -200,6 +203,7 @@ var ViewReport = function () {
             				$('#municipio').hide();
             				$('#unidad').hide();
                             $('#dSubUnits').hide();
+                            $('#zona').hide();
             			}
             			else if (opcion == "AREAREP|SILAIS"){
             				$('#silais').show();
@@ -207,6 +211,7 @@ var ViewReport = function () {
             				$('#municipio').hide();
             				$('#unidad').hide();
                             $('#dSubUnits').hide();
+                            $('#zona').hide();
             			}
             			else if (opcion == "AREAREP|DEPTO"){
             				$('#silais').hide();
@@ -214,6 +219,7 @@ var ViewReport = function () {
             				$('#municipio').hide();
             				$('#unidad').hide();
                             $('#dSubUnits').hide();
+                            $('#zona').hide();
             			}
             			else if (opcion == "AREAREP|MUNI"){
             				$('#silais').show();
@@ -221,6 +227,7 @@ var ViewReport = function () {
             				$('#municipio').show();
             				$('#unidad').hide();
                             $('#dSubUnits').hide();
+                            $('#zona').hide();
             			}
             			else if (opcion == "AREAREP|UNI"){
             				$('#silais').show();
@@ -228,7 +235,17 @@ var ViewReport = function () {
             				$('#municipio').show();
             				$('#unidad').show();
                             $('#dSubUnits').show();
+                            $('#zona').hide();
             			}
+                        else if (opcion == "AREAREP|ZE"){
+                            $('#silais').hide();
+                            $('#departamento').hide();
+                            $('#municipio').hide();
+                            $('#unidad').hide();
+                            $('#dSubUnits').hide();
+                            $('#zona').show();
+                            $("#codZona").val("").change();
+                        }
                     });
 
             function getData() {
@@ -260,6 +277,9 @@ var ViewReport = function () {
 
                         }
 
+                    }
+                    else if ($('#codArea option:selected').val() == "AREAREP|ZE"){
+                        title = title + '</br>'+parametros.zona+' '+$('#codZona option:selected').text();
                     }
                     title = title + '</br>'+parametros.semana+' '+$('#semI option:selected').text() +' a la '+$('#semF option:selected').text() +', '+$('#anioI option:selected').text();
 

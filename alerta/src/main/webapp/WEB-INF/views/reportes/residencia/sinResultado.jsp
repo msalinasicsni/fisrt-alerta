@@ -417,7 +417,7 @@
                 iragUrl : "${iragUrl}",
                 pacienteUrl : "${pacienteUrl}"
             };
-			ViewReport.init(parametros);
+            ViewReportNResult.init(parametros);
             SeleccionUnidadReporte.init(parametros);
             handleDatePickers("${pageContext.request.locale.language}");
             $("li.reportes").addClass("open");

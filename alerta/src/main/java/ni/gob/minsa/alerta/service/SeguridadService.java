@@ -222,7 +222,7 @@ public class SeguridadService {
                 nivelCentral = false;
             }
         }
-       return nivelCentral;
+        return nivelCentral;
     }
 
     /**
@@ -738,15 +738,19 @@ public class SeguridadService {
                 case "PAIS" :{
                     switch (menorNivelPermitido){
                         case 1 :{
-                            query += " where a.codigo in ('AREAREP|PAIS','AREAREP|DEPTO','AREAREP|SILAIS') "; // no incluir pais y departamento
+                            query += " where a.codigo in ('AREAREP|PAIS','AREAREP|DEPTO','AREAREP|SILAIS') "; // no incluir municipios, ni unidad, ni zona
                             break;
                         }
                         case 2: {
-                            query += " where a.codigo not in ('AREAREP|UNI') "; // sólo unidad
+                            query += " where a.codigo not in ('AREAREP|UNI') "; // sólo no incluir unidad
                             break;
                         }
                         case 3 : {
                             query += " where 1 = 1";  // todos
+                            break;
+                        }
+                        case 4 :{
+                            query += " where a.codigo in ('AREAREP|PAIS','AREAREP|SILAIS') "; // no incluir municipios, ni unidad, ni zona, ni departamento
                             break;
                         }
                         default: break;
@@ -773,6 +777,10 @@ public class SeguridadService {
                             query += " where a.codigo not in ('AREAREP|PAIS','AREAREP|DEPTO') "; // no incluir pais y departamento
                             break;
                         }
+                        case 4 :{
+                            query += " where a.codigo in ('AREAREP|SILAIS') "; // solo silais
+                            break;
+                        }
                         default: break;
                     }
                     break;
@@ -789,6 +797,10 @@ public class SeguridadService {
                         }
                         case 3 : {
                             query += " where a.codigo in ('AREAREP|UNI') "; // sólo unidad
+                            break;
+                        }
+                        case 4: {
+                            query += " where 1 = 0";  // ninguno
                             break;
                         }
                         default: break;

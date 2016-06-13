@@ -204,6 +204,21 @@
 											</section>
                                    		</div>
                                    		<!-- END ROW -->
+                                            <!-- START ROW -->
+                                            <div class="row">
+                                                <section id="zona" hidden="hidden">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                        <select data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.special.area" />"
+                                                                name="codZona" id="codZona" class="select2">
+                                                            <option value=""></option>
+                                                            <c:forEach items="${zonas}" var="zona">
+                                                                <option value="${zona.codigo}">${zona.valor}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </div>
+                                                </section>
+                                            </div>
                                    		<!-- START ROW -->
                                    		<div class="row">
                                    			<section id="unidad" hidden="hidden">

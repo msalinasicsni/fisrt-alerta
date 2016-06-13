@@ -29,7 +29,7 @@ public class AnalisisDescService {
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getDataEdadSexo(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,
-			String semI, String semF, String anioI,String anioF){
+			String semI, String semF, String anioI,String anioF,String codZona){
 		// Retrieve session from Hibernate
 		Session session = sessionFactory.getCurrentSession();
 		Query query = null;
@@ -87,13 +87,24 @@ public class AnalisisDescService {
 			query.setParameter("anioI", Integer.parseInt(anioI));
 			query.setParameter("anioF", Integer.parseInt(anioF));
 		}
+        else if (codArea.equals("AREAREP|ZE")){
+            query = session.createQuery(sqlData + " From SiveInformeDiario inf " +
+                    "where inf.unidad.zona =:codZona and inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) " +
+                    "and (inf.anio=:anioI or inf.anio=:anioF) group by inf.anio order by inf.anio");
+            query.setParameter("codPato", codPato);
+            query.setParameter("codZona", codZona);
+            query.setParameter("semI", Integer.parseInt(semI));
+            query.setParameter("semF", Integer.parseInt(semF));
+            query.setParameter("anioI", Integer.parseInt(anioI));
+            query.setParameter("anioF", Integer.parseInt(anioF));
+        }
 		return query.list();
 	}
 	
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getDataAnaSexo(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,
-			String semI, String semF, String anioI){
+			String semI, String semF, String anioI, String codZona){
 		// Retrieve session from Hibernate
 		List<Object[]> resultado = new ArrayList<Object[]>();
 		Session session = sessionFactory.getCurrentSession();
@@ -204,13 +215,37 @@ public class AnalisisDescService {
 			query.setParameter("codPato", codPato);
 			resultado.addAll(query.list());
 		}
+        else if (codArea.equals("AREAREP|ZE")){
+            query = session.createQuery(sqlData + " From SiveInformeDiario inf " +
+                    "where inf.unidad.zona =:codZona and inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anioI) " +
+                    "group by inf.anio order by inf.anio");
+            query.setParameter("codPato", codPato);
+            query.setParameter("codZona", codZona);
+            query.setParameter("semI", Integer.parseInt(semI));
+            query.setParameter("semF", Integer.parseInt(semF));
+            query.setParameter("anioI", Integer.parseInt(anioI));
+            resultado.addAll(query.list());
+
+            query = session.createQuery("Select 'Pop' as label, sum(pob.masculino) as hombres, sum(pob.femenino) as mujeres, sum(pob.total) as totales " +
+                    "from SivePoblacion pob where pob.comunidad.sector.unidad.zona =:codZona and pob.grupo =:tipoPob and pob.anio =:anio");
+            query.setParameter("tipoPob", patologia.getTipoPob());
+            query.setParameter("codZona", codZona);
+            query.setParameter("anio", Integer.parseInt(anioI));
+            resultado.addAll(query.list());
+
+            query =  session.createQuery("Select 'Pato' as label, patologia.factor as factor, patologia.tipoPob as tipo " +
+                    "From SivePatologiasTipo patologia where patologia.patologia.codigo =:codPato");
+            query.setParameter("codPato", codPato);
+            resultado.addAll(query.list());
+
+        }
 		return resultado;
 	}
 	
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getDataAnaPato(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,
-			String semI, String semF, String anioI,String anioF){
+			String semI, String semF, String anioI,String anioF, String codZona){
 		// Retrieve session from Hibernate
 		List<Object[]> resultado = new ArrayList<Object[]>();
 		Session session = sessionFactory.getCurrentSession();
@@ -284,6 +319,17 @@ public class AnalisisDescService {
 			query.setParameter("codUnidad", codUnidad);
 			resultado.addAll(query.list());
 		}
+        else if (codArea.equals("AREAREP|ZE")){
+            query = session.createQuery(sqlData + ", inf.patologia.codigo, inf.patologia.nombre as patologia  From SiveInformeDiario inf " +
+                    "where inf.unidad.zona =:codZona and ("+ patoQuery +") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anioI or inf.anio=:anioF) " +
+                    "group by inf.anio, inf.patologia.nombre, inf.patologia.codigo order by inf.anio, inf.patologia.nombre, inf.patologia.codigo");
+            query.setParameter("semI", Integer.parseInt(semI));
+            query.setParameter("semF", Integer.parseInt(semF));
+            query.setParameter("anioI", Integer.parseInt(anioI));
+            query.setParameter("anioF", Integer.parseInt(anioF));
+            query.setParameter("codZona", codZona);
+            resultado.addAll(query.list());
+        }
 		for(String pato: patos){
 			noData1=true;
 			noData2=true;
@@ -354,6 +400,16 @@ public class AnalisisDescService {
 			query.setParameter("codUnidad", codUnidad);
 			resultado.addAll(query.list());
 		}
+        else if (codArea.equals("AREAREP|ZE")){
+            query = session.createQuery("Select 'Pop' as label, pob.anio as anio, sum(pob.masculino) as hombres, sum(pob.femenino) as mujeres, sum(pob.total) as totales " +
+                    "from SivePoblacion pob where pob.comunidad.sector.unidad.zona =:codZona and pob.grupo =:tipoPob and (pob.anio =:anioI or pob.anio=:anioF) " +
+                    "group by pob.anio order by pob.anio");
+            query.setParameter("tipoPob", patologia.getTipoPob());
+            query.setParameter("anioI", Integer.parseInt(anioI));
+            query.setParameter("anioF", Integer.parseInt(anioF));
+            query.setParameter("codZona", codZona);
+            resultado.addAll(query.list());
+        }
 		query =  session.createQuery("Select 'Pato' as label, patologia.factor as factor, patologia.tipoPob as tipo " +
 				"From SivePatologiasTipo patologia where patologia.patologia.codigo =:codPato");
 		query.setParameter("codPato", patos[0]);

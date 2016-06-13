@@ -4,6 +4,7 @@ import ni.gob.minsa.alerta.domain.catalogos.Anios;
 import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
+import ni.gob.minsa.alerta.domain.estructura.ZonaEspecial;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.sive.SivePatologias;
 import ni.gob.minsa.alerta.service.*;
@@ -58,22 +59,24 @@ public class AnalisisDescController {
             urlValidacion = "404";
         }
         if (urlValidacion.isEmpty()) {
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	//List<AreaRep> areas = catalogosService.getAreaRep();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
-    	List<Semanas> semanas = catalogosService.getSemanas();
-    	List<Anios> anios = catalogosService.getAnios();
-    	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
-    	model.addAttribute("areas", areas);
-    	model.addAttribute("semanas", semanas);
-    	model.addAttribute("anios", anios);
-    	model.addAttribute("entidades", entidades);
-    	model.addAttribute("departamentos", departamentos);
-    	model.addAttribute("patologias", patologias);
-    	return "analisis/edadsexo";
-	}else{
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            //List<AreaRep> areas = catalogosService.getAreaRep();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
+            List<Semanas> semanas = catalogosService.getSemanas();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            List<Anios> anios = catalogosService.getAnios();
+            List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            model.addAttribute("areas", areas);
+            model.addAttribute("semanas", semanas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("patologias", patologias);
+            model.addAttribute("zonas",zonas);
+            return "analisis/edadsexo";
+        }else{
             return  urlValidacion;
         }
     }
@@ -93,9 +96,10 @@ public class AnalisisDescController {
     		@RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
-    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException {
+    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos de edad y sexo en JSON");
-        List<Object[]> datos = analisisDescService.getDataEdadSexo(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,anioF);
+        List<Object[]> datos = analisisDescService.getDataEdadSexo(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,anioF,codZona);
         if (datos == null){
         	logger.debug("Nulo");
         }
@@ -116,22 +120,24 @@ public class AnalisisDescController {
             urlValidacion = "404";
         }
         if (urlValidacion.isEmpty()) {
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    	//List<AreaRep> areas = catalogosService.getAreaRep();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
-    	List<Semanas> semanas = catalogosService.getSemanas();
-    	List<Anios> anios = catalogosService.getAnios();
-    	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
-    	model.addAttribute("areas", areas);
-    	model.addAttribute("semanas", semanas);
-    	model.addAttribute("anios", anios);
-    	model.addAttribute("entidades", entidades);
-    	model.addAttribute("departamentos", departamentos);
-    	model.addAttribute("patologias", patologias);
-    	return "analisis/anasexo";
-	}else{
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            //List<AreaRep> areas = catalogosService.getAreaRep();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
+            List<Semanas> semanas = catalogosService.getSemanas();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            List<Anios> anios = catalogosService.getAnios();
+            List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            model.addAttribute("areas", areas);
+            model.addAttribute("semanas", semanas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("patologias", patologias);
+            model.addAttribute("zonas",zonas);
+            return "analisis/anasexo";
+        }else{
             return  urlValidacion;
         }
     }
@@ -150,9 +156,10 @@ public class AnalisisDescController {
     		@RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
-    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException {
+    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos de sexo en JSON");
-        List<Object[]> datos = analisisDescService.getDataAnaSexo(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI);
+        List<Object[]> datos = analisisDescService.getDataAnaSexo(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,codZona);
         if (datos == null){
         	logger.debug("Nulo");
         }
@@ -172,23 +179,25 @@ public class AnalisisDescController {
             e.printStackTrace();
             urlValidacion = "404";
         }
-        if (urlValidacion.isEmpty()) {
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-    //	List<AreaRep> areas = catalogosService.getAreaRep();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
-    	List<Semanas> semanas = catalogosService.getSemanas();
-    	List<Anios> anios = catalogosService.getAnios();
-    	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
-    	model.addAttribute("areas", areas);
-    	model.addAttribute("semanas", semanas);
-    	model.addAttribute("anios", anios);
-    	model.addAttribute("entidades", entidades);
-    	model.addAttribute("departamentos", departamentos);
-    	model.addAttribute("patologias", patologias);
-    	return "analisis/anapato";
-	}else{
+            if (urlValidacion.isEmpty()) {
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+        //	List<AreaRep> areas = catalogosService.getAreaRep();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
+            List<Semanas> semanas = catalogosService.getSemanas();
+            List<Anios> anios = catalogosService.getAnios();
+            List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            model.addAttribute("areas", areas);
+            model.addAttribute("semanas", semanas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("patologias", patologias);
+            model.addAttribute("zonas",zonas);
+    	    return "analisis/anapato";
+	    }else{
             return  urlValidacion;
         }
     }
@@ -208,9 +217,10 @@ public class AnalisisDescController {
     		@RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
-    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException {
+    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos de edad y sexo en JSON");
-        List<Object[]> datos = analisisDescService.getDataAnaPato(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,anioF);
+        List<Object[]> datos = analisisDescService.getDataAnaPato(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,anioF,codZona);
         if (datos == null){
         	logger.debug("Nulo");
         }

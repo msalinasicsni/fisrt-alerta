@@ -135,6 +135,9 @@ var areaReport = function () {
                     },
                     endDate:{
                         required:true
+                    },
+                    codZona: {
+                        required : true
                     }
                 },
                 // Do not change code below
@@ -159,6 +162,7 @@ var areaReport = function () {
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
                         $('#dNivelPais').show();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
                         $('#silais').show();
@@ -167,6 +171,7 @@ var areaReport = function () {
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
                         $('#dNivelPais').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
                         $('#silais').hide();
@@ -175,6 +180,7 @@ var areaReport = function () {
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
                         $('#dNivelPais').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
                         $('#silais').show();
@@ -183,6 +189,7 @@ var areaReport = function () {
                         $('#unidad').hide();
                         $('#dSubUnits').hide();
                         $('#dNivelPais').hide();
+                        $('#zona').hide();
                     }
                     else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
                         $('#silais').show();
@@ -191,6 +198,17 @@ var areaReport = function () {
                         $('#unidad').show();
                         $('#dSubUnits').show();
                         $('#dNivelPais').hide();
+                        $('#zona').hide();
+                    }
+                    else if ($('#codArea option:selected').val() == "AREAREP|ZE"){
+                        $('#silais').hide();
+                        $('#departamento').hide();
+                        $('#municipio').hide();
+                        $('#unidad').hide();
+                        $('#dSubUnits').hide();
+                        $('#dNivelPais').hide();
+                        $('#zona').show();
+                        $("#codZona").val("").change();
                     }
                 });
 
@@ -207,6 +225,7 @@ var areaReport = function () {
                 areaFiltro['codArea'] = $('#codArea').find('option:selected').val();
                 areaFiltro['tipoNotificacion'] = $('#codTipoNoti').find('option:selected').val();
                 areaFiltro['porSilais'] = $('input[name="rbNivelPais"]:checked', '#area_form').val();
+                areaFiltro['codZona'] = $('#codZona').find('option:selected').val();
 
                 bloquearUI(parametros.blockMess);
                 $.getJSON(parametros.sActionUrl, {
@@ -252,6 +271,10 @@ var areaReport = function () {
                         }
 
                     }
+                    else if ($('#codArea option:selected').val() == "AREAREP|ZE") {
+                        title = title + '</br>'+ $('#lblZona').val() + " "  +$('#codZona option:selected').text();
+                        $('#firstTh').html( $('#usT').val() );
+                    }
                     title = title + '</br>' + $('#from').val() +" " +$('#initDate').val()  + " "+ "-" + " " + $('#to').val() + " " +$('#endDate').val();
 
                     datosC = [];
@@ -262,7 +285,7 @@ var areaReport = function () {
 
                     for (var row in data) {
 
-                        if($('#codArea option:selected').val() != "AREAREP|MUNI"){
+                        if($('#codArea option:selected').val() != "AREAREP|MUNI"){//municipio no porque se carga con demasiadas unidades los gráficos
                             labels.push([data[row][0]]);
                             datosC.push(data[row][1]);
                             if (data[row][2]==='NP'){

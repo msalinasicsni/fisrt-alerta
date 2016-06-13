@@ -413,7 +413,7 @@
                 hasta : "${hasta}",
                 casos : "${casos}"
             };
-			ViewReport.init(parametros);
+			ViewReportDay.init(parametros);
             SeleccionUnidadReporte.init(parametros);
             handleDatePickers("${pageContext.request.locale.language}");
             $("li.reportes").addClass("open");

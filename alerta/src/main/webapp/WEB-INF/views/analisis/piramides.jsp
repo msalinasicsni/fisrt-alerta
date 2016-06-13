@@ -138,7 +138,7 @@
 												<select data-placeholder="<spring:message code="act.select" /> <spring:message code="level" />" name="codArea" id="codArea" class="select2">
                                                     <option value=""></option>
                                                     <c:forEach items="${areas}" var="area">
-                                                        <c:if test="${area.codigo ne 'AREAREP|UNI'}">
+                                                        <c:if test="${area.codigo ne 'AREAREP|UNI' and area.codigo ne 'AREAREP|ZE'}">
                                                             <option value="${area.codigo}">${area.valor}</option>
                                                         </c:if>
 													</c:forEach>

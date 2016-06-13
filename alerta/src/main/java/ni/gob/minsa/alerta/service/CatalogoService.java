@@ -5,6 +5,7 @@ import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.FactorPoblacion;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
+import ni.gob.minsa.alerta.domain.estructura.ZonaEspecial;
 import ni.gob.minsa.alerta.domain.irag.*;
 import ni.gob.minsa.alerta.domain.muestra.CategoriaMx;
 import ni.gob.minsa.alerta.domain.muestra.EstadoMx;
@@ -1097,6 +1098,18 @@ public class CatalogoService {
         //Create a hibernate query (HQL)
         Query query = session.createQuery("FROM SalaRotaVirus where pasivo = false order by orden");
         //retrieve all
+        return query.list();
+    }
+
+    public ZonaEspecial getZonaEspecial(String codigo){
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.getNamedQuery("obtenerZonasPorCodigo").setString("pCodigo",codigo);
+        return (ZonaEspecial) query.uniqueResult();
+    }
+
+    public List<ZonaEspecial> getZonasEspeciales(){
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("From ZonaEspecial  where pasivo = false order by orden");
         return query.list();
     }
 }

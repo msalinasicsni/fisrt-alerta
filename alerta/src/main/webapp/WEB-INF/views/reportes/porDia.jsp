@@ -203,6 +203,21 @@
 											</section>
                                    		</div>
                                    		<!-- END ROW -->
+                                            <!-- START ROW -->
+                                            <div class="row">
+                                                <section id="zona" hidden="hidden">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                                        <select data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.special.area" />"
+                                                                name="codZona" id="codZona" class="select2">
+                                                            <option value=""></option>
+                                                            <c:forEach items="${zonas}" var="zona">
+                                                                <option value="${zona.codigo}">${zona.valor}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </div>
+                                                </section>
+                                            </div>
                                    		<!-- START ROW -->
                                         <div class="row">
                                    			<section id="unidad" hidden="hidden">
@@ -391,6 +406,7 @@
     <c:set var="desde"><spring:message code="lbl.from" /></c:set>
     <c:set var="hasta"><spring:message code="lbl.to" /></c:set>
     <c:set var="casos"><spring:message code="lbl.cases" /></c:set>
+    <c:set var="zona"><spring:message code="lbl.special.area" />:</c:set>
 	<spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
 	<spring:url var="unidadesUrl"   value="/api/v1/uniRepPorSilaisyMuni"  />
 	<script type="text/javascript">
@@ -409,9 +425,10 @@
                 unidad : "${unidad}",
                 desde : "${desde}",
                 hasta : "${hasta}",
-                casos : "${casos}"
+                casos : "${casos}",
+                zona : "${zona}"
             };
-			ViewReport.init(parametros);
+			ViewReportDay.init(parametros);
             SeleccionUnidadReporte.init(parametros);
             handleDatePickers("${pageContext.request.locale.language}");
             $("li.reportes").addClass("open");

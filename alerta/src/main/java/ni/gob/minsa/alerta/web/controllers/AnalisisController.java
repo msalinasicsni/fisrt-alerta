@@ -4,6 +4,7 @@ import ni.gob.minsa.alerta.domain.catalogos.Anios;
 import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
+import ni.gob.minsa.alerta.domain.estructura.ZonaEspecial;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.sive.SivePatologias;
 import ni.gob.minsa.alerta.service.*;
@@ -65,10 +66,12 @@ public class AnalisisController {
             //List<AreaRep> areas = catalogosService.getAreaRep();
             List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 3);
             List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
             model.addAttribute("areas", areas);
             model.addAttribute("entidades", entidades);
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("patologias", patologias);
+            model.addAttribute("zonas",zonas);
             return "analisis/series";
         } else {
             return urlValidacion;
@@ -86,9 +89,10 @@ public class AnalisisController {
     		@RequestParam(value = "codSilaisAtencion", required = false) Long codSilais,
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
-    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad) throws ParseException {
+    		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos de series temporales en JSON");
-        List<Object[]> datos = analisisService.getDataSeries(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad);
+        List<Object[]> datos = analisisService.getDataSeries(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, codZona);
         if (datos == null){
         	logger.debug("Nulo");
         }
@@ -115,7 +119,7 @@ public class AnalisisController {
     	/*List<AreaRep> areas = new ArrayList<AreaRep>();
         areas.add(catalogosService.getAreaRep("AREAREP|PAIS"));
         areas.add(catalogosService.getAreaRep("AREAREP|SILAIS"));*/
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,3);
+        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,4);
     	List<Semanas> semanas = catalogosService.getSemanas();
     	List<Anios> anios = catalogosService.getAnios();
     	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
