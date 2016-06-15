@@ -22,10 +22,14 @@ public class AnalisisObsEsperadosService {
 	private SessionFactory sessionFactory;
 	private static final String sqlData = "Select inf.patologia.codigo as codigo, inf.patologia.nombre as patologia, inf.anio as anio, inf.semana as semana,  " +
 			"sum(inf.totalm) as totalm, sum(inf.totalf) as totalf, sum(inf.totalm+inf.totalf) as total";
+    private static final String sqlWhereSoloUnidad = " inf.unidad.unidadId =:codUnidad and ";
+    private static final String sqlWhereConSubUnidad = " (inf.unidad.unidadId =:codUnidad or inf.unidad.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad )) and ";
+    private static final String sqlWherePobSoloUnidad = " pob.comunidad.sector.unidad.unidadId =:codUnidad and ";
+    private static final String sqlWherePobConSubUnidad = " (pob.comunidad.sector.unidad.unidadId =:codUnidad or pob.comunidad.sector.unidad.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad )) and ";
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getDataCasosTasas(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,
-			String semI, String semF, String anioI,String anioF, String codZona){
+			String semI, String semF, String anioI,String anioF, String codZona, boolean subunidades){
 		// Retrieve session from Hibernate
 		List<Object[]> resultado = new ArrayList<Object[]>();
 		List<Object[]> resultadoTemp = new ArrayList<Object[]>();
@@ -76,7 +80,8 @@ public class AnalisisObsEsperadosService {
 		}
 		else if (codArea.equals("AREAREP|UNI")){
 			query = session.createQuery(sqlData + " From SiveInformeDiario inf " +
-					"where inf.unidad.unidadId =:codUnidad and ("+ patoQuery +") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                    "where " + (!subunidades ?sqlWhereSoloUnidad:sqlWhereConSubUnidad) + //se valida si tomar en cuenta sus unidades dependientes( si las tiene)
+                    " ("+ patoQuery +") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
 					"group by inf.anio, inf.semana, inf.patologia.nombre, inf.patologia.codigo order by inf.anio, inf.patologia.nombre, inf.patologia.codigo, inf.semana");
 			query.setParameter("codUnidad", codUnidad);
 		}
@@ -141,7 +146,8 @@ public class AnalisisObsEsperadosService {
 					}
 					else if (codArea.equals("AREAREP|UNI")){
 						query = session.createQuery("Select sum(pob.total) as total " +
-								"from SivePoblacion pob where pob.comunidad.sector.unidad.unidadId =:codUnidad and pob.grupo =:tipoPob and (pob.anio =:anio) " +
+								"from SivePoblacion pob where " +(!subunidades?sqlWherePobSoloUnidad:sqlWherePobConSubUnidad) + //se valida si tomar en cuenta sus unidades dependientes( si las tiene)
+                                "pob.grupo =:tipoPob and (pob.anio =:anio) " +
 								"group by pob.anio order by pob.anio");
 						query.setParameter("codUnidad", codUnidad);
 					}
@@ -187,7 +193,7 @@ public class AnalisisObsEsperadosService {
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getDataRazonesIndices(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,
-			String semana, String anio, String codZona){
+			String semana, String anio, String codZona, boolean subunidades){
 		DescriptiveStatistics stats = new DescriptiveStatistics();
 		List<Object> itemTransf = new ArrayList<Object>();
 		List<Object[]> resultadoF = new ArrayList<Object[]>();
@@ -248,7 +254,8 @@ public class AnalisisObsEsperadosService {
 		else if (codArea.equals("AREAREP|UNI")){
 			query = session.createQuery("Select inf.patologia.codigo as codigo, inf.patologia.nombre as patologia, " +
 					"sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-					"where inf.unidad.unidadId =:codUnidad and ("+ patoQuery +") and (inf.semana >= :semanaI and inf.semana <= :semanaF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                    "where " + (!subunidades ?sqlWhereSoloUnidad:sqlWhereConSubUnidad) + //se valida si tomar en cuenta sus unidades dependientes( si las tiene)
+                    "("+ patoQuery +") and (inf.semana >= :semanaI and inf.semana <= :semanaF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
 					"group by inf.patologia.codigo, inf.patologia.nombre order by inf.patologia.codigo, inf.patologia.nombre");
 			query.setParameter("codUnidad", codUnidad);
 		}
@@ -332,7 +339,8 @@ public class AnalisisObsEsperadosService {
 		else if (codArea.equals("AREAREP|UNI")){
 			query = session.createQuery("Select inf.patologia.codigo as codigo, inf.patologia.nombre as patologia, inf.anio as anio, " +
 					"sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-					"where inf.unidad.unidadId =:codUnidad and ("+ patoQuery +") and (inf.semana >= :semanaI and inf.semana <= :semanaF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                    "where " + (!subunidades ?sqlWhereSoloUnidad:sqlWhereConSubUnidad) + //se valida si tomar en cuenta sus unidades dependientes( si las tiene)
+                    "("+ patoQuery +") and (inf.semana >= :semanaI and inf.semana <= :semanaF) and (inf.anio >= :anioI and inf.anio <= :anioF) " +
 					"group by inf.patologia.codigo, inf.patologia.nombre, inf.anio order by inf.patologia.codigo, inf.patologia.nombre, inf.anio");
 			query.setParameter("codUnidad", codUnidad);
 		}
@@ -395,7 +403,8 @@ public class AnalisisObsEsperadosService {
 			}
 			else if (codArea.equals("AREAREP|UNI")){
 				query = session.createQuery("Select sum(pob.total) as total " +
-						"from SivePoblacion pob where pob.comunidad.sector.unidad.unidadId =:codUnidad and pob.grupo =:tipoPob and (pob.anio =:anio) " +
+						"from SivePoblacion pob where " +(!subunidades?sqlWherePobSoloUnidad:sqlWherePobConSubUnidad) + //se valida si tomar en cuenta sus unidades dependientes( si las tiene)
+                        "pob.grupo =:tipoPob and (pob.anio =:anio) " +
 						"group by pob.anio order by pob.anio");
 				query.setParameter("codUnidad", codUnidad);
 			}
@@ -539,7 +548,7 @@ public class AnalisisObsEsperadosService {
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getDataCorredores(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,
-			String semI, String anioI, int cantAnio, String codZona){
+			String semI, String anioI, int cantAnio, String codZona, boolean subunidades){
 		// Retrieve session from Hibernate
 		List<Object[]> resultadoTemp = new ArrayList<Object[]>();
 		Object [][] datos = new Object [52][cantAnio*2+13];
@@ -576,7 +585,8 @@ public class AnalisisObsEsperadosService {
 		}
 		else if (codArea.equals("AREAREP|UNI")){
 			query = session.createQuery(sqlData + " From SiveInformeDiario inf " +
-					"where inf.unidad.unidadId =:codUnidad and inf.patologia.codigo =:codPato and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                    "where " + (!subunidades ?sqlWhereSoloUnidad:sqlWhereConSubUnidad) + //se valida si tomar en cuenta sus unidades dependientes( si las tiene)
+                    " inf.patologia.codigo =:codPato and (inf.anio >= :anioI and inf.anio <= :anioF) " +
 					"group by inf.anio, inf.semana, inf.patologia.nombre, inf.patologia.codigo order by inf.anio, inf.semana, inf.patologia.nombre, inf.patologia.codigo");
 			query.setParameter("codUnidad", codUnidad);
 		}
@@ -634,7 +644,8 @@ public class AnalisisObsEsperadosService {
 			}
 			else if (codArea.equals("AREAREP|UNI")){
 				query = session.createQuery("Select sum(pob.total) as total " +
-						"from SivePoblacion pob where pob.comunidad.sector.unidad.unidadId =:codUnidad and pob.grupo =:tipoPob and (pob.anio =:anio) " +
+						"from SivePoblacion pob where " +(!subunidades?sqlWherePobSoloUnidad:sqlWherePobConSubUnidad) + //se valida si tomar en cuenta sus unidades dependientes( si las tiene)
+                        " pob.grupo =:tipoPob and (pob.anio =:anio) " +
 						"group by pob.anio order by pob.anio");
 				query.setParameter("codUnidad", codUnidad);
 			}
@@ -736,7 +747,7 @@ public class AnalisisObsEsperadosService {
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getDataIndice(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad,
-			String semI, String anioI, int cantAnio, String codZona){
+			String semI, String anioI, int cantAnio, String codZona, boolean subunidades){
 		// Retrieve session from Hibernate
 		List<Object[]> resultadoTemp = new ArrayList<Object[]>();
 		Object [][] datos = new Object [52][cantAnio+4];
@@ -771,7 +782,8 @@ public class AnalisisObsEsperadosService {
 		}
 		else if (codArea.equals("AREAREP|UNI")){
 			query = session.createQuery(sqlData + " From SiveInformeDiario inf " +
-					"where inf.unidad.unidadId =:codUnidad and inf.patologia.codigo =:codPato and (inf.anio >= :anioI and inf.anio <= :anioF) " +
+                    "where " + (!subunidades ?sqlWhereSoloUnidad:sqlWhereConSubUnidad) + //se valida si tomar en cuenta sus unidades dependientes( si las tiene)
+                    " inf.patologia.codigo =:codPato and (inf.anio >= :anioI and inf.anio <= :anioF) " +
 					"group by inf.anio, inf.semana, inf.patologia.nombre, inf.patologia.codigo order by inf.anio, inf.semana, inf.patologia.nombre, inf.patologia.codigo");
 			query.setParameter("codUnidad", codUnidad);
 		}

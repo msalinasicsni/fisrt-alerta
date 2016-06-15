@@ -137,6 +137,7 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
@@ -144,6 +145,7 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
@@ -151,6 +153,7 @@ var ViewReport = function () {
             				$('#departamento').show();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
@@ -158,6 +161,7 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
@@ -165,12 +169,14 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').show();
+                            $('#dSubUnits').show();
                             $('#zona').hide();
             			}else if ($('#codArea option:selected').val() == "AREAREP|ZE"){
                             $('#silais').hide();
                             $('#departamento').hide();
                             $('#municipio').hide();
                             $('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').show();
                             $("#codZona").val("").change();
                         }
@@ -199,7 +205,8 @@ var ViewReport = function () {
     					title = title + '</br>Municipio: '+$('#codMunicipio option:selected').text();
     				}
     				else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
-    					title = title + '</br>Unidad de Salud: '+$('#codUnidadAtencion option:selected').text();
+                        var ckeckd = $('#ckUS').is(':checked');
+                        title = title + '</br>' + (ckeckd?'Area de Salud':'Unidad de Salud') + ": " + $('#codUnidadAtencion option:selected').text();
     				}
                     else if ($('#codArea option:selected').val() == "AREAREP|ZE"){
                         title = title + '</br>Zona Especial: '+$('#codZona option:selected').text();

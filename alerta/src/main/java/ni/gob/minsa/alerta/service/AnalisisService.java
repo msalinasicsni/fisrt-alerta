@@ -26,7 +26,7 @@ public class AnalisisService {
 	private static final String sqlData = "Select inf.silais, sum(inf.totalm + inf.totalf) as total";
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> getDataSeries(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad, String codZona){
+	public List<Object[]> getDataSeries(String codPato, String codArea, Long codSilais, Long codDepartamento, Long codMunicipio, Long codUnidad, String codZona,  boolean subunidades){
 		// Retrieve session from Hibernate
 		Session session = sessionFactory.getCurrentSession();
 		Query query = null;
@@ -59,7 +59,8 @@ public class AnalisisService {
 		}
 		else if (codArea.equals("AREAREP|UNI")){
 			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-					"where inf.unidad.unidadId =:codUnidad and inf.patologia.codigo =:codPato " +
+					"where (inf.unidad.unidadId =:codUnidad " + (subunidades?"or inf.unidad.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad )":"") +
+                    ")and inf.patologia.codigo =:codPato " +
 					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
 			query.setParameter("codPato", codPato);
 			query.setParameter("codUnidad", codUnidad);

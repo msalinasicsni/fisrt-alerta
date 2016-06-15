@@ -231,6 +231,19 @@
 											</section>
                                    		</div>
                                    		<!-- END ROW -->
+                                            <!-- START ROW -->
+                                            <div id="dSubUnits" hidden="hidden" class="row">
+                                                <section class="col col-sm-6 col-md-6 col-lg-5">
+                                                    <label class="text-left txt-color-blue font-sm"><spring:message code="lbl.include.subunits"/></label>
+                                                </section>
+                                                <section class="col col-sm-4 col-md-3 col-lg-2">
+                                                    <label class="checkbox">
+                                                        <input type="checkbox" checked name="ckUS" id="ckUS">
+                                                        <i></i>
+                                                    </label>
+                                                </section>
+                                            </div>
+                                            <!-- END ROW -->
                                    		<footer>
 											<button type="submit" id="view-report" class="btn btn-info"><i class="fa fa-refresh"></i> <spring:message code="update" /></button>
 										</footer>

@@ -202,6 +202,7 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
@@ -209,6 +210,7 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
@@ -216,6 +218,7 @@ var ViewReport = function () {
             				$('#departamento').show();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
@@ -223,6 +226,7 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
@@ -230,6 +234,7 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').show();
+                            $('#dSubUnits').show();
                             $('#zona').hide();
             			}
                         else if ($('#codArea option:selected').val() == "AREAREP|ZE"){
@@ -237,6 +242,7 @@ var ViewReport = function () {
                             $('#departamento').hide();
                             $('#municipio').hide();
                             $('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').show();
                             $("#codZona").val("").change();
                         }
@@ -267,7 +273,8 @@ var ViewReport = function () {
     					title = title + '</br>Municipio: '+$('#codMunicipio option:selected').text();
     				}
     				else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
-    					title = title + '</br>Unidad de Salud: '+$('#codUnidadAtencion option:selected').text();
+                        var ckeckd = $('#ckUS').is(':checked');
+                        title = title + '</br>' + (ckeckd?'Area de Salud':'Unidad de Salud') + ": " + $('#codUnidadAtencion option:selected').text();
     				}
                     else if ($('#codArea option:selected').val() == "AREAREP|ZE"){
                         title = title + '</br>Zona Especial: '+$('#codZona option:selected').text();
@@ -319,13 +326,14 @@ var ViewReport = function () {
 	    							 Math.round(data[row][28]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
 	    							 Math.round(data[row][29]/(data[row][29] + data[row][30]) * 100 * 100) / 100,
 	    							 Math.round(data[row][30]/(data[row][29] + data[row][30]) * 100 * 100) / 100]);
-	    					if (row==0){
+
+	    					if(data[row][0]==$('#anioI option:selected').text()){
 	    						values1 = [data[row][1]+ data[row][2], data[row][3]+ data[row][4], data[row][5]+ data[row][6], data[row][7]+data[row][8], data[row][9]+ data[row][10], data[row][11]+ data[row][12], data[row][13]+ data[row][14],data[row][15]+ data[row][16], data[row][17]+ data[row][18], data[row][19]+ data[row][20], data[row][21]+data[row][22], data[row][23]+ data[row][24], data[row][25]+ data[row][26], data[row][27]+ data[row][28]];
 	    						series1 = data[row][0];
 	    						porcM1 = Math.round(data[row][29] / (data[row][29] + data[row][30]) * 100 * 100) / 100;
 	    						porcF1 = Math.round(data[row][30] / (data[row][29] + data[row][30]) * 100 * 100) / 100;
 	    					}
-	    					if (row==1){
+	    					if(data[row][0]==$('#anioF option:selected').text()){
 	    						values2 = [data[row][1]+ data[row][2], data[row][3]+ data[row][4], data[row][5]+ data[row][6], data[row][7]+data[row][8], data[row][9]+ data[row][10], data[row][11]+ data[row][12], data[row][13]+ data[row][14],data[row][15]+ data[row][16], data[row][17]+ data[row][18], data[row][19]+ data[row][20], data[row][21]+data[row][22], data[row][23]+ data[row][24], data[row][25]+ data[row][26], data[row][27]+ data[row][28]];
 	    						series2 = data[row][0];
 	    						porcM2 = Math.round(data[row][29] / (data[row][29] + data[row][30]) * 100 * 100) / 100;

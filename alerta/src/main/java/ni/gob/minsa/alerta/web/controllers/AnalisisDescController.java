@@ -97,9 +97,10 @@ public class AnalisisDescController {
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
     		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "ckUS", required = false) boolean subunidades,
             @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos de edad y sexo en JSON");
-        List<Object[]> datos = analisisDescService.getDataEdadSexo(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,anioF,codZona);
+        List<Object[]> datos = analisisDescService.getDataEdadSexo(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,anioF,codZona,subunidades);
         if (datos == null){
         	logger.debug("Nulo");
         }
@@ -157,9 +158,10 @@ public class AnalisisDescController {
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
     		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "ckUS", required = false) boolean subunidades,
             @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos de sexo en JSON");
-        List<Object[]> datos = analisisDescService.getDataAnaSexo(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,codZona);
+        List<Object[]> datos = analisisDescService.getDataAnaSexo(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,codZona,subunidades);
         if (datos == null){
         	logger.debug("Nulo");
         }
@@ -218,9 +220,10 @@ public class AnalisisDescController {
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
     		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "ckUS", required = false) boolean subunidades,
             @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos de edad y sexo en JSON");
-        List<Object[]> datos = analisisDescService.getDataAnaPato(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,anioF,codZona);
+        List<Object[]> datos = analisisDescService.getDataAnaPato(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,anioF,codZona,subunidades);
         if (datos == null){
         	logger.debug("Nulo");
         }

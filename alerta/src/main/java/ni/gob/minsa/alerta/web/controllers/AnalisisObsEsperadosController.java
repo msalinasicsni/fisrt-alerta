@@ -97,9 +97,10 @@ public class AnalisisObsEsperadosController {
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
     		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "ckUS", required = false) boolean subunidades,
             @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos de casos y tasas en JSON");
-        List<Object[]> datos = analisisObsEsperadosService.getDataCasosTasas(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,anioF,codZona);
+        List<Object[]> datos = analisisObsEsperadosService.getDataCasosTasas(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semI,semF,anioI,anioF,codZona,subunidades);
         if (datos == null){
         	logger.debug("Nulo");
         }
@@ -156,9 +157,10 @@ public class AnalisisObsEsperadosController {
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
     		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "ckUS", required = false) boolean subunidades,
             @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos de razones e indices en JSON");
-        List<Object[]> datos = analisisObsEsperadosService.getDataRazonesIndices(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semana,anio,codZona);
+        List<Object[]> datos = analisisObsEsperadosService.getDataRazonesIndices(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad,semana,anio,codZona,subunidades);
         if (datos == null){
         	logger.debug("Nulo");
         }
@@ -216,9 +218,10 @@ public class AnalisisObsEsperadosController {
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
     		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "ckUS", required = false) boolean subunidades,
             @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos corredores endemicos en JSON");
-        List<Object[]> datos = analisisObsEsperadosService.getDataCorredores(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semana, anio, cantAnio, codZona);
+        List<Object[]> datos = analisisObsEsperadosService.getDataCorredores(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semana, anio, cantAnio, codZona, subunidades);
         if (datos == null){
         	logger.debug("Nulo");
         }
@@ -277,9 +280,10 @@ public class AnalisisObsEsperadosController {
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
     		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "ckUS", required = false) boolean subunidades,
             @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos indice endemico en JSON");
-        List<Object[]> datos = analisisObsEsperadosService.getDataIndice(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semana, anio, cantAnio, codZona);
+        List<Object[]> datos = analisisObsEsperadosService.getDataIndice(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, semana, anio, cantAnio, codZona, subunidades);
         if (datos == null){
         	logger.debug("Nulo");
         }

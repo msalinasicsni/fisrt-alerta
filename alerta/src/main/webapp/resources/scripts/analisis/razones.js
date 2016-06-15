@@ -53,7 +53,7 @@ var ViewReport = function () {
 	            	                                     "sTitle": ":fff:",
 	            	                                     "sPdfMessage": "FF",
              	                                     "oSelectorOpts": { filter: 'applied', order: 'current' },
-             	                                     "sPdfOrientation": "landscape",
+             	                                     "sPdfOrientation": "landscape"
              	                                 }
              	                                 ]
              	                }
@@ -142,6 +142,7 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|SILAIS"){
@@ -149,6 +150,7 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|DEPTO"){
@@ -156,6 +158,7 @@ var ViewReport = function () {
             				$('#departamento').show();
             				$('#municipio').hide();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|MUNI"){
@@ -163,6 +166,7 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').hide();
             			}
             			else if ($('#codArea option:selected').val() == "AREAREP|UNI"){
@@ -170,6 +174,7 @@ var ViewReport = function () {
             				$('#departamento').hide();
             				$('#municipio').show();
             				$('#unidad').show();
+                            $('#dSubUnits').show();
                             $('#zona').hide();
             			}
                         else if ($('#codArea option:selected').val() == "AREAREP|ZE"){
@@ -177,6 +182,7 @@ var ViewReport = function () {
                             $('#departamento').hide();
                             $('#municipio').hide();
                             $('#unidad').hide();
+                            $('#dSubUnits').hide();
                             $('#zona').show();
                             $("#codZona").val("").change();
                         }

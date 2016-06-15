@@ -90,9 +90,10 @@ public class AnalisisController {
     		@RequestParam(value = "codDepartamento", required = false) Long codDepartamento,
     		@RequestParam(value = "codMunicipio", required = false) Long codMunicipio,
     		@RequestParam(value = "codUnidadAtencion", required = false) Long codUnidad,
+            @RequestParam(value = "ckUS", required = false) boolean subunidades,
             @RequestParam(value = "codZona", required = false) String codZona) throws ParseException {
         logger.info("Obteniendo los datos de series temporales en JSON");
-        List<Object[]> datos = analisisService.getDataSeries(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, codZona);
+        List<Object[]> datos = analisisService.getDataSeries(codPato, codArea, codSilais, codDepartamento, codMunicipio, codUnidad, codZona, subunidades);
         if (datos == null){
         	logger.debug("Nulo");
         }
