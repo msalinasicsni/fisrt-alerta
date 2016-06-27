@@ -142,6 +142,9 @@
 													<c:forEach items="${patologias}" var="patologia">
 														<option value="${patologia.codigo}">${patologia.codigo} - ${patologia.nombre}</option>
 													</c:forEach>
+                                                    <c:forEach items="${grupos}" var="grupo">
+                                                        <option value="GRP-${grupo.idGrupo}"> GRP - ${grupo.nombre}</option>
+                                                    </c:forEach>
 												</select>
 											</div>
 											</section>

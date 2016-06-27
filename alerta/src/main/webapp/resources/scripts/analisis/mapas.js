@@ -155,7 +155,7 @@ var ViewReport = function () {
         				onRegionTipShow: function(event, label, code){
         			        label.html(
         			          '<b>'+label.html()+'</b></br>'+
-        			          '<b>'+tituloMapa+': </b>'+countryData[code]
+        			          '<b>'+tituloMapa+': </b>'+(countryData[code] === undefined?'-':countryData[code])
         			        );
         			      }
         			});

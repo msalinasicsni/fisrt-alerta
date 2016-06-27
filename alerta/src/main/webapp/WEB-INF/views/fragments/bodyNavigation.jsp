@@ -55,6 +55,9 @@
                     <li class="studiesUS">
                         <a href="<spring:url value="/administracion/studiesUS/init" htmlEscape="true "/>" title="<spring:message code="lbl.studiesbyUS" />"><i class="fa fa-lg fa-fw fa-link"></i> <spring:message code="lbl.studiesbyUS" /></a>
                     </li>
+                    <li class="patoGroup">
+                        <a href="<spring:url value="/administracion/patogroup/init" htmlEscape="true "/>" title="<spring:message code="lbl.pathologies.grouped" />"><i class="fa fa-lg fa-fw fa-link"></i> <spring:message code="lbl.pathologies.grouped" /></a>
+                    </li>
                 </ul>
             </li>
             <li class="notificacion">

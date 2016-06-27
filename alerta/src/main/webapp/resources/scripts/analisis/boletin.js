@@ -302,6 +302,8 @@ var Boletin = function () {
                             if (pato[pat] == data[i].anio.entidad.patologia.idPatologia) {
                                 if ($('#codArea option:selected').val() == "AREAREP|PAIS") {
                                     $(entidad).html($('#silaisT').val());
+                                }else{
+                                    $(entidad).html($('#munic').val());
                                 }
                                 $(nombrePato).html(data[i].anio.entidad.patologia.nombre);
 

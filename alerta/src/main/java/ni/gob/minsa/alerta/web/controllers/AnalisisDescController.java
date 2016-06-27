@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.web.controllers;
 
+import ni.gob.minsa.alerta.domain.agrupaciones.Grupo;
 import ni.gob.minsa.alerta.domain.catalogos.Anios;
 import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
@@ -44,6 +45,8 @@ public class AnalisisDescController {
 	private DivisionPoliticaService divisionPoliticaService;
     @Resource(name="seguridadService")
     private SeguridadService seguridadService;
+    @Resource(name="admonPatoGroupService")
+    private AdmonPatoGroupService admonPatoGroupService;
 	
 	@RequestMapping(value = "agesex", method = RequestMethod.GET)
     public String initAgeSexPage(Model model, HttpServletRequest request) throws Exception {
@@ -68,6 +71,7 @@ public class AnalisisDescController {
             List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
             List<Anios> anios = catalogosService.getAnios();
             List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            List<Grupo> grupos = admonPatoGroupService.getGrupos();
             model.addAttribute("areas", areas);
             model.addAttribute("semanas", semanas);
             model.addAttribute("anios", anios);
@@ -75,6 +79,7 @@ public class AnalisisDescController {
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("patologias", patologias);
             model.addAttribute("zonas",zonas);
+            model.addAttribute("grupos",grupos);
             return "analisis/edadsexo";
         }else{
             return  urlValidacion;
@@ -130,6 +135,7 @@ public class AnalisisDescController {
             List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
             List<Anios> anios = catalogosService.getAnios();
             List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            List<Grupo> grupos = admonPatoGroupService.getGrupos();
             model.addAttribute("areas", areas);
             model.addAttribute("semanas", semanas);
             model.addAttribute("anios", anios);
@@ -137,6 +143,7 @@ public class AnalisisDescController {
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("patologias", patologias);
             model.addAttribute("zonas",zonas);
+            model.addAttribute("grupos",grupos);
             return "analisis/anasexo";
         }else{
             return  urlValidacion;
@@ -191,6 +198,7 @@ public class AnalisisDescController {
             List<Anios> anios = catalogosService.getAnios();
             List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
             List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+                List<Grupo> grupos = admonPatoGroupService.getGrupos();
             model.addAttribute("areas", areas);
             model.addAttribute("semanas", semanas);
             model.addAttribute("anios", anios);
@@ -198,6 +206,7 @@ public class AnalisisDescController {
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("patologias", patologias);
             model.addAttribute("zonas",zonas);
+            model.addAttribute("grupos",grupos);
     	    return "analisis/anapato";
 	    }else{
             return  urlValidacion;
