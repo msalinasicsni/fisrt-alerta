@@ -63,6 +63,7 @@ public class BoletinService {
                 } else {
                     patoQuery = patoQuery + " or inf.patologia.codigo = '" + pato + "'";
                 }
+                soloPatos.add(soloPatos.size(),pato);
             }else{
                 String idGrupo = pato.replaceAll("GRP-","");
                 String codPatoGrupo = "-";
