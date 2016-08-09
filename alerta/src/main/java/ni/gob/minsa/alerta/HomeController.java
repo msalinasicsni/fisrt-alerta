@@ -60,7 +60,7 @@ public class HomeController {
             urlValidacion = seguridadService.validarLogin(request);
         }catch (Exception e){
             e.printStackTrace();
-            urlValidacion = "405";
+            urlValidacion = "404";
         }
         if (urlValidacion.isEmpty()) {
             String semI="1";
