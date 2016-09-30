@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.web.controllers;
 
+import ni.gob.minsa.alerta.domain.agrupaciones.Grupo;
 import ni.gob.minsa.alerta.domain.catalogos.Anios;
 import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
@@ -45,6 +46,8 @@ public class BoletinController {
     @Resource(name="sivePatologiasService")
     private SivePatologiasService sivePatologiasService;
 
+    @Resource(name="admonPatoGroupService")
+    private AdmonPatoGroupService admonPatoGroupService;
 
     @Resource(name="boletinService")
     private BoletinService boletinService;
@@ -63,19 +66,21 @@ public class BoletinController {
             urlValidacion = "404";
         }
         if (urlValidacion.isEmpty()) {
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
-        List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-        List<Anios> anios = catalogosService.getAnios();
-        List<Semanas> semanas = catalogosService.getSemanas();
-        List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
-        List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
-        model.addAttribute("areas", areas);
-        model.addAttribute("semanas", semanas);
-        model.addAttribute("anios", anios);
-        model.addAttribute("entidades", entidades);
-        model.addAttribute("departamentos", departamentos);
-        model.addAttribute("patologias", patologias);
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            List<Anios> anios = catalogosService.getAnios();
+            List<Semanas> semanas = catalogosService.getSemanas();
+            List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
+            List<Grupo> grupos = admonPatoGroupService.getGrupos();
+            model.addAttribute("areas", areas);
+            model.addAttribute("semanas", semanas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("patologias", patologias);
+            model.addAttribute("grupos",grupos);
         return "analisis/boletin";
     }else{
             return  urlValidacion;

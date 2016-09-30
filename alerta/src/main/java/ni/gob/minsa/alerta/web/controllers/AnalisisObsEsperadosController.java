@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.web.controllers;
 
+import ni.gob.minsa.alerta.domain.agrupaciones.Grupo;
 import ni.gob.minsa.alerta.domain.catalogos.Anios;
 import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
@@ -44,6 +45,8 @@ public class AnalisisObsEsperadosController {
 	private DivisionPoliticaService divisionPoliticaService;
     @Resource(name="seguridadService")
     private SeguridadService seguridadService;
+    @Resource(name="admonPatoGroupService")
+    private AdmonPatoGroupService admonPatoGroupService;
 
 	@RequestMapping(value = "casostasas", method = RequestMethod.GET)
     public String initCasosTasasPage(Model model, HttpServletRequest request) throws Exception {
@@ -68,6 +71,7 @@ public class AnalisisObsEsperadosController {
             List<Anios> anios = catalogosService.getAnios();
             List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
             List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            List<Grupo> grupos = admonPatoGroupService.getGrupos();
             model.addAttribute("areas", areas);
             model.addAttribute("semanas", semanas);
             model.addAttribute("anios", anios);
@@ -75,6 +79,7 @@ public class AnalisisObsEsperadosController {
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("patologias", patologias);
             model.addAttribute("zonas",zonas);
+            model.addAttribute("grupos",grupos);
             return "analisis/casostasas";
         } else {
             return urlValidacion;
@@ -130,6 +135,7 @@ public class AnalisisObsEsperadosController {
             List<Anios> anios = catalogosService.getAnios();
             List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
             List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            List<Grupo> grupos = admonPatoGroupService.getGrupos();
             model.addAttribute("areas", areas);
             model.addAttribute("semanas", semanas);
             model.addAttribute("anios", anios);
@@ -137,6 +143,7 @@ public class AnalisisObsEsperadosController {
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("patologias", patologias);
             model.addAttribute("zonas",zonas);
+            model.addAttribute("grupos",grupos);
             return "analisis/razones";
         }else{
             return  urlValidacion;
@@ -190,6 +197,7 @@ public class AnalisisObsEsperadosController {
             List<Semanas> semanas = catalogosService.getSemanas();
             List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
             List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            List<Grupo> grupos = admonPatoGroupService.getGrupos();
             model.addAttribute("areas", areas);
             model.addAttribute("anios", anios);
             model.addAttribute("semanas", semanas);
@@ -197,6 +205,7 @@ public class AnalisisObsEsperadosController {
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("patologias", patologias);
             model.addAttribute("zonas",zonas);
+            model.addAttribute("grupos",grupos);
     	return "analisis/corredores";
 	}else{
             return  urlValidacion;
@@ -251,6 +260,7 @@ public class AnalisisObsEsperadosController {
             List<Semanas> semanas = catalogosService.getSemanas();
             List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
             List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            List<Grupo> grupos = admonPatoGroupService.getGrupos();
             model.addAttribute("areas", areas);
             model.addAttribute("anios", anios);
             model.addAttribute("semanas", semanas);
@@ -258,6 +268,7 @@ public class AnalisisObsEsperadosController {
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("patologias", patologias);
             model.addAttribute("zonas",zonas);
+            model.addAttribute("grupos",grupos);
             return "analisis/indice";
         }else{
             return  urlValidacion;
@@ -314,6 +325,7 @@ public class AnalisisObsEsperadosController {
             List anios = catalogosService.getAnios();
             List patologias = sivePatologiasService.getSivePatologias();
             List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            List<Grupo> grupos = admonPatoGroupService.getGrupos();
             model.addAttribute("areas", areas);
             model.addAttribute("semanas", semanas);
             model.addAttribute("anios", anios);
@@ -321,6 +333,7 @@ public class AnalisisObsEsperadosController {
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("patologias", patologias);
             model.addAttribute("zonas",zonas);
+            model.addAttribute("grupos",grupos);
             return "analisis/casostasasarea";
         }else{
             return  urlValidacion;

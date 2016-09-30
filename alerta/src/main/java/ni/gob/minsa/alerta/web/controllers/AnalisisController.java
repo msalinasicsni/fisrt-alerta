@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.web.controllers;
 
+import ni.gob.minsa.alerta.domain.agrupaciones.Grupo;
 import ni.gob.minsa.alerta.domain.catalogos.Anios;
 import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
@@ -44,7 +45,9 @@ public class AnalisisController {
 	private DivisionPoliticaService divisionPoliticaService;
     @Resource(name="seguridadService")
     private SeguridadService seguridadService;
-	
+    @Resource(name="admonPatoGroupService")
+    private AdmonPatoGroupService admonPatoGroupService;
+
 	@RequestMapping(value = "series", method = RequestMethod.GET)
     public String initSeriesPage(Model model, HttpServletRequest request) throws Exception {
         logger.debug("presentar series temporales");
@@ -67,11 +70,13 @@ public class AnalisisController {
             List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 3);
             List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
             List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            List<Grupo> grupos = admonPatoGroupService.getGrupos();
             model.addAttribute("areas", areas);
             model.addAttribute("entidades", entidades);
             model.addAttribute("departamentos", departamentos);
             model.addAttribute("patologias", patologias);
             model.addAttribute("zonas",zonas);
+            model.addAttribute("grupos",grupos);
             return "analisis/series";
         } else {
             return urlValidacion;
@@ -124,12 +129,14 @@ public class AnalisisController {
     	List<Semanas> semanas = catalogosService.getSemanas();
     	List<Anios> anios = catalogosService.getAnios();
     	List<SivePatologias> patologias = sivePatologiasService.getSivePatologias();
+            List<Grupo> grupos = admonPatoGroupService.getGrupos();
     	model.addAttribute("areas", areas);
     	model.addAttribute("semanas", semanas);
     	model.addAttribute("anios", anios);
     	model.addAttribute("entidades", entidades);
     	model.addAttribute("departamentos", departamentos);
     	model.addAttribute("patologias", patologias);
+            model.addAttribute("grupos",grupos);
     	return "analisis/mapas";
 	}else {
             return urlValidacion;

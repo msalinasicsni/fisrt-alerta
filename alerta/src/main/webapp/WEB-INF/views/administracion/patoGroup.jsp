@@ -29,9 +29,26 @@
             font: 300 15px/29px "Open Sans", Helvetica, Arial, sans-serif;
             cursor: pointer;
         }
-
         .alert{
             margin-bottom: 0px;
+        }
+        .override {
+            padding-left: 0;
+            padding-right: 10px;
+            text-align: center;
+            width: 5%;
+        }
+        .edit {
+            padding-left: 0;
+            padding-right: 10px;
+            text-align: center;
+            width: 5%;
+        }
+        .groupHeader{
+            width: 40%;
+        }
+        .patoHeader{
+            width: 50%;
         }
     </style>
 </head>
@@ -53,7 +70,7 @@
 			</span>
     <!-- breadcrumb -->
     <ol class="breadcrumb">
-        <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/administracion/studiesUS/init" htmlEscape="true "/>"><spring:message code="lbl.studiesbyUS" /></a></li>
+        <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/administracion/patogroup/init" htmlEscape="true "/>"><spring:message code="lbl.pathologies.grouped" /></a></li>
     </ol>
     <!-- end breadcrumb -->
     <jsp:include page="../fragments/layoutOptions.jsp" />
@@ -64,13 +81,13 @@
     <!-- row -->
     <div class="row">
         <!-- col -->
-        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-5">
-            <h1 class="page-title txt-color-blueDark">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <h1 class="page-title txt-color-blueDark" id="lblHeader">
                 <!-- PAGE HEADER -->
                 <i class="fa-fw fa fa-link"></i>
-                <spring:message code="lbl.studiesbyUS" />
-
+                <spring:message code="lbl.pathologies.grouped" />
             </h1>
+
         </div>
         <!-- end col -->
     </div>
@@ -102,21 +119,25 @@
 
 
                             <input id="disappear" type="hidden" value="<spring:message code="lbl.messagebox.disappear"/>"/>
-                            <input id="succ" type="hidden" value="<spring:message code="msg.associate.us.added"/>"/>
+                            <input id="succGroup" type="hidden" value="<spring:message code="msg.group.saved"/>"/>
+                            <input id="succPatho" type="hidden" value="<spring:message code="msg.patho.group.added"/>"/>
+                            <input id="succDeletePatho" type="hidden" value="<spring:message code="msg.patho.group.deleted"/>"/>
+                            <input id="succDeleteGroup" type="hidden" value="<spring:message code="msg.group.deleted"/>"/>
                             <input id="msg_conf" type="hidden" value="<spring:message code="msg.sending.confirm.title"/>"/>
                             <input id="msg_yes" type="hidden" value="<spring:message code="lbl.send.confirm.msg.opc.yes"/>"/>
                             <input id="msg_no" type="hidden" value="<spring:message code="lbl.send.confirm.msg.opc.no"/>"/>
-                            <input id="msg_overrideUs_confirm_c" type="hidden" value="<spring:message code="msg.overrideUs.confirm.content"/>"/>
-                            <input id="msg_succOverrideUs" type="hidden" value="<spring:message code="msg.successfully.overrideUs"/>"/>
-                            <input id="msg_overrideUs_cancel" type="hidden" value="<spring:message code="msg.override.us.cancel"/>"/>
+                            <input id="msg_overridePatho_confirm_c" type="hidden" value="<spring:message code="msg.override.pathoGroup.confirm.content"/>"/>
+                            <input id="msg_override_confirm_c" type="hidden" value="<spring:message code="msg.override.group.confirm.content"/>"/>
+                            <input id="msg_override_cancel" type="hidden" value="<spring:message code="msg.override.cancel"/>"/>
+                            <input id="text_opt_select" type="hidden" value="<spring:message code="lbl.select"/>"/>
 
                             <table id="records" class="table table-striped table-bordered table-hover" width="100%">
                                 <thead>
                                 <tr>
-                                    <th data-class="expand" width="15%"><spring:message code="lbl.study"/></th>
-                                    <th><spring:message code="lbl.area"/></th>
-                                    <th><spring:message code="lbl.associated.us"/></th>
-
+                                    <th data-class="expand" width="15%"><spring:message code="lbl.group.name"/></th>
+                                    <th><spring:message code="lbl.pathologies"/></th>
+                                    <th><spring:message code="act.edit"/></th>
+                                    <th><spring:message code="act.override"/></th>
                                 </tr>
                                 </thead>
                             </table>
@@ -127,14 +148,21 @@
                         <!-- end widget content -->
                     </div>
                     <!-- end widget div -->
-                </div>
-                <!-- end widget -->
+                    <!-- end widget div -->
+                    <div style="border: none" class="row">
+                        <section class="col col-sm-12 col-md-12 col-lg-12">
+                            <div style="border: none" id="dNew" class="pull-right">
+                                <button type="button" id="btnNew" class="btn btn-primary"><i class="fa fa-plus"></i>
+                                    <spring:message code="lbl.add.group"/></button>
+                            </div>
 
-                <div hidden="hidden" class="jarviswidget jarviswidget-color-darken" id="div2">
+                        </section>
+                    </div>
+                </div>
+
+                <div class="jarviswidget jarviswidget-color-darken" id="div2" hidden="hidden">
                     <header>
                         <span class="widget-icon"> <i class="fa fa-reorder"></i> </span>
-                        <h2><spring:message code="lbl.associated.us" /> </h2>
-                        <h2 id="estudio" ></h2>
                     </header>
                     <!-- widget div-->
                     <div>
@@ -146,23 +174,60 @@
                         <!-- end widget edit box -->
                         <!-- widget content -->
                         <div class="widget-body no-padding">
+                            <form id="group-form" class="smart-form" autocomplete="off">
+                                <fieldset>
+                                    <div class="row">
+                                        <section class="col col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
+                                            <label class="text-left txt-color-blue font-md">
+                                                <spring:message code="lbl.group.name"/>
+                                            </label>
+                                            <div class="input">
+                                                <i class="icon-prepend fa fa-pencil fa-fw"></i> <i
+                                                    class="icon-append fa fa-sort-alpha-asc fa-fw"></i>
+                                                <input name="nombreGrupo" id="nombreGrupo" class="form-control" type="text"
+                                                       placeholder="<spring:message code="lbl.name"/> <spring:message code="lbl.group.name"/> " value="" />
+                                            </div>
+                                        </section>
+                                    </div>
+                                </fieldset>
+                                <footer>
+                                    <button type="button" id="btnSave" class="btn btn-success"><i class="fa fa-save"></i> <spring:message code="act.save" /></button>
+                                </footer>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
-                            <table id="table-us" class="table table-striped table-bordered table-hover" width="100%">
+                <div class="jarviswidget jarviswidget-color-darken" id="div3" hidden="hidden">
+                    <header>
+                        <span class="widget-icon"> <i class="fa fa-reorder"></i> </span>
+                        <h2><spring:message code="lbl.associated.patho" /> </h2>
+                    </header>
+                    <!-- widget div-->
+                    <div>
+                        <!-- widget edit box -->
+                        <div class="jarviswidget-editbox">
+                            <!-- This area used as dropdown edit box -->
+                            <input class="form-control" type="text">
+                        </div>
+                        <!-- end widget edit box -->
+                        <!-- widget content -->
+                        <div class="widget-body no-padding">
+                            <table id="recordsPato" class="table table-striped table-bordered table-hover" width="100%">
                                 <thead>
                                 <tr>
-                                    <th data-class="expand" width="35%"><spring:message code="lbl.silais"/></th>
-                                    <th><spring:message code="muni"/></th>
-                                    <th><spring:message code="sindfeb.unidad"/></th>
-                                    <th><spring:message code="lbl.override"/></th>
+                                    <th data-class="expand" width="15%"><spring:message code="lbl.code"/></th>
+                                    <th><spring:message code="pato"/></th>
+                                    <th><spring:message code="act.override"/></th>
                                 </tr>
                                 </thead>
                             </table>
+
                         </div>
-
-
                         <!-- end widget content -->
                     </div>
-
+                    <!-- end widget div -->
                     <div style="border: none" class="row">
                         <section class="col col-sm-12 col-md-6 col-lg-6">
                             <div style="border: none" id="dBack" class="pull-left">
@@ -173,15 +238,14 @@
 
                         <section class="col col-sm-12 col-md-6 col-lg-6">
                             <div style="border: none" id="dAdd" class="pull-right">
-                                <button type="button" id="btnAddUs" class="btn btn-primary"><i class="fa fa-link"></i>
-                                    <spring:message code="lbl.associate.us"/></button>
+                                <button type="button" id="btnAdd" class="btn btn-primary"><i class="fa fa-link"></i>
+                                    <spring:message code="lbl.associate.patho"/></button>
                             </div>
 
                         </section>
                     </div>
-                    <!-- end widget div -->
                 </div>
-
+                <!-- end widget -->
             </article>
             <!-- WIDGET END -->
         </div>
@@ -191,7 +255,7 @@
             <!-- a blank row to get started -->
             <div class="col-sm-12">
                 <!-- your contents here -->
-                <!-- Modal Aliquot -->
+                <!-- Modal agrupar patología -->
                 <div class="modal fade" id="myModal" aria-hidden="true" data-backdrop="static">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -202,74 +266,33 @@
                                     </button>
                                     <h4 class="modal-title">
                                         <i class="fa-fw fa fa-list-ul"></i>
-                                        <spring:message code="lbl.associate.us"/>
+                                        <spring:message code="lbl.associate.patho"/>
                                     </h4>
                                 </div>
                             </div>
 
                             <div class="modal-body">
-                                <form id="form" class="smart-form" autocomplete="off">
-                                    <div class="row">
-                                        <input id="idEst" hidden="hidden" type="text" name="idEst"/>
-                                        <input id="opt_select" type="hidden" value="<spring:message code="lbl.select"/>"/>
-
-                                        <section class="col col-xs-12 col-sm-8 col-md-6 col-lg-5">
-                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
-                                            <label class="text-left txt-color-blue font-md">
-                                                <spring:message code="lbl.silais"/>
-
-                                            </label>
-
-                                            <div class="input-group">
-                                                <spring:message code="msg.select.silais" var="selectSilais"/>
-                                                <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
-                                                <select data-placeholder="${selectSilais}" name="codSilaisAtencion" id="codSilaisAtencion" class="select2">
-                                                    <option value=""></option>
-                                                    <c:forEach items="${entidades}" var="entidad">
-                                                    <option value="${entidad.codigo}">${entidad.nombre}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </div>
-                                        </section>
-
-                                        <section class="col col-sm-12 col-md-6 col-lg-7">
-                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
-                                            <label class="text-left txt-color-blue font-md hidden-xs">
-                                                <spring:message code="sindfeb.muni" />
-                                            </label>
-                                            <div class="input-group">
-                                                <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
-                                                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="sindfeb.muni" />" name="codMunicipio" id="codMunicipio" class="select2">
-                                                    <option value=""></option>
-                                                </select>
-                                            </div>
-                                        </section>
-                                    </div>
-
-                                    <div class="row">
-                                        <section class="col col-xs-12 col-sm-12 col-md-8 col-lg-12">
-                                            <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i>
-                                            <label class="text-left txt-color-blue font-md hidden-xs">
-                                                <spring:message code="lbl.health.unit" />
-                                            </label>
-
-                                            <div class="input-group">
-                                                <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
-                                                <select data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.health.unit" />" name="codUnidadAtencion" id="codUnidadAtencion" class="select2">
-                                                    <option value=""></option>
-                                                </select>
-                                            </div>
-                                        </section>
-                                    </div>
-
+                                <form id="patho-form" class="smart-form" autocomplete="off">
+                                    <input id="idGrupo" hidden="hidden" type="text" name="idGrupo"/>
+                                    <section class="col col-sm-12 col-md-6 col-lg-12">
+                                        <i class="fa fa-fw fa-asterisk txt-color-red font-sm hidden-xs"></i>
+                                        <label class="text-left txt-color-blue font-md hidden-xs">
+                                            <spring:message code="pato" />
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                            <select data-placeholder="<spring:message code="act.select" /> <spring:message code="pato" />" name="idPatologia" id="idPatologia" class="select2">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                    </section>
                                 </form>
                             </div>
-
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">
                                     <i class="fa fa-times"></i> <spring:message code="act.end" />
                                 </button>
-                                <button type="submit" id="btnAddTest" class="btn btn-success"><i class="fa fa-save"></i> <spring:message code="act.save" /></button>
+                                <button type="button" id="btnSavePatho" class="btn btn-success"><i class="fa fa-save"></i> <spring:message code="act.save" /></button>
 
                             </div>
                         </div>
@@ -308,12 +331,6 @@
 <!-- jQuery Selecte2 Input -->
 <spring:url value="/resources/js/plugin/select2/select2.min.js" var="selectPlugin"/>
 <script src="${selectPlugin}"></script>
-<!-- bootstrap datepicker -->
-<spring:url value="/resources/js/plugin/bootstrap-datepicker/bootstrap-datepicker.js" var="datepickerPlugin" />
-<script src="${datepickerPlugin}"></script>
-<spring:url value="/resources/js/plugin/bootstrap-datepicker/locales/bootstrap-datepicker.{languagedt}.js" var="datePickerLoc">
-    <spring:param name="languagedt" value="${pageContext.request.locale.language}" /></spring:url>
-<script src="${datePickerLoc}"></script>
 <!-- JQUERY VALIDATE -->
 <spring:url value="/resources/js/plugin/jquery-validate/jquery.validate.min.js" var="jqueryValidate" />
 <script src="${jqueryValidate}"></script>
@@ -323,46 +340,39 @@
 <!-- JQUERY BLOCK UI -->
 <spring:url value="/resources/js/plugin/jquery-blockui/jquery.blockUI.js" var="jqueryBlockUi" />
 <script src="${jqueryBlockUi}"></script>
-<!-- JQUERY INPUT MASK -->
-<spring:url value="/resources/js/plugin/jquery-inputmask/jquery.inputmask.bundle.min.js" var="jqueryInputMask" />
-<script src="${jqueryInputMask}"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<spring:url value="/resources/scripts/administracion/studiesUS.js" var="studiesUsJS" />
-<script src="${studiesUsJS}"></script>
-<spring:url value="/resources/scripts/utilidades/seleccionUnidad.js" var="selecUnidad"/>
-<script src="${selecUnidad}"></script>
-<spring:url value="/resources/scripts/utilidades/handleDatePickers.js" var="handleDatePickers" />
-<script src="${handleDatePickers}"></script>
-<spring:url value="/resources/scripts/utilidades/handleInputMask.js" var="handleInputMask" />
-<script src="${handleInputMask}"></script>
+<spring:url value="/resources/scripts/administracion/patoGroup.js" var="groupJS" />
+<script src="${groupJS}"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
-<c:url var="getCatalogue" value="/administracion/studiesUS/getStudies"/>
-<c:url var="getUS" value="/administracion/studiesUS/getAssociatedUS"/>
-<c:url var="saveEstUsUrl" value="/administracion/studiesUS/addUpdateUs"/>
-<spring:url var="municipiosURL" value="/api/v1/municipiosbysilais2"/>
-<spring:url var="unidadesUrl"   value="/api/v1/unidadesPrimHosp2"  />
+<c:set var="lblHeader"><spring:message code="lbl.pathologies.grouped"/></c:set>
+<c:url var="groupsUrl" value="/administracion/patogroup/getGroups"/>
+<c:url var="pathosUrl" value="/administracion/patogroup/getPathoGroup"/>
+<c:url var="pathosAvailableUrl" value="/administracion/patogroup/getPathoAvailableGroup"/>
+<c:url var="saveGroupUrl" value="/administracion/patogroup/addOrUpdateGroup"/>
+<c:url var="savePathoGroupUrl" value="/administracion/patogroup/addPatoGroup"/>
+<c:url var="deletePathoGroupUrl" value="/administracion/patogroup/deletePatoGroup"/>
+<c:url var="deleteGroupUrl" value="/administracion/patogroup/deleteGroup"/>
 
 <script type="text/javascript">
     $(document).ready(function() {
         pageSetUp();
         var parametros = {blockMess: "${blockMess}",
-            catalogueUrl : "${getCatalogue}",
-            usUrl:"${getUS}",
-            municipiosUrl:"${municipiosURL}",
-            unidadesUrl: "${unidadesUrl}",
-            saveEstUsUrl:"${saveEstUsUrl}"
+            groupsUrl : "${groupsUrl}",
+            pathosUrl:"${pathosUrl}",
+            lblHeader: "${lblHeader}",
+            pathosAvailableUrl: "${pathosAvailableUrl}",
+            saveGroupUrl: "${saveGroupUrl}",
+            savePathoGroupUrl: "${savePathoGroupUrl}",
+            deleteGroupUrl: "${deleteGroupUrl}",
+            deletePathoGroupUrl: "${deletePathoGroupUrl}"
         };
-        StudiesUS.init(parametros);
-        SeleccionUnidad.init(parametros);
-
-        handleDatePickers("${pageContext.request.locale.language}");
-        handleInputMasks();
+        PatoGroup.init(parametros);
         $("li.mantenimiento").addClass("open");
-        $("li.studiesUS").addClass("active");
+        $("li.patoGroup").addClass("active");
         if("top"!=localStorage.getItem("sm-setmenu")){
-            $("li.studiesUS").parents("ul").slideDown(200);
+            $("li.patoGroup").parents("ul").slideDown(200);
         }
     });
 </script>

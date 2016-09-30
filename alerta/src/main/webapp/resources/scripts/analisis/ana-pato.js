@@ -281,7 +281,7 @@ var ViewReport = function () {
             				pobMasc2=data[row][2],pobFem2=data[row][3],pobTotal2=data[row][4];
             			}
             		}
-            		
+            		console.log(data);
             		for (var row in data) {
             			if(data[row][0]=='Pato'){
             				factor=data[row][1];

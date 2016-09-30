@@ -127,7 +127,7 @@
                 <div class="widget-body">
                     <input id="nicRepublic" type="hidden" value="<spring:message code="lbl.nicaragua.republic"/>"/>
                     <input id="dep" type="hidden" value="<spring:message code="lbl.dep"/>"/>
-                    <input id="munic" type="hidden" value="<spring:message code="lbl.munic"/>"/>
+                    <input id="munic" type="hidden" value="<spring:message code="muni"/>"/>
                     <input hidden="hidden" id="sem" value="<spring:message code="week"/>" />
                     <input id="to" type="hidden" value="<spring:message code="lbl.to1"/>"/>
                     <input id="lblAnios" type="hidden" value="<spring:message code="lbl.years"/>"/>
@@ -144,6 +144,9 @@
                                             <option value=""></option>
                                             <c:forEach items="${patologias}" var="patologia">
                                                 <option  value="${patologia.codigo}">${patologia.codigo} - ${patologia.nombre}</option>
+                                            </c:forEach>
+                                            <c:forEach items="${grupos}" var="grupo">
+                                                <option value="GRP-${grupo.idGrupo}"> GRP - ${grupo.nombre}</option>
                                             </c:forEach>
                                         </select>
                                     </div>

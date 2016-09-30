@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import ni.gob.minsa.alerta.domain.agrupaciones.GrupoPatologia;
 import ni.gob.minsa.alerta.domain.sive.SivePatologiasTipo;
 
 import org.hibernate.Query;
@@ -18,6 +19,8 @@ public class AnalisisService {
 	
 	@Resource(name="sessionFactory")
 	private SessionFactory sessionFactory;
+    @Resource(name = "admonPatoGroupService")
+    private AdmonPatoGroupService admonPatoGroupService;
 	//private static final String varOrden = "concat(inf.anio, '-', substring(concat('00', inf.semana),length(concat('00', inf.semana))-1,length(concat('00', inf.semana))))";
 	//private static final String sqlData = "Select " + varOrden + " as periodo, sum(inf.totalm+inf.totalf) as total";
 	
@@ -30,46 +33,65 @@ public class AnalisisService {
 		// Retrieve session from Hibernate
 		Session session = sessionFactory.getCurrentSession();
 		Query query = null;
+        String patoQuery = null;
+        //si es grupo se obtienen todas las patologias asociadas para anidar los códigos mediante OR en el where
+        boolean esGrupo = codPato.contains("GRP-");
+        if (esGrupo) {
+            String idGrupo = codPato.replaceAll("GRP-","");
+            List<GrupoPatologia> grupoPatologia = admonPatoGroupService.getGrupoPatologias(Integer.valueOf(idGrupo));
+            for(GrupoPatologia grupoP : grupoPatologia){
+                //se toma primera pato para sacar población
+                codPato = grupoP.getPatologia().getCodigo();
+                if (patoQuery == null){
+                    patoQuery = "inf.patologia.codigo = '"+grupoP.getPatologia().getCodigo()+"'";
+                }
+                else{
+                    patoQuery = patoQuery + " or inf.patologia.codigo = '"+grupoP.getPatologia().getCodigo()+"'";
+                }
+            }
+        }else{
+            patoQuery = "inf.patologia.codigo = '"+codPato+"'";
+        }
 		if (codArea.equals("AREAREP|PAIS")){
 			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-					"where inf.patologia.codigo =:codPato " +
+					"where ("+patoQuery +")"+
 					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
-			query.setParameter("codPato", codPato);
+			//query.setParameter("codPato", codPato);
 		}
 		else if (codArea.equals("AREAREP|SILAIS")){
 			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-					"where inf.silais =:codSilais and inf.patologia.codigo =:codPato " +
+					"where inf.silais =:codSilais and ("+patoQuery +")"+
 					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
-			query.setParameter("codPato", codPato);
+			//query.setParameter("codPato", codPato);
 			query.setParameter("codSilais", codSilais.toString());
 		}
 		else if (codArea.equals("AREAREP|DEPTO")){
 			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
-					"where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.dependencia.divisionpoliticaId =:codDepartamento and inf.patologia.codigo =:codPato " +
+					"where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.dependencia.divisionpoliticaId =:codDepartamento and ("+patoQuery +")"+
 					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
-			query.setParameter("codPato", codPato);
+			//query.setParameter("codPato", codPato);
 			query.setParameter("codDepartamento", codDepartamento);
 		}
 		else if (codArea.equals("AREAREP|MUNI")){
 			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
-					"where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.divisionpoliticaId =:codMunicipio and inf.patologia.codigo =:codPato " +
+					"where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.divisionpoliticaId =:codMunicipio and ("+patoQuery +")"+
 					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
-			query.setParameter("codPato", codPato);
+			//query.setParameter("codPato", codPato);
 			query.setParameter("codMunicipio", codMunicipio);
 		}
 		else if (codArea.equals("AREAREP|UNI")){
 			query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
 					"where (inf.unidad.unidadId =:codUnidad " + (subunidades?"or inf.unidad.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad )":"") +
-                    ")and inf.patologia.codigo =:codPato " +
+                    ")and ("+patoQuery +")"+
 					"group by inf.fechaNotificacion order by inf.fechaNotificacion");
-			query.setParameter("codPato", codPato);
+			//query.setParameter("codPato", codPato);
 			query.setParameter("codUnidad", codUnidad);
 		}
         else if (codArea.equals("AREAREP|ZE")){
             query = session.createQuery("Select inf.fechaNotificacion as fecha, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf " +
-                    "where inf.unidad.zona =:codZona and inf.patologia.codigo =:codPato " +
+                    "where inf.unidad.zona =:codZona and ("+patoQuery +")"+
                     "group by inf.fechaNotificacion order by inf.fechaNotificacion");
-            query.setParameter("codPato", codPato);
+            //query.setParameter("codPato", codPato);
             query.setParameter("codZona", codZona);
         }
 		return query.list();
@@ -84,15 +106,35 @@ public class AnalisisService {
         List<Object[]> datosPoblacion = new ArrayList<Object[]>();
 		Session session = sessionFactory.getCurrentSession();
 		Query query = null;
-		query =  session.createQuery("From SivePatologiasTipo patologia where patologia.patologia.codigo =:codPato");
+        String patoQuery = null;
+        //si es grupo se obtienen todas las patologias asociadas para anidar los códigos mediante OR en el where
+        boolean esGrupo = codPato.contains("GRP-");
+        if (esGrupo) {
+            String idGrupo = codPato.replaceAll("GRP-","");
+            List<GrupoPatologia> grupoPatologia = admonPatoGroupService.getGrupoPatologias(Integer.valueOf(idGrupo));
+            for(GrupoPatologia grupoP : grupoPatologia){
+                //se toma primera pato para sacar población
+                codPato = grupoP.getPatologia().getCodigo();
+                if (patoQuery == null){
+                    patoQuery = "inf.patologia.codigo = '"+grupoP.getPatologia().getCodigo()+"'";
+                }
+                else{
+                    patoQuery = patoQuery + " or inf.patologia.codigo = '"+grupoP.getPatologia().getCodigo()+"'";
+                }
+            }
+        }else{
+            patoQuery = "inf.patologia.codigo = '"+codPato+"'";
+        }
+
+        query =  session.createQuery("From SivePatologiasTipo patologia where patologia.patologia.codigo =:codPato");
 		query.setParameter("codPato", codPato);
 		SivePatologiasTipo patologia = (SivePatologiasTipo) query.uniqueResult();
             if (codArea.equals("AREAREP|PAIS")) {
                 if (paisPorSILAIS) {
                     query = session.createQuery(sqlData + " From SiveInformeDiario inf " +
-                            "where inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anioI) " +
+                            "where ("+patoQuery+") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio=:anioI) " +
                             "group by inf.silais order by inf.silais");
-                    query.setParameter("codPato", codPato);
+                    //query.setParameter("codPato", codPato);
                     query.setParameter("semI", Integer.parseInt(semI));
                     query.setParameter("semF", Integer.parseInt(semF));
                     query.setParameter("anioI", Integer.parseInt(anioI));
@@ -124,9 +166,9 @@ public class AnalisisService {
                     }
                 }else{ //por municipios
                     query = session.createQuery("Select municipio.codigoNacional as munici, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
-                            "where cast(inf.municipio as long) = municipio.divisionpoliticaId and inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio = :anioI) " +
+                            "where cast(inf.municipio as long) = municipio.divisionpoliticaId and ("+patoQuery+") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio = :anioI) " +
                             "group by municipio.codigoNacional order by municipio.codigoNacional");
-                    query.setParameter("codPato", codPato);
+                    //query.setParameter("codPato", codPato);
                     query.setParameter("semI", Integer.parseInt(semI));
                     query.setParameter("semF", Integer.parseInt(semF));
                     query.setParameter("anioI", Integer.parseInt(anioI));
@@ -160,10 +202,10 @@ public class AnalisisService {
                 }
             } else if (codArea.equals("AREAREP|SILAIS")) {
                 query = session.createQuery("Select municipio.codigoNacional as munici, sum(inf.totalm+inf.totalf) as total From SiveInformeDiario inf, Divisionpolitica municipio " +
-                        "where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.dependenciaSilais.entidadAdtvaId =:codSilais and inf.patologia.codigo =:codPato and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio = :anioI) " +
+                        "where cast(inf.municipio as long) = municipio.divisionpoliticaId and municipio.dependenciaSilais.entidadAdtvaId =:codSilais and ("+patoQuery+") and (inf.semana >= :semI and inf.semana <= :semF) and (inf.anio = :anioI) " +
                         "group by municipio.codigoNacional order by municipio.codigoNacional");
                 query.setParameter("codSilais", codSilais);
-                query.setParameter("codPato", codPato);
+                //query.setParameter("codPato", codPato);
                 query.setParameter("semI", Integer.parseInt(semI));
                 query.setParameter("semF", Integer.parseInt(semF));
                 query.setParameter("anioI", Integer.parseInt(anioI));
