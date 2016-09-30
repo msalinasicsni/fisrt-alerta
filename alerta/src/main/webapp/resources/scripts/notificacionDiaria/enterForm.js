@@ -618,21 +618,7 @@ var EnterNotificationD = function () {
                     }
                 });
 
-           /*     $.getJSON(parametros.notiDUrl, {
-                    silais: silais,
-                    municipio: municipio,
-                    unidad: unidad,
-                    fecha: fecha,
-                    pato: pato,
-                    ajax : 'true'
-                }, function(response) {
 
-
-                })
-                    .fail(function() {
-                        alert( "error" );
-
-                    });*/
             }
 
             function edit() {
@@ -704,13 +690,13 @@ var EnterNotificationD = function () {
                             getNotiDetails(data.silais, data.municipio, data.unidad, data.fecha);
 
                             clean1();
-                            $.smallBox({
+                          /*  $.smallBox({
                                 title: $('#msjSuccessfulE').val(),
                                 content: $('#disappear').val(),
                                 color: "#739E73",
                                 iconSmall: "fa fa-check-circle",
                                 timeout: 4000
-                            });
+                            });*/
 
 
                         }
@@ -825,18 +811,17 @@ var EnterNotificationD = function () {
                             });
                         }
 
+                }
 
                     if (ButtonPressed === opcNo) {
                         $.smallBox({
                             title: $('#titleCancel').val(),
-                            content: "<i class='fa fa-clock-o'></i> <i>"+$("#dissapear").val()+"</i>",
-                            color: "#C46A69",
-                            iconSmall: "fa fa-times fa-2x fadeInRight animated",
+                            content: "<i class='fa fa-clock-o'></i> <i>"+$("#disappear").val()+"</i>",
+                            color: "#C79121",
+                            iconSmall: "fa fa-warning",
                             timeout: 4000
                         });
                     }
-
-                }
                 });
 
             }
