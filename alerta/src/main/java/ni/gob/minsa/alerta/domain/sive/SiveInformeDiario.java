@@ -1,9 +1,8 @@
 package ni.gob.minsa.alerta.domain.sive;
 
-import ni.gob.minsa.alerta.domain.estructura.Unidades;
+import ni.gob.minsa.alerta.domain.audit.Auditable;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,8 +12,9 @@ import java.util.Date;
  */
 @Entity
 @javax.persistence.Table(name = "sive_informe_diario", schema = "alerta")
-public class SiveInformeDiario implements Serializable {
+public class SiveInformeDiario implements Serializable, Auditable {
     private String silais;
+    private String actor;
 
     @Id
     @javax.persistence.Column(name = "SILAIS", nullable = false, insertable = true, updatable = true, length = 2)
@@ -38,18 +38,13 @@ public class SiveInformeDiario implements Serializable {
         this.municipio = municipio;
     }
 
-    private Unidades unidad;
+    private UnidadesVwEntity unidad;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "UNIDAD_SALUD", referencedColumnName = "UNIDAD_ID")//@javax.persistence.Column(name = "UNIDAD_SALUD", nullable = false, insertable = true, updatable = true, precision = -127)
-    public Unidades getUnidad() {
-        return unidad;
-    }
-
-    public void setUnidad(Unidades unidadSalud) {
-        this.unidad = unidadSalud;
-    }
+    public UnidadesVwEntity getUnidad() { return unidad; }
+    public void setUnidad(UnidadesVwEntity unidad) { this.unidad = unidad; }
 
     private Date fechaNotificacion;
 
@@ -548,110 +543,58 @@ public class SiveInformeDiario implements Serializable {
     }
 
     @Override
+    public String toString() {
+        return "{" +
+                "si='" + silais + '\'' +
+                ", mun='" + municipio + '\'' +
+                ", uni=" + unidad.getCodigo() +
+                ", fNot=" + fechaNotificacion +
+                ", pat=" + patologia.getCodigo() +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         SiveInformeDiario that = (SiveInformeDiario) o;
 
-        if (anio != null ? !anio.equals(that.anio) : that.anio != null) return false;
-        if (bloqueado != null ? !bloqueado.equals(that.bloqueado) : that.bloqueado != null) return false;
-        if (patologia != null ? !patologia.equals(that.patologia) : that.patologia != null) return false;
-        if (codSisniven != null ? !codSisniven.equals(that.codSisniven) : that.codSisniven != null) return false;
-        if (descf != null ? !descf.equals(that.descf) : that.descf != null) return false;
-        if (descm != null ? !descm.equals(that.descm) : that.descm != null) return false;
-        if (fechaNotificacion != null ? !fechaNotificacion.equals(that.fechaNotificacion) : that.fechaNotificacion != null) return false;
-        if (fechamodificacion != null ? !fechamodificacion.equals(that.fechamodificacion) : that.fechamodificacion != null)
-            return false;
-        if (fecharegistro != null ? !fecharegistro.equals(that.fecharegistro) : that.fecharegistro != null)
-            return false;
-        if (g10f != null ? !g10f.equals(that.g10f) : that.g10f != null) return false;
-        if (g10m != null ? !g10m.equals(that.g10m) : that.g10m != null) return false;
-        if (g11f != null ? !g11f.equals(that.g11f) : that.g11f != null) return false;
-        if (g11m != null ? !g11m.equals(that.g11m) : that.g11m != null) return false;
-        if (g12f != null ? !g12f.equals(that.g12f) : that.g12f != null) return false;
-        if (g12m != null ? !g12m.equals(that.g12m) : that.g12m != null) return false;
-        if (g13f != null ? !g13f.equals(that.g13f) : that.g13f != null) return false;
-        if (g13m != null ? !g13m.equals(that.g13m) : that.g13m != null) return false;
-        if (g01f != null ? !g01f.equals(that.g01f) : that.g01f != null) return false;
-        if (g01m != null ? !g01m.equals(that.g01m) : that.g01m != null) return false;
-        if (g02f != null ? !g02f.equals(that.g02f) : that.g02f != null) return false;
-        if (g02m != null ? !g02m.equals(that.g02m) : that.g02m != null) return false;
-        if (g03f != null ? !g03f.equals(that.g03f) : that.g03f != null) return false;
-        if (g03m != null ? !g03m.equals(that.g03m) : that.g03m != null) return false;
-        if (g04f != null ? !g04f.equals(that.g04f) : that.g04f != null) return false;
-        if (g04m != null ? !g04m.equals(that.g04m) : that.g04m != null) return false;
-        if (g05f != null ? !g05f.equals(that.g05f) : that.g05f != null) return false;
-        if (g05m != null ? !g05m.equals(that.g05m) : that.g05m != null) return false;
-        if (g06f != null ? !g06f.equals(that.g06f) : that.g06f != null) return false;
-        if (g06m != null ? !g06m.equals(that.g06m) : that.g06m != null) return false;
-        if (g07f != null ? !g07f.equals(that.g07f) : that.g07f != null) return false;
-        if (g07m != null ? !g07m.equals(that.g07m) : that.g07m != null) return false;
-        if (g08f != null ? !g08f.equals(that.g08f) : that.g08f != null) return false;
-        if (g08m != null ? !g08m.equals(that.g08m) : that.g08m != null) return false;
-        if (g09f != null ? !g09f.equals(that.g09f) : that.g09f != null) return false;
-        if (g09m != null ? !g09m.equals(that.g09m) : that.g09m != null) return false;
-        if (municipio != null ? !municipio.equals(that.municipio) : that.municipio != null) return false;
-        if (numeroOrden != null ? !numeroOrden.equals(that.numeroOrden) : that.numeroOrden != null) return false;
-        if (semana != null ? !semana.equals(that.semana) : that.semana != null) return false;
-        if (silais != null ? !silais.equals(that.silais) : that.silais != null) return false;
-        if (totalf != null ? !totalf.equals(that.totalf) : that.totalf != null) return false;
-        if (totalm != null ? !totalm.equals(that.totalm) : that.totalm != null) return false;
-        if (unidad != null ? !unidad.equals(that.unidad) : that.unidad != null) return false;
-        if (usuariomodificacion != null ? !usuariomodificacion.equals(that.usuariomodificacion) : that.usuariomodificacion != null)
-            return false;
-        if (usuarioregistro != null ? !usuarioregistro.equals(that.usuarioregistro) : that.usuarioregistro != null)
-            return false;
+        if (!fechaNotificacion.equals(that.fechaNotificacion)) return false;
+        if (!municipio.equals(that.municipio)) return false;
+        if (!patologia.equals(that.patologia)) return false;
+        if (!silais.equals(that.silais)) return false;
+        if (!unidad.equals(that.unidad)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = silais != null ? silais.hashCode() : 0;
-        result = 31 * result + (municipio != null ? municipio.hashCode() : 0);
-        result = 31 * result + (unidad != null ? unidad.hashCode() : 0);
-        result = 31 * result + (fechaNotificacion != null ? fechaNotificacion.hashCode() : 0);
-        result = 31 * result + (semana != null ? semana.hashCode() : 0);
-        result = 31 * result + (patologia != null ? patologia.hashCode() : 0);
-        result = 31 * result + (g01f != null ? g01f.hashCode() : 0);
-        result = 31 * result + (g01m != null ? g01m.hashCode() : 0);
-        result = 31 * result + (g02f != null ? g02f.hashCode() : 0);
-        result = 31 * result + (g02m != null ? g02m.hashCode() : 0);
-        result = 31 * result + (g03f != null ? g03f.hashCode() : 0);
-        result = 31 * result + (g03m != null ? g03m.hashCode() : 0);
-        result = 31 * result + (g04f != null ? g04f.hashCode() : 0);
-        result = 31 * result + (g04m != null ? g04m.hashCode() : 0);
-        result = 31 * result + (g05f != null ? g05f.hashCode() : 0);
-        result = 31 * result + (g05m != null ? g05m.hashCode() : 0);
-        result = 31 * result + (g06f != null ? g06f.hashCode() : 0);
-        result = 31 * result + (g06m != null ? g06m.hashCode() : 0);
-        result = 31 * result + (g07f != null ? g07f.hashCode() : 0);
-        result = 31 * result + (g07m != null ? g07m.hashCode() : 0);
-        result = 31 * result + (g08f != null ? g08f.hashCode() : 0);
-        result = 31 * result + (g08m != null ? g08m.hashCode() : 0);
-        result = 31 * result + (g09f != null ? g09f.hashCode() : 0);
-        result = 31 * result + (g09m != null ? g09m.hashCode() : 0);
-        result = 31 * result + (g10f != null ? g10f.hashCode() : 0);
-        result = 31 * result + (g10m != null ? g10m.hashCode() : 0);
-        result = 31 * result + (g11f != null ? g11f.hashCode() : 0);
-        result = 31 * result + (g11m != null ? g11m.hashCode() : 0);
-        result = 31 * result + (g12f != null ? g12f.hashCode() : 0);
-        result = 31 * result + (g12m != null ? g12m.hashCode() : 0);
-        result = 31 * result + (g13f != null ? g13f.hashCode() : 0);
-        result = 31 * result + (g13m != null ? g13m.hashCode() : 0);
-        result = 31 * result + (descf != null ? descf.hashCode() : 0);
-        result = 31 * result + (descm != null ? descm.hashCode() : 0);
-        result = 31 * result + (totalf != null ? totalf.hashCode() : 0);
-        result = 31 * result + (totalm != null ? totalm.hashCode() : 0);
-        result = 31 * result + (bloqueado != null ? bloqueado.hashCode() : 0);
-        result = 31 * result + (fecharegistro != null ? fecharegistro.hashCode() : 0);
-        result = 31 * result + (usuarioregistro != null ? usuarioregistro.hashCode() : 0);
-        result = 31 * result + (fechamodificacion != null ? fechamodificacion.hashCode() : 0);
-        result = 31 * result + (usuariomodificacion != null ? usuariomodificacion.hashCode() : 0);
-        result = 31 * result + (numeroOrden != null ? numeroOrden.hashCode() : 0);
-        result = 31 * result + (codSisniven != null ? codSisniven.hashCode() : 0);
-        result = 31 * result + (anio != null ? anio.hashCode() : 0);
+        int result = silais.hashCode();
+        result = 31 * result + municipio.hashCode();
+        result = 31 * result + unidad.hashCode();
+        result = 31 * result + fechaNotificacion.hashCode();
+        result = 31 * result + patologia.hashCode();
         return result;
     }
+
+    @Override
+    public boolean isFieldAuditable(String fieldname) {
+        return true;
+    }
+
+
+    @Override
+    @Transient
+    public String getActor() {
+        return this.actor;
+    }
+
+    @Override
+    public void setActor(String actor) {
+        this.actor = actor;
+    }
+
+
 }

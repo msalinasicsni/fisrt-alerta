@@ -1,20 +1,17 @@
 package ni.gob.minsa.alerta.web.listener;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-
 import ni.gob.minsa.alerta.domain.audit.AuditTrail;
 import ni.gob.minsa.alerta.domain.audit.Auditable;
-
-import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
-import ni.gob.minsa.alerta.domain.portal.Usuarios;
+import ni.gob.minsa.alerta.domain.sive.SiveInformeDiario;
 import org.hibernate.HibernateException;
-import org.hibernate.LockMode;
 import org.hibernate.StatelessSession;
 import org.hibernate.event.spi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
 
 
 /** 
@@ -54,19 +51,27 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
         try {  
             final Serializable entityId = event.getPersister().hasIdentifierProperty() ? event.getPersister().getIdentifier(event.getEntity(), event.getSession()) : null;  
             final String entityName = event.getEntity().getClass().toString();  
-            final Date transTime = new Date(); // new Date(event.getSource().getTimestamp());  
+            final Date transTime = new Date(); // new Date(event.getSource().getTimestamp());
+            String id = null;
             
             // need to have a separate session for audit save  
             if (event.getEntity() instanceof Auditable){
                 Auditable obj = (Auditable) event.getEntity();
+                if(event.getEntity() instanceof SiveInformeDiario){
+                    id = event.getEntity().toString();
+                }else{
+                   id = String.valueOf(entityId);
+                }
+
+
                 final String actorId = obj.getActor();
 	            StatelessSession session = event.getPersister().getFactory().openStatelessSession();  
 	            session.beginTransaction();  
 	  
 	            if (LOG.isDebugEnabled()) {  
-	                LOG.debug("{} for: {}, ID: {}, actor: {}, date: {}", new Object[] { entityName, entityId, actorId, transTime });  
+	                LOG.debug("{} for: {}, ID: {}, actor: {}, date: {}", new Object[] { entityName, id, actorId, transTime });
 	            }  
-	            session.insert(new AuditTrail(entityId.toString(), entityName, OPERATION_TYPE_DELETE, null, null, OPERATION_TYPE_DELETE, actorId, transTime));  
+	            session.insert(new AuditTrail(id, entityName, OPERATION_TYPE_DELETE, null, null, OPERATION_TYPE_DELETE, actorId, transTime));
 	  
 	            session.getTransaction().commit();  
 	            session.close();  
