@@ -2,6 +2,7 @@ package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.sive.SiveInformeDiario;
 import ni.gob.minsa.alerta.domain.sive.UnidadesVwEntity;
+import ni.gob.minsa.alerta.utilities.DateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -50,7 +51,7 @@ public class NotificacionDiariaService {
      *
      */
     @SuppressWarnings("unchecked")
-    public List<SiveInformeDiario> getEventsByParams(String silais, String municipio, long unidad, String fecha) throws Exception {
+    public List<SiveInformeDiario> getEventsByParams(String silais, String municipio, long unidad, Date fecha) throws Exception {
         String query = "select ev from SiveInformeDiario ev " +
                 " where ev.silais = :silais " +
                 " and ev.municipio = :municipio " +
@@ -62,12 +63,12 @@ public class NotificacionDiariaService {
         q.setString("silais", silais);
         q.setString("municipio", municipio);
         q.setParameter("unidad",unidad);
-        q.setString("fecha", fecha);
+        q.setParameter("fecha", fecha);
         return q.list();
     }
 
     @SuppressWarnings("unchecked")
-    public List<SiveInformeDiario> getEventsByParams1(String silais, String municipio, long unidad, String fecha, String pato) throws Exception {
+    public List<SiveInformeDiario> getEventsByParams1(String silais, String municipio, long unidad, Date fecha, String pato) throws Exception {
         String query = "select ev from SiveInformeDiario ev " +
                 "where ev.silais = :silais " +
                 "and ev.municipio = :municipio " +
@@ -80,7 +81,7 @@ public class NotificacionDiariaService {
         q.setString("silais", silais);
         q.setString("municipio", municipio);
         q.setParameter("unidad",unidad);
-        q.setString("fecha", fecha);
+        q.setParameter("fecha", fecha);
         q.setString("pato", pato);
         return q.list();
     }
@@ -157,7 +158,7 @@ public class NotificacionDiariaService {
      *
      */
     @SuppressWarnings("unchecked")
-    public List<Object> getEventNotiD(String silais, String municipio, long unidad, String fecha) throws Exception {
+    public List<Object> getEventNotiD(String silais, String municipio, long unidad, Date fecha) throws Exception {
         String query = "select ev.fechaNotificacion, ent.nombre, div.nombre, ev.unidad.nombre, ev.bloqueado, ev.silais, ev.municipio, ev.unidad.codigo  " +
                 "from SiveInformeDiario ev, EntidadesAdtvas ent, Divisionpolitica div " +
                 "where ev.silais = :silais " +
@@ -172,7 +173,7 @@ public class NotificacionDiariaService {
         q.setString("silais", silais);
         q.setString("municipio", municipio);
         q.setParameter("unidad",unidad);
-        q.setString("fecha", fecha);
+        q.setParameter("fecha", fecha);
         return q.list();
     }
 

@@ -303,7 +303,7 @@
                     name="codPato" id="codPato" class="select2 sel">
                 <option value=""></option>
                 <c:forEach items="${patologias}" var="pato">
-                    <option value="${pato.codigo}">${pato.nombre}</option>
+                    <option value="${pato.codigo}">${pato.codigo} - ${pato.nombre}</option>
                 </c:forEach>
             </select>
         </div>

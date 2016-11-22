@@ -434,8 +434,8 @@ public class NotificacionDiariaController {
                                                             @RequestParam(value = "fecha", required = true) String fecha
                                                             ) throws Exception {
         logger.info("Obteniendo los eventos de notificaciones diarias segun parámetros en JSON");
-
-        return notifacionDiariaService.getEventsByParams(silais, municipio,unidad, fecha);
+        Date fecha1 = DateUtil.StringToDate(fecha, "dd/MM/yyyy");
+        return notifacionDiariaService.getEventsByParams(silais, municipio,unidad, fecha1);
     }
 
     /**
@@ -451,7 +451,8 @@ public class NotificacionDiariaController {
                                               @RequestParam(value = "fecha", required = true) String fecha,
                                               @RequestParam(value = "pato", required = false) String pato) throws Exception {
         logger.info("Obteniendo los eventos de notificaciones diarias segun parámetros en JSON");
-        return notifacionDiariaService.getEventsByParams1(silais, municipio,unidad, fecha, pato);
+        Date fecha1 = DateUtil.StringToDate(fecha, "dd/MM/yyyy");
+        return notifacionDiariaService.getEventsByParams1(silais, municipio,unidad, fecha1, pato);
     }
 
 
@@ -490,8 +491,8 @@ public class NotificacionDiariaController {
                                               @RequestParam(value = "fecha", required = true) String fecha
     ) throws Exception {
         logger.info("Obteniendo los eventos de notificaciones diarias segun parámetros en JSON");
-
-        return notifacionDiariaService.getEventNotiD(silais, municipio,unidad, fecha);
+        Date fecha1 = DateUtil.StringToDate(fecha, "dd/MM/yyyy");
+        return notifacionDiariaService.getEventNotiD(silais, municipio,unidad, fecha1);
     }
 
 
@@ -552,8 +553,8 @@ public class NotificacionDiariaController {
                 String[] fe = fecha.split("-");
                     String dia = fe[2];
                     String mes = fe[1];
-                    String año = fe[0];
-                    fechaFinal = dia + "/" + mes + "/" + año;
+                    String anio = fe[0];
+                    fechaFinal = dia + "/" + mes + "/" + anio;
             }
 
             mav.addObject("entidades", entidades);

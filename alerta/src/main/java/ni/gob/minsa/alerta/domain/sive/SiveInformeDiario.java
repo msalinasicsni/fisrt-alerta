@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.domain.sive;
 
 import ni.gob.minsa.alerta.domain.audit.Auditable;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -50,6 +51,7 @@ public class SiveInformeDiario implements Serializable, Auditable {
 
     @Id
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @javax.persistence.Column(name = "FECHA", nullable = false, insertable = true, updatable = true)
     public Date getFechaNotificacion() {
         return fechaNotificacion;

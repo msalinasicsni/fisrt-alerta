@@ -298,7 +298,7 @@ var EnterNotificationD = function () {
                             '" > <i class="fa fa-times"></i>';
 
                         table1.fnAddData(
-                            [response[i].patologia.nombre, response[i].totalm,response[i].totalf, btnEdit, btnDelete]);
+                            [response[i].patologia.codigo + " - " + response[i].patologia.nombre, response[i].totalm,response[i].totalf, btnEdit, btnDelete]);
                     }
 
                 })
