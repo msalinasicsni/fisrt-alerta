@@ -75,7 +75,7 @@
                     <li class="paciente">
                         <a href="<spring:url value="/paciente/create" htmlEscape="true "/>" title="<spring:message code="menu.paciente" />"><i class="fa fa-lg fa-fw fa-user"></i> <spring:message code="menu.paciente" /></a>
                     </li>
-		    <li class="rotavirus">
+		            <li class="rotavirus">
                         <a href="<spring:url value="/rotavirus/create" htmlEscape="true "/>" title="<spring:message code="menu.rotavirus" />"><i class="fa fa-lg fa-fw fa-stethoscope"></i> <spring:message code="menu.rotavirus" /></a>
                     </li>
                     <li class="buscar">
@@ -83,6 +83,18 @@
                     </li>
                 </ul>
             </li>
+            <li class="notificacionD">
+                <a href="#" title="<spring:message code="menu.daily.reporting" />"><i class="fa fa-lg fa-fw fa-file"></i> <span class="menu-item-parent"><spring:message code="menu.daily.reporting" /></span></a>
+                <ul>
+                    <li class="createNotiD">
+                        <a href="<spring:url value="/notificacionDiaria/init" htmlEscape="true "/>" title="<spring:message code="menu.create.edit.notiD" />"><i class="fa fa-lg fa-fw fa-edit"></i> <spring:message code="menu.create.edit.notiD" /></a>
+                    </li>
+                    <li class="buscarNotiD">
+                        <a href="<spring:url value="/notificacionDiaria/initSearch" htmlEscape="true "/>" title="<spring:message code="menu.search.notiD" />"><i class="fa fa-lg fa-fw fa-search"></i> <spring:message code="menu.search.notiD" /></a>
+                    </li>
+                </ul>
+            </li>
+
             <li class="samples">
                 <a href="#" title="<spring:message code="menu.samples" />"><i class="fa fa-lg fa-fw fa-flask"></i> <span class="menu-item-parent"><spring:message code="menu.samples" /></span></a>
                 <ul>
