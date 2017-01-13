@@ -417,6 +417,8 @@ public class expose {
         logger.info("Obteniendo las unidades primarias y Hospitales por municipio y Silais en JSON");
         return unidadesService.getPUnitsHospByMuniAndSilais(codMunicipio, HealthUnitType.UnidadesPrimHosp.getDiscriminator().split(","), codSilais);
     }
-
-
+    @RequestMapping(value = "validarMenu", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody String validarMenu(HttpServletRequest request){
+        return seguridadService.obtenerMenu(request);
+    }
 }
