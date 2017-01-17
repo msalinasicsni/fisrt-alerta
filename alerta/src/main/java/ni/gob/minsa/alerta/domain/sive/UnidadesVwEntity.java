@@ -21,7 +21,7 @@ public class UnidadesVwEntity implements Serializable {
     private EntidadesAdtvas entidadAdtva;
     private long categoria;
     private long codigo;
-    private String pasivo;
+    private char pasivo;
     private String zona;
     private Long unidadAdtva;
 
@@ -89,12 +89,12 @@ public class UnidadesVwEntity implements Serializable {
 
 
     @Basic
-    @Column(name = "PASIVO")
-    public String getPasivo() {
+    @Column(name = "PASIVO", length = 1)
+    public char getPasivo() {
         return pasivo;
     }
 
-    public void setPasivo(String pasivo) {
+    public void setPasivo(char pasivo) {
         this.pasivo = pasivo;
     }
 
