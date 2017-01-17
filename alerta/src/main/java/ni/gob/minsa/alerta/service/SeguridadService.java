@@ -65,14 +65,11 @@ public class SeguridadService {
                 }
             }
 
-          infoSesion = new InfoSesion();
-            infoSesion.setUsuarioId(25);
-            infoSesion.setNombre("usuariosis1");
-            infoSesion.setUsername("usuariosis1");
-            /*infoSesion.setUsuarioId(170);
-            infoSesion.setNombre("Adm Alerta");
-            infoSesion.setUsername("alerta");*/
-            infoSesion.setSistemaSesion("ALERTA");
+            /*infoSesion = new InfoSesion();
+            infoSesion.setUsuarioId(4772);
+            infoSesion.setNombre("Admin Alerta mok");
+            infoSesion.setUsername("admalerta");
+            infoSesion.setSistemaSesion("ALERTA");*/
             ctx.close();
         }catch(Exception e){
             System.out.println("---- EXCEPTION");
@@ -111,7 +108,7 @@ public class SeguridadService {
         String urlRetorno="";
         if (seguridadHabilitada()) { //Si es false no se realiza ninguna validación
             if (!esUsuarioAutenticado(request.getSession())) {
-                String bdSessionId = "a";  // esta variable dejarla en blanco par activar la seguridad
+                String bdSessionId = "";  // esta variable dejarla en blanco par activar la seguridad
                 Cookie[] cookies = request.getCookies();
                 if (cookies != null) {
                     for (int i = 0; i < cookies.length; i++) {
@@ -207,7 +204,7 @@ public class SeguridadService {
      * @return TRUE: si es de nivel central  o la seguridad esta deshabilitada, FALSE: no es nivel central o sucedió un error
      */
     public boolean esUsuarioNivelCentral(long pUsuarioId, String pSistema) {
-        boolean nivelCentral=false;
+        boolean nivelCentral=true;
         if (seguridadHabilitada()) {
             try {
                 InitialContext ctx = new InitialContext();
@@ -240,7 +237,7 @@ public class SeguridadService {
                 idUsuario = infoSesion.getUsuarioId();
             }
         }else{
-            idUsuario= 25L;
+            idUsuario= 4772L;///usuario alerta en pruebas
         }
 
         return idUsuario;
@@ -275,7 +272,7 @@ public class SeguridadService {
         try{
             String urlValidacion = validarLogin(request);
             if (urlValidacion.isEmpty()){
-                if (request.getSession().getAttribute("menuSistema")==null) {
+                //if (request.getSession().getAttribute("menuSistema")==null) {
                     InitialContext ctx = new InitialContext();
                     PortalService portalService = (PortalService) ctx.lookup(ConstantsSecurity.EJB_BIN);
                     long idUsuario=obtenerIdUsuario(request);
@@ -283,11 +280,11 @@ public class SeguridadService {
                     String contextPath = request.getContextPath();
 
                     menuSistema = armarOpcionesMenu(arbolMenuSistema, contextPath);
-                    request.getSession().setAttribute("menuSistema", menuSistema);
+                    //request.getSession().setAttribute("menuSistema", menuSistema);
                     ctx.close();
-                }else {
-                    menuSistema = request.getSession().getAttribute("menuSistema").toString();
-                }
+                //}else {
+                    //menuSistema = request.getSession().getAttribute("menuSistema").toString();
+                //}
             }else{
                 menuSistema = "";
             }
@@ -331,11 +328,15 @@ public class SeguridadService {
             if (!padreSinHijo) {
                 String[] dataOpcionMenu = nombreOpcionMenu.split(",");
 
-                String desCodeMessage = utilityProperties.getPropertie(dataOpcionMenu[1]);
-                if (urlOpcionMenu != null || esItem) {
-                    menu = menu + "<li class=\"" + dataOpcionMenu[0] + "\">\n";
-                    menu = menu + " <a href=\"" + (urlOpcionMenu!=null?contextPath + urlOpcionMenu:"#") + "\" title=\"" + desCodeMessage + "\"><i class=\"fa fa-lg fa-fw " + (dataOpcionMenu.length > 2 ? dataOpcionMenu[2] : "") + "\"></i>" + (!esItem ? "" : "<span class=\"menu-item-parent\">") + desCodeMessage + (!esItem ? "" : "</span>") + "</a>\n";
+                String desCodeMessage = "";
+                if (dataOpcionMenu.length>1){
+                     desCodeMessage = utilityProperties.getPropertie(dataOpcionMenu[1]);
                 }
+                    if (urlOpcionMenu != null || esItem) {
+                        menu = menu + "<li class=\"" + dataOpcionMenu[0] + "\">\n";
+                        menu = menu + " <a href=\"" + (urlOpcionMenu!=null?contextPath + urlOpcionMenu:"#") + "\" title=\"" + desCodeMessage + "\"><i class=\"fa fa-lg fa-fw " + (dataOpcionMenu.length > 2 ? dataOpcionMenu[2] : "") + "\"></i>" + (!esItem ? "" : "<span class=\"menu-item-parent\">") + desCodeMessage + (!esItem ? "" : "</span>") + "</a>\n";
+                    }
+
             }
             if (hijo.tieneHijos()){
                 menu = menu + "<ul>\n";
@@ -404,35 +405,35 @@ public class SeguridadService {
      */
     public boolean esUsuarioAutorizadoEntidad(Integer pUsuarioId, String pCodigoSis, long pCodEntidad){
         //if (seguridadHabilitada()) {
-            List<EntidadesAdtvas> entidadesAdtvasList = new ArrayList<EntidadesAdtvas>();
-            try {
-                String query = "select distinct ent from EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
-                        "where ent.id = usuent.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuent.usuario.usuarioId and usuent.sistema.id = sis.id " +
-                        "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.codigo = :pCodEntidad and ent.pasivo = :pasivo order by ent.nombre";
-                Query qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
+        List<EntidadesAdtvas> entidadesAdtvasList = new ArrayList<EntidadesAdtvas>();
+        try {
+            String query = "select distinct ent from EntidadesAdtvas ent, UsuarioEntidad usuent, Usuarios usu, Sistema sis " +
+                    "where ent.id = usuent.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuent.usuario.usuarioId and usuent.sistema.id = sis.id " +
+                    "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.codigo = :pCodEntidad and ent.pasivo = :pasivo order by ent.nombre";
+            Query qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
+            qrUsuarioEntidad.setParameter("pUsuarioId", pUsuarioId);
+            qrUsuarioEntidad.setParameter("pCodigoSis", pCodigoSis);
+            qrUsuarioEntidad.setParameter("pCodEntidad", pCodEntidad);
+            qrUsuarioEntidad.setParameter("pasivo", '0');
+            entidadesAdtvasList = qrUsuarioEntidad.list();
+
+            //si no tiene entidades asignadas directamente, se obtienen las entidades asociadas a las unidades de salud asignadas directamente, y que pertenenzcan a la entidad que se valida
+            if (entidadesAdtvasList.size()<=0){
+                query = "select distinct ent from EntidadesAdtvas ent, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
+                        "where ent.id = usuni.unidad.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                        "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo and usuni.unidad.pasivo = :pasivo " +
+                        "and ent.id = :pCodEntidad order by ent.nombre";
+                qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
                 qrUsuarioEntidad.setParameter("pUsuarioId", pUsuarioId);
                 qrUsuarioEntidad.setParameter("pCodigoSis", pCodigoSis);
                 qrUsuarioEntidad.setParameter("pCodEntidad", pCodEntidad);
                 qrUsuarioEntidad.setParameter("pasivo", '0');
                 entidadesAdtvasList = qrUsuarioEntidad.list();
-
-                //si no tiene entidades asignadas directamente, se obtienen las entidades asociadas a las unidades de salud asignadas directamente, y que pertenenzcan a la entidad que se valida
-                if (entidadesAdtvasList.size()<=0){
-                    query = "select distinct ent from EntidadesAdtvas ent, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
-                            "where ent.id = usuni.unidad.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
-                            "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo and usuni.unidad.pasivo = :pasivo " +
-                            "and ent.id = :pCodEntidad order by ent.nombre";
-                    qrUsuarioEntidad = sessionFactory.getCurrentSession().createQuery(query);
-                    qrUsuarioEntidad.setParameter("pUsuarioId", pUsuarioId);
-                    qrUsuarioEntidad.setParameter("pCodigoSis", pCodigoSis);
-                    qrUsuarioEntidad.setParameter("pCodEntidad", pCodEntidad);
-                    qrUsuarioEntidad.setParameter("pasivo", '0');
-                    entidadesAdtvasList = qrUsuarioEntidad.list();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-            return entidadesAdtvasList.size() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return entidadesAdtvasList.size() > 0;
         //}else return true;
     }
 
@@ -470,36 +471,36 @@ public class SeguridadService {
      */
     public boolean esUsuarioAutorizadoUnidad(Integer pUsuarioId, String pCodigoSis, long pCodUnidad){
         //if (seguridadHabilitada()) {
-            List<Unidades> unidadesList = new ArrayList<Unidades>();
-            try {
-                String query = "select uni from Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
-                        "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+        List<Unidades> unidadesList = new ArrayList<Unidades>();
+        try {
+            String query = "select uni from Unidades uni, UsuarioUnidad usuni, Usuarios usu, Sistema sis " +
+                    "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                    "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.codigo = :pCodUnidad and uni.pasivo = :pasivo " +
+                    "order by uni.nombre";
+            Query qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
+            qrUsuarioUnidad.setParameter("pUsuarioId", pUsuarioId);
+            qrUsuarioUnidad.setParameter("pCodigoSis", pCodigoSis);
+            qrUsuarioUnidad.setParameter("pCodUnidad", pCodUnidad);
+            qrUsuarioUnidad.setParameter("pasivo", '0');
+            unidadesList = qrUsuarioUnidad.list();
+            //no hay unidades asociadas directamente al usuario, se obtienen todas las unidades del los silais asociados directamente
+            if (unidadesList.size()<=0){
+                query = "select uni from Unidades uni, UsuarioEntidad usuni, Usuarios usu, Sistema sis " +
+                        "where uni.entidadAdtva.entidadAdtvaId = usuni.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
                         "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.codigo = :pCodUnidad and uni.pasivo = :pasivo " +
                         "order by uni.nombre";
-                Query qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
+
+                qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
                 qrUsuarioUnidad.setParameter("pUsuarioId", pUsuarioId);
                 qrUsuarioUnidad.setParameter("pCodigoSis", pCodigoSis);
                 qrUsuarioUnidad.setParameter("pCodUnidad", pCodUnidad);
                 qrUsuarioUnidad.setParameter("pasivo", '0');
                 unidadesList = qrUsuarioUnidad.list();
-                //no hay unidades asociadas directamente al usuario, se obtienen todas las unidades del los silais asociados directamente
-                if (unidadesList.size()<=0){
-                    query = "select uni from Unidades uni, UsuarioEntidad usuni, Usuarios usu, Sistema sis " +
-                            "where uni.entidadAdtva.entidadAdtvaId = usuni.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
-                            "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.codigo = :pCodUnidad and uni.pasivo = :pasivo " +
-                            "order by uni.nombre";
-
-                    qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
-                    qrUsuarioUnidad.setParameter("pUsuarioId", pUsuarioId);
-                    qrUsuarioUnidad.setParameter("pCodigoSis", pCodigoSis);
-                    qrUsuarioUnidad.setParameter("pCodUnidad", pCodUnidad);
-                    qrUsuarioUnidad.setParameter("pasivo", '0');
-                    unidadesList = qrUsuarioUnidad.list();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-            return unidadesList.size() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return unidadesList.size() > 0;
         //}else return true;
     }
 
@@ -643,7 +644,7 @@ public class SeguridadService {
                 "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo " +
                 "and muni.pasivo = :pasivo and  uni.entidadAdtva.codigo = :pCodSilais and uni.municipio.codigoNacional = muni.codigoNacional " +
                 "order by muni.nombre";
-         Session session = sessionFactory.getCurrentSession();
+        Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
         q.setParameter("pCodSilais", pCodSilais);
         q.setParameter("pCodigoSis",pCodigoSis);
@@ -812,7 +813,7 @@ public class SeguridadService {
                     }*/
                     break;
                 }
-               default: break;
+                default: break;
             }
             query += "order by a.orden asc";
             Query q = session.createQuery(query);
