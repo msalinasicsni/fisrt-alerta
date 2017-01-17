@@ -28,17 +28,7 @@
     <bean id="sessionFactory"  class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
 				 p:dataSource-ref="dataSource"
 				 p:configLocation="${hibernate.config}"
-				 p:packagesToScan="ni.gob.minsa.alerta">
-       
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.connection.url">jdbc:oracle:thin:@//localhost:1521</prop>
-                <prop key="hibernate.connection.driver_class">oracle.jdbc.OracleDriver</prop>
-                <prop key="hibernate.connection.username">alerta</prop>
-                <prop key="hibernate.connection.password">alerta123</prop>
-            </props>
-        </property>
-    </bean>
+				 p:packagesToScan="ni.gob.minsa.alerta"/>
 
 	<!-- Declare a datasource that has pooling capabilities-->	 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"

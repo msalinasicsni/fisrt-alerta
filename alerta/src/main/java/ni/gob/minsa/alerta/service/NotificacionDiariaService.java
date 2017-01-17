@@ -198,7 +198,7 @@ public class NotificacionDiariaService {
             criteria.createAlias("municipio", "muni");
             criteria.add(Restrictions.eq("muni.divisionpoliticaId", codMunicipio));
             criteria.add(Restrictions.eq("entidadAdtva.codigo",codSilais));
-            criteria.add(Restrictions.eq("pasivo","0"));
+            criteria.add(Restrictions.eq("pasivo",'0'));
             Long[] dataTipUnidades = new Long[codTiposUnidades.length];
             for(int i=0; i < codTiposUnidades.length; i++){
                 dataTipUnidades[i] = Long.parseLong(codTiposUnidades[i]);
@@ -215,11 +215,11 @@ public class NotificacionDiariaService {
     }
 
     /**
-     * Método que obtiene todas las unidades de salud a las que tiene autorización el usuario en el sistema según el SILAIS y municipio
+     * Mï¿½todo que obtiene todas las unidades de salud a las que tiene autorizaciï¿½n el usuario en el sistema segï¿½n el SILAIS y municipio
      * @param pUsuarioId id del usuario autenticado
-     * @param pCodSilais Código del silais a filtrar
-     * @param pCodMunicipio Código del municio a filtrar
-     * @param pCodigoSis código del sistema, ALERTA
+     * @param pCodSilais Cï¿½digo del silais a filtrar
+     * @param pCodMunicipio Cï¿½digo del municio a filtrar
+     * @param pCodigoSis cï¿½digo del sistema, ALERTA
      * @param tipoUnidades tipos de unidades a carga. Eje: Primarias , Primarias+Hospitales
      * @return List<Unidades>
      */
@@ -234,7 +234,7 @@ public class NotificacionDiariaService {
             Query qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
             qrUsuarioUnidad.setParameter("pUsuarioId",pUsuarioId);
             qrUsuarioUnidad.setParameter("pCodigoSis",pCodigoSis);
-            qrUsuarioUnidad.setParameter("pasivo", "0");
+            qrUsuarioUnidad.setParameter("pasivo", '0');
             qrUsuarioUnidad.setParameter("pCodSilais", pCodSilais);
             qrUsuarioUnidad.setParameter("pCodMunicipio",pCodMunicipio);
             unidadesList = qrUsuarioUnidad.list();
@@ -247,7 +247,7 @@ public class NotificacionDiariaService {
                 qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
                 qrUsuarioUnidad.setParameter("pUsuarioId",pUsuarioId);
                 qrUsuarioUnidad.setParameter("pCodigoSis",pCodigoSis);
-                qrUsuarioUnidad.setParameter("pasivo", "0");
+                qrUsuarioUnidad.setParameter("pasivo", '0');
                 qrUsuarioUnidad.setParameter("pCodSilais", pCodSilais);
                 qrUsuarioUnidad.setParameter("pCodMunicipio",pCodMunicipio);
                 unidadesList = qrUsuarioUnidad.list();
