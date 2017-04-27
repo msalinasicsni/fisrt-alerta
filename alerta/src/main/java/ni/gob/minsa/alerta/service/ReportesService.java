@@ -482,7 +482,7 @@ public class ReportesService {
                         " group by noti.codSilaisAtencion.codigo),0) as noti, " + //TOTAL RUTINAS
                         " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion and noti.codSilaisAtencion.codigo = ent.codigo " +
-                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false " +
                         sqlTipoNoti + sqlFechas +
                         " group by noti.codSilaisAtencion.codigo) as dx, " +
                         " coalesce( " + //TOTAL RUTINAS CON RESULTADO
@@ -492,7 +492,7 @@ public class ReportesService {
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                         " and  noti.codSilaisAtencion.codigo = ent.codigo " +
                         sqlTipoNoti + sqlFechas +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false),0) as conresultado, " +
                         " coalesce( " + //TOTAL RUTINAS SIN RESULTADO
                         " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
@@ -501,11 +501,11 @@ public class ReportesService {
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                         sqlTipoNoti + sqlFechas +
                         " and  noti.codSilaisAtencion.codigo = ent.codigo " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false),0) as sinresultado, " + //TOTAL ESTUDIOS
                         " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudEstudio est " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion and noti.codSilaisAtencion.codigo = ent.codigo " +
-                        " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                        " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and est.anulado = false and mx.anulada = false " +
                         sqlTipoNoti + sqlFechas +
                         " group by noti.codSilaisAtencion.codigo) as est, " +
                         " coalesce( " + //TOTAL ESTUDIOS CON RESULTADO
@@ -515,7 +515,7 @@ public class ReportesService {
                         " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                         " and  noti.codSilaisAtencion.codigo = ent.codigo " +
                         sqlTipoNoti + sqlFechas +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and est.anulado = false " +
                         " and mx.anulada = false),0) as est_conresultado, " +
                         " coalesce( " + //TOTAL ESTUDIOS SIN RESULTADO
                         " (select  sum(case est.aprobada when false then 1 else 0 end) " +
@@ -524,7 +524,7 @@ public class ReportesService {
                         " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                         sqlTipoNoti + sqlFechas +
                         " and  noti.codSilaisAtencion.codigo = ent.codigo " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and est.anulado = false " +
                         " and mx.anulada = false),0) as est_sinresultado " +
                         " from EntidadesAdtvas ent " +
                         " where ent.pasivo = 0 " +
@@ -535,7 +535,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion " +
                         sqlTipoNoti +sqlFechas +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false " +
                         " and dx.aprobada = true " +
                         " and noti.codSilaisAtencion is not null " +
@@ -546,7 +546,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion " +
                         sqlTipoNoti +sqlFechas +
                         " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and est.anulado = false " +
                         " and mx.anulada = false " +
                         " and est.aprobada = true " +
                         " and noti.codSilaisAtencion is not null " +
@@ -563,7 +563,7 @@ public class ReportesService {
                         " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                         " and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = div.divisionpoliticaId " +
-                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false " +
                         sqlTipoNoti +sqlFechas +
                         " group by noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId) as dx, " +
                         " coalesce( " +
@@ -573,7 +573,7 @@ public class ReportesService {
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                         " and  noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = div.divisionpoliticaId " +
                         sqlTipoNoti +sqlFechas +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false),0) as conresultado, " +
                         " coalesce( " +
                         " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
@@ -582,12 +582,12 @@ public class ReportesService {
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                         sqlTipoNoti +sqlFechas +
                         " and  noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = div.divisionpoliticaId " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false),0) as sinresultado, " +
                         " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudEstudio est " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                         " and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = div.divisionpoliticaId " +
-                        " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                        " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and est.anulado = false and mx.anulada = false " +
                         sqlTipoNoti +sqlFechas +
                         " group by noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId) as estudios, " +
                         " coalesce( " +
@@ -597,7 +597,7 @@ public class ReportesService {
                         " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                         " and  noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = div.divisionpoliticaId " +
                         sqlTipoNoti +sqlFechas +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and est.anulado = false " +
                         " and mx.anulada = false),0) as est_conresultado, " +
                         " coalesce( " +
                         " (select  sum(case est.aprobada when false then 1 else 0 end) " +
@@ -606,7 +606,7 @@ public class ReportesService {
                         " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                         sqlTipoNoti +sqlFechas +
                         " and  noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = div.divisionpoliticaId " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and est.anulado = false " +
                         " and mx.anulada = false),0) as est_sinresultado " +
                         " from Divisionpolitica div " +
                         "where div.dependencia is null and div.pasivo = '0'" +
@@ -617,7 +617,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion " +
                         sqlTipoNoti +sqlFechas +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false " +
                         " and dx.aprobada = true " +
                         " and noti.codUnidadAtencion is not null " +
@@ -628,7 +628,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion " +
                         sqlTipoNoti +sqlFechas +
                         " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and est.anulado = false " +
                         " and mx.anulada = false " +
                         " and est.aprobada = true " +
                         " and noti.codUnidadAtencion is not null " +
@@ -660,7 +660,7 @@ public class ReportesService {
                     " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                     " and noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
-                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false " +
                     sqlTipoNoti +sqlFechas +
                     " group by noti.codUnidadAtencion.municipio.divisionpoliticaId), " +
                     " coalesce( " +
@@ -670,7 +670,7 @@ public class ReportesService {
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                     " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
                     sqlTipoNoti +sqlFechas +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false),0) as conresultado, " +
                     " coalesce( " +
                     " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
@@ -679,12 +679,12 @@ public class ReportesService {
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                     sqlTipoNoti +sqlFechas +
                     " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false),0) as sinresultado, " +
                     " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudEstudio est " +
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                     " and noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
-                    " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                    " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and est.anulado = false and mx.anulada = false " +
                     sqlTipoNoti +sqlFechas +
                     " group by noti.codUnidadAtencion.municipio.divisionpoliticaId) as estudios, " +
                     " coalesce( " +
@@ -694,7 +694,7 @@ public class ReportesService {
                     " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                     " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
                     sqlTipoNoti +sqlFechas +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and est.anulado = false " +
                     " and mx.anulada = false),0) as est_conresultado, " +
                     " coalesce( " +
                     " (select  sum(case est.aprobada when false then 1 else 0 end) " +
@@ -703,7 +703,7 @@ public class ReportesService {
                     " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                     sqlTipoNoti +sqlFechas +
                     " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and est.anulado = false " +
                     " and mx.anulada = false),0) as est_sinresultado " +
                     " from Divisionpolitica div " +
                     "where div.dependenciaSilais.entidadAdtvaId = :codSilais " +
@@ -714,7 +714,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion " +
                     sqlTipoNoti +sqlFechas +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false " +
                     " and dx.aprobada = true " +
                     " and noti.codUnidadAtencion.municipio.dependenciaSilais.entidadAdtvaId = :codSilais " +
@@ -725,7 +725,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion " +
                     sqlTipoNoti +sqlFechas +
                     " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and est.anulado = false " +
                     " and mx.anulada = false " +
                     " and est.aprobada = true " +
                     " and noti.codUnidadAtencion.municipio.dependenciaSilais.entidadAdtvaId = :codSilais " +
@@ -760,7 +760,7 @@ public class ReportesService {
                     " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                     " and noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
-                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false " +
                     sqlTipoNoti +sqlFechas +
                     " group by noti.codUnidadAtencion.municipio.divisionpoliticaId) as dx, " +
                     " coalesce( " +
@@ -770,7 +770,7 @@ public class ReportesService {
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                     " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
                     sqlTipoNoti +sqlFechas +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false),0) as conresultado, " +
                     " coalesce( " +
                     " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
@@ -779,12 +779,12 @@ public class ReportesService {
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                     sqlTipoNoti +sqlFechas +
                     " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false),0) as sinresultado, " +
                     " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudEstudio est " +
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                     " and noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
-                    " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                    " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and est.anulado = false and mx.anulada = false " +
                     sqlTipoNoti +sqlFechas +
                     " group by noti.codUnidadAtencion.municipio.divisionpoliticaId) as estudios, " +
                     " coalesce( " +
@@ -794,7 +794,7 @@ public class ReportesService {
                     " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                     " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
                     sqlTipoNoti +sqlFechas +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and est.anulado = false " +
                     " and mx.anulada = false),0) as est_conresultado, " +
                     " coalesce( " +
                     " (select  sum(case est.aprobada when false then 1 else 0 end) " +
@@ -803,7 +803,7 @@ public class ReportesService {
                     " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                     sqlTipoNoti +sqlFechas +
                     " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and est.anulado = false " +
                     " and mx.anulada = false),0) as est_sinresultado " +
                     " from Divisionpolitica div " +
                     "where div.dependencia.divisionpoliticaId = :codDepartamento " +
@@ -814,7 +814,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion " +
                     sqlTipoNoti +sqlFechas +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false " +
                     " and dx.aprobada = true " +
                     " and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = :codDepartamento " +
@@ -825,7 +825,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion " +
                     sqlTipoNoti +sqlFechas +
                     " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and est.anulado = false " +
                     " and mx.anulada = false " +
                     " and est.aprobada = true " +
                     " and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = :codDepartamento " +
@@ -861,7 +861,7 @@ public class ReportesService {
                     " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                     " and noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false " +
                     sqlTipoNoti +sqlFechas +
                     " group by  noti.codUnidadAtencion.unidadId) as dx, " +
                     " coalesce( " +
@@ -871,7 +871,7 @@ public class ReportesService {
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                     " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
                     sqlTipoNoti +sqlFechas +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false),0) as conresultado, " +
                     " coalesce( " +
                     " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
@@ -880,7 +880,7 @@ public class ReportesService {
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                     sqlTipoNoti +sqlFechas +
                     " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false),0) as sinresultado, " +
                     " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudEstudio est " +
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
@@ -895,7 +895,7 @@ public class ReportesService {
                     " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                     " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
                     sqlTipoNoti +sqlFechas +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and est.anulado = false " +
                     " and mx.anulada = false),0) as est_conresultado, " +
                     " coalesce( " +
                     " (select  sum(case est.aprobada when false then 1 else 0 end) " +
@@ -904,7 +904,7 @@ public class ReportesService {
                     " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                     sqlTipoNoti +sqlFechas +
                     " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and est.anulado = false " +
                     " and mx.anulada = false),0) as est_sinresultado " +
                     "FROM Unidades uni " +
                     "where uni.municipio.divisionpoliticaId = :codMunicipio" +
@@ -918,7 +918,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion " +
                     sqlTipoNoti +sqlFechas +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false " +
                     " and dx.aprobada = true " +
                     " and noti.codUnidadAtencion.municipio.divisionpoliticaId = :codMunicipio " +
@@ -929,7 +929,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion " +
                     sqlTipoNoti +sqlFechas +
                     " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and est.anulado = false " +
                     " and mx.anulada = false " +
                     " and est.aprobada = true " +
                     " and noti.codUnidadAtencion.municipio.divisionpoliticaId = :codMunicipio " +
@@ -966,7 +966,7 @@ public class ReportesService {
                         " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                         " and noti.codUnidadAtencion.codigo =  uni.codigo " +
-                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false " +
                         sqlTipoNoti +sqlFechas +
                         " group by  noti.codUnidadAtencion.unidadId) as dx, " +
                         " coalesce( " +
@@ -976,7 +976,7 @@ public class ReportesService {
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                         " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
                         sqlTipoNoti +sqlFechas +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false),0) as conresultado, " +
                         " coalesce( " +
                         " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
@@ -985,12 +985,12 @@ public class ReportesService {
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                         sqlTipoNoti +sqlFechas +
                         " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false),0) as sinresultado, " +
                         " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudEstudio est " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                         " and noti.codUnidadAtencion.codigo =  uni.codigo " +
-                        " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                        " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and est.anulado = false and mx.anulada = false " +
                         sqlTipoNoti +sqlFechas +
                         " group by  noti.codUnidadAtencion.unidadId) as estudios, " +
                         " coalesce( " +
@@ -1000,7 +1000,7 @@ public class ReportesService {
                         " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                         " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
                         sqlTipoNoti +sqlFechas +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and est.anulado = false " +
                         " and mx.anulada = false),0) as est_conresultado, " +
                         " coalesce( " +
                         " (select  sum(case est.aprobada when false then 1 else 0 end) " +
@@ -1009,7 +1009,7 @@ public class ReportesService {
                         " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                         sqlTipoNoti +sqlFechas +
                         " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and est.anulado = false " +
                         " and mx.anulada = false),0) as est_sinresultado " +
                         "FROM Unidades uni " +
                         "where (uni.unidadId = :codUnidad" +
@@ -1024,7 +1024,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion " +
                         sqlTipoNoti +sqlFechas +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false " +
                         " and dx.aprobada = true " +
                         " and (noti.codUnidadAtencion.unidadId = :codUnidad " +
@@ -1036,7 +1036,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion " +
                         sqlTipoNoti +sqlFechas +
                         " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and est.anulado = false " +
                         " and mx.anulada = false " +
                         " and est.aprobada = true " +
                         " and (noti.codUnidadAtencion.unidadId = :codUnidad " +
@@ -1054,7 +1054,7 @@ public class ReportesService {
                         " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                         " and noti.codUnidadAtencion.codigo =  uni.codigo " +
-                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false " +
                         sqlTipoNoti +sqlFechas +
                         " group by  noti.codUnidadAtencion.unidadId) as dx, " +
                         " coalesce( " +
@@ -1064,7 +1064,7 @@ public class ReportesService {
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                         " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
                         sqlTipoNoti +sqlFechas +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false),0) as conresultado, " +
                         " coalesce( " +
                         " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
@@ -1073,12 +1073,12 @@ public class ReportesService {
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                         sqlTipoNoti +sqlFechas +
                         " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false),0) as sinresultado, " +
                         " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudEstudio est " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                         " and noti.codUnidadAtencion.codigo =  uni.codigo " +
-                        " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                        " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and est.anulado = false and mx.anulada = false " +
                         sqlTipoNoti +sqlFechas +
                         " group by  noti.codUnidadAtencion.unidadId) as estudios, " +
                         " coalesce( " +
@@ -1088,7 +1088,7 @@ public class ReportesService {
                         " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                         " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
                         sqlTipoNoti +sqlFechas +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and est.anulado = false " +
                         " and mx.anulada = false),0) as est_conresultado, " +
                         " coalesce( " +
                         " (select  sum(case est.aprobada when false then 1 else 0 end) " +
@@ -1097,7 +1097,7 @@ public class ReportesService {
                         " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                         sqlTipoNoti +sqlFechas +
                         " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and est.anulado = false " +
                         " and mx.anulada = false),0) as est_sinresultado " +
                         "FROM Unidades uni " +
                         "where uni.unidadId = :codUnidad" +
@@ -1111,7 +1111,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion " +
                         sqlTipoNoti +sqlFechas +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false " +
                         " and dx.aprobada = true " +
                         " and noti.codUnidadAtencion.unidadId = :codUnidad " +
@@ -1122,7 +1122,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion " +
                         sqlTipoNoti +sqlFechas +
                         " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
-                        " and noti.pasivo = false " +
+                        " and noti.pasivo = false and est.anulado = false " +
                         " and mx.anulada = false " +
                         " and est.aprobada = true " +
                         " and noti.codUnidadAtencion.unidadId = :codUnidad " +
@@ -1162,7 +1162,7 @@ public class ReportesService {
                     " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                     " and noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false " +
                     sqlTipoNoti +sqlFechas +
                     " group by  noti.codUnidadAtencion.unidadId) as dx, " +
                     " coalesce( " +
@@ -1172,7 +1172,7 @@ public class ReportesService {
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                     " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
                     sqlTipoNoti +sqlFechas +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false),0) as conresultado, " +
                     " coalesce( " +
                     " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
@@ -1181,12 +1181,12 @@ public class ReportesService {
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                     sqlTipoNoti +sqlFechas +
                     " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false),0) as sinresultado, " +
                     " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudEstudio est " +
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                     " and noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and mx.anulada = false " +
+                    " and mx.idTomaMx = est.idTomaMx.idTomaMx and noti.pasivo = false and est.anulado = false and mx.anulada = false " +
                     sqlTipoNoti +sqlFechas +
                     " group by  noti.codUnidadAtencion.unidadId) as estudios, " +
                     " coalesce( " +
@@ -1196,7 +1196,7 @@ public class ReportesService {
                     " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                     " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
                     sqlTipoNoti +sqlFechas +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and est.anulado = false " +
                     " and mx.anulada = false),0) as est_conresultado, " +
                     " coalesce( " +
                     " (select  sum(case est.aprobada when false then 1 else 0 end) " +
@@ -1205,7 +1205,7 @@ public class ReportesService {
                     " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
                     sqlTipoNoti +sqlFechas +
                     " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and est.anulado = false " +
                     " and mx.anulada = false),0) as est_sinresultado " +
                     "FROM Unidades uni " +
                     "where uni.zona = :codZona" +
@@ -1219,7 +1219,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion " +
                     sqlTipoNoti +sqlFechas +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false " +
                     " and dx.aprobada = true " +
                     " and noti.codUnidadAtencion.zona = :codZona " +
@@ -1230,7 +1230,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion " +
                     sqlTipoNoti +sqlFechas +
                     " and mx.idTomaMx = est.idTomaMx.idTomaMx " +
-                    " and noti.pasivo = false " +
+                    " and noti.pasivo = false and est.anulado = false " +
                     " and mx.anulada = false " +
                     " and est.aprobada = true " +
                     " and noti.codUnidadAtencion.zona = :codZona " +
@@ -1640,16 +1640,16 @@ public class ReportesService {
 
         if (filtro.getCodArea().equals("AREAREP|PAIS")){
             queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                    "where noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false  " +
                     " and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " order by noti.fechaRegistro asc");
 
              sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and est.aprobada = false and mx.anulada = false  " +
+                    "where noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false  " +
                     " and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                    " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
+                    " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
                      " and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti " +
                      " and dx.idTomaMx.idNotificacion.fechaRegistro between :fechaInicio and :fechaFin )" +
                     " order by noti.fechaRegistro asc";
@@ -1657,16 +1657,16 @@ public class ReportesService {
         }
         else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
             queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                    "where noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false  " +
                     "and noti.codSilaisAtencion.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " order by noti.fechaRegistro asc");
 
             sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and est.aprobada = false and mx.anulada = false  " +
+                    "where noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false  " +
                     "and noti.codSilaisAtencion.entidadAdtvaId = :codSilais and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                    " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
+                    " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
                     " and dx.idTomaMx.idNotificacion.codSilaisAtencion.entidadAdtvaId = :codSilais and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti " +
                     " and dx.idTomaMx.idNotificacion.fechaRegistro between :fechaInicio and :fechaFin )" +
                     " order by noti.fechaRegistro asc";
@@ -1676,18 +1676,18 @@ public class ReportesService {
         }
         else if (filtro.getCodArea().equals("AREAREP|DEPTO")){
             queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                    "where noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false  " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     "and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId =:codDepartamento" +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " order by noti.fechaRegistro asc");
 
             sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and est.aprobada = false and mx.anulada = false  " +
+                    "where noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false  " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     "and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId =:codDepartamento" +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                    " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
+                    " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
                     " and dx.idTomaMx.idNotificacion.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = :codDepartamento and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti " +
                     " and dx.idTomaMx.idNotificacion.fechaRegistro between :fechaInicio and :fechaFin )" +
                     " order by noti.fechaRegistro asc";
@@ -1697,18 +1697,18 @@ public class ReportesService {
         }
         else if (filtro.getCodArea().equals("AREAREP|MUNI")){
             queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                    "where noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false  " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     "and noti.codUnidadAtencion.municipio.divisionpoliticaId =:codMunicipio" +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " order by noti.fechaRegistro asc");
 
             sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and est.aprobada = false and mx.anulada = false  " +
+                    "where noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false  " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     "and noti.codUnidadAtencion.municipio.divisionpoliticaId =:codMunicipio" +
                     " and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                    " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
+                    " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
                     " and dx.idTomaMx.idNotificacion.codUnidadAtencion.municipio.divisionpoliticaId = :codMunicipio and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti " +
                     " and dx.idTomaMx.idNotificacion.fechaRegistro between :fechaInicio and :fechaFin )" +
                     " order by noti.fechaRegistro asc";
@@ -1719,7 +1719,7 @@ public class ReportesService {
         else if (filtro.getCodArea().equals("AREAREP|UNI")){
             if(filtro.isSubunidades()){
                 queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                        "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                        "where noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false  " +
                         "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                         "and (noti.codUnidadAtencion.unidadId = :codUnidad " +
                         " or noti.codUnidadAtencion.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
@@ -1727,29 +1727,29 @@ public class ReportesService {
                         " order by noti.fechaRegistro asc");
 
                 sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti " +
-                        "where noti.pasivo = false and est.aprobada = false and mx.anulada = false  " +
+                        "where noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false  " +
                         "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                         "and (noti.codUnidadAtencion.unidadId = :codUnidad " +
                         " or noti.codUnidadAtencion.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad ) " + //se toman en cuenta sus unidades dependientes( si las tiene)
                         " ) and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                        " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
+                        " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
                         " and (dx.idTomaMx.idNotificacion.codUnidadAtencion.unidadId = :codUnidad or dx.idTomaMx.idNotificacion.codUnidadAtencion.unidadAdtva in (select uni.codigo from Unidades uni where uni.unidadId = :codUnidad )) " +
                         "and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti and dx.idTomaMx.idNotificacion.fechaRegistro between :fechaInicio and :fechaFin )" +
                         " order by noti.fechaRegistro asc";
             }else{
                 queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                        "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                        "where noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false  " +
                         "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                         "and noti.codUnidadAtencion.unidadId = :codUnidad " +
                         "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                         " order by noti.fechaRegistro asc");
 
                 sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti " +
-                        "where noti.pasivo = false and est.aprobada = false and mx.anulada = false  " +
+                        "where noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false  " +
                         "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                         "and noti.codUnidadAtencion.unidadId = :codUnidad " +
                         "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                        " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
+                        " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
                         " and dx.idTomaMx.idNotificacion.codUnidadAtencion.unidadId = :codUnidad and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti " +
                         " and dx.idTomaMx.idNotificacion.fechaRegistro between :fechaInicio and :fechaFin )" +
                         " order by noti.fechaRegistro asc";
@@ -1760,18 +1760,18 @@ public class ReportesService {
         }
         else if (filtro.getCodArea().equals("AREAREP|ZE")){
             queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  " +
+                    "where noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false  " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     "and noti.codUnidadAtencion.zona = :codZona " +
                     "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                     " order by noti.fechaRegistro asc");
 
             sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and est.aprobada = false and mx.anulada = false  " +
+                    "where noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false  " +
                     "and noti.codTipoNotificacion.codigo = :tipoNoti " +
                     "and noti.codUnidadAtencion.zona = :codZona " +
                     "and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                    " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
+                    " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false "+
                     " and dx.idTomaMx.idNotificacion.codUnidadAtencion.zona = :codZona and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti " +
                     " and dx.idTomaMx.idNotificacion.fechaRegistro between :fechaInicio and :fechaFin )" +
                     " order by noti.fechaRegistro asc";
