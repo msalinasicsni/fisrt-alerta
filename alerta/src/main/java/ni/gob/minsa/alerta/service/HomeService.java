@@ -259,16 +259,16 @@ public class HomeService {
         switch (nivelUsuario) {
             case "PAIS":
                 queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                        "where noti.pasivo = false and dx.aprobada = false and mx.anulada = false  and noti.completa != true  " +
+                        "where noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false  and noti.completa != true  " +
                         //" and noti.codTipoNotificacion.codigo = :tipoNoti " +
                         //" and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                         " order by noti.fechaRegistro asc");
 
                 sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti " +
-                        "where noti.pasivo = false and est.aprobada = false and mx.anulada = false and noti.completa != true  " +
+                        "where noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true  " +
                         //" and noti.codTipoNotificacion.codigo = :tipoNoti " +
                         //" and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                        " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
+                        " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
                         //" and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti " +
                         //" and dx.idTomaMx.idNotificacion.fechaRegistro between :fechaInicio and :fechaFin )" +
                         ") order by noti.fechaRegistro asc";
@@ -277,7 +277,7 @@ public class HomeService {
             case "SILAIS":
                 queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti, UsuarioEntidad ue " +
                         "where noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and " +
-                        "noti.pasivo = false and dx.aprobada = false and mx.anulada = false and noti.completa != true  " +
+                        "noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false and noti.completa != true  " +
                         //"and noti.codSilaisAtencion.entidadAdtvaId = :codSilais " +
                         //"and noti.codTipoNotificacion.codigo = :tipoNoti " +
                         //" and noti.fechaRegistro between :fechaInicio and :fechaFin " +
@@ -285,11 +285,11 @@ public class HomeService {
 
                 sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti, UsuarioEntidad  ue " +
                         "where noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
-                        "noti.pasivo = false and est.aprobada = false and mx.anulada = false and noti.completa != true and noti.completa != true  " +
+                        "noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true and noti.completa != true  " +
                         //"and noti.codSilaisAtencion.entidadAdtvaId = :codSilais " +
                         //"and noti.codTipoNotificacion.codigo = :tipoNoti " +
                         //" and noti.fechaRegistro between :fechaInicio and :fechaFin " +
-                        " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx,UsuarioEntidad  ue2 where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
+                        " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx,UsuarioEntidad  ue2 where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
                         "and dx.idTomaMx.idNotificacion.codSilaisAtencion.entidadAdtvaId = ue2.entidadAdtva.entidadAdtvaId and ue2.usuario.usuarioId = :idUsuario and ue2.sistema.codigo = :sistema and ue2.entidadAdtva.pasivo = '0' "+
                         //" and dx.idTomaMx.idNotificacion.codSilaisAtencion.entidadAdtvaId = :codSilais " +
                         //"and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti " +
@@ -306,27 +306,27 @@ public class HomeService {
                             "where (noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' " +
                             " or noti.codUnidadAtencion.unidadAdtva = uu.unidad.unidadId "+
                             ") and " +
-                            "noti.pasivo = false and dx.aprobada = false and mx.anulada = false and noti.completa != true " +
+                            "noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false and noti.completa != true " +
                             " order by noti.fechaRegistro asc");
 
                     sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti, UsuarioUnidad uu " +
                             "where (noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' " +
                             " or noti.codUnidadAtencion.unidadAdtva = uu.unidad.unidadId "+
                             ") and " +
-                            " noti.pasivo = false and est.aprobada = false and mx.anulada = false and noti.completa != true " +
+                            " noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true " +
                             " and noti.idNotificacion not in (" +
-                            "   select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
+                            "   select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
                             ") order by noti.fechaRegistro asc";
                 } else {
                     queryCasos = session.createQuery(sqlDataSinR + " From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti, UsuarioUnidad uu " +
                             "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
-                            " noti.pasivo = false and dx.aprobada = false and mx.anulada = false and noti.completa != true " +
+                            " noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false and noti.completa != true " +
                             " order by noti.fechaRegistro asc");
 
                     sqlCasosEstudios = sqlDataSinR + " From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti, UsuarioUnidad uu " +
                             "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
-                            "noti.pasivo = false and est.aprobada = false and mx.anulada = false and noti.completa != true " +
-                            " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
+                            "noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true " +
+                            " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
                             ") order by noti.fechaRegistro asc";
                 }
                 queryCasos.setParameter("idUsuario", idUsuario);

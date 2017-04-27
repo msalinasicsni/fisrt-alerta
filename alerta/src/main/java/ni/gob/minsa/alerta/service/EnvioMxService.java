@@ -112,10 +112,12 @@ public class EnvioMxService {
        if(filtro.getCodTipoSolicitud()!=null){
             if(filtro.getCodTipoSolicitud().equals("Estudio")){
                 crit.add(Subqueries.propertyIn("idTomaMx", DetachedCriteria.forClass(DaSolicitudEstudio.class)
+                        .add(Restrictions.eq("anulado",false))
                         .createAlias("idTomaMx", "idTomaMx")
                         .setProjection(Property.forName("idTomaMx.idTomaMx"))));
             }else{
                 crit.add(Subqueries.propertyIn("idTomaMx", DetachedCriteria.forClass(DaSolicitudDx.class)
+                        .add(Restrictions.eq("anulado",false))
                         .createAlias("idTomaMx", "idTomaMx")
                         .setProjection(Property.forName("idTomaMx.idTomaMx"))));
             }
@@ -127,11 +129,13 @@ public class EnvioMxService {
             if(filtro.getCodTipoSolicitud()!= null){
                 if(filtro.getCodTipoSolicitud().equals("Estudio")){
                     crit.add(Subqueries.propertyIn("idTomaMx", DetachedCriteria.forClass(DaSolicitudEstudio.class)
+                            .add(Restrictions.eq("anulado",false))
                             .createAlias("tipoEstudio", "estudio")
                             .add(Restrictions.ilike("estudio.nombre","%" + filtro.getNombreSolicitud() + "%" ))
                             .setProjection(Property.forName("idTomaMx.idTomaMx"))));
                 }else{
                     crit.add(Subqueries.propertyIn("idTomaMx", DetachedCriteria.forClass(DaSolicitudDx.class)
+                            .add(Restrictions.eq("anulado",false))
                             .createAlias("codDx", "dx")
                             .add(Restrictions.ilike("dx.nombre","%" + filtro.getNombreSolicitud() + "%" ))
                             .setProjection(Property.forName("idTomaMx.idTomaMx"))));
@@ -140,10 +144,12 @@ public class EnvioMxService {
 
                 Junction conditGroup = Restrictions.disjunction();
                 conditGroup.add(Subqueries.propertyIn("idTomaMx", DetachedCriteria.forClass(DaSolicitudEstudio.class)
+                        .add(Restrictions.eq("anulado",false))
                         .createAlias("tipoEstudio", "estudio")
                         .add(Restrictions.ilike("estudio.nombre","%" + filtro.getNombreSolicitud() + "%" ))
                         .setProjection(Property.forName("idTomaMx.idTomaMx"))))
                         .add(Subqueries.propertyIn("idTomaMx", DetachedCriteria.forClass(DaSolicitudDx.class)
+                                .add(Restrictions.eq("anulado",false))
                         .createAlias("codDx", "dx")
                         .add(Restrictions.ilike("dx.nombre","%" + filtro.getNombreSolicitud() + "%" ))
                         .setProjection(Property.forName("idTomaMx.idTomaMx"))));
@@ -214,14 +220,14 @@ public class EnvioMxService {
     }
 
     public List<DaSolicitudDx> getSolicitudesDxByIdTomaMx(String idTomaMx){
-        String query = "from DaSolicitudDx where idTomaMx.idTomaMx = :idTomaMx ORDER BY fechaHSolicitud";
+        String query = "from DaSolicitudDx where anulado = false and idTomaMx.idTomaMx = :idTomaMx ORDER BY fechaHSolicitud";
         Query q = sessionFactory.getCurrentSession().createQuery(query);
         q.setParameter("idTomaMx",idTomaMx);
         return q.list();
     }
 
     public List<DaSolicitudEstudio> getSolicitudesEstudioByIdTomaMx(String idTomaMx){
-        String query = "from DaSolicitudEstudio where idTomaMx.idTomaMx = :idTomaMx ORDER BY fechaHSolicitud";
+        String query = "from DaSolicitudEstudio where anulado = false and idTomaMx.idTomaMx = :idTomaMx ORDER BY fechaHSolicitud";
         Query q = sessionFactory.getCurrentSession().createQuery(query);
         q.setParameter("idTomaMx",idTomaMx);
         return q.list();

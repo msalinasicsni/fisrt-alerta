@@ -212,7 +212,7 @@ public class TomaMxService {
      * @return Catalogo_Estudio
      */
     public List<DaSolicitudDx> getRutinasByIdMX(String id){
-        String query = "select sdx from DaSolicitudDx sdx inner join sdx.idTomaMx mx where sdx.labProcesa is null and mx.idTomaMx  = :id";
+        String query = "select sdx from DaSolicitudDx sdx inner join sdx.idTomaMx mx where sdx.anulado = false and sdx.labProcesa is null and mx.idTomaMx  = :id";
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
         q.setString("id", id);
