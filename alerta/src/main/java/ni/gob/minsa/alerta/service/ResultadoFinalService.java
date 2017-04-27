@@ -48,7 +48,7 @@ public class ResultadoFinalService {
                         Restrictions.eq("noti.idNotificacion", idNotificacion))
         );
         crit.add(Restrictions.and(Restrictions.eq("diagnostico.aprobada", true)));
-
+        crit.add(Restrictions.eq("diagnostico.anulado",false));
         return crit.list();
     }
 
@@ -67,6 +67,7 @@ public class ResultadoFinalService {
                         Restrictions.eq("noti.idNotificacion", idNotificacion))
         );
         crit.add(Restrictions.and(Restrictions.eq("estudio.aprobada", true)));
+        crit.add(Restrictions.and(Restrictions.eq("estudio.anulado", false)));
 
         return crit.list();
     }
