@@ -546,13 +546,28 @@
                                                             <option value=""><spring:message code="lbl.select" />...</option>
                                                             <c:forEach items="${comunidadesesRes}" var="comunidadesesRes">
                                                                 <c:choose>
-                                                                    <c:when test="${fn:contains(persona.comuResiCodigo, comunidadesesRes.codigo)}">
-                                                                        <option selected value="${comunidadesesRes.codigo}">${comunidadesesRes.nombre}</option>
+                                                                    <c:when test="${not empty comunidadesesRes.sector.unidad}">
+                                                                        <c:choose>
+                                                                            <c:when test="${fn:contains(persona.comuResiCodigo, comunidadesesRes.codigo)}">
+                                                                                <option selected value="${comunidadesesRes.codigo}">${comunidadesesRes.nombre} - ${comunidadesesRes.sector.unidad.nombre}</option>
+                                                                            </c:when>
+                                                                            <c:otherwise>
+                                                                                <option value="${comunidadesesRes.codigo}">${comunidadesesRes.nombre} - ${comunidadesesRes.sector.unidad.nombre}</option>
+                                                                            </c:otherwise>
+                                                                        </c:choose>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <option value="${comunidadesesRes.codigo}">${comunidadesesRes.nombre}</option>
+                                                                        <c:choose>
+                                                                            <c:when test="${fn:contains(persona.comuResiCodigo, comunidadesesRes.codigo)}">
+                                                                                <option selected value="${comunidadesesRes.codigo}">${comunidadesesRes.nombre} - ${comunidadesesRes.sector.nombre}</option>
+                                                                            </c:when>
+                                                                            <c:otherwise>
+                                                                                <option value="${comunidadesesRes.codigo}">${comunidadesesRes.nombre} - ${comunidadesesRes.sector.nombre}</option>
+                                                                            </c:otherwise>
+                                                                        </c:choose>
                                                                     </c:otherwise>
                                                                 </c:choose>
+
                                                             </c:forEach>
                                                         </select>
                                                     </div>

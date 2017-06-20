@@ -215,10 +215,15 @@ var CreatePerson = function () {
                         var len = data.length;
                         html += '<option value="">' + $("#text_opt_select").val() + '...</option>';
                         for (var i = 0; i < len; i++) {
-                            html += '<option value="' + data[i].codigo + '">'
-                                + data[i].nombre
-                                + '</option>';
-                            // html += '</option>';
+                            if(data[i].sector.unidad != null){
+                                html += '<option value="' + data[i].codigo +  '">'
+                                    + data[i].nombre + " - "+ data[i].sector.unidad.nombre
+                                    + '</option>';
+                            }else{
+                                html += '<option value="' + data[i].codigo +  '">'
+                                    + data[i].nombre + " - "+ data[i].sector.nombre
+                                    + '</option>';
+                            }
                         }
                         $('#codComuniReside').html(html);
                     })

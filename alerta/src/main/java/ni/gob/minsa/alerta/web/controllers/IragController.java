@@ -538,7 +538,9 @@ public class IragController {
         irag.setUsuario(usuarioService.getUsuarioById((int) idUsuario));
 
 
-        if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, codSilaisAtencion) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, codUnidadAtencion)) {
+        if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE) ||
+                (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, codSilaisAtencion)
+                        && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, codUnidadAtencion))) {
 
 
             if (!codClasificacion.isEmpty()) {
@@ -665,7 +667,7 @@ public class IragController {
 
             return createJsonResponse(irag);
         } else {
-            throw new Exception();
+            throw new Exception("No tiene autorización para guardar notificación en esta unidad de salud");
         }
 
     }

@@ -195,7 +195,7 @@ public class PersonaController {
                 municipiosResi = divisionPoliticaService.getMunicipiosFromDepartamento(depaResi);
             }
             List<Comunidades> comunidadesesRes = null;
-            if (persona !=null && persona.getComuResiCodigo()!=null && persona.getMuniResiCodigoNac()!=null){
+            if (persona !=null && persona.getMuniResiCodigoNac()!=null){
                 comunidadesesRes = comunidadesService.getComunidades(persona.getMuniResiCodigoNac());
             }
             mav.addObject("persona",persona);

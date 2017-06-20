@@ -109,11 +109,11 @@ var SeleccionUnidad = function () {
                     for (var i = 0; i < len; i++) {
                         if(data[i].sector.unidad != null){
                             html += '<option value="' + data[i].codigo +  '">'
-                                + data[i].nombre + "-"+ data[i].sector.unidad.nombre
+                                + data[i].nombre + " - "+ data[i].sector.unidad.nombre
                                 + '</option>';
                         }else{
                             html += '<option value="' + data[i].codigo +  '">'
-                                + data[i].nombre + "-"+ data[i].sector.nombre
+                                + data[i].nombre + " - "+ data[i].sector.nombre
                                 + '</option>';
                         }
 
