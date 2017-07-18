@@ -441,7 +441,8 @@ public class SindFebrilController {
                 daNotificacion.setUrgente(catalogoService.getRespuesta(urgente));
                 daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById((int)idUsuario));
                 daNotificacion.setCompleta(Boolean.parseBoolean(completa));
-
+                daNotificacion.setEmbarazada(catalogoService.getRespuesta(embarazo));
+                daNotificacion.setSemanasEmbarazo(mesesEmbarazo);
 
                 //	daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById(1));
                 daNotificacion.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|SINFEB"));

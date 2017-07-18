@@ -41,6 +41,8 @@ public class DaNotificacion implements Serializable, Auditable {
     private Date fechaInicioSintomas;
     private Respuesta urgente;
     private Solicitante solicitante;
+    private Respuesta embarazada;
+    private Integer semanasEmbarazo;
 	private boolean completa;
     private String actor;
 
@@ -185,7 +187,28 @@ public class DaNotificacion implements Serializable, Auditable {
     public void setSolicitante(Solicitante solicitante) {
         this.solicitante = solicitante;
     }
-	
+
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Catalogo.class, optional = true)
+    @JoinColumn(name="EMBARAZADA", referencedColumnName = "CODIGO", nullable = true)
+    @ForeignKey(name = "NOTI_EMBARAZADA_FK")
+    public Respuesta getEmbarazada() {
+        return embarazada;
+    }
+
+    public void setEmbarazada(Respuesta embarazada) {
+        this.embarazada = embarazada;
+    }
+
+    @Basic
+    @Column(name = "SEMANAS_EMBARAZO")
+    public Integer getSemanasEmbarazo() {
+        return semanasEmbarazo;
+    }
+
+    public void setSemanasEmbarazo(Integer semanasEmbarazo) {
+        this.semanasEmbarazo = semanasEmbarazo;
+    }
+
 	@Basic
     @Column(name = "COMPLETA", nullable = true, insertable = true, updatable = true)
     public boolean isCompleta() { return completa; }

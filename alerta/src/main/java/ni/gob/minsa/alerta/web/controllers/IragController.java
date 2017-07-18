@@ -639,7 +639,7 @@ public class IragController {
 
             if (irag.getIdNotificacion() == null) {
                 //crear nueva notificacion
-                DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion, urgente,completa);
+                DaNotificacion noti = guardarNotificacion(personaId, request, codSilaisAtencion, codUnidadAtencion, urgente,completa, semanasEmbarazo, condiciones);
                 irag.setIdNotificacion(daNotificacionService.getNotifById(noti.getIdNotificacion()));
             } else {
                 irag.getIdNotificacion().setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
@@ -674,7 +674,7 @@ public class IragController {
 
 
     @RequestMapping(value = "saveNotification", method = RequestMethod.GET)
-    public DaNotificacion guardarNotificacion(@PathVariable("personaId") Integer personaId, HttpServletRequest request, Integer silais, Integer unidad, String urgente, String completa) throws Exception {
+    public DaNotificacion guardarNotificacion(@PathVariable("personaId") Integer personaId, HttpServletRequest request, Integer silais, Integer unidad, String urgente, String completa, Integer semanasEmbarazo, String condiciones) throws Exception {
 
         logger.debug("Guardando Notificacion");
         DaNotificacion noti = new DaNotificacion();
@@ -694,6 +694,14 @@ public class IragController {
             noti.setUrgente(catalogoService.getRespuesta(urgente));
             noti.setCompleta(Boolean.parseBoolean(completa));
             noti.setActor(seguridadService.obtenerNombreUsuario(request));
+            if (persona.getSexo().getCodigo().equalsIgnoreCase("SEXO|F")) {
+                noti.setSemanasEmbarazo(semanasEmbarazo);
+                if (condiciones.contains("CONDPRE|EMB")) {
+                    noti.setEmbarazada(catalogoService.getRespuesta("RESP|S"));
+                }else {
+                    noti.setEmbarazada(catalogoService.getRespuesta("RESP|N"));
+                }
+            }
             daNotificacionService.addNotification(noti);
             return noti;
         } else {
