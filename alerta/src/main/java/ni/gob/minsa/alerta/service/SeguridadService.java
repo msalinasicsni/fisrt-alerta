@@ -65,11 +65,11 @@ public class SeguridadService {
                 }
             }
 
-            /*infoSesion = new InfoSesion();
-            infoSesion.setUsuarioId(4772);
+            infoSesion = new InfoSesion();
+            infoSesion.setUsuarioId(25);
             infoSesion.setNombre("Admin Alerta mok");
             infoSesion.setUsername("admalerta");
-            infoSesion.setSistemaSesion("ALERTA");*/
+            infoSesion.setSistemaSesion("ALERTA");
             ctx.close();
         }catch(Exception e){
             System.out.println("---- EXCEPTION");
@@ -108,7 +108,7 @@ public class SeguridadService {
         String urlRetorno="";
         if (seguridadHabilitada()) { //Si es false no se realiza ninguna validación
             if (!esUsuarioAutenticado(request.getSession())) {
-                String bdSessionId = "";  // esta variable dejarla en blanco par activar la seguridad
+                String bdSessionId = "a";  // esta variable dejarla en blanco par activar la seguridad
                 Cookie[] cookies = request.getCookies();
                 if (cookies != null) {
                     for (int i = 0; i < cookies.length; i++) {
@@ -237,7 +237,7 @@ public class SeguridadService {
                 idUsuario = infoSesion.getUsuarioId();
             }
         }else{
-            idUsuario= 4772L;///usuario alerta en pruebas
+            idUsuario= 25L;///usuario alerta en pruebas
         }
 
         return idUsuario;

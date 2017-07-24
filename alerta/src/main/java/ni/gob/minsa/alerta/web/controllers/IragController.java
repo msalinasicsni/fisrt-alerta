@@ -651,6 +651,14 @@ public class IragController {
                 //actualizar notificacion
                 irag.getIdNotificacion().setCompleta(Boolean.parseBoolean(completa));
                 irag.getIdNotificacion().setActor(seguridadService.obtenerNombreUsuario(request));
+                if (irag.getIdNotificacion().getPersona().getSexo().getCodigo().equalsIgnoreCase("SEXO|F") && condiciones!=null) {
+                    irag.getIdNotificacion().setSemanasEmbarazo(semanasEmbarazo);
+                    if (condiciones.contains("CONDPRE|EMB")) {
+                        irag.getIdNotificacion().setEmbarazada(catalogoService.getRespuesta("RESP|S"));
+                    }else {
+                        irag.getIdNotificacion().setEmbarazada(catalogoService.getRespuesta("RESP|N"));
+                    }
+                }
             }
 
             irag.setCodClasFDetalleNB(catalogoService.getClasificacionFinalNB(codClasFDetalleNB));
@@ -694,7 +702,7 @@ public class IragController {
             noti.setUrgente(catalogoService.getRespuesta(urgente));
             noti.setCompleta(Boolean.parseBoolean(completa));
             noti.setActor(seguridadService.obtenerNombreUsuario(request));
-            if (persona.getSexo().getCodigo().equalsIgnoreCase("SEXO|F")) {
+            if (persona.getSexo().getCodigo().equalsIgnoreCase("SEXO|F") && condiciones!=null) {
                 noti.setSemanasEmbarazo(semanasEmbarazo);
                 if (condiciones.contains("CONDPRE|EMB")) {
                     noti.setEmbarazada(catalogoService.getRespuesta("RESP|S"));
@@ -791,7 +799,7 @@ public class IragController {
             //DaNotificacion
             noti = daNotificacionService.getNotifById(idNotificacion);
 
-            if (!noti.isCompleta()){
+            if (noti !=null && !noti.isCompleta()){
                 noti.setMunicipioResidencia(persona.getMunicipioResidencia());
                 noti.setDireccionResidencia(persona.getDireccionResidencia());
                 noti.setCompleta(Boolean.parseBoolean(completa));

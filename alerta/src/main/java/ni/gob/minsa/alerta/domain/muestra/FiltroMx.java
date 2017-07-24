@@ -17,6 +17,7 @@ public class FiltroMx {
     String tipoNotificacion;
     Date fechaInicioNotifi;
     Date fechaFinNotifi;
+    String resultadoFinal;
 
     public String getNombreApellido() {
         return nombreApellido;
@@ -97,4 +98,8 @@ public class FiltroMx {
     public void setFechaFinNotifi(Date fechaFinNotifi) {
         this.fechaFinNotifi = fechaFinNotifi;
     }
+
+    public String getResultadoFinal() { return resultadoFinal; }
+
+    public void setResultadoFinal(String resultadoFinal) { this.resultadoFinal = resultadoFinal; }
 }

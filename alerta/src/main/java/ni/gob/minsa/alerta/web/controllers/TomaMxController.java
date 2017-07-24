@@ -10,7 +10,9 @@ import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
+import ni.gob.minsa.alerta.utilities.DateUtil;
 import ni.gob.minsa.alerta.utilities.typeAdapter.StringUtil;
+import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -565,4 +567,202 @@ public class TomaMxController {
         }
     }
 
+    /**
+     * M?todo que se llama al entrar a la opci?n de menu de Reportes "Reporte Resultados Positivos y Negativos".
+     *
+     * @param request para obtener informaci?n de la petici?n del cliente
+     * @return ModelAndView
+     * @throws Exception
+     */
+    @RequestMapping(value = "/searchMx/init", method = RequestMethod.GET)
+    public ModelAndView initReportForm(HttpServletRequest request) throws Exception {
+        logger.debug("Iniciando Reporte de Resultados Positivos y Negativos");
+        String urlValidacion;
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validaci?n del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        ModelAndView mav = new ModelAndView();
+        if (urlValidacion.isEmpty()) {
+            List<EntidadesAdtvas> entidadesAdtvases = entidadAdmonService.getAllEntidadesAdtvas();
+            mav.addObject("entidades", entidadesAdtvases);
+            mav.setViewName("tomaMx/searchMxLab");
+        } else
+            mav.setViewName(urlValidacion);
+
+        return mav;
+    }
+
+    /**
+     * M?todo para realizar la b?squeda de Resultados positivos o negativos
+     *
+     * @param filtro JSon con los datos de los filtros a aplicar en la b?squeda(Rango Fec toma mx, SILAIS, unidad salud, nombre solicitud)
+     * @return String con las solicitudes encontradas
+     * @throws Exception
+     */
+    @RequestMapping(value = "getMxs", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    String fetchPosNegRequestJson(@RequestParam(value = "strFilter", required = true) String filtro) throws Exception {
+        logger.info("Obteniendo las solicitudes positivas y negativas seg?n filtros en JSON");
+        FiltroMx filtroMx = jsonToFiltroMx(filtro);
+        List<DaTomaMx> tomaMxList = null;
+        tomaMxList = tomaMxService.getTomaMxByFiltro(filtroMx);
+
+        return tomaMxToJson(tomaMxList);
+    }
+
+    /**
+     * Convierte un JSON con los filtros de búsqueda a objeto FiltroMx
+     * @param strJson JSON
+     * @return FiltroMx
+     * @throws Exception
+     */
+    private FiltroMx jsonToFiltroMx(String strJson) throws Exception {
+        JsonObject jObjectFiltro = new Gson().fromJson(strJson, JsonObject.class);
+        FiltroMx filtroMx = new FiltroMx();
+        Date fechaInicio = null;
+        Date fechaFin = null;
+        Date fechaInicioToma = null;
+        Date fechaFinToma = null;
+        String codSilais = null;
+        String codUnidadSalud = null;
+        String tipoNotificacion = null;
+        String nombreSolicitud = null;
+        String finalRes = null;
+        String nombreApellido = null;
+
+        if (jObjectFiltro.get("nombrePersona") != null && !jObjectFiltro.get("nombrePersona").getAsString().isEmpty())
+            nombreApellido = jObjectFiltro.get("nombrePersona").getAsString();
+        if (jObjectFiltro.get("fechaInicio") != null && !jObjectFiltro.get("fechaInicio").getAsString().isEmpty())
+            fechaInicio = DateUtil.StringToDate(jObjectFiltro.get("fechaInicio").getAsString() + " 00:00:00");
+        if (jObjectFiltro.get("fechaFin") != null && !jObjectFiltro.get("fechaFin").getAsString().isEmpty())
+            fechaFin = DateUtil.StringToDate(jObjectFiltro.get("fechaFin").getAsString() + " 23:59:59");
+        if (jObjectFiltro.get("codSilais") != null && !jObjectFiltro.get("codSilais").getAsString().isEmpty())
+            codSilais = jObjectFiltro.get("codSilais").getAsString();
+        if (jObjectFiltro.get("codUnidadSalud") != null && !jObjectFiltro.get("codUnidadSalud").getAsString().isEmpty())
+            codUnidadSalud = jObjectFiltro.get("codUnidadSalud").getAsString();
+        if (jObjectFiltro.get("tipoNotificacion") != null && !jObjectFiltro.get("tipoNotificacion").getAsString().isEmpty())
+            tipoNotificacion = jObjectFiltro.get("tipoNotificacion").getAsString();
+        if (jObjectFiltro.get("nombreSolicitud") != null && !jObjectFiltro.get("nombreSolicitud").getAsString().isEmpty())
+            nombreSolicitud = jObjectFiltro.get("nombreSolicitud").getAsString();
+        if (jObjectFiltro.get("finalRes") != null && !jObjectFiltro.get("finalRes").getAsString().isEmpty())
+            finalRes = jObjectFiltro.get("finalRes").getAsString();
+        if (jObjectFiltro.get("fechaInicioToma") != null && !jObjectFiltro.get("fechaInicioToma").getAsString().isEmpty())
+            fechaInicioToma = DateUtil.StringToDate(jObjectFiltro.get("fechaInicioToma").getAsString() + " 00:00:00");
+        if (jObjectFiltro.get("fechaFinToma") != null && !jObjectFiltro.get("fechaFinToma").getAsString().isEmpty())
+            fechaFinToma = DateUtil.StringToDate(jObjectFiltro.get("fechaFinToma").getAsString() + " 23:59:59");
+
+        filtroMx.setNombreApellido(nombreApellido);
+        filtroMx.setCodSilais(codSilais);
+        filtroMx.setCodUnidadSalud(codUnidadSalud);
+        filtroMx.setFechaInicioNotifi(fechaInicio);
+        filtroMx.setFechaFinNotifi(fechaFin);
+        filtroMx.setTipoNotificacion(tipoNotificacion);
+        filtroMx.setResultadoFinal(finalRes);
+        filtroMx.setNombreSolicitud(nombreSolicitud);
+        filtroMx.setFechaInicioTomaMx(fechaInicioToma);
+        filtroMx.setFechaFinTomaMx(fechaFinToma);
+
+        return filtroMx;
+    }
+
+    /**
+     * Método que convierte una lista de tomaMx a un string con estructura Json
+     *
+     * @param tomaMxList lista con las tomaMx a convertir
+     * @return String
+     */
+    private String tomaMxToJson(List<DaTomaMx> tomaMxList) {
+        String jsonResponse;
+        Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
+        Integer indice = 0;
+        boolean esEstudio;
+        for (DaTomaMx tomaMx : tomaMxList) {
+            esEstudio = tomaMxService.getSolicitudesEstudioByIdTomaMx(tomaMx.getIdTomaMx()).size() > 0;
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("idTomaMx", tomaMx.getIdTomaMx());
+            map.put("codigoUnicoMx", esEstudio?tomaMx.getCodigoUnicoMx():(tomaMx.getCodigoLab()!=null?tomaMx.getCodigoLab():(messageSource.getMessage("lbl.not.generated", null, null))));
+            map.put("fechaTomaMx", DateUtil.DateToString(tomaMx.getFechaHTomaMx(), "dd/MM/yyyy")+
+                    (tomaMx.getHoraTomaMx()!=null?" "+tomaMx.getHoraTomaMx():""));
+
+            if (tomaMx.getIdNotificacion().getCodSilaisAtencion() != null) {
+                map.put("codSilais", tomaMx.getIdNotificacion().getCodSilaisAtencion().getNombre());
+            } else {
+                map.put("codSilais", "");
+            }
+            if (tomaMx.getIdNotificacion().getCodUnidadAtencion() != null) {
+                map.put("codUnidadSalud", tomaMx.getIdNotificacion().getCodUnidadAtencion().getNombre());
+            } else {
+                map.put("codUnidadSalud", "");
+            }
+            map.put("tipoNoti", tomaMx.getIdNotificacion().getCodTipoNotificacion().getValor());
+            //laboratorio y area
+            map.put("laboratorio", tomaMx.getEnvio().getLaboratorioDestino().getNombre());
+
+            map.put("estadoMx", tomaMx.getEstadoMx().getValor());
+
+            //Si hay persona
+            if (tomaMx.getIdNotificacion().getPersona() != null) {
+                /// se obtiene el nombre de la persona asociada a la ficha
+                String nombreCompleto = "";
+                nombreCompleto = tomaMx.getIdNotificacion().getPersona().getPrimerNombre();
+                if (tomaMx.getIdNotificacion().getPersona().getSegundoNombre() != null)
+                    nombreCompleto = nombreCompleto + " " + tomaMx.getIdNotificacion().getPersona().getSegundoNombre();
+                nombreCompleto = nombreCompleto + " " + tomaMx.getIdNotificacion().getPersona().getPrimerApellido();
+                if (tomaMx.getIdNotificacion().getPersona().getSegundoApellido() != null)
+                    nombreCompleto = nombreCompleto + " " + tomaMx.getIdNotificacion().getPersona().getSegundoApellido();
+                map.put("persona", nombreCompleto);
+            } else if (tomaMx.getIdNotificacion().getSolicitante() != null) {
+                map.put("persona", tomaMx.getIdNotificacion().getSolicitante().getNombre());
+            } else {
+                map.put("persona", " ");
+            }
+
+            //se arma estructura de diagn?sticos o estudios
+            List<DaSolicitudDx> solicitudDxList = tomaMxService.getSolicitudesDxByIdMX(tomaMx.getIdTomaMx());
+            List<DaSolicitudEstudio> solicitudE = tomaMxService.getSolicitudesEstudioByIdTomaMx(tomaMx.getIdTomaMx());
+
+            if (!solicitudDxList.isEmpty()) {
+                int cont = 0;
+                String dxs = "";
+                for (DaSolicitudDx solicitudDx : solicitudDxList) {
+                    cont++;
+                    if (cont == solicitudDxList.size()) {
+                        dxs += solicitudDx.getCodDx().getNombre();
+                    } else {
+                        dxs += solicitudDx.getCodDx().getNombre() + "," + " ";
+                    }
+
+                }
+                map.put("solicitudes", dxs);
+            } else {
+                if(!solicitudE.isEmpty()){
+                    int cont = 0;
+                    String estudios = "";
+                    for (DaSolicitudEstudio solicitudDx : solicitudE) {
+                        cont++;
+                        if (cont == solicitudDxList.size()) {
+                            estudios += solicitudDx.getTipoEstudio().getNombre();
+                        } else {
+                            estudios += solicitudDx.getTipoEstudio().getNombre() + "," + " ";
+                        }
+                    }
+                    map.put("solicitudes", estudios);
+                }
+            }
+
+            mapResponse.put(indice, map);
+            indice++;
+        }
+        jsonResponse = new Gson().toJson(mapResponse);
+        //escapar caracteres especiales, escape de los caracteres con valor numérico mayor a 127
+        UnicodeEscaper escaper = UnicodeEscaper.above(127);
+        return escaper.translate(jsonResponse);
+    }
 }

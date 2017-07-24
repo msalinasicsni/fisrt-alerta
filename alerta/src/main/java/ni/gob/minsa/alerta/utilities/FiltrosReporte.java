@@ -24,6 +24,7 @@ public class FiltrosReporte {
     boolean subunidades;
     boolean porSilais;
     String codZona;
+    Integer idDx;
 
     public String getCodArea() {
         return codArea;
@@ -143,5 +144,13 @@ public class FiltrosReporte {
 
     public void setCodZona(String codZona) {
         this.codZona = codZona;
+    }
+
+    public Integer getIdDx() {
+        return idDx;
+    }
+
+    public void setIdDx(Integer idDx) {
+        this.idDx = idDx;
     }
 }

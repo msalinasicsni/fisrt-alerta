@@ -6,19 +6,31 @@ import ni.gob.minsa.alerta.domain.catalogos.Anios;
 import ni.gob.minsa.alerta.domain.catalogos.AreaRep;
 import ni.gob.minsa.alerta.domain.catalogos.FactorPoblacion;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
+import ni.gob.minsa.alerta.domain.concepto.Catalogo_Lista;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.ZonaEspecial;
+import ni.gob.minsa.alerta.domain.muestra.Catalogo_Dx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
 import ni.gob.minsa.alerta.domain.muestra.FiltroMx;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.notificacion.TipoNotificacion;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
+import ni.gob.minsa.alerta.domain.resultados.DetalleResultadoFinal;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.DateUtil;
 import ni.gob.minsa.alerta.utilities.FiltrosReporte;
+import ni.gob.minsa.alerta.utilities.pdfUtils.BaseTable;
+import ni.gob.minsa.alerta.utilities.pdfUtils.Cell;
+import ni.gob.minsa.alerta.utilities.pdfUtils.GeneralUtils;
+import ni.gob.minsa.alerta.utilities.pdfUtils.Row;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.text.translate.UnicodeEscaper;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +46,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by FIRSTICT on 9/21/2015.
@@ -71,6 +87,17 @@ public class ReportesController {
 
     @Resource(name="reportesService")
     private ReportesService reportesService;
+
+    @Autowired
+    @Qualifier(value = "entidadAdmonService")
+    private EntidadAdmonService entidadAdmonService;
+
+    @Autowired
+    @Qualifier(value = "respuestasExamenService")
+    private RespuestasExamenService respuestasExamenService;
+
+    @Resource(name="tomaMxService")
+    private TomaMxService tomaMxService;
 
     @Autowired
     MessageSource messageSource;
@@ -128,9 +155,13 @@ public class ReportesController {
         FiltroMx filtroMx = new FiltroMx();
         Date fechaInicio = null;
         Date fechaFin = null;
+        Date fechaInicioToma = null;
+        Date fechaFinToma = null;
         String codSilais = null;
         String codUnidadSalud = null;
         String tipoNotificacion = null;
+        String nombreSolicitud = null;
+        String finalRes = null;
 
         if (jObjectFiltro.get("fechaInicio") != null && !jObjectFiltro.get("fechaInicio").getAsString().isEmpty())
             fechaInicio = DateUtil.StringToDate(jObjectFiltro.get("fechaInicio").getAsString() + " 00:00:00");
@@ -142,12 +173,24 @@ public class ReportesController {
             codUnidadSalud = jObjectFiltro.get("codUnidadSalud").getAsString();
         if (jObjectFiltro.get("tipoNotificacion") != null && !jObjectFiltro.get("tipoNotificacion").getAsString().isEmpty())
             tipoNotificacion = jObjectFiltro.get("tipoNotificacion").getAsString();
+        if (jObjectFiltro.get("nombreSolicitud") != null && !jObjectFiltro.get("nombreSolicitud").getAsString().isEmpty())
+            nombreSolicitud = jObjectFiltro.get("nombreSolicitud").getAsString();
+        if (jObjectFiltro.get("finalRes") != null && !jObjectFiltro.get("finalRes").getAsString().isEmpty())
+            finalRes = jObjectFiltro.get("finalRes").getAsString();
+        if (jObjectFiltro.get("fechaInicioToma") != null && !jObjectFiltro.get("fechaInicioToma").getAsString().isEmpty())
+            fechaInicioToma = DateUtil.StringToDate(jObjectFiltro.get("fechaInicioToma").getAsString() + " 00:00:00");
+        if (jObjectFiltro.get("fechaFinToma") != null && !jObjectFiltro.get("fechaFinToma").getAsString().isEmpty())
+            fechaFinToma = DateUtil.StringToDate(jObjectFiltro.get("fechaFinToma").getAsString() + " 23:59:59");
 
         filtroMx.setCodSilais(codSilais);
         filtroMx.setCodUnidadSalud(codUnidadSalud);
         filtroMx.setFechaInicioNotifi(fechaInicio);
         filtroMx.setFechaFinNotifi(fechaFin);
         filtroMx.setTipoNotificacion(tipoNotificacion);
+        filtroMx.setResultadoFinal(finalRes);
+        filtroMx.setNombreSolicitud(nombreSolicitud);
+        filtroMx.setFechaInicioTomaMx(fechaInicioToma);
+        filtroMx.setFechaFinTomaMx(fechaFinToma);
 
         return filtroMx;
     }
@@ -489,6 +532,7 @@ public class ReportesController {
         boolean subunidad = false;
         boolean porSilais = true;//por defecto true
         String codZona = null;
+        Integer idDx = null;
 
         if (jObjectFiltro.get("codSilais") != null && !jObjectFiltro.get("codSilais").getAsString().isEmpty())
             codSilais = jObjectFiltro.get("codSilais").getAsLong();
@@ -514,6 +558,8 @@ public class ReportesController {
             porSilais = jObjectFiltro.get("porSilais").getAsBoolean();
         if (jObjectFiltro.get("codZona") != null && !jObjectFiltro.get("codZona").getAsString().isEmpty())
             codZona = jObjectFiltro.get("codZona").getAsString();
+        if (jObjectFiltro.get("idDx") != null && !jObjectFiltro.get("idDx").getAsString().isEmpty())
+            idDx = jObjectFiltro.get("idDx").getAsInt();
 
         filtroRep.setSubunidades(subunidad);
         filtroRep.setCodSilais(codSilais);
@@ -528,6 +574,7 @@ public class ReportesController {
         filtroRep.setAnioInicial(DateUtil.DateToString(fechaInicio, "yyyy"));
         filtroRep.setPorSilais(porSilais);
         filtroRep.setCodZona(codZona);
+        filtroRep.setIdDx(idDx);
 
         return filtroRep;
     }
@@ -810,5 +857,397 @@ public class ReportesController {
         logger.info("Obteniendo los datos para Reporte por Resultado ");
         FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
         return reportesService.getDataResultReport(filtroRep);
+    }
+
+
+    /**
+     * M?todo que se llama al entrar a la opci?n de menu de Reportes "Reporte Resultados Positivos y Negativos".
+     *
+     * @param request para obtener informaci?n de la petici?n del cliente
+     * @return ModelAndView
+     * @throws Exception
+     */
+    @RequestMapping(value = "/posNegResults/init", method = RequestMethod.GET)
+    public ModelAndView initReportForm(HttpServletRequest request) throws Exception {
+        logger.debug("Iniciando Reporte de Resultados Positivos y Negativos");
+        String urlValidacion;
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validaci?n del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        ModelAndView mav = new ModelAndView();
+        if (urlValidacion.isEmpty()) {
+            List<EntidadesAdtvas> entidadesAdtvases = entidadAdmonService.getAllEntidadesAdtvas();
+            mav.addObject("entidades", entidadesAdtvases);
+            mav.setViewName("reportes/positiveNegativeResults");
+        } else
+            mav.setViewName(urlValidacion);
+
+        return mav;
+    }
+
+
+    /**
+     * M?todo para realizar la b?squeda de Resultados positivos o negativos
+     *
+     * @param filtro JSon con los datos de los filtros a aplicar en la b?squeda(Rango Fec toma mx, SILAIS, unidad salud, nombre solicitud)
+     * @return String con las solicitudes encontradas
+     * @throws Exception
+     */
+    @RequestMapping(value = "/posNegResults/searchPosNegRequest", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    String fetchPosNegRequestJson(@RequestParam(value = "strFilter", required = true) String filtro) throws Exception {
+        logger.info("Obteniendo las solicitudes positivas y negativas seg?n filtros en JSON");
+        FiltroMx filtroMx = jsonToFiltroMx(filtro);
+        List<DaSolicitudDx> positiveRoutineReqList = null;
+        positiveRoutineReqList = reportesService.getPositiveRoutineRequestByFilter(filtroMx);
+
+        return requestPositiveNegativeToJson(positiveRoutineReqList, null, filtroMx.getResultadoFinal());
+    }
+
+    /**
+     * M?todo que convierte una lista de solicitudes a un string con estructura Json
+     *
+     * @param posNegRoutineReqList lista con las mx recepcionadas a convertir
+     * @return String
+     */
+    private String requestPositiveNegativeToJson(List<DaSolicitudDx> posNegRoutineReqList, List<DaSolicitudEstudio> posNegStudyReqList, String filtroResu) throws Exception {
+        String jsonResponse;
+        Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
+        Integer indice = 0;
+
+
+        if (posNegRoutineReqList != null) {
+            for (DaSolicitudDx soli : posNegRoutineReqList) {
+                boolean mostrar = false;
+                String valorResultado = null;
+                String content = null;
+
+                //search positive results from list
+                //get Response for each request
+                List<DetalleResultadoFinal> finalRes = resultadoFinalService.getDetResActivosBySolicitud(soli.getIdSolicitudDx());
+                for (DetalleResultadoFinal res : finalRes) {
+
+                    if(filtroResu != null){
+                        if(filtroResu.equals("Positivo")){
+                            content = getPositiveResult(res);
+                        }else{
+                            content = getNegativeResult(res);
+                        }
+
+                    }else{
+                        content = getResult(res);
+                    }
+
+                    String[] arrayContent = content.split(",");
+                    valorResultado = arrayContent[0];
+                    mostrar = Boolean.parseBoolean(arrayContent[1]);
+
+                    if (mostrar) {
+                        Map<String, String> map = new HashMap<String, String>();
+                        map.put("solicitud", soli.getCodDx().getNombre());
+                        map.put("idSolicitud", soli.getIdSolicitudDx());
+                        map.put("codigoUnicoMx", soli.getIdTomaMx().getCodigoLab());
+                        map.put("fechaAprobacion", DateUtil.DateToString(soli.getFechaAprobacion(), "dd/MM/yyyy hh:mm:ss a"));
+                        map.put("fechaToma", DateUtil.DateToString(soli.getIdTomaMx().getFechaHTomaMx(), "dd/MM/yyyy hh:mm:ss a"));
+                        map.put("resultado", valorResultado);
+
+                        if (soli.getIdTomaMx().getIdNotificacion().getCodSilaisAtencion() != null) {
+                            map.put("codSilais", soli.getIdTomaMx().getIdNotificacion().getCodSilaisAtencion().getNombre());
+                        } else {
+                            map.put("codSilais", "");
+                        }
+                        if (soli.getIdTomaMx().getIdNotificacion().getCodUnidadAtencion() != null) {
+                            map.put("codUnidadSalud", soli.getIdTomaMx().getIdNotificacion().getCodUnidadAtencion().getNombre());
+                        } else {
+                            map.put("codUnidadSalud", "");
+                        }
+                        map.put("tipoNoti", soli.getIdTomaMx().getIdNotificacion().getCodTipoNotificacion().getValor());
+                        //Si hay persona
+                        if (soli.getIdTomaMx().getIdNotificacion().getPersona() != null) {
+                            /// se obtiene el nombre de la persona asociada a la ficha
+                            String nombreCompleto = "";
+                            nombreCompleto = soli.getIdTomaMx().getIdNotificacion().getPersona().getPrimerNombre();
+                            if (soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoNombre() != null)
+                                nombreCompleto = nombreCompleto + " " + soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoNombre();
+                            nombreCompleto = nombreCompleto + " " + soli.getIdTomaMx().getIdNotificacion().getPersona().getPrimerApellido();
+                            if (soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoApellido() != null)
+                                nombreCompleto = nombreCompleto + " " + soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoApellido();
+                            map.put("persona", nombreCompleto);
+                        } else if (soli.getIdTomaMx().getIdNotificacion().getSolicitante()!=null){
+                            map.put("persona", soli.getIdTomaMx().getIdNotificacion().getSolicitante().getNombre());
+                        } else {
+                            map.put("persona", " ");
+                        }
+
+                        mapResponse.put(indice, map);
+                        indice++;
+                        break;
+                    }
+
+                }
+
+
+            }
+
+        }
+        if (posNegStudyReqList != null) {
+
+            for (DaSolicitudEstudio soliE : posNegStudyReqList) {
+                boolean mostrar = false;
+                String valorResultado = null;
+                String content = null;
+
+                //search positive results from list
+                //get Response for each request
+                List<DetalleResultadoFinal> finalRes = resultadoFinalService.getDetResActivosBySolicitud(soliE.getIdSolicitudEstudio());
+                for (DetalleResultadoFinal res : finalRes) {
+
+
+                    if(filtroResu != null){
+                        if(filtroResu.equals("Positivo")){
+                            content = getPositiveResult(res);
+                        }else{
+                            content = getNegativeResult(res);
+                        }
+
+                    }else{
+                        content = getResult(res);
+                    }
+
+                    String[] arrayContent = content.split(",");
+                    valorResultado = arrayContent[0];
+                    mostrar = Boolean.parseBoolean(arrayContent[1]);
+
+                    if (mostrar) {
+                        Map<String, String> map = new HashMap<String, String>();
+                        map.put("solicitud", soliE.getTipoEstudio().getNombre());
+                        map.put("idSolicitud", soliE.getIdSolicitudEstudio());
+                        map.put("codigoUnicoMx", soliE.getIdTomaMx().getCodigoUnicoMx());
+                        map.put("fechaAprobacion", DateUtil.DateToString(soliE.getFechaAprobacion(), "dd/MM/yyyy hh:mm:ss a"));
+                        map.put("fechaToma", DateUtil.DateToString(soliE.getIdTomaMx().getFechaHTomaMx(), "dd/MM/yyyy hh:mm:ss a"));
+                        map.put("resultado", valorResultado);
+
+                        if (soliE.getIdTomaMx().getIdNotificacion().getCodSilaisAtencion() != null) {
+                            map.put("codSilais", soliE.getIdTomaMx().getIdNotificacion().getCodSilaisAtencion().getNombre());
+                        } else {
+                            map.put("codSilais", "");
+                        }
+                        if (soliE.getIdTomaMx().getIdNotificacion().getCodUnidadAtencion() != null) {
+                            map.put("codUnidadSalud", soliE.getIdTomaMx().getIdNotificacion().getCodUnidadAtencion().getNombre());
+                        } else {
+                            map.put("codUnidadSalud", "");
+                        }
+                        map.put("tipoNoti", soliE.getIdTomaMx().getIdNotificacion().getCodTipoNotificacion().getValor());
+                        //Si hay persona
+                        if (soliE.getIdTomaMx().getIdNotificacion().getPersona() != null) {
+                            /// se obtiene el nombre de la persona asociada a la ficha
+                            String nombreCompleto = "";
+                            nombreCompleto = soliE.getIdTomaMx().getIdNotificacion().getPersona().getPrimerNombre();
+                            if (soliE.getIdTomaMx().getIdNotificacion().getPersona().getSegundoNombre() != null)
+                                nombreCompleto = nombreCompleto + " " + soliE.getIdTomaMx().getIdNotificacion().getPersona().getSegundoNombre();
+                            nombreCompleto = nombreCompleto + " " + soliE.getIdTomaMx().getIdNotificacion().getPersona().getPrimerApellido();
+                            if (soliE.getIdTomaMx().getIdNotificacion().getPersona().getSegundoApellido() != null)
+                                nombreCompleto = nombreCompleto + " " + soliE.getIdTomaMx().getIdNotificacion().getPersona().getSegundoApellido();
+                            map.put("persona", nombreCompleto);
+                        } else {
+                            map.put("persona", " ");
+                        }
+
+                        mapResponse.put(indice, map);
+                        indice++;
+                        break;
+                    }
+                }
+
+
+            }
+        }
+        jsonResponse = new Gson().toJson(mapResponse);
+        //escapar caracteres especiales, escape de los caracteres con valor num?rico mayor a 127
+        UnicodeEscaper escaper = UnicodeEscaper.above(127);
+        return escaper.translate(jsonResponse);
+    }
+
+    private String getResult(DetalleResultadoFinal res) throws Exception {
+        boolean mostrar= false;
+        String valorResultado = null;
+
+        if (res.getRespuesta() != null) {
+            if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                Integer idLista = Integer.valueOf(res.getValor());
+                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
+
+                if (valor.getValor().trim().toLowerCase().equals("positivo") ||valor.getValor().trim().toLowerCase().equals("negativo") ) {
+                    mostrar = true;
+                    valorResultado = valor.getValor();
+                }
+
+            } else if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
+                if (res.getValor().trim().toLowerCase().equals("positivo") || res.getValor().trim().toLowerCase().equals("negativo")) {
+                    mostrar = true;
+                    valorResultado = res.getValor();
+                }
+            }
+        } else if (res.getRespuestaExamen() != null) {
+            if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                Integer idLista = Integer.valueOf(res.getValor());
+                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
+
+                if (valor.getValor().trim().toLowerCase().equals("positivo") || valor.getValor().trim().toLowerCase().equals("negativo") ) {
+                    mostrar = true;
+                    valorResultado = valor.getValor();
+                }
+
+            } else if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
+                if (res.getValor().trim().toLowerCase().equals("positivo") || res.getValor().trim().toLowerCase().equals("negativo")) {
+                    mostrar = true;
+                    valorResultado = res.getValor();
+                }
+            }
+
+        }
+        return valorResultado + "," + mostrar;
+    }
+
+    private String getNegativeResult(DetalleResultadoFinal res) throws Exception {
+        boolean mostrar= false;
+        String valorResultado = null;
+
+        if (res.getRespuesta() != null) {
+            if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                Integer idLista = Integer.valueOf(res.getValor());
+                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
+
+                if (valor.getValor().toLowerCase().equals("negativo") ) {
+                    mostrar = true;
+                    valorResultado = valor.getValor();
+                }
+
+            } else if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
+                if (res.getValor().toLowerCase().equals("negativo")) {
+                    mostrar = true;
+                    valorResultado = res.getValor();
+                }
+            }
+        } else if (res.getRespuestaExamen() != null) {
+            if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                Integer idLista = Integer.valueOf(res.getValor());
+                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
+
+                if (valor.getValor().toLowerCase().equals("negativo") ) {
+                    mostrar = true;
+                    valorResultado = valor.getValor();
+                }
+
+            } else if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
+                if (res.getValor().toLowerCase().equals("negativo")) {
+                    mostrar = true;
+                    valorResultado = res.getValor();
+                }
+            }
+
+        }
+        return valorResultado + "," + mostrar;
+    }
+
+    private String getPositiveResult(DetalleResultadoFinal res) throws Exception {
+        boolean mostrar= false;
+        String valorResultado = null;
+
+        if (res.getRespuesta() != null) {
+            if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                Integer idLista = Integer.valueOf(res.getValor());
+                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
+
+                if (valor.getValor().trim().toLowerCase().equals("positivo") ) {
+                    mostrar = true;
+                    valorResultado = valor.getValor();
+                }
+
+            } else if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
+                if (res.getValor().trim().toLowerCase().equals("positivo")) {
+                    mostrar = true;
+                    valorResultado = res.getValor();
+                }
+            }
+        } else if (res.getRespuestaExamen() != null) {
+            if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                Integer idLista = Integer.valueOf(res.getValor());
+                Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
+
+                if (valor.getValor().trim().toLowerCase().equals("positivo")) {
+                    mostrar = true;
+                    valorResultado = valor.getValor();
+                }
+
+            } else if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
+                if (res.getValor().trim().toLowerCase().equals("positivo")) {
+                    mostrar = true;
+                    valorResultado = res.getValor();
+                }
+            }
+
+        }
+        return valorResultado + "," + mostrar;
+    }
+
+    /*******************************************************************/
+    /************************ REPORTE POR RESULTADO DX ***********************/
+    /*******************************************************************/
+
+    @RequestMapping(value = "reportResultDx", method = RequestMethod.GET)
+    public String initReportResultDx(Model model,HttpServletRequest request) throws Exception {
+        logger.debug("Reporte por Resultado");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 3);
+            List<Anios> anios = catalogosService.getAnios();
+            List<Catalogo_Dx> catDx = tomaMxService.getCatalogosDx();
+            List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
+            List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
+            model.addAttribute("areas", areas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("dxs", catDx);
+            model.addAttribute("factor", factor);
+            model.addAttribute("zonas",zonas);
+            return "reportes/porResultadoDx";
+        }else{
+            return  urlValidacion;
+        }
+    }
+
+    /**
+     * Método para obtener data para Reporte por Resultado dx
+     * @param filtro JSon con los datos de los filtros a aplicar en la búsqueda
+     * @return Object
+     * @throws Exception
+     */
+    @RequestMapping(value = "dataReportResultDx", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<Object[]> fetchReportResultDxJson(@RequestParam(value = "filtro", required = true) String filtro) throws Exception{
+        logger.info("Obteniendo los datos para Reporte por Resultado ");
+        FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
+        return reportesService.getDataDxResultReport(filtroRep);
     }
 }

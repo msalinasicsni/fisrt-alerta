@@ -275,7 +275,7 @@ var CreateIrag = function () {
                     data: datos_form,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
-                    error: function () {
+                    error: function (result) {
                         alert("Error " + result.status + '' + result.statusText);
                         $.smallBox({
                             title: $('#msjErrorSaving').val(),
