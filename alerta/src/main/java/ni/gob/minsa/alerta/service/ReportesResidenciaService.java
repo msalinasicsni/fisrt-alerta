@@ -1,17 +1,23 @@
 package ni.gob.minsa.alerta.service;
 
+import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
+import ni.gob.minsa.alerta.domain.muestra.FiltroMx;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.concepto.Catalogo_Lista;
 import ni.gob.minsa.alerta.domain.resultados.DetalleResultadoFinal;
 import ni.gob.minsa.alerta.utilities.DateUtil;
 import ni.gob.minsa.alerta.utilities.FiltrosReporte;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1042,4 +1048,50 @@ public class ReportesResidenciaService {
         return resultadoTemp;
     }
 
+    @SuppressWarnings("unchecked")
+    public List<DaSolicitudDx> getPositiveRoutineRequestByFilter(FiltroMx filtro) throws UnsupportedEncodingException {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria crit = session.createCriteria(DaSolicitudDx.class, "rutina");
+        crit.createAlias("rutina.idTomaMx", "toma");
+        crit.createAlias("toma.idNotificacion", "notif");
+        crit.createAlias("rutina.codDx", "dx");
+
+        if(filtro.getNombreSolicitud()!= null){
+            filtro.setNombreSolicitud(URLDecoder.decode(filtro.getNombreSolicitud(), "utf-8"));
+        }
+
+        //se filtra por SILAIS
+        if (filtro.getCodSilais()!=null){
+            crit.createAlias("notif.municipioResidencia","muni");
+            crit.add( Restrictions.and(
+                            Restrictions.eq("muni.dependenciaSilais.codigo", Long.valueOf(filtro.getCodSilais())))
+            );
+        }
+
+        //Se filtra por rango de fecha de toma de muestra
+        if (filtro.getFechaInicioTomaMx()!=null && filtro.getFechaFinTomaMx()!=null){
+            crit.add( Restrictions.and(
+                            Restrictions.between("toma.fechaHTomaMx", filtro.getFechaInicioTomaMx(),filtro.getFechaFinTomaMx()))
+            );
+        }
+
+        //nombre solicitud
+        if (filtro.getNombreSolicitud() != null) {
+            crit.add(Restrictions.ilike("dx.nombre", "%" + filtro.getNombreSolicitud() + "%"));
+        }
+
+        //filtro de resultados finales aprobados
+        crit.add(Restrictions.and(
+                        Restrictions.eq("rutina.aprobada", true))
+        );
+
+        //filtro de resultado final positivo
+        crit.add(Subqueries.propertyIn("rutina.idSolicitudDx", DetachedCriteria.forClass(DetalleResultadoFinal.class)
+                .setProjection(Property.forName("solicitudDx.idSolicitudDx"))));
+
+        crit.addOrder(Order.asc("fechaAprobacion"));
+
+
+        return crit.list();
+    }
 }
