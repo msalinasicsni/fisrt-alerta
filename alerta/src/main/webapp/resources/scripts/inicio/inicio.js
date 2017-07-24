@@ -113,7 +113,7 @@ var PaginaInicio = function () {
                         labelsDC = data[(data.length)-1];
                     }
                     else{
-                        showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
+                        //showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
                         //lineChart([],[]);
                         //lineChart2([],[]);
                         datasetsDCCasos = [];
@@ -193,7 +193,7 @@ var PaginaInicio = function () {
                         labelsDS = data[(data.length)-1];
                     }
                     else{
-                        showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
+                        //showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
                         //lineChart3([],[]);
                         //lineChart4([],[]);
                         datasetsDSCasos = [];
@@ -600,7 +600,7 @@ var PaginaInicio = function () {
                         mostrar=true; //se reinicia valor bandera
                     }
                     if(!encontrado){
-                        showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
+                        //showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
                         title='';
                     }
                     setTimeout($.unblockUI, 500);
@@ -644,7 +644,7 @@ var PaginaInicio = function () {
                         mostrar=true; //se reinicia valor bandera
                     }
                     if(!encontrado){
-                        showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
+                        //showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
                         title='';
                     }
                     setTimeout($.unblockUI, 500);
@@ -688,7 +688,7 @@ var PaginaInicio = function () {
                         mostrar=true; //se reinicia valor bandera
                     }
                     if(!encontrado){
-                        showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
+                        //showMessage(parametros.noData, parametros.msgNoData, "#AF801C", "fa fa-warning", 3000);
                         title='';
                     }
                     setTimeout($.unblockUI, 500);

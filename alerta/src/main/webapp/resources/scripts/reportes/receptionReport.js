@@ -536,7 +536,12 @@ var ReceptionReport = function () {
                 } else {
                     mxFiltros['fechaInicioToma'] = $('#inicioAprob').val();
                     mxFiltros['fechaFinToma'] = $('#finAprob').val();
-                    mxFiltros['codSilais'] = $('#codSilaisRes').find('option:selected').val();
+
+                    if ($("#porResidencia").val()==='true') {
+                        mxFiltros['codSilais'] = $('#codSilaisRes').find('option:selected').val();
+                    }else{
+                        mxFiltros['codSilais'] = $('#codSilais').find('option:selected').val();
+                    }
                     mxFiltros['codUnidadSalud'] = $('#codUnidadSalud').find('option:selected').val();
                     mxFiltros['codTipoSolicitud'] = $('#tipoSol').find('option:selected').val();
                     mxFiltros['nombreSolicitud'] = encodeURI($('#nombreSol').val());

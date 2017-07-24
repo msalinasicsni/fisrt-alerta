@@ -1217,7 +1217,12 @@ public class ReportesController {
         }
         if (urlValidacion.isEmpty()) {
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
             List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 3);
             List<Anios> anios = catalogosService.getAnios();
