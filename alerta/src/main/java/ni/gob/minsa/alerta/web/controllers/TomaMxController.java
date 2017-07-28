@@ -704,8 +704,11 @@ public class TomaMxController {
             }
             map.put("tipoNoti", tomaMx.getIdNotificacion().getCodTipoNotificacion().getValor());
             //laboratorio y area
-            map.put("laboratorio", tomaMx.getEnvio().getLaboratorioDestino().getNombre());
-
+            if (tomaMx.getEnvio()!=null) {
+                map.put("laboratorio", tomaMx.getEnvio().getLaboratorioDestino().getNombre());
+            }else{
+                map.put("laboratorio", "");
+            }
             map.put("estadoMx", tomaMx.getEstadoMx().getValor());
 
             //Si hay persona
