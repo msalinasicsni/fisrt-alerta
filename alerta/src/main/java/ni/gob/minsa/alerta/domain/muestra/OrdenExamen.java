@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Miguel Salinas
@@ -26,6 +27,7 @@ public class OrdenExamen {
     private Laboratorio labProcesa;
     private User usuarioAnulacion;
     private String causaAnulacion;
+    private Date fechaAnulacion;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -133,5 +135,15 @@ public class OrdenExamen {
 
     public void setCausaAnulacion(String causaAnulacion) {
         this.causaAnulacion = causaAnulacion;
+    }
+
+    @Basic
+    @Column(name = "FECHA_ANULACION", nullable = true, insertable = true, updatable = true)
+    public Date getFechaAnulacion() {
+        return fechaAnulacion;
+    }
+
+    public void setFechaAnulacion(Date fechaAnulacion) {
+        this.fechaAnulacion = fechaAnulacion;
     }
 }

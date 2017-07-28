@@ -56,6 +56,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -909,9 +910,9 @@ public class IragController {
                     doc.addPage(page);
                     PDPageContentStream stream = new PDPageContentStream(doc, page);
 
-                    String workingDir = System.getProperty("user.dir");
-
-                    BufferedImage image = ImageIO.read(new File(workingDir + "/fichaIrag1.png"));
+                    String urlServer = "http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+                    URL url = new URL(urlServer+"/resources/img/fichas/fichaIrag1.png");
+                    BufferedImage image = ImageIO.read(url);
 
                     GeneralUtils.drawObject(stream, doc, image, 10, 50, 580, 780);
 
@@ -1555,7 +1556,6 @@ public class IragController {
                         if (condicPre.contains("CONDPRE|OTRA")) {
                             x1 = x + 388;
                             GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
-
                             x1 = x + 300;
                             GeneralUtils.drawTEXT(otraCondicion, y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
@@ -1564,17 +1564,19 @@ public class IragController {
                             GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
                         }
+                    }else{
+                        y-= 56; // saltar toda la tabla de condiciones, aunque no tenga valoresw
                     }
 
                     y -= 40;
                     if (manifestaciones != null) {
                         if (manifestaciones.contains("MANCLIN|FIEB")) {
                             x1 = x + 79;
-                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
+                            GeneralUtils.drawTEXT("*****", y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
                         } else {
                             x1 = x + 99;
-                            GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
+                            GeneralUtils.drawTEXT("****", y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
                         }
 
@@ -1812,6 +1814,8 @@ public class IragController {
 
                         }
 
+                    }else{
+                        y -= 73; // desplazar toda la tabla de manifestaciones aunque no tenga datos
                     }
 
                     y -= 18;
@@ -1962,7 +1966,8 @@ public class IragController {
 
 
                     float y1 = 0;
-                    BufferedImage image2 = ImageIO.read(new File(workingDir + "/fichaIrag2.png"));
+                    url = new URL(urlServer+"/resources/img/fichas/fichaIrag2.png");
+                    BufferedImage image2 = ImageIO.read(url);
 
                     if (!diagnosticosList.isEmpty()) {
                         int con = 0;

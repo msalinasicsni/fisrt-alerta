@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Created by FIRSTICT on 4/21/2015.
@@ -46,16 +47,16 @@ public class GeneralUtils {
         stream.drawXObject(ximage, x, y, width, height);
         }
 
-    public static void drawHeaderAndFooter(PDPageContentStream stream, PDDocument doc, float inY, float wHeader, float hHeader, float wFooter, float hFooter) throws IOException {
-        String workingDir = System.getProperty("user.dir");
+    public static void drawHeaderAndFooter(PDPageContentStream stream, PDDocument doc, float inY, float wHeader, float hHeader, float wFooter, float hFooter, String urlServer) throws IOException {
+        URL url = new URL(urlServer+"/resources/img/fichas/encabezadoMinsa.jpg");
 
         //dibujar encabezado
-        BufferedImage headerImage = ImageIO.read(new File(workingDir + "/encabezadoMinsa.jpg"));
+        BufferedImage headerImage = ImageIO.read(url);
         GeneralUtils.drawObject(stream, doc, headerImage, 5, inY,wHeader, hHeader);
 
-
+        url = new URL(urlServer+"/resources/img/fichas/piePMinsa.jpg");
         //dibujar pie de pag
-        BufferedImage footerImage = ImageIO.read(new File(workingDir + "/piePMinsa.jpg"));
+        BufferedImage footerImage = ImageIO.read(url);
         GeneralUtils.drawObject(stream, doc, footerImage, 5, 20, wFooter, hFooter);
     }
 

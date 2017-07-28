@@ -29,6 +29,8 @@ public class DaSolicitudDx {
     private boolean anulado;
     private User usuarioAnulacion;
     private String causaAnulacion;
+    private Date fechaAnulacion;
+    private Boolean inicial; // true cuando es una solicitud solicitada en la recepción general o desde la unidad de salud. false cuando lo agregan en laboratorio
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -170,4 +172,23 @@ public class DaSolicitudDx {
         this.causaAnulacion = causaAnulacion;
     }
 
+    @Basic
+    @Column(name = "FECHA_ANULACION", nullable = true, insertable = true, updatable = true)
+    public Date getFechaAnulacion() {
+        return fechaAnulacion;
+    }
+
+    public void setFechaAnulacion(Date fechaAnulacion) {
+        this.fechaAnulacion = fechaAnulacion;
+    }
+
+    @Basic
+    @Column(name = "INICIAL", nullable = true, insertable = true, updatable = true)
+    public Boolean getInicial() {
+        return inicial;
+    }
+
+    public void setInicial(Boolean inicial) {
+        this.inicial = inicial;
+    }
 }

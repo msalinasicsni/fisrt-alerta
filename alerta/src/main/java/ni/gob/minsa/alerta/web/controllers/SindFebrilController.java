@@ -53,6 +53,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -672,7 +673,7 @@ public class SindFebrilController {
      * @throws Exception
      */
     @RequestMapping(value = "getPDF", method = RequestMethod.GET)
-    public @ResponseBody String getPDF(@RequestParam(value = "idNotificacion", required = true) String idNotificacion) throws Exception {
+    public @ResponseBody String getPDF(@RequestParam(value = "idNotificacion", required = true) String idNotificacion, HttpServletRequest request) throws Exception {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         PDDocument doc = new PDDocument();
         DaNotificacion not = daNotificacionService.getNotifById(idNotificacion);
@@ -691,9 +692,10 @@ public class SindFebrilController {
                     PDPageContentStream stream = new PDPageContentStream(doc, page);
                     float xCenter;
 
-                    String workingDir = System.getProperty("user.dir");
+                    String urlServer = "http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+                    URL url = new URL(urlServer+"/resources/img/fichas/fichaFebril.png");
 
-                    BufferedImage image = ImageIO.read(new File(workingDir + "/fichaFebril.png"));
+                    BufferedImage image = ImageIO.read(url);
 
                     GeneralUtils.drawObject(stream,doc,image,20,30,545,745);
                     String silais = (febril.getIdNotificacion().getCodSilaisAtencion()!=null?febril.getIdNotificacion().getCodSilaisAtencion().getNombre():null);
