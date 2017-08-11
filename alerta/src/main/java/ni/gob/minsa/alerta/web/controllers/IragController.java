@@ -622,8 +622,10 @@ public class IragController {
                 irag.setVentilacionAsistida(ventilacionAsistida);
             }
 
-            irag.setDiagnostico1Egreso(cie10Service.getCie10ByCodigo(diagnostico1Egreso));
-            irag.setDiagnostico2Egreso(cie10Service.getCie10ByCodigo(diagnostico2Egreso));
+            //irag.setDiagnostico1Egreso(cie10Service.getCie10ByCodigo(diagnostico1Egreso));
+            //irag.setDiagnostico2Egreso(cie10Service.getCie10ByCodigo(diagnostico2Egreso));
+            irag.setDiagnostico1Egreso(diagnostico1Egreso);
+            irag.setDiagnostico2Egreso(diagnostico2Egreso);
 
             if (!fechaEgreso.equals("")) {
                 irag.setFechaEgreso(StringToDate(fechaEgreso));
@@ -1059,17 +1061,17 @@ public class IragController {
 
                     String ventilacion = irag.getVentilacionAsistida() != null ? irag.getVentilacionAsistida().toString() : null;
 
-                    String dxEgreso1 = irag.getDiagnostico1Egreso() != null ? irag.getDiagnostico1Egreso().getNombreCie10() : "----------";
+                    String dxEgreso1 = irag.getDiagnostico1Egreso() != null ? irag.getDiagnostico1Egreso() : "----------";
 
-                    String dxEgreso2 = irag.getDiagnostico2Egreso() != null ? irag.getDiagnostico2Egreso().getNombreCie10() : "----------";
+                    String dxEgreso2 = irag.getDiagnostico2Egreso() != null ? irag.getDiagnostico2Egreso() : "----------";
 
                     String fechaEgreso = irag.getFechaEgreso() != null ? DateUtil.DateToString(irag.getFechaEgreso(), "dd/MM/yyyy HH:mm:ss") : "----------";
 
                     String condicionEgreso = irag.getCodCondEgreso() != null ? irag.getCodCondEgreso().getCodigo() : null;
 
-                    String codEgreso1 = irag.getDiagnostico1Egreso() != null ? irag.getDiagnostico1Egreso().getCodigoCie10() : null;
+                    String codEgreso1 = irag.getDiagnostico1Egreso() != null ? irag.getDiagnostico1Egreso() : null;
 
-                    String codEgreso2 = irag.getDiagnostico2Egreso() != null ? irag.getDiagnostico2Egreso().getCodigoCie10() : null;
+                    String codEgreso2 = irag.getDiagnostico2Egreso() != null ? irag.getDiagnostico2Egreso() : null;
 
                     String clasFinal = irag.getCodClasFCaso() != null ? irag.getCodClasFCaso() : null;
 
@@ -2126,52 +2128,50 @@ public class IragController {
                                 }
                             }
 
-                            if (codEgreso1 != null) {
-                                x1 = x + 87;
-                                GeneralUtils.drawTEXT(codEgreso1, y - 7, x1, stream, 5, PDType1Font.TIMES_ROMAN);
-                                x1 = x + 109;
-                                GeneralUtils.drawTEXT(dxEgreso1, y - 7, x1, stream, 5, PDType1Font.TIMES_ROMAN);
-                            }
-
-                            if (codEgreso2 != null) {
-                                x1 = x + 240;
-                                GeneralUtils.drawTEXT(codEgreso2, y - 7, x1, stream, 5, PDType1Font.TIMES_ROMAN);
-                                x1 = x + 264;
-                                GeneralUtils.drawTEXT(dxEgreso2, y - 7, x1, stream, 5, PDType1Font.TIMES_ROMAN);
-                            }
-
-                            x1 = x + 35;
-                            GeneralUtils.drawTEXT(fechaEgreso, y - 17, x1, stream, 5, PDType1Font.TIMES_ROMAN);
-
-                            if (condicionEgreso != null) {
-                                switch (condicionEgreso) {
-                                    case "CONEGRE|ALTA":
-                                        x1 = x + 129;
-                                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y - 30, x1, stream, 7, PDType1Font.TIMES_BOLD);
-                                        break;
-                                    case "CONEGRE|FUGA":
-                                        x1 = x + 206;
-                                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y - 30, x1, stream, 7, PDType1Font.TIMES_BOLD);
-                                        break;
-                                    case "CONEGRE|REF":
-                                        x1 = x + 302;
-                                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y - 30, x1, stream, 7, PDType1Font.TIMES_BOLD);
-
-                                        break;
-                                    case "CONEGRE|FALL":
-                                        x1 = x + 348;
-                                        GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y - 30, x1, stream, 7, PDType1Font.TIMES_BOLD);
-                                        break;
-                                }
-
-                            }
-
-
                         } else {
                             x1 = x + 256;
                             GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y, x1, stream, 7, PDType1Font.TIMES_BOLD);
 
                         }
+                    }
+                    if (codEgreso1 != null) {
+                        x1 = x + 87;
+                        //GeneralUtils.drawTEXT(codEgreso1, y - 7, x1, stream, 5, PDType1Font.TIMES_ROMAN);
+                        x1 = x + 109;
+                        GeneralUtils.drawTEXT(dxEgreso1, y - 7, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+                    }
+
+                    if (codEgreso2 != null) {
+                        x1 = x + 240;
+                        //GeneralUtils.drawTEXT(codEgreso2, y - 7, x1, stream, 5, PDType1Font.TIMES_ROMAN);
+                        x1 = x + 264;
+                        GeneralUtils.drawTEXT(dxEgreso2, y - 7, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+                    }
+
+                    x1 = x + 35;
+                    GeneralUtils.drawTEXT(fechaEgreso, y - 17, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+
+                    if (condicionEgreso != null) {
+                        switch (condicionEgreso) {
+                            case "CONEGRE|ALTA":
+                                x1 = x + 129;
+                                GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y - 30, x1, stream, 7, PDType1Font.TIMES_BOLD);
+                                break;
+                            case "CONEGRE|FUGA":
+                                x1 = x + 206;
+                                GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y - 30, x1, stream, 7, PDType1Font.TIMES_BOLD);
+                                break;
+                            case "CONEGRE|REF":
+                                x1 = x + 302;
+                                GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y - 30, x1, stream, 7, PDType1Font.TIMES_BOLD);
+
+                                break;
+                            case "CONEGRE|FALL":
+                                x1 = x + 348;
+                                GeneralUtils.drawTEXT(messageSource.getMessage("lbl.x", null, null), y - 30, x1, stream, 7, PDType1Font.TIMES_BOLD);
+                                break;
+                        }
+
                     }
 
                     y -= 57;

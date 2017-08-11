@@ -889,10 +889,10 @@ var CreateIrag = function () {
                     $('#noDiasHospitalizado').val('');
                     $('#ventN').prop('checked', false);
                     $('#ventS').prop('checked', false);
-                    $('#diagnostico1Egreso').val('').change();
-                    $('#diagnostico2Egreso').val('').change();
-                    $('#fechaEgreso').val('');
-                    $('#codCondEgreso').val('').change();
+                    //$('#diagnostico1Egreso').val('').change();
+                    //$('#diagnostico2Egreso').val('').change();
+                    //$('#fechaEgreso').val('');
+                    //$('#codCondEgreso').val('').change();
                 }
 
             });

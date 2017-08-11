@@ -1428,63 +1428,35 @@
                 </div>
 
             </section>
+        </div>
 
+        </div>
+        <div class="row">
             <section class="col col-xs-12 col-sm-12 col-md-12 col-lg-6">
                 <spring:message var="diagnosis1" code="lbl.egress.diagnosis1"/>
                 <label class="text-left txt-color-blue font-md">
                         ${diagnosis1}
                 </label>
-
-                <div class="input-group">
-                    <spring:message code="msg.select.diagnosis" var="sDx"/>
-                    <span class="input-group-addon"> <i class="fa fa-list"></i></span>
-                    <select data-placeholder="${sDx}" id="diagnostico1Egreso" name="diagnostico1Egreso" class="select2">
-                        <option value=""></option>
-                        <c:forEach items="${catCie10Irag}" var="enf">
-                            <c:choose>
-                                <c:when test="${fn:contains(irag.diagnostico1Egreso.codigoCie10, enf.codigoCie10)}">
-                                    <option selected value="${enf.codigoCie10}">${enf.nombreCie10}</option>
-                                </c:when>
-                                <c:otherwise>
-                                    <option value="${enf.codigoCie10}">${enf.nombreCie10}</option>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-                    </select>
+                <div class="input">
+                    <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-alpha-asc fa-fw"></i>
+                    <form:input placeholder="${sDx}" type="text" name="diagnostico1Egreso" id="diagnostico1Egreso" path="diagnostico1Egreso"/>
                 </div>
 
-
             </section>
-        </div>
-
-        <div class="row">
-
             <section class="col col-xs-12 col-sm-12 col-md-12 col-lg-6">
                 <spring:message var="diagnosis2" code="lbl.egress.diagnosis2"/>
                 <label class="text-left txt-color-blue font-md">
                         ${diagnosis2}
                 </label>
-
-                <div class="input-group">
-                    <spring:message code="msg.select.diagnosis" var="sDx"/>
-                    <span class="input-group-addon"> <i class="fa fa-list"></i></span>
-                    <select data-placeholder="${sDx}" id="diagnostico2Egreso" name="diagnostico2Egreso" class="select2">
-                        <option value=""></option>
-                        <c:forEach items="${catCie10Irag}" var="enf">
-                            <c:choose>
-                                <c:when test="${fn:contains(irag.diagnostico2Egreso.codigoCie10, enf.codigoCie10)}">
-                                    <option selected value="${enf.codigoCie10}">${enf.nombreCie10}</option>
-                                </c:when>
-                                <c:otherwise>
-                                    <option value="${enf.codigoCie10}">${enf.nombreCie10}</option>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-                    </select>
+                <div class="input">
+                    <i class="icon-prepend fa fa-pencil fa-fw"></i> <i class="icon-append fa fa-sort-alpha-asc fa-fw"></i>
+                    <form:input placeholder="${sDx}" type="text" name="diagnostico2Egreso" id="diagnostico2Egreso" path="diagnostico2Egreso"/>
                 </div>
 
-            </section>
 
+            </section>
+            </div>
+            <div class="row">
             <section class="col col-xs-12 col-sm-8 col-md-6 col-lg-3">
                 <spring:message var="egressDate" code="lbl.egress.date"/>
                 <label class="text-left txt-color-blue font-md">
@@ -1523,7 +1495,6 @@
             </section>
         </div>
 
-        </div>
     </fieldset>
 
 </div>
