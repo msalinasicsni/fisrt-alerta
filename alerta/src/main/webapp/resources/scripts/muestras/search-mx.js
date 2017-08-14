@@ -150,9 +150,11 @@ var SearchMx = function () {
 
                     if (len > 0) {
                         for (var i = 0; i < len; i++) {
+                            var actionUrl = parametros.editUrl+dataToLoad[i].idTomaMx;
                             table.fnAddData(
                                 [dataToLoad[i].codigoUnicoMx , dataToLoad[i].fechaTomaMx, dataToLoad[i].tipoNoti, dataToLoad[i].codSilais, dataToLoad[i].codUnidadSalud,
-                                    dataToLoad[i].persona, dataToLoad[i].laboratorio, dataToLoad[i].estadoMx, dataToLoad[i].solicitudes]);
+                                    dataToLoad[i].persona, dataToLoad[i].laboratorio, dataToLoad[i].estadoMx, dataToLoad[i].solicitudes,
+                                        '<a target="_blank" href=' + actionUrl + ' class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>']);
                         }
 
                     } else {

@@ -230,7 +230,7 @@ public class AdmonStudiesUSController {
                         Estudio_UnidadSalud estUs = new Estudio_UnidadSalud();
                         estUs.setFechaRegistro(new Date());
                         estUs.setUsuarioRegistro(usuarioService.getUsuarioById((int) idUsuario));
-                        estUs.setEstudio(tomaMxService.getEstudioById(idEstudio.toString()));
+                        estUs.setEstudio(tomaMxService.getEstudioById(idEstudio));
                         Unidades unidad = unidadesService.getUnidadByCodigo(us);
                         estUs.setUnidad(unidad);
                         estUs.setPasivo(false);

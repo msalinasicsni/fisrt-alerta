@@ -6,6 +6,7 @@ import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
+import ni.gob.minsa.alerta.domain.muestra.Dx_TipoMx_TipoNoti;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.poblacion.Sectores;
@@ -82,6 +83,10 @@ public class expose {
     
     @Resource(name="entidadAdmonService")
 	private EntidadAdmonService entidadAdmonService;
+
+    @Autowired
+    @Qualifier(value = "tomaMxService")
+    private TomaMxService tomaMxService;
 
     @Autowired
     MessageSource messageSource;
@@ -420,5 +425,14 @@ public class expose {
     @RequestMapping(value = "validarMenu", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String validarMenu(HttpServletRequest request){
         return seguridadService.obtenerMenu(request);
+    }
+
+    @RequestMapping(value = "getDiagnosticosEdicion", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    List<Dx_TipoMx_TipoNoti> getDiagnosticosEdicion(@RequestParam(value = "codMx", required = true) String codMx, @RequestParam(value = "tipoNoti", required = true) String tipoNoti) throws Exception {
+        logger.info("Obteniendo los dx por tipo mx en JSON");
+        return tomaMxService.getDx(codMx,tipoNoti);
+
     }
 }

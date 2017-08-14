@@ -5,10 +5,7 @@ import ni.gob.minsa.alerta.domain.muestra.*;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
 import ni.gob.minsa.alerta.domain.solicitante.Solicitante;
 import org.apache.commons.codec.language.Soundex;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,7 +69,7 @@ public class TomaMxService {
      */
     public void addTomaMx(DaTomaMx toma) {
         Session session = sessionFactory.getCurrentSession();
-        session.save(toma);
+        session.saveOrUpdate(toma);
     }
 
     /**
@@ -194,11 +191,11 @@ public class TomaMxService {
      * @param id del estudio a buscar
      * @return Catalogo_Estudio
      */
-    public Catalogo_Estudio getEstudioById(String id){
+    public Catalogo_Estudio getEstudioById(Integer id){
         String query = "from Catalogo_Estudio where idEstudio = :id";
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
-        q.setString("id", id);
+        q.setParameter("id", id);
         return (Catalogo_Estudio)q.uniqueResult();
     }
 
@@ -353,10 +350,139 @@ public class TomaMxService {
         return q.list();
     }
 
+    /**
+     * Obtiene los dx iniciales solicitados en la toma de mx
+     * @param id del estudio a buscar
+     * @return Catalogo_Estudio
+     */
+    public List<DaSolicitudDx> getSolicitudesDxInicialesByIdMX(String id){
+        String query = "select sdx from DaSolicitudDx sdx inner join sdx.idTomaMx mx where sdx.anulado = false and sdx.inicial = true and mx.idTomaMx  = :id ORDER BY sdx.fechaHSolicitud";
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("id", id);
+        return q.list();
+    }
     public List<Catalogo_Dx> getCatalogosDx(){
         String query = "from Catalogo_Dx where pasivo = false order by nombre asc";
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
         return q.list();
     }
+
+    public DaSolicitudDx getSolicitudDxByIdSolicitud(String idSolicitud){
+        String query = "from DaSolicitudDx where idSolicitudDx = :idSolicitud";
+        Query q = sessionFactory.getCurrentSession().createQuery(query);
+        q.setParameter("idSolicitud",idSolicitud);
+        return (DaSolicitudDx)q.uniqueResult();
+    }
+
+    public DaSolicitudEstudio getSolicitudEstByIdSolicitud(String idSolicitud){
+        String query = "from DaSolicitudEstudio where idSolicitudEstudio = :idSolicitud";
+        Query q = sessionFactory.getCurrentSession().createQuery(query);
+        q.setParameter("idSolicitud",idSolicitud);
+        return (DaSolicitudEstudio)q.uniqueResult();
+    }
+
+    public Integer bajaSolicitudDx(String userName, String idSolicitud, String causa) {
+        // Retrieve session from Hibernate
+        Session s = sessionFactory.openSession();
+        Transaction tx = s.beginTransaction();
+        int updateEntities = 0,updateEntities2=0,updateEntities3=0,updateEntities4=0;
+        try {
+
+            String hqlBajaResExam = "update DetalleResultado o set pasivo=true, fechahAnulacion = current_date, razonAnulacion = :causa " +
+                    "where examen.idOrdenExamen in (select idOrdenExamen from OrdenExamen where solicitudDx.idSolicitudDx = :idSolicitud)";
+            updateEntities3 = s.createQuery(hqlBajaResExam)
+                    .setString("causa",causa+". Anulado por: "+userName)
+                    .setString("idSolicitud", idSolicitud).executeUpdate();
+
+            String hqlBajaExam = "update OrdenExamen ex set anulado=true, fechaAnulacion = current_date, causaAnulacion = :causa where solicitudDx.idSolicitudDx = :idSolicitud and anulado = false ";
+            updateEntities = s.createQuery(hqlBajaExam)
+                    .setString("causa",causa+". Anulado por: "+userName)
+                    .setString("idSolicitud", idSolicitud)
+                    .executeUpdate();
+
+            String hqlBajaResDx = "update DetalleResultadoFinal ex set pasivo=true, fechahAnulacion = current_date, razonAnulacion = :causa where solicitudDx.idSolicitudDx = :idSolicitud and pasivo = false ";
+            updateEntities4 = s.createQuery(hqlBajaResDx)
+                    .setString("causa",causa+". Anulado por: "+userName)
+                    .setString("idSolicitud", idSolicitud)
+                    .executeUpdate();
+
+            String hqlBajaDx = "update DaSolicitudDx ex set anulado=true, fechaAnulacion = current_date, aprobada = false, usuarioAprobacion = null, fechaAprobacion = null, causaAnulacion = :causa where idSolicitudDx = :idSolicitud";
+            updateEntities2 = s.createQuery(hqlBajaDx)
+                    .setString("causa",causa+". Anulado por: "+userName)
+                    .setString("idSolicitud", idSolicitud)
+                    .executeUpdate();
+
+            tx.commit();
+        }catch (Exception ex){
+            tx.rollback();
+            ex.printStackTrace();
+            throw ex;
+        }finally {
+            s.close();
+        }
+        return updateEntities+updateEntities2+updateEntities3+updateEntities4;
+    }
+
+    public Integer bajaSolicitudEstudio(String userName, String idSolicitud, String causa) {
+        // Retrieve session from Hibernate
+        Session s = sessionFactory.openSession();
+        Transaction tx = s.beginTransaction();
+        int updateEntities = 0,updateEntities2=0,updateEntities3=0,updateEntities4=0;
+        try {
+
+            String hqlBajaResExam = "update DetalleResultado o set pasivo=true, fechahAnulacion = current_date, razonAnulacion = :causa " +
+                    "where examen.idOrdenExamen in (select idOrdenExamen from OrdenExamen where solicitudEstudio.idSolicitudEstudio = :idSolicitud)";
+            updateEntities3 = s.createQuery(hqlBajaResExam)
+                    .setString("causa",causa+". Anulado por: "+userName)
+                    .setString("idSolicitud", idSolicitud)
+                    .executeUpdate();
+
+            String hqlBajaExam = "update OrdenExamen ex set anulado=true, fechaAnulacion = current_date, causaAnulacion = :causa where solicitudEstudio.idSolicitudEstudio = :idSolicitud";
+            updateEntities2 = s.createQuery(hqlBajaExam)
+                    .setString("causa",causa+". Anulado por: "+userName)
+                    .setString("idSolicitud", idSolicitud)
+                    .executeUpdate();
+
+            String hqlBajaResEst = "update DetalleResultadoFinal ex set pasivo=true, fechahAnulacion = current_date, razonAnulacion = :causa where solicitudEstudio.idSolicitudEstudio = :idSolicitud";
+            updateEntities4 = s.createQuery(hqlBajaResEst)
+                    .setString("causa",causa)
+                    .setString("causa",causa+". Anulado por: "+userName)
+                    .executeUpdate();
+
+            String hqlBajaEst = "update DaSolicitudEstudio ex set anulado=true, fechaAnulacion = current_date, aprobada = false, usuarioAprobacion = null, fechaAprobacion = null, causaAnulacion = :causa where idSolicitudEstudio = :idSolicitud";
+            updateEntities2 = s.createQuery(hqlBajaEst)
+                    .setString("causa",causa+". Anulado por: "+userName)
+                    .setString("idSolicitud", idSolicitud)
+                    .executeUpdate();
+
+            tx.commit();
+        }catch (Exception ex){
+            tx.rollback();
+            throw ex;
+        }finally {
+            s.close();
+        }
+        return updateEntities+updateEntities2+updateEntities3+updateEntities4;
+    }
+
+    public DaSolicitudDx getSolicitudesDxByMxDx(String idTomaMx,  Integer idDiagnostico){
+        String query = "from DaSolicitudDx where anulado = false and idTomaMx.idTomaMx = :idTomaMx " +
+                "and codDx.idDiagnostico = :idDiagnostico ORDER BY fechaHSolicitud";
+        Query q = sessionFactory.getCurrentSession().createQuery(query);
+        q.setParameter("idTomaMx",idTomaMx);
+        q.setParameter("idDiagnostico",idDiagnostico);
+        return (DaSolicitudDx)q.uniqueResult();
+    }
+
+    public DaSolicitudEstudio getSolicitudesEstudioByMxEst(String idTomaMx, Integer idEstudio){
+        String query = "from DaSolicitudEstudio where anulado = false and idTomaMx.idTomaMx = :idTomaMx " +
+                "and tipoEstudio.idEstudio= :idEstudio ORDER BY fechaHSolicitud";
+        Query q = sessionFactory.getCurrentSession().createQuery(query);
+        q.setParameter("idTomaMx",idTomaMx);
+        q.setParameter("idEstudio",idEstudio);
+        return (DaSolicitudEstudio)q.uniqueResult();
+    }
+
 }

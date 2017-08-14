@@ -5,12 +5,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
+import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.muestra.*;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
+import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
+import ni.gob.minsa.alerta.domain.resultados.DetalleResultadoFinal;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.DateUtil;
+import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import ni.gob.minsa.alerta.utilities.typeAdapter.StringUtil;
 import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.hibernate.SessionFactory;
@@ -35,13 +39,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by souyen-ics on 11-05-14.
@@ -81,6 +83,9 @@ public class TomaMxController {
 
     @Resource(name = "unidadesService")
     public UnidadesService unidadesService;
+
+    @Resource(name = "resultadoFinalService")
+    public ResultadoFinalService resultadoFinalService;
 
     @Autowired
     MessageSource messageSource;
@@ -523,7 +528,7 @@ public class TomaMxController {
             tomaMx.setCategoriaMx(catalogoService.getCategoriaMx(categoriaMx));
             tomaMxService.addTomaMx(tomaMx);
             DaSolicitudEstudio soli = new DaSolicitudEstudio();
-            soli.setTipoEstudio(tomaMxService.getEstudioById(idEstudio));
+            soli.setTipoEstudio(tomaMxService.getEstudioById(Integer.valueOf(idEstudio)));
             soli.setFechaHSolicitud(new Timestamp(new Date().getTime()));
             soli.setUsarioRegistro(usuarioRegistro);
             soli.setIdTomaMx(tomaMx);
@@ -559,7 +564,7 @@ public class TomaMxController {
 
         DaSolicitudEstudio soli = new DaSolicitudEstudio();
         for (JsonElement idEstudio : estudios) {
-            soli.setTipoEstudio(tomaMxService.getEstudioById(idEstudio.getAsString()));
+            soli.setTipoEstudio(tomaMxService.getEstudioById(idEstudio.getAsInt()));
             soli.setFechaHSolicitud(new Timestamp(new Date().getTime()));
             long idUsuario = seguridadService.obtenerIdUsuario(request);
             soli.setUsarioRegistro(usuarioService.getUsuarioById((int) idUsuario));
@@ -577,7 +582,7 @@ public class TomaMxController {
      */
     @RequestMapping(value = "/searchMx/init", method = RequestMethod.GET)
     public ModelAndView initReportForm(HttpServletRequest request) throws Exception {
-        logger.debug("Iniciando Reporte de Resultados Positivos y Negativos");
+        logger.debug("Iniciando formulario de búsqueda de muetras");
         String urlValidacion;
         try {
             urlValidacion = seguridadService.validarLogin(request);
@@ -731,35 +736,32 @@ public class TomaMxController {
             //se arma estructura de diagn?sticos o estudios
             List<DaSolicitudDx> solicitudDxList = tomaMxService.getSolicitudesDxByIdMX(tomaMx.getIdTomaMx());
             List<DaSolicitudEstudio> solicitudE = tomaMxService.getSolicitudesEstudioByIdTomaMx(tomaMx.getIdTomaMx());
-
+            String solicitudes = "";
             if (!solicitudDxList.isEmpty()) {
                 int cont = 0;
-                String dxs = "";
+
                 for (DaSolicitudDx solicitudDx : solicitudDxList) {
                     cont++;
                     if (cont == solicitudDxList.size()) {
-                        dxs += solicitudDx.getCodDx().getNombre();
+                        solicitudes += solicitudDx.getCodDx().getNombre();
                     } else {
-                        dxs += solicitudDx.getCodDx().getNombre() + "," + " ";
+                        solicitudes += solicitudDx.getCodDx().getNombre() + "," + " ";
                     }
-
                 }
-                map.put("solicitudes", dxs);
             } else {
                 if(!solicitudE.isEmpty()){
                     int cont = 0;
-                    String estudios = "";
                     for (DaSolicitudEstudio solicitudDx : solicitudE) {
                         cont++;
                         if (cont == solicitudDxList.size()) {
-                            estudios += solicitudDx.getTipoEstudio().getNombre();
+                            solicitudes += solicitudDx.getTipoEstudio().getNombre();
                         } else {
-                            estudios += solicitudDx.getTipoEstudio().getNombre() + "," + " ";
+                            solicitudes += solicitudDx.getTipoEstudio().getNombre() + "," + " ";
                         }
                     }
-                    map.put("solicitudes", estudios);
                 }
             }
+            map.put("solicitudes", solicitudes);
 
             mapResponse.put(indice, map);
             indice++;
@@ -768,5 +770,370 @@ public class TomaMxController {
         //escapar caracteres especiales, escape de los caracteres con valor numérico mayor a 127
         UnicodeEscaper escaper = UnicodeEscaper.above(127);
         return escaper.translate(jsonResponse);
+    }
+
+    /**
+     * M?todo que se llama al entrar a la opci?n de menu de Reportes "Reporte Resultados Positivos y Negativos".
+     *
+     * @param request para obtener informaci?n de la petici?n del cliente
+     * @return ModelAndView
+     * @throws Exception
+     */
+    @RequestMapping(value = "editMx/{idMx}")
+    public ModelAndView editMxForm( @PathVariable("idMx") String idMx, HttpServletRequest request) throws Exception {
+        logger.debug("editar muestras");
+        String urlValidacion;
+        DaTomaMx tomaMx = new DaTomaMx();
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validaci?n del login fue exitosa
+            tomaMx = tomaMxService.getTomaMxById(idMx);
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        ModelAndView mav = new ModelAndView();
+        if (urlValidacion.isEmpty()) {
+            List<EntidadesAdtvas> entidadesAdtvases = entidadAdmonService.getAllEntidadesAdtvas();
+            List<Divisionpolitica> municipios = null;
+            if (tomaMx.getCodSilaisAtencion()!=null){
+                municipios = divisionPoliticaService.getMunicipiosBySilais(tomaMx.getCodSilaisAtencion().getCodigo());
+            }
+            List<Unidades> unidades = null;
+            if (tomaMx.getCodUnidadAtencion()!=null && tomaMx.getCodSilaisAtencion()!=null){
+                unidades = unidadesService.getPrimaryUnitsByMunicipio_Silais(tomaMx.getCodUnidadAtencion().getMunicipio().getCodigoNacional(),
+                        tomaMx.getCodSilaisAtencion().getCodigo(), HealthUnitType.UnidadesPrimarias.getDiscriminator().split(","));
+            }
+            //se determina si es una muestra para estudio o para vigilancia rutinaria(Dx)
+            List<DaSolicitudEstudio> solicitudEstudioList = tomaMxService.getSolicitudesEstudioByIdTomaMx(tomaMx.getIdTomaMx());
+            boolean esEstudio = solicitudEstudioList.size()>0;
+            mav.addObject("entidades", entidadesAdtvases);
+            mav.addObject("municipios",municipios);
+            mav.addObject("unidades",unidades);
+            mav.addObject("muestra", tomaMx);
+            mav.addObject("esEstudio",esEstudio);
+            mav.setViewName("tomaMx/editForm");
+        } else
+            mav.setViewName(urlValidacion);
+
+        return mav;
+    }
+
+    @RequestMapping(value = "getSolicitudes", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    String getSolicitudes(@RequestParam(value = "idTomaMx", required = true) String idTomaMx) throws Exception {
+        logger.info("antes getSolicitudes");
+        List<DaSolicitudDx> solicitudDxList = tomaMxService.getSolicitudesDxInicialesByIdMX(idTomaMx);
+        List<DaSolicitudEstudio> solicitudEstudios = tomaMxService.getSolicitudesEstudioByIdTomaMx(idTomaMx);
+        logger.info("despues getSolicitudes");
+        return SolicitudesToJson(solicitudDxList, solicitudEstudios);
+    }
+
+    /**
+     * Método para convertir una lista de solicitudes dx o estudios a un string con estructura Json
+     * @param dxList lista con las solicitudes de diagnósticos a convertir
+     * @param estudioList lista con las solicitudes de estudio a convertir
+     * @return String
+     * @throws java.io.UnsupportedEncodingException
+     */
+    private String SolicitudesToJson(List<DaSolicitudDx> dxList, List<DaSolicitudEstudio> estudioList) throws UnsupportedEncodingException {
+        String jsonResponse="";
+        Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
+        Integer indice=0;
+        for(DaSolicitudDx dx : dxList){
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("idTomaMx", dx.getIdTomaMx().getIdTomaMx());
+            map.put("idSolicitud", dx.getIdSolicitudDx());
+            map.put("nombre", dx.getCodDx().getNombre());
+            map.put("fechaSolicitud", DateUtil.DateToString(dx.getFechaHSolicitud(), "dd/MM/yyyy hh:mm:ss a"));
+            map.put("tipo", messageSource.getMessage("lbl.routine",null,null));
+            if (dx.getAprobada() != null) {
+                if (dx.getAprobada().equals(true)) {
+                    map.put("estado", (messageSource.getMessage("lbl.approval.result", null, null)));
+                } else {
+                    map.put("estado", (messageSource.getMessage("lbl.without.result", null, null)));
+                }
+            } else {
+                List<DetalleResultadoFinal> detRes = resultadoFinalService.getDetResActivosBySolicitud(dx.getIdSolicitudDx());
+                if (!detRes.isEmpty()) {
+                    map.put("estado", (messageSource.getMessage("lbl.result.pending.approval", null, null)));
+                } else {
+                    map.put("estado", (messageSource.getMessage("lbl.without.result", null, null)));
+                }
+            }
+            mapResponse.put(indice, map);
+            indice ++;
+        }
+
+        for(DaSolicitudEstudio estudio : estudioList)
+        {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("idTomaMx", estudio.getIdTomaMx().getIdTomaMx());
+            map.put("idSolicitud", estudio.getIdSolicitudEstudio() );
+            map.put("nombre", estudio.getTipoEstudio().getNombre());
+            map.put("fechaSolicitud", DateUtil.DateToString(estudio.getFechaHSolicitud(), "dd/MM/yyyy hh:mm:ss a"));
+            map.put("tipo",messageSource.getMessage("lbl.study",null,null));
+            if (estudio.getAprobada() != null) {
+                if (estudio.getAprobada().equals(true)) {
+                    map.put("estado", (messageSource.getMessage("lbl.approval.result", null, null)));
+                } else {
+                    map.put("estado", (messageSource.getMessage("lbl.without.result", null, null)));
+                }
+            } else {
+                List<DetalleResultadoFinal> detRes = resultadoFinalService.getDetResActivosBySolicitud(estudio.getIdSolicitudEstudio());
+                if (!detRes.isEmpty()) {
+                    map.put("estado", (messageSource.getMessage("lbl.result.pending.approval", null, null)));
+                } else {
+                    map.put("estado", (messageSource.getMessage("lbl.without.result", null, null)));
+                }
+            }
+            mapResponse.put(indice, map);
+            indice ++;
+        }
+        jsonResponse = new Gson().toJson(mapResponse);
+        //escapar caracteres especiales, escape de los caracteres con valor numérico mayor a 127
+        UnicodeEscaper escaper     = UnicodeEscaper.above(127);
+        return escaper.translate(jsonResponse);
+    }
+
+    /**
+     * Método para anular una orden de examen
+     * @param request para obtener información de la petición del cliente. Contiene en un parámetro la estructura json del registro a anular
+     * @param response para notificar al cliente del resultado de la operación
+     * @throws Exception
+     */
+    @RequestMapping(value = "anularSolicitud", method = RequestMethod.POST)
+    protected void anularSolicitud(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        logger.debug("anular solicitud dx o estudio");
+        String urlValidacion;
+        String idSolicitud = "";
+        String causaAnulacion = "";
+        String json="";
+        String resultado = "";
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
+            json = br.readLine();
+            JsonObject jsonpObject = new Gson().fromJson(json, JsonObject.class);
+            idSolicitud = jsonpObject.get("idSolicitud").getAsString();
+            causaAnulacion = jsonpObject.get("causaAnulacion").getAsString();
+            DaSolicitudDx solicitudDx = tomaMxService.getSolicitudDxByIdSolicitud(idSolicitud);
+            if(solicitudDx!=null){
+                try{
+                    tomaMxService.bajaSolicitudDx(seguridadService.obtenerNombreUsuario(request),idSolicitud, causaAnulacion);
+                }catch (Exception ex){
+                    logger.error("Error al anular solicitud dx",ex);
+                    resultado = messageSource.getMessage("msg.request.cancel.error2", null, null);
+                    resultado = resultado + ". \n " + ex.getMessage();
+                }
+            }else{
+                DaSolicitudEstudio solicitudEst = tomaMxService.getSolicitudEstByIdSolicitud(idSolicitud);
+                if(solicitudEst!=null){
+                    try{
+                        tomaMxService.bajaSolicitudEstudio(seguridadService.obtenerNombreUsuario(request),idSolicitud, causaAnulacion);
+                    }catch (Exception ex){
+                        logger.error("Error al anular solicitud de estudio",ex);
+                        resultado = messageSource.getMessage("msg.request.cancel.error2", null, null);
+                        resultado = resultado + ". \n " + ex.getMessage();
+                    }
+                }else{
+                    throw new Exception(messageSource.getMessage("msg.request.notfound", null, null));
+                }
+            }
+
+        }catch (Exception ex){
+            logger.error("Sucedio un error al anular solicitud",ex);
+            resultado = messageSource.getMessage("msg.request.cancel.error1", null, null);
+            resultado = resultado + ". \n " + ex.getMessage();
+        } finally {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("idSolicitud", idSolicitud);
+            map.put("causaAnulacion",causaAnulacion);
+            map.put("mensaje",resultado);
+            String jsonResponse = new Gson().toJson(map);
+            response.getOutputStream().write(jsonResponse.getBytes());
+            response.getOutputStream().close();
+        }
+    }
+
+    /**
+     * Método para agregar una solicitud de dx o estudio para una mx
+     * @param request para obtener información de la petición del cliente. Contiene en un parámetro la estructura json del registro a agregar
+     * @param response para notificar al cliente del resultado de la operación
+     * @throws ServletException
+     * @throws IOException
+     */
+    @RequestMapping(value = "agregarSolicitud", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    protected void agregarSolicitud(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String json;
+        String resultado = "";
+        boolean esEstudio=false;
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
+            json = br.readLine();
+            //Recuperando Json enviado desde el cliente
+            JsonObject jsonpObject = new Gson().fromJson(json, JsonObject.class);
+            esEstudio = jsonpObject.get("esEstudio").getAsBoolean();
+            if(esEstudio)
+                resultado = agregarSolicitudEstudio(jsonpObject, request);
+            else
+                resultado = agregarSolicitudDx(jsonpObject, request);
+
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(),ex);
+            ex.printStackTrace();
+            resultado =  messageSource.getMessage("msg.request.error",null,null);
+            resultado=resultado+". \n "+ex.getMessage();
+
+        }finally {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("idTomaMx","tmp");
+            map.put("idDiagnostico", "tmp");
+            map.put("idEstudio", "tmp");
+            map.put("esEstudio",String.valueOf(esEstudio));
+            map.put("mensaje",resultado);
+            String jsonResponse = new Gson().toJson(map);
+            response.getOutputStream().write(jsonResponse.getBytes());
+            response.getOutputStream().close();
+        }
+    }
+
+    private String agregarSolicitudDx(JsonObject jsonpObject, HttpServletRequest request) throws Exception {
+        String resultado = "";
+        String idTomaMx = "";
+        int idDiagnostico = 0;
+        idTomaMx = jsonpObject.get("idTomaMx").getAsString();
+        idDiagnostico = jsonpObject.get("idDiagnostico").getAsInt();
+        DaTomaMx tomaMx = tomaMxService.getTomaMxById(idTomaMx);
+        //se valida si existe una orden activa para la muestra, el diagnóstico y el examen
+        DaSolicitudDx solicitudDx = tomaMxService.getSolicitudesDxByMxDx(idTomaMx, idDiagnostico);
+        if (solicitudDx!=null){
+            if (tomaMx.getEstadoMx().getCodigo().equalsIgnoreCase("ESTDMX|PEND")
+                    || (solicitudDx.getLabProcesa() !=null && solicitudDx.getLabProcesa().getCodigo().equalsIgnoreCase(solicitudDx.getIdTomaMx().getEnvio().getLaboratorioDestino().getCodigo()))){
+                Catalogo_Dx dx = tomaMxService.getDxById(String.valueOf(idDiagnostico));
+                resultado = messageSource.getMessage("msg.add.request.error2", null, null);
+                resultado = resultado.replace("{0}", dx.getNombre());
+            }
+
+        }else{
+            try {
+
+                DaSolicitudDx soli = new DaSolicitudDx();
+                soli.setCodDx(tomaMxService.getDxById(String.valueOf(idDiagnostico)));
+                soli.setFechaHSolicitud(new Timestamp(new Date().getTime()));
+                    soli.setUsarioRegistro(usuarioService.getUsuarioById((int)seguridadService.obtenerIdUsuario(request)));
+                soli.setIdTomaMx(tomaMx);
+                soli.setAprobada(false);
+                if (tomaMx.getEnvio()!=null) {
+                    soli.setLabProcesa(tomaMx.getEnvio().getLaboratorioDestino());
+                }
+                soli.setControlCalidad(false);
+                soli.setInicial(true);
+                tomaMxService.addSolicitudDx(soli);
+
+            } catch (Exception ex) {
+                resultado = messageSource.getMessage("msg.add.request.error", null, null);
+                resultado = resultado + ". \n " + ex.getMessage();
+                ex.printStackTrace();
+            }
+
+        }
+
+        UnicodeEscaper escaper     = UnicodeEscaper.above(127);
+        return escaper.translate(resultado);
+    }
+
+    private String agregarSolicitudEstudio(JsonObject jsonpObject, HttpServletRequest request) throws Exception {
+        String resultado = "";
+        String idTomaMx = "";
+        int idEstudio = 0;
+        idTomaMx = jsonpObject.get("idTomaMx").getAsString();
+        idEstudio = jsonpObject.get("idEstudio").getAsInt();
+        //se valida si existe una orden activa para la muestra, el diagnóstico y el examen
+        DaSolicitudEstudio solicitudEstudio = tomaMxService.getSolicitudesEstudioByMxEst(idTomaMx, idEstudio);
+        if (solicitudEstudio!=null){
+            Catalogo_Estudio estudio = tomaMxService.getEstudioById(idEstudio);
+            resultado = messageSource.getMessage("msg.add.request.error2", null, null);
+            resultado = resultado.replace("{0}", estudio.getNombre());
+        }else{
+            try {
+                DaSolicitudEstudio soli = new DaSolicitudEstudio();
+                soli.setTipoEstudio(tomaMxService.getEstudioById(idEstudio));
+                soli.setFechaHSolicitud(new Timestamp(new Date().getTime()));
+                soli.setUsarioRegistro(usuarioService.getUsuarioById((int)seguridadService.obtenerIdUsuario(request)));
+                soli.setIdTomaMx(tomaMxService.getTomaMxById(idTomaMx));
+                soli.setAprobada(false);
+                tomaMxService.addSolicitudEstudio(soli);
+
+            } catch (Exception ex) {
+                resultado = messageSource.getMessage("msg.add.request.error", null, null);
+                resultado = resultado + ". \n " + ex.getMessage();
+                ex.printStackTrace();
+            }
+
+        }
+
+        UnicodeEscaper escaper     = UnicodeEscaper.above(127);
+        return escaper.translate(resultado);
+    }
+
+    /**
+     * Guardar toma de muestra de diagnóstico
+     * @return ResponseEntity<String>
+     * @throws Exception
+     */
+    @RequestMapping(value = "/editToma", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> editTomaMx(HttpServletRequest request
+            , @RequestParam(value = "fechaHTomaMx", required = false) String fechaHTomaMx
+            , @RequestParam(value = "horaTomaMx", required = false) String horaTomaMx
+            , @RequestParam(value = "canTubos", required = false) Integer canTubos
+            , @RequestParam(value = "volumen", required = false) String volumen
+            , @RequestParam(value = "horaRefrigeracion", required = false) String horaRefrigeracion
+            , @RequestParam(value = "mxSeparada", required = false) Integer  mxSeparada
+            , @RequestParam(value = "idTomaMx", required = true) String idTomaMx
+            , @RequestParam(value = "codUnidadAtencion", required = false) Integer codUnidadAtencion
+            , @RequestParam(value = "codSilaisAtencion", required = false) Integer codSilaisAtencion
+
+    ) throws Exception {
+        logger.debug("Guardando datos de Toma de Muestra");
+
+        DaTomaMx tomaMx = tomaMxService.getTomaMxById(idTomaMx);
+        if(fechaHTomaMx != null){
+            tomaMx.setFechaHTomaMx(StringToTimestamp(fechaHTomaMx));
+        }
+
+        if(horaTomaMx != null){
+            tomaMx.setHoraTomaMx(horaTomaMx);
+        }
+
+        tomaMx.setCanTubos(canTubos);
+
+        if(volumen != null && !volumen.equals("")){
+            tomaMx.setVolumen(Float.valueOf(volumen));
+        }
+
+        tomaMx.setHoraRefrigeracion(horaRefrigeracion);
+
+
+        if(mxSeparada != null){
+            if(mxSeparada == 1){
+                tomaMx.setMxSeparada(true);
+            }else {
+                tomaMx.setMxSeparada(false);
+            }
+        }
+
+        if(codSilaisAtencion == null && codUnidadAtencion == null){
+            tomaMx.setCodSilaisAtencion(tomaMx.getIdNotificacion().getCodSilaisAtencion());
+            tomaMx.setCodUnidadAtencion(tomaMx.getIdNotificacion().getCodUnidadAtencion());
+        }else{
+            tomaMx.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
+            tomaMx.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
+        }
+
+        tomaMxService.addTomaMx(tomaMx);
+        return createJsonResponse(tomaMx);
     }
 }

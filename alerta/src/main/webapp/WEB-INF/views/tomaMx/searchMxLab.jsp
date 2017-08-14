@@ -220,6 +220,7 @@
                         <th><spring:message code="lbl.laboratory"/></th>
                         <th><spring:message code="lbl.send.state"/></th>
                         <th><spring:message code="lbl.request"/></th>
+                        <th><spring:message code="act.edit"/></th>
                     </tr>
                     </thead>
                 </table>
@@ -297,12 +298,13 @@
 <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
 <c:url var="searchUrl" value="/tomaMx/getMxs"/>
 <c:url var="unidadesURL" value="/api/v1/unidadesPrimariasHospSilais"/>
-
+<c:url var="editUrl" value="/tomaMx/editMx/"/>
 
 <script type="text/javascript">
     $(document).ready(function() {
         pageSetUp();
         var parametros = {searchUrl : "${searchUrl}",
+            editUrl: "${editUrl}" ,
             sUnidadesUrl : "${unidadesURL}",
             blockMess: "${blockMess}",
             sTableToolsPath : "${tabletools}"
