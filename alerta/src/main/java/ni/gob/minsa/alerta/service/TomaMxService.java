@@ -447,8 +447,8 @@ public class TomaMxService {
 
             String hqlBajaResEst = "update DetalleResultadoFinal ex set pasivo=true, fechahAnulacion = current_date, razonAnulacion = :causa where solicitudEstudio.idSolicitudEstudio = :idSolicitud";
             updateEntities4 = s.createQuery(hqlBajaResEst)
-                    .setString("causa",causa)
                     .setString("causa",causa+". Anulado por: "+userName)
+                    .setString("idSolicitud", idSolicitud)
                     .executeUpdate();
 
             String hqlBajaEst = "update DaSolicitudEstudio ex set anulado=true, fechaAnulacion = current_date, aprobada = false, usuarioAprobacion = null, fechaAprobacion = null, causaAnulacion = :causa where idSolicitudEstudio = :idSolicitud";

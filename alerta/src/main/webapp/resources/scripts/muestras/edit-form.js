@@ -163,10 +163,10 @@ var EditFormTomaMx = function () {
                     success: function () {
                         $.smallBox({
                             title: $('#msjSuccessful').val() ,
-                            content:  $('#disappear').val(),
+                            content:  $('#smallBox_content').val(),
                             color: "#739E73",
-                            iconSmall: "fa fa-check-circle",
-                            timeout: 2000
+                            iconSmall: "fa fa-success",
+                            timeout: 4000
                         });
                         //clearFields();
                         desbloquearUI();
@@ -177,10 +177,10 @@ var EditFormTomaMx = function () {
                         desbloquearUI();
                         $.smallBox({
                             title: $('#msjErrorSaving').val(),
-                            content:  $('#disappear').val(),
+                            content:  $('#smallBox_content').val(),
                             color: "#C46A69",
                             iconSmall: "fa fa-warning",
-                            timeout: 2000
+                            timeout: 4000
                         });
                     }
                 });
@@ -214,9 +214,8 @@ var EditFormTomaMx = function () {
                                 });
                             } else {
                                 getRequest();
-                                var msg = $("#msg_request_added").val();
                                 $.smallBox({
-                                    title: msg,
+                                    title: $("#msg_request_added").val(),
                                     content: $("#smallBox_content").val(),
                                     color: "#739E73",
                                     iconSmall: "fa fa-success",
@@ -364,6 +363,10 @@ var EditFormTomaMx = function () {
                 }
             });
 
+            $("#back").click(function () {
+                window.close();
+            });
+
             <!-- cargar dx -->
             function getDiagnosticos(idTipoMx, codTipoNoti) {
                 $.getJSON(parametros.dxUrl, {
@@ -389,7 +392,7 @@ var EditFormTomaMx = function () {
             function getEstudios(idTipoMx, codTipoNoti) {
                 if ($('#unidadId').val()!=""){
                     $.getJSON(parametros.sEstudiosURL, {
-                        codMx: idTipoMx, tipoNoti: codTipoNoti, idTomaMx: $("#idTomaMx").val(),
+                        codMx: idTipoMx, tipoNoti: codTipoNoti, idUnidadSalud: $('#unidadId').val(),
                         ajax: 'true'
                     }, function (data) {
                         var html = null;

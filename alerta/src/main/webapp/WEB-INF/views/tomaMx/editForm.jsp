@@ -130,10 +130,12 @@
                                 <input id="smallBox_content" type="hidden" value="<spring:message code="smallBox.content.4s"/>"/>
                                 <input id="msg_request_added" type="hidden" value="<spring:message code="msg.add.request"/>"/>
                                 <input id="msg_request_cancel" type="hidden" value="<spring:message code="msg.cancel.request"/>"/>
-                                <input type="hidden" id="msgSinUnidadSalud"  value="<spring:message code="msg.notification.without.health.unit"/>"/>
+                                <input id="msgSinUnidadSalud" type="hidden" value="<spring:message code="msg.notification.without.health.unit"/>"/>
                                 <input id="lbl_yes" type="hidden" value="<spring:message code="lbl.yes"/>"/>
                                 <input id="lbl_no" type="hidden" value="<spring:message code="lbl.no"/>"/>
                                 <input id="msg_request_cannotbe_edited" type="hidden" value="<spring:message code="msg.sample.already.sent"/>"/>
+                                <input id="msjErrorSaving" type="hidden" value="<spring:message code="lbl.messagebox.error.saving"/>"/>
+                                <input id="msjSuccessful" type="hidden" value="<spring:message code="lbl.messagebox.successful.saved"/>"/>
                                 <!-- widget content -->
 								<div class="widget-body fuelux">
                                     <form id="noti" class="smart-form" >

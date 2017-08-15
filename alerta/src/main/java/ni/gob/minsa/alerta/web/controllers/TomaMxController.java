@@ -435,9 +435,9 @@ public class TomaMxController {
     @ResponseBody
     List<Estudio_TipoMx_TipoNoti> getEstudioBySampleAndNoti(@RequestParam(value = "codMx", required = true) String codMx,
                                                             @RequestParam(value = "tipoNoti", required = true) String tipoNoti,
-                                                            @RequestParam(value = "idUnidadSalud", required = true) int idUnidadSalud) throws Exception {
+                                                            @RequestParam(value = "idUnidadSalud", required = true) long idUnidadSalud) throws Exception {
         logger.info("Obteniendo los diagnósticos segun muestra y tipo de Notificacion en JSON");
-        return tomaMxService.getEstudiosByTipoMxTipoNoti(codMx, tipoNoti,Long.valueOf(idUnidadSalud));
+        return tomaMxService.getEstudiosByTipoMxTipoNoti(codMx, tipoNoti, idUnidadSalud);
     }
 
     /**
