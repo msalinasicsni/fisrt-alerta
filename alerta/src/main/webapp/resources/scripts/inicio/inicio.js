@@ -58,7 +58,8 @@ var PaginaInicio = function () {
                     semF : $("#semanaF").val(),
                     anioI : $("#anioI").val(),
                     anioF : $("#anioF").val(),
-                    nivel : $("#nivelUsuario").val()
+                    nivel : $("#nivelUsuario").val(),
+                    ajax: 'true'
                 }, function(data) {
                     var long = data.length;
                     var hay = (long < 2)?false:true;
@@ -137,7 +138,8 @@ var PaginaInicio = function () {
                     semF : $("#semanaF").val(),
                     anioI : $("#anioI").val(),
                     anioF : $("#anioF").val(),
-                    nivel : $("#nivelUsuario").val()
+                    nivel : $("#nivelUsuario").val(),
+                    ajax: 'true'
                 }, function(data) {
                     var long = data.length;
                     var hay = (long < 2)?false:true;
@@ -354,7 +356,8 @@ var PaginaInicio = function () {
                     semF : $("#semanaF").val(),
                     anio : $("#anioF").val(),
                     nivel : $("#nivelUsuario").val(),
-                    nivelPais : $('input[name="nivelPais"]:checked', '#parameters_form').val()
+                    nivelPais : $('input[name="nivelPais"]:checked', '#parameters_form').val(),
+                    ajax: 'true'
                 }, function(data) {
                     countryData = [];
                     for(var row in data){
@@ -422,7 +425,8 @@ var PaginaInicio = function () {
                     semF : $("#semanaF").val(),
                     anio : $("#anioF").val(),
                     nivel : $("#nivelUsuario").val(),
-                    nivelPais : $('input[name="nivelPais2"]:checked', '#parameters_form2').val()
+                    nivelPais : $('input[name="nivelPais2"]:checked', '#parameters_form2').val(),
+                    ajax: 'true'
                 }, function(data) {
                     countryData2 = [];
                     for(var row in data){
@@ -572,7 +576,8 @@ var PaginaInicio = function () {
                 table1.fnClearTable();
                 $.getJSON(parametros.sSinResultadoUrl, {
                     nivel : $("#nivelUsuario").val(),
-                    conSubUnidades : true
+                    conSubUnidades : true,
+                    ajax: 'true'
                 }, function(data) {
                     var encontrado;
                     var mostrar=true;
@@ -616,7 +621,8 @@ var PaginaInicio = function () {
                 table2.fnClearTable();
                 $.getJSON(parametros.sEmbarazadasUrl, {
                     nivel : $("#nivelUsuario").val(),
-                    conSubUnidades : true
+                    conSubUnidades : true,
+                    ajax: 'true'
                 }, function(data) {
                     var encontrado;
                     var mostrar=true;
@@ -660,7 +666,8 @@ var PaginaInicio = function () {
                 table3.fnClearTable();
                 $.getJSON(parametros.sHospitalizadosUrl, {
                     nivel : $("#nivelUsuario").val(),
-                    conSubUnidades : true
+                    conSubUnidades : true,
+                    ajax: 'true'
                 }, function(data) {
                     var encontrado;
                     var mostrar=true;
