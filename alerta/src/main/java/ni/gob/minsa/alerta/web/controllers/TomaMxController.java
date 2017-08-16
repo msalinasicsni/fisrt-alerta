@@ -789,7 +789,7 @@ public class TomaMxController {
             //si la url esta vacia significa que la validaci?n del login fue exitosa
             tomaMx = tomaMxService.getTomaMxById(idMx);
             if (urlValidacion.isEmpty())
-                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
         } catch (Exception e) {
             e.printStackTrace();
             urlValidacion = "404";
