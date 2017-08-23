@@ -50,7 +50,7 @@ public class ReportesService {
     private static final String sqlDataDia = "select  noti.fechaRegistro, count(noti.idNotificacion) as casos ";
     private static final String sqlDataSinR = "select distinct noti ";
     private static final String sqlRutina = " and dx.codDx.idDiagnostico = :idDx ";
-    private static  final String sqlFechasRut =  " and mx.fechaHTomaMx between :fechaInicio and :fechaFin ";
+    private static  final String sqlFechasRut =  " and mx.envio.fechaHoraEnvio between :fechaInicio and :fechaFin ";
 
 
     /**
@@ -1902,10 +1902,11 @@ public class ReportesService {
             );
         }
 
-        //Se filtra por rango de fecha de toma de muestra
+        //Se filtra por rango de fecha de envio de muestra hacia el laboratorio que lo va a procesar
         if (filtro.getFechaInicioTomaMx()!=null && filtro.getFechaFinTomaMx()!=null){
+            crit.createAlias("toma.envio","envioMx");
             crit.add( Restrictions.and(
-                            Restrictions.between("toma.fechaHTomaMx", filtro.getFechaInicioTomaMx(),filtro.getFechaFinTomaMx()))
+                            Restrictions.between("envioMx.fechaHoraEnvio", filtro.getFechaInicioTomaMx(),filtro.getFechaFinTomaMx()))
             );
         }
 

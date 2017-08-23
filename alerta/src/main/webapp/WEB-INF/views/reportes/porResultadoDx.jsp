@@ -275,7 +275,7 @@
                                     <input class="form-control date-picker"
                                            type="text" name="initDate" id="initDate"
 
-                                           placeholder=" <spring:message code="lbl.init.date"/>"/>
+                                           placeholder=" <spring:message code="lbl.shipment.start.date"/>"/>
                                 </label>
 
 
@@ -292,7 +292,7 @@
                                     <input class="form-control date-picker"
                                            type="text" name="endDate" id="endDate"
 
-                                           placeholder=" <spring:message code="lbl.end.date"/>"/>
+                                           placeholder=" <spring:message code="lbl.shipment.end.date"/>"/>
                                 </label>
 
                             </section>

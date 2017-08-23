@@ -50,7 +50,7 @@ public class PersonaService {
 					        Restrictions.eq("telefonoMovil", filtro))
 					 )
 				    .list();
-        }else if(filtro.matches("[a-zA-Zí\\s]*")){
+        }else if(filtro.matches("[a-zA-ZñÑáéíóúÁÉÍÓÚ\\s]*")){
         	Soundex varSoundex = new Soundex();
         	Criteria crit = session.createCriteria(SisPersona.class);
             String[] partes = filtro.split(" ");
