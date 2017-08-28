@@ -456,6 +456,19 @@ public class SeguridadService {
             qrUsuarioUnidad.setParameter("pCodigoSis",pCodigoSis);
             qrUsuarioUnidad.setParameter("pasivo", '0');
             unidadesList = qrUsuarioUnidad.list();
+            //no hay unidades asociadas directamente al usuario, se obtienen todas las unidades del los silais asociados directamente
+            if (unidadesList.size()<=0){
+                query = "select uni from Unidades uni, UsuarioEntidad usuni, Usuarios usu, Sistema sis " +
+                        "where uni.entidadAdtva.entidadAdtvaId = usuni.entidadAdtva.entidadAdtvaId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id " +
+                        "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and uni.pasivo = :pasivo " +
+                        "order by uni.nombre";
+
+                qrUsuarioUnidad = sessionFactory.getCurrentSession().createQuery(query);
+                qrUsuarioUnidad.setParameter("pUsuarioId", pUsuarioId);
+                qrUsuarioUnidad.setParameter("pCodigoSis", pCodigoSis);
+                qrUsuarioUnidad.setParameter("pasivo", '0');
+                unidadesList = qrUsuarioUnidad.list();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

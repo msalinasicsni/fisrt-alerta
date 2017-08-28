@@ -82,13 +82,13 @@ var PatientResults = function () {
                     var len = data.length;
                     for (var i = 0; i < len; i++) {
                         var editUrl = parametros.editUrl +  data[i].idNotificacion;
-                        var btnEdit = '<a href=' + editUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
+                        var btnEdit = '<a target="_blank" title="Ver" href=' + editUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
                         var overrideUrl = parametros.overrideUrl + data[i].idNotificacion;
 
                         var btnPdf = '<button type="button" class="btn btn-success btn-xs" data-id="' + data[i].idNotificacion +
                             '" > <i class="fa fa-file-pdf-o"></i>';
 
-                        var btnOverride = '<a href=' + overrideUrl + ' class="btn btn-xs btn-danger" ><i class="fa fa-times"></i></a>';
+                        var btnOverride = '<a target="_blank" title="Anular" href=' + overrideUrl + ' class="btn btn-xs btn-danger" ><i class="fa fa-times"></i></a>';
 
                         var pasivo = '<span class="label label-success"><i class="fa fa-thumbs-up fa-lg"></i></span>';
                         if (data[i].pasivo == true) {
@@ -96,7 +96,7 @@ var PatientResults = function () {
 
                             btnOverride = ' <button type="button" disabled class="btn btn-xs btn-danger"> <i class="fa fa-times"></i>';
 
-                            btnEdit = '<a href=' + editUrl + ' disabled class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
+                            btnEdit = '<a title="Ver" href=' + editUrl + ' disabled class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
 
                         }
                         //si el timestamp es de 10 digitos al inicializar el date es necesario multpiplicar por 1000, ej: new Date(timestamp * 1000); //para agregar milisegundos

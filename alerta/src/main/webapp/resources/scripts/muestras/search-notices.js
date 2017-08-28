@@ -47,6 +47,16 @@ var SearchNotices = function () {
 				"drawCallback" : function(oSettings) {
 					responsiveHelper_dt_basic.respond();
 				}
+                /*"stateSave": true,
+                "stateSaveCallback": function(settings,data) {
+                    console.log('DataTables_' + settings.sInstance);
+                    console.log(JSON.stringify(data));
+                    localStorage.setItem( 'DataTables_' + settings.sInstance, JSON.stringify(data) )
+                },
+                "stateLoadCallback": function(settings) {
+                    console.log(JSON.parse( localStorage.getItem( 'DataTables_' + settings.sInstance )));
+                    return JSON.parse( localStorage.getItem( 'DataTables_' + settings.sInstance ) )
+                }*/
 			});
 
             $('#search-notices').validate({
@@ -63,6 +73,8 @@ var SearchNotices = function () {
     				},
     				submitHandler: function (form) {
                         table1.fnClearTable();
+                        //table1.state.clear();
+                        //localStorage.removeItem('filtroDataTables_notices_result');
                         getNotices();
 
                     }
@@ -75,6 +87,7 @@ var SearchNotices = function () {
     				strFilter : encodeURI($('#filtro').val()),
     				ajax : 'true'
     			}, function(data) {
+                    //localStorage.setItem('filtroDataTables_notices_result',encodeURI($('#filtro').val()));
     				var len = data.length;
     				for ( var i = 0; i < len; i++) {
                         var nombreMuniRes = "";
@@ -88,7 +101,7 @@ var SearchNotices = function () {
                         var dateFormat = dia(date) + "/" + mes(date) + "/" + date.getFullYear();
 
                         table1.fnAddData(
-    							[data[i].persona.primerNombre, data[i].persona.segundoNombre, data[i].persona.primerApellido, data[i].persona.segundoApellido, data[i].persona.fechaNacimiento, nombreMuniRes, data[i].codTipoNotificacion.valor, dateFormat, '<a data-toggle="modal" class="btn btn-default btn-xs search" data-id='+data[i].idNotificacion+'><i class="fa fa-edit fa-fw"></i></a>']);
+    							[data[i].persona.primerNombre, data[i].persona.segundoNombre, data[i].persona.primerApellido, data[i].persona.segundoApellido, data[i].persona.fechaNacimiento, nombreMuniRes, data[i].codTipoNotificacion.valor, dateFormat, '<a data-toggle="modal" title="Tomar Mx" class="btn btn-primary btn-xs search" data-id='+data[i].idNotificacion+'><i class="fa fa-eyedropper fa-fw"></i></a>']);
     				}
 
                     $(".search").on('click', function(){
@@ -155,6 +168,17 @@ var SearchNotices = function () {
 
                 });
             }
+
+            /*
+            function validarState() {
+                console.log('validate');
+                if (localStorage.getItem('filtroDataTables_notices_result')!=undefined){
+                    $('#filtro').val(decodeURIComponent(localStorage.getItem('filtroDataTables_notices_result')));
+                    getNotices();
+                }
+            }
+
+            validarState();*/
 
         }
     };

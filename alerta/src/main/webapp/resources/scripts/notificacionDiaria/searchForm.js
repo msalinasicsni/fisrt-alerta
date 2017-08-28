@@ -111,7 +111,7 @@ var SearchNotificationD = function () {
 
                             var editUrl = parametros.loadNotiDFormUrl + response[i][5] + "," + response[i][6] + "," + response[i][7] + "," + response[i][0] ;
 
-                            var btnEdit = '<a href=' + editUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
+                            var btnEdit = '<a target="_blank" title="Ver" href=' + editUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-mail-forward"></i></a>';
 
                             var bloqueado = response[i][4];
                             if(bloqueado == 0){

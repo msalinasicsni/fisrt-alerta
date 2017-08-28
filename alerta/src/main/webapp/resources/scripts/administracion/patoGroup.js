@@ -145,9 +145,9 @@ var PatoGroup = function(){
                   var len = Object.keys(data).length;
                   for (var i = 0; i < len; i++) {
 
-                      var btnEdit = '<button type="button" class="btn btn-primary btn-xs" data-id="'+data[i].idGrupo+ "," + data[i].nombre +
-                          '" > <i class="fa fa-pencil"></i>' ;
-                      var btnOverride = '<button type="button" class="btn btn-danger btn-xs" data-id="'+data[i].idGrupo+
+                      var btnEdit = '<button type="button" title="Editar" class="btn btn-primary btn-xs" data-id="'+data[i].idGrupo+ "," + data[i].nombre +
+                          '" > <i class="fa fa-edit"></i>' ;
+                      var btnOverride = '<button type="button" title="Anular" class="btn btn-danger btn-xs" data-id="'+data[i].idGrupo+
                           '" > <i class="fa fa-times"></i>' ;
 
                       table1.fnAddData(
@@ -167,7 +167,7 @@ var PatoGroup = function(){
                   var len = Object.keys(data).length;
                   for (var i = 0; i < len; i++) {
 
-                      var btnOverride = '<button type="button" class="btn btn-danger btn-xs" data-id="'+data[i].idGrupoPatologia+'" > <i class="fa fa-times"></i>';
+                      var btnOverride = '<button type="button" title="Anular" class="btn btn-danger btn-xs" data-id="'+data[i].idGrupoPatologia+'" > <i class="fa fa-times"></i>';
 
                       table2.fnAddData(
                           [data[i].patologia.codigo,data[i].patologia.nombre, btnOverride]);

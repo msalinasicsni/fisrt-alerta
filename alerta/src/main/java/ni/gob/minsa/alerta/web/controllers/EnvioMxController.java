@@ -3,11 +3,14 @@ package ni.gob.minsa.alerta.web.controllers;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
+import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.muestra.*;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.DateUtil;
+import ni.gob.minsa.alerta.utilities.UtilityProperties;
+import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,11 +113,13 @@ public class EnvioMxController {
      */
     @RequestMapping(value = "orders", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String fetchOrdersJson(@RequestParam(value = "strFilter", required = true) String filtro) throws Exception{
+    String fetchOrdersJson(@RequestParam(value = "strFilter", required = true) String filtro, HttpServletRequest request) throws Exception{
         logger.info("Obteniendo las ordenes de examen pendientes según filtros en JSON");
         FiltroMx filtroMx = jsonToFiltroMx(filtro);
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<DaTomaMx> tomaMxList = envioMxService.getMxPendientes(filtroMx);
-        return tomaMxToJson(tomaMxList);
+        List<Unidades> unidadesPermitidas = seguridadService.obtenerUnidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+        return tomaMxToJson(tomaMxList, unidadesPermitidas);
     }
 
     /**
@@ -208,110 +213,112 @@ public class EnvioMxController {
      * @param tomaMxList lista de muestras
      * @return JSON
      */
-    private String tomaMxToJson(List<DaTomaMx> tomaMxList){
+    private String tomaMxToJson(List<DaTomaMx> tomaMxList, List<Unidades> unidadesPermitidas){
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
         Integer indice=0;
         for(DaTomaMx tomaMx:tomaMxList){
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("idTomaMx",tomaMx.getIdTomaMx());
-            //map.put("fechaHoraOrden",DateToString(orden.getFechaHSolicitud(),"dd/MM/yyyy hh:mm:ss a"));
-            map.put("fechaTomaMx",DateUtil.DateToString(tomaMx.getFechaHTomaMx(), "dd/MM/yyyy")+
-                    (tomaMx.getHoraTomaMx()!=null?" "+tomaMx.getHoraTomaMx():""));
-            map.put("estadoMx",tomaMx.getEstadoMx().getValor());
-            map.put("codSilais",(tomaMx.getIdNotificacion().getCodSilaisAtencion()!=null?tomaMx.getIdNotificacion().getCodSilaisAtencion().getNombre():""));
-            map.put("codUnidadSalud",(tomaMx.getIdNotificacion().getCodUnidadAtencion()!=null?tomaMx.getIdNotificacion().getCodUnidadAtencion().getNombre():""));
-            map.put("separadaMx",(tomaMx.getMxSeparada()!=null?(tomaMx.getMxSeparada()?"Si":"No"):""));
-            map.put("tipoMuestra",tomaMx.getCodTipoMx().getNombre());
+            if (unidadesPermitidas.contains(tomaMx.getCodUnidadAtencion())) {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("idTomaMx", tomaMx.getIdTomaMx());
+                //map.put("fechaHoraOrden",DateToString(orden.getFechaHSolicitud(),"dd/MM/yyyy hh:mm:ss a"));
+                map.put("fechaTomaMx", DateUtil.DateToString(tomaMx.getFechaHTomaMx(), "dd/MM/yyyy") +
+                        (tomaMx.getHoraTomaMx() != null ? " " + tomaMx.getHoraTomaMx() : ""));
+                map.put("estadoMx", tomaMx.getEstadoMx().getValor());
+                map.put("codSilais", (tomaMx.getIdNotificacion().getCodSilaisAtencion() != null ? tomaMx.getIdNotificacion().getCodSilaisAtencion().getNombre() : ""));
+                map.put("codUnidadSalud", (tomaMx.getIdNotificacion().getCodUnidadAtencion() != null ? tomaMx.getIdNotificacion().getCodUnidadAtencion().getNombre() : ""));
+                map.put("separadaMx", (tomaMx.getMxSeparada() != null ? (tomaMx.getMxSeparada() ? "Si" : "No") : ""));
+                map.put("tipoMuestra", tomaMx.getCodTipoMx().getNombre());
 
-            if(tomaMx.getIdNotificacion().getUrgente()!= null){
-                map.put("urgente", tomaMx.getIdNotificacion().getUrgente().getValor());
-            }else{
-                map.put("urgente", "--");
-            }
-
-            //Si hay fecha de inicio de sintomas se muestra
-            Date fechaInicioSintomas =  tomaMx.getIdNotificacion().getFechaInicioSintomas();//envioMxService.getFechaInicioSintomas(tomaMx.getIdNotificacion().getIdNotificacion());
-            if (fechaInicioSintomas!=null)
-                map.put("fechaInicioSintomas",DateUtil.DateToString(fechaInicioSintomas, "dd/MM/yyyy"));
-            else
-                map.put("fechaInicioSintomas"," ");
-
-            //hospitalizado
-            String[] arrayHosp =  {"13", "17", "11", "16", "10", "12"};
-            boolean hosp = false;
-
-            if(tomaMx.getCodUnidadAtencion() != null){
-                int h =  Arrays.binarySearch(arrayHosp, String.valueOf(tomaMx.getCodUnidadAtencion().getTipoUnidad()));
-                hosp = h > 0;
-
-            }
-
-            if(hosp){
-                map.put("hospitalizado", messageSource.getMessage("lbl.yes",null,null));
-            }else{
-                map.put("hospitalizado", messageSource.getMessage("lbl.no",null,null));
-            }
-
-
-            //Si hay persona
-            if (tomaMx.getIdNotificacion().getPersona()!=null){
-                /// se obtiene el nombre de la persona asociada a la ficha
-                String nombreCompleto = "";
-                nombreCompleto = tomaMx.getIdNotificacion().getPersona().getPrimerNombre();
-                if (tomaMx.getIdNotificacion().getPersona().getSegundoNombre()!=null)
-                    nombreCompleto = nombreCompleto +" "+ tomaMx.getIdNotificacion().getPersona().getSegundoNombre();
-                nombreCompleto = nombreCompleto+" "+tomaMx.getIdNotificacion().getPersona().getPrimerApellido();
-                if (tomaMx.getIdNotificacion().getPersona().getSegundoApellido()!=null)
-                    nombreCompleto = nombreCompleto +" "+ tomaMx.getIdNotificacion().getPersona().getSegundoApellido();
-                map.put("persona",nombreCompleto);
-                //Se calcula la edad
-                int edad = DateUtil.calcularEdadAnios(tomaMx.getIdNotificacion().getPersona().getFechaNacimiento());
-                map.put("edad",String.valueOf(edad));
-                //se obtiene el sexo
-                map.put("sexo",tomaMx.getIdNotificacion().getPersona().getSexo().getValor());
-                if(edad > 12 && tomaMx.getIdNotificacion().getPersona().isSexoFemenino()){
-                    map.put("embarazada", envioMxService.estaEmbarazada(tomaMx.getIdNotificacion().getIdNotificacion()));
-                }else
-                    map.put("embarazada","--");
-            }else{
-                map.put("persona"," ");
-                map.put("edad"," ");
-                map.put("sexo"," ");
-                map.put("embarazada","--");
-            }
-            //se arma estructura de diagnósticos o estudios
-            List<DaSolicitudDx> solicitudDxList = envioMxService.getSolicitudesDxByIdTomaMx(tomaMx.getIdTomaMx());
-            Map<Integer, Object> mapSolicitudesList = new HashMap<Integer, Object>();
-            Map<String, String> mapSolicitud = new HashMap<String, String>();
-            if (solicitudDxList.size()>0) {
-                int subIndice=0;
-                for (DaSolicitudDx solicitudDx : solicitudDxList) {
-                    mapSolicitud.put("nombre", solicitudDx.getCodDx().getNombre());
-                    mapSolicitud.put("tipo", "Rutina");
-                    mapSolicitud.put("fechaSolicitud", DateUtil.DateToString(solicitudDx.getFechaHSolicitud(), "dd/MM/yyyy hh:mm:ss a"));
-                    subIndice++;
-                    mapSolicitudesList.put(subIndice, mapSolicitud);
-                    mapSolicitud = new HashMap<String, String>();
+                if (tomaMx.getIdNotificacion().getUrgente() != null) {
+                    map.put("urgente", tomaMx.getIdNotificacion().getUrgente().getValor());
+                } else {
+                    map.put("urgente", "--");
                 }
-                map.put("solicitudes", new Gson().toJson(mapSolicitudesList));
-            }else{
-                List<DaSolicitudEstudio> solicitudEstudios = envioMxService.getSolicitudesEstudioByIdTomaMx(tomaMx.getIdTomaMx());
-                int subIndice=0;
-                for (DaSolicitudEstudio solicitudEstudio : solicitudEstudios) {
-                    mapSolicitud.put("nombre", solicitudEstudio.getTipoEstudio().getNombre());
-                    mapSolicitud.put("tipo", "Estudio");
-                    mapSolicitud.put("fechaSolicitud", DateUtil.DateToString(solicitudEstudio.getFechaHSolicitud(), "dd/MM/yyyy hh:mm:ss a"));
-                    subIndice++;
-                    mapSolicitudesList.put(subIndice, mapSolicitud);
-                    mapSolicitud = new HashMap<String, String>();
-                }
-                map.put("solicitudes", new Gson().toJson(mapSolicitudesList));
-            }
 
-            mapResponse.put(indice, map);
-            indice ++;
+                //Si hay fecha de inicio de sintomas se muestra
+                Date fechaInicioSintomas = tomaMx.getIdNotificacion().getFechaInicioSintomas();//envioMxService.getFechaInicioSintomas(tomaMx.getIdNotificacion().getIdNotificacion());
+                if (fechaInicioSintomas != null)
+                    map.put("fechaInicioSintomas", DateUtil.DateToString(fechaInicioSintomas, "dd/MM/yyyy"));
+                else
+                    map.put("fechaInicioSintomas", " ");
+
+                //hospitalizado
+                String[] arrayHosp = {"13", "17", "11", "16", "10", "12"};
+                boolean hosp = false;
+
+                if (tomaMx.getCodUnidadAtencion() != null) {
+                    int h = Arrays.binarySearch(arrayHosp, String.valueOf(tomaMx.getCodUnidadAtencion().getTipoUnidad()));
+                    hosp = h > 0;
+
+                }
+
+                if (hosp) {
+                    map.put("hospitalizado", messageSource.getMessage("lbl.yes", null, null));
+                } else {
+                    map.put("hospitalizado", messageSource.getMessage("lbl.no", null, null));
+                }
+
+
+                //Si hay persona
+                if (tomaMx.getIdNotificacion().getPersona() != null) {
+                    /// se obtiene el nombre de la persona asociada a la ficha
+                    String nombreCompleto = "";
+                    nombreCompleto = tomaMx.getIdNotificacion().getPersona().getPrimerNombre();
+                    if (tomaMx.getIdNotificacion().getPersona().getSegundoNombre() != null)
+                        nombreCompleto = nombreCompleto + " " + tomaMx.getIdNotificacion().getPersona().getSegundoNombre();
+                    nombreCompleto = nombreCompleto + " " + tomaMx.getIdNotificacion().getPersona().getPrimerApellido();
+                    if (tomaMx.getIdNotificacion().getPersona().getSegundoApellido() != null)
+                        nombreCompleto = nombreCompleto + " " + tomaMx.getIdNotificacion().getPersona().getSegundoApellido();
+                    map.put("persona", nombreCompleto);
+                    //Se calcula la edad
+                    int edad = DateUtil.calcularEdadAnios(tomaMx.getIdNotificacion().getPersona().getFechaNacimiento());
+                    map.put("edad", String.valueOf(edad));
+                    //se obtiene el sexo
+                    map.put("sexo", tomaMx.getIdNotificacion().getPersona().getSexo().getValor());
+                    if (edad > 12 && tomaMx.getIdNotificacion().getPersona().isSexoFemenino()) {
+                        map.put("embarazada", envioMxService.estaEmbarazada(tomaMx.getIdNotificacion().getIdNotificacion()));
+                    } else
+                        map.put("embarazada", "--");
+                } else {
+                    map.put("persona", " ");
+                    map.put("edad", " ");
+                    map.put("sexo", " ");
+                    map.put("embarazada", "--");
+                }
+                //se arma estructura de diagnósticos o estudios
+                List<DaSolicitudDx> solicitudDxList = envioMxService.getSolicitudesDxByIdTomaMx(tomaMx.getIdTomaMx());
+                Map<Integer, Object> mapSolicitudesList = new HashMap<Integer, Object>();
+                Map<String, String> mapSolicitud = new HashMap<String, String>();
+                if (solicitudDxList.size() > 0) {
+                    int subIndice = 0;
+                    for (DaSolicitudDx solicitudDx : solicitudDxList) {
+                        mapSolicitud.put("nombre", solicitudDx.getCodDx().getNombre());
+                        mapSolicitud.put("tipo", "Rutina");
+                        mapSolicitud.put("fechaSolicitud", DateUtil.DateToString(solicitudDx.getFechaHSolicitud(), "dd/MM/yyyy hh:mm:ss a"));
+                        subIndice++;
+                        mapSolicitudesList.put(subIndice, mapSolicitud);
+                        mapSolicitud = new HashMap<String, String>();
+                    }
+                    map.put("solicitudes", new Gson().toJson(mapSolicitudesList));
+                } else {
+                    List<DaSolicitudEstudio> solicitudEstudios = envioMxService.getSolicitudesEstudioByIdTomaMx(tomaMx.getIdTomaMx());
+                    int subIndice = 0;
+                    for (DaSolicitudEstudio solicitudEstudio : solicitudEstudios) {
+                        mapSolicitud.put("nombre", solicitudEstudio.getTipoEstudio().getNombre());
+                        mapSolicitud.put("tipo", "Estudio");
+                        mapSolicitud.put("fechaSolicitud", DateUtil.DateToString(solicitudEstudio.getFechaHSolicitud(), "dd/MM/yyyy hh:mm:ss a"));
+                        subIndice++;
+                        mapSolicitudesList.put(subIndice, mapSolicitud);
+                        mapSolicitud = new HashMap<String, String>();
+                    }
+                    map.put("solicitudes", new Gson().toJson(mapSolicitudesList));
+                }
+                mapResponse.put(indice, map);
+                indice++;
+            }
         }
+
         jsonResponse = new Gson().toJson(mapResponse);
         UnicodeEscaper escaper     = UnicodeEscaper.above(127);
         return escaper.translate(jsonResponse);

@@ -474,7 +474,6 @@
 
                                                     <form:input name="canTubos" id="canTubos" path="canTubos" class="form-control entero" type="text"
                                                            placeholder="${nTubes} "/>
-                                                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.number.tubes"/></b>
 
                                                 </label>
                                                 <span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>
@@ -491,7 +490,6 @@
                                                 <label class="input">
                                                     <form:input path="volumen" id="volumen" name="volumen" class="decimal"  type="text"
                                                            placeholder="${volume}" />
-                                                    <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message code="msg.enter.volume"/></b>
 
                                                 </label>
                                                 <span class="input-group-addon"><i class="fa fa-sort-numeric-asc fa-fw"></i></span>

@@ -599,7 +599,7 @@ var PaginaInicio = function () {
                                 break;
                         }
                         if (mostrar) {
-                            table1.fnAddData([data[row].persona, data[row].edad, data[row].sexo, data[row].embarazada, data[row].municipio, data[row].tipoNoti, data[row].fechaRegistro, data[row].fechaInicioSintomas, data[row].SILAIS, data[row].unidad, '<a href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-mail-forward"></i></a>']);
+                            table1.fnAddData([data[row].persona, data[row].edad, data[row].sexo, data[row].embarazada, data[row].municipio, data[row].tipoNoti, data[row].fechaRegistro, data[row].fechaInicioSintomas, data[row].SILAIS, data[row].unidad, '<a target="_blank" title="Ver" href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-mail-forward"></i></a>']);
                             encontrado = true;
                         }
                         mostrar=true; //se reinicia valor bandera
@@ -644,7 +644,7 @@ var PaginaInicio = function () {
                                 break;
                         }
                         if (mostrar) {
-                            table2.fnAddData([data[row].persona, data[row].edad, data[row].municipio, data[row].tipoNoti, data[row].fechaRegistro, data[row].fechaInicioSintomas, data[row].SILAIS, data[row].unidad, '<a href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-mail-forward"></i></a>']);
+                            table2.fnAddData([data[row].persona, data[row].edad, data[row].municipio, data[row].tipoNoti, data[row].fechaRegistro, data[row].fechaInicioSintomas, data[row].SILAIS, data[row].unidad, '<a target="_blank" title="Ver" href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-mail-forward"></i></a>']);
                             encontrado = true;
                         }
                         mostrar=true; //se reinicia valor bandera
@@ -689,7 +689,7 @@ var PaginaInicio = function () {
                                 break;
                         }
                         if (mostrar) {
-                            table3.fnAddData([data[row].persona, data[row].edad, data[row].sexo, data[row].embarazada, data[row].municipio, data[row].tipoNoti, data[row].fechaRegistro, data[row].fechaInicioSintomas, data[row].SILAIS, data[row].unidad, '<a href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-mail-forward"></i></a>']);
+                            table3.fnAddData([data[row].persona, data[row].edad, data[row].sexo, data[row].embarazada, data[row].municipio, data[row].tipoNoti, data[row].fechaRegistro, data[row].fechaInicioSintomas, data[row].SILAIS, data[row].unidad, '<a target="_blank" title="Ver" href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-mail-forward"></i></a>']);
                             encontrado = true;
                         }
                         mostrar=true; //se reinicia valor bandera

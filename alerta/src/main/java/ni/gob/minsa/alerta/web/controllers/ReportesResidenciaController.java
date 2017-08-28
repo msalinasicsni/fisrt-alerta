@@ -100,7 +100,12 @@ public class ReportesResidenciaController {
         if (urlValidacion.isEmpty()) {
             mav.setViewName("reportes/residencia/porSemana");
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<TipoNotificacion> tiposNotificacion = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
             TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
@@ -115,7 +120,7 @@ public class ReportesResidenciaController {
             mav.addObject("semanas", semanas);
             mav.addObject("anios", anios);
             mav.addObject("departamentos", departamentos);
-            mav.addObject("entidades",entidadesAdtvases);
+            mav.addObject("entidades",entidades);
             mav.addObject("tiposNotificacion", tiposNotificacion);
             mav.addObject("factores",factores);
 
@@ -196,7 +201,12 @@ public class ReportesResidenciaController {
         if (urlValidacion.isEmpty()) {
             mav.setViewName("reportes/residencia/porDia");
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<TipoNotificacion> tiposNotificacion = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
             TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
@@ -206,7 +216,7 @@ public class ReportesResidenciaController {
             List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
-            mav.addObject("entidades",entidadesAdtvases);
+            mav.addObject("entidades",entidades);
             mav.addObject("tiposNotificacion", tiposNotificacion);
 
         }else{
@@ -283,7 +293,12 @@ public class ReportesResidenciaController {
         if (urlValidacion.isEmpty()) {
             mav.setViewName("reportes/residencia/sinResultado");
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<TipoNotificacion> tiposNotificacion = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
             TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
@@ -293,7 +308,7 @@ public class ReportesResidenciaController {
             List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
-            mav.addObject("entidades",entidadesAdtvases);
+            mav.addObject("entidades",entidades);
             mav.addObject("tiposNotificacion", tiposNotificacion);
 
         }else{
@@ -429,7 +444,12 @@ public class ReportesResidenciaController {
         }
         if (urlValidacion.isEmpty()) {
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
             List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 1);
             List<Anios> anios = catalogosService.getAnios();
@@ -544,7 +564,12 @@ public class ReportesResidenciaController {
         }
         if (urlValidacion.isEmpty()) {
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
             List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 1);
             List<Anios> anios = catalogosService.getAnios();
@@ -599,7 +624,12 @@ public class ReportesResidenciaController {
         }
         if (urlValidacion.isEmpty()) {
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
             List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 1);
             List<Anios> anios = catalogosService.getAnios();
@@ -657,8 +687,14 @@ public class ReportesResidenciaController {
         }
         ModelAndView mav = new ModelAndView();
         if (urlValidacion.isEmpty()) {
-            List<EntidadesAdtvas> entidadesAdtvases = entidadAdmonService.getAllEntidadesAdtvas();
-            mav.addObject("entidades", entidadesAdtvases);
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
+            mav.addObject("entidades", entidades);
             mav.setViewName("reportes/residencia/positiveNegativeResults");
         } else
             mav.setViewName(urlValidacion);

@@ -152,7 +152,7 @@ var StudiesUS  = function () {
                     var len = Object.keys(data).length;
                     for (var i = 0; i < len; i++) {
 
-                        var btnDetail = '<button type="button" class="btn btn-primary btn-xs" data-id="'+data[i].idEstudio+ "," + data[i].nombre +
+                        var btnDetail = '<button type="button" title="Ver unidades asociadas" class="btn btn-primary btn-xs" data-id="'+data[i].idEstudio+ "," + data[i].nombre +
                             '" > <i class="fa fa-list"></i>' ;
 
                         catalogueTable.fnAddData(
@@ -171,7 +171,7 @@ var StudiesUS  = function () {
                     tableUs.fnClearTable();
                     var len = Object.keys(data).length;
                     for (var i = 0; i < len; i++) {
-                        var btnOverride = '<button type="button" class="btn btn-danger btn-xs" data-id="'+data[i].idEstudioUnidad +
+                        var btnOverride = '<button type="button" title="Anular" class="btn btn-danger btn-xs" data-id="'+data[i].idEstudioUnidad +
                             '" > <i class="fa fa-times"></i>' ;
 
                         tableUs.fnAddData(

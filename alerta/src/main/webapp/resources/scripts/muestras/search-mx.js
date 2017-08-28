@@ -154,7 +154,7 @@ var SearchMx = function () {
                             table.fnAddData(
                                 [dataToLoad[i].codigoUnicoMx , dataToLoad[i].fechaTomaMx, dataToLoad[i].tipoNoti, dataToLoad[i].codSilais, dataToLoad[i].codUnidadSalud,
                                     dataToLoad[i].persona, dataToLoad[i].laboratorio, dataToLoad[i].estadoMx, dataToLoad[i].solicitudes,
-                                        '<a target="_blank" href=' + actionUrl + ' class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>']);
+                                        '<a target="_blank" title="Editar" href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>']);
                         }
 
                     } else {

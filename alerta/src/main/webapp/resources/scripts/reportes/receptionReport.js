@@ -561,10 +561,10 @@ var ReceptionReport = function () {
 
                             if ($("#porResidencia").val()==='true'){
                                 table3.fnAddData(
-                                    [dataToLoad[i].codigoUnicoMx , dataToLoad[i].fechaToma, dataToLoad[i].fechaAprobacion, dataToLoad[i].tipoNoti, dataToLoad[i].codSilais, dataToLoad[i].persona, dataToLoad[i].solicitud, dataToLoad[i].resultado]);
+                                    [dataToLoad[i].codigoUnicoMx , dataToLoad[i].fechaToma, dataToLoad[i].fechaAprobacion, dataToLoad[i].tipoNoti, dataToLoad[i].codSilais, dataToLoad[i].persona, dataToLoad[i].direccion, dataToLoad[i].solicitud, dataToLoad[i].resultado]);
                             }else {
                                 table3.fnAddData(
-                                    [dataToLoad[i].codigoUnicoMx , dataToLoad[i].fechaToma, dataToLoad[i].fechaAprobacion, dataToLoad[i].tipoNoti, dataToLoad[i].codSilais, dataToLoad[i].codUnidadSalud, dataToLoad[i].persona, dataToLoad[i].solicitud, dataToLoad[i].resultado]);
+                                    [dataToLoad[i].codigoUnicoMx , dataToLoad[i].fechaToma, dataToLoad[i].fechaAprobacion, dataToLoad[i].tipoNoti, dataToLoad[i].codSilais, dataToLoad[i].codUnidadSalud, dataToLoad[i].persona, dataToLoad[i].direccion, dataToLoad[i].solicitud, dataToLoad[i].resultado]);
                             }
                             if (i + 1 < len) {
                                 codigos += dataToLoad[i].idSolicitud + ",";

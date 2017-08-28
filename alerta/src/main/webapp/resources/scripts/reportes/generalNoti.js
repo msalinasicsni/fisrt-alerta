@@ -146,9 +146,9 @@ var ReportGeneralNoti = function () {
 
 
                             table1.fnAddData(
-                                [dataToLoad[i].persona, dataToLoad[i].edad, dataToLoad[i].sexo,dataToLoad[i].embarazada,dataToLoad[i].municipio, dataToLoad[i].tipoNoti,
+                                [dataToLoad[i].persona, dataToLoad[i].edad, dataToLoad[i].sexo,dataToLoad[i].embarazada,dataToLoad[i].municipio, dataToLoad[i].tipoNoti, dataToLoad[i].silais, dataToLoad[i].unidad,
                                     dataToLoad[i].fechaRegistro, dataToLoad[i].fechaInicioSintomas,dataToLoad[i].conResultado,
-                                        '<a href=' + actionUrl + ' class="btn btn-default btn-xs"><i class="fa fa-mail-forward"></i></a>']);
+                                        '<a target="_blank" title="Ver" href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-mail-forward"></i></a>']);
                         }
                     }else{
                         $.smallBox({

@@ -8,6 +8,7 @@ import ni.gob.minsa.alerta.domain.catalogos.FactorPoblacion;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.concepto.Catalogo_Lista;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
+import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.estructura.ZonaEspecial;
 import ni.gob.minsa.alerta.domain.muestra.Catalogo_Dx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
@@ -21,6 +22,7 @@ import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.DateUtil;
 import ni.gob.minsa.alerta.utilities.FiltrosReporte;
+import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import ni.gob.minsa.alerta.utilities.pdfUtils.BaseTable;
 import ni.gob.minsa.alerta.utilities.pdfUtils.Cell;
 import ni.gob.minsa.alerta.utilities.pdfUtils.GeneralUtils;
@@ -119,7 +121,12 @@ public class ReportesController {
         if (urlValidacion.isEmpty()) {
             mav.setViewName("reportes/generalNotificaciones");
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<TipoNotificacion> tiposNotificacion = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
             TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
@@ -127,7 +134,7 @@ public class ReportesController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             tiposNotificacion.add(tipoNotificacionPCT);
-            mav.addObject("entidades",entidadesAdtvases);
+            mav.addObject("entidades",entidades);
             mav.addObject("tiposNotificacion", tiposNotificacion);
         }else{
             mav.setViewName(urlValidacion);
@@ -137,11 +144,12 @@ public class ReportesController {
 
     @RequestMapping(value = "getNotifications", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String getNotifications(@RequestParam(value = "strFilter", required = true) String filtro) throws Exception{
+    String getNotifications(@RequestParam(value = "strFilter", required = true) String filtro, HttpServletRequest request) throws Exception{
         logger.info("Obteniendo las ordenes de examen pendienetes según filtros en JSON");
         FiltroMx filtroMx = jsonToFiltroMx(filtro);
         List<DaNotificacion> notificacionList = daNotificacionService.getNoticesByFilro(filtroMx);
-        return notificacionesToJson(notificacionList);
+        List<Unidades> unidadesPermitidas = seguridadService.obtenerUnidadesPorUsuario((int)seguridadService.obtenerIdUsuario(request),ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+        return notificacionesToJson(notificacionList, unidadesPermitidas);
     }
 
     /**
@@ -200,77 +208,79 @@ public class ReportesController {
      * @param notificacions lista de nofiticaciones
      * @return JSON
      */
-    private String notificacionesToJson(List<DaNotificacion> notificacions){
+    private String notificacionesToJson(List<DaNotificacion> notificacions, List<Unidades> unidadesPermitidas){
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
         Integer indice=0;
         for(DaNotificacion notificacion : notificacions){
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("idNotificacion",notificacion.getIdNotificacion());
-            if (notificacion.getFechaInicioSintomas()!=null)
-                map.put("fechaInicioSintomas",DateUtil.DateToString(notificacion.getFechaInicioSintomas(), "dd/MM/yyyy"));
-            else
-                map.put("fechaInicioSintomas"," ");
-            map.put("codtipoNoti",notificacion.getCodTipoNotificacion().getCodigo());
-            map.put("tipoNoti",notificacion.getCodTipoNotificacion().getValor());
-            map.put("fechaRegistro",DateUtil.DateToString(notificacion.getFechaRegistro(), "dd/MM/yyyy"));
-            map.put("SILAIS",(notificacion.getCodSilaisAtencion()!=null?notificacion.getCodSilaisAtencion().getNombre():""));
-            map.put("unidad",(notificacion.getCodUnidadAtencion()!=null?notificacion.getCodUnidadAtencion().getNombre():""));
-            //Si hay persona
-            if (notificacion.getPersona()!=null){
-                /// se obtiene el nombre de la persona asociada a la ficha
-                String nombreCompleto = "";
-                nombreCompleto = notificacion.getPersona().getPrimerNombre();
-                if (notificacion.getPersona().getSegundoNombre()!=null)
-                    nombreCompleto = nombreCompleto +" "+ notificacion.getPersona().getSegundoNombre();
-                nombreCompleto = nombreCompleto+" "+notificacion.getPersona().getPrimerApellido();
-                if (notificacion.getPersona().getSegundoApellido()!=null)
-                    nombreCompleto = nombreCompleto +" "+ notificacion.getPersona().getSegundoApellido();
-                map.put("persona",nombreCompleto);
-                //Se calcula la edad
-                int edad = DateUtil.calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
-                map.put("edad",String.valueOf(edad));
-                //se obtiene el sexo
-                map.put("sexo",notificacion.getPersona().getSexo().getValor());
-                if(edad > 12 && notificacion.getPersona().isSexoFemenino()){
-                    map.put("embarazada", envioMxService.estaEmbarazada(notificacion.getIdNotificacion()));
-                }else
-                    map.put("embarazada","--");
-                if (notificacion.getPersona().getMunicipioResidencia()!=null){
-                    map.put("municipio",notificacion.getPersona().getMunicipioResidencia().getNombre());
-                }else{
-                    map.put("municipio","--");
+            if (unidadesPermitidas.contains(notificacion.getCodUnidadAtencion())) {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("idNotificacion", notificacion.getIdNotificacion());
+                if (notificacion.getFechaInicioSintomas() != null)
+                    map.put("fechaInicioSintomas", DateUtil.DateToString(notificacion.getFechaInicioSintomas(), "dd/MM/yyyy"));
+                else
+                    map.put("fechaInicioSintomas", " ");
+                map.put("codtipoNoti", notificacion.getCodTipoNotificacion().getCodigo());
+                map.put("tipoNoti", notificacion.getCodTipoNotificacion().getValor());
+                map.put("fechaRegistro", DateUtil.DateToString(notificacion.getFechaRegistro(), "dd/MM/yyyy"));
+                map.put("silais", (notificacion.getCodSilaisAtencion() != null ? notificacion.getCodSilaisAtencion().getNombre() : ""));
+                map.put("unidad", (notificacion.getCodUnidadAtencion() != null ? notificacion.getCodUnidadAtencion().getNombre() : ""));
+                //Si hay persona
+                if (notificacion.getPersona() != null) {
+                    /// se obtiene el nombre de la persona asociada a la ficha
+                    String nombreCompleto = "";
+                    nombreCompleto = notificacion.getPersona().getPrimerNombre();
+                    if (notificacion.getPersona().getSegundoNombre() != null)
+                        nombreCompleto = nombreCompleto + " " + notificacion.getPersona().getSegundoNombre();
+                    nombreCompleto = nombreCompleto + " " + notificacion.getPersona().getPrimerApellido();
+                    if (notificacion.getPersona().getSegundoApellido() != null)
+                        nombreCompleto = nombreCompleto + " " + notificacion.getPersona().getSegundoApellido();
+                    map.put("persona", nombreCompleto);
+                    //Se calcula la edad
+                    int edad = DateUtil.calcularEdadAnios(notificacion.getPersona().getFechaNacimiento());
+                    map.put("edad", String.valueOf(edad));
+                    //se obtiene el sexo
+                    map.put("sexo", notificacion.getPersona().getSexo().getValor());
+                    if (edad > 12 && notificacion.getPersona().isSexoFemenino()) {
+                        map.put("embarazada", envioMxService.estaEmbarazada(notificacion.getIdNotificacion()));
+                    } else
+                        map.put("embarazada", "--");
+                    if (notificacion.getPersona().getMunicipioResidencia() != null) {
+                        map.put("municipio", notificacion.getPersona().getMunicipioResidencia().getNombre());
+                    } else {
+                        map.put("municipio", "--");
+                    }
+                } else {
+                    map.put("persona", " ");
+                    map.put("edad", " ");
+                    map.put("sexo", " ");
+                    map.put("embarazada", "--");
+                    map.put("municipio", "");
                 }
-            }else{
-                map.put("persona"," ");
-                map.put("edad"," ");
-                map.put("sexo"," ");
-                map.put("embarazada","--");
-                map.put("municipio","");
-            }
 
-            //se valida si tiene resultado final aprobado
-            boolean conResultado = false;
-            List<DaSolicitudDx> solicitudDxList = resultadoFinalService.getSolicitudesDxByIdNotificacion(notificacion.getIdNotificacion());
-            for (DaSolicitudDx solicitudDx : solicitudDxList) {
-                conResultado = resultadoFinalService.getDetResActivosBySolicitud(solicitudDx.getIdSolicitudDx()).size() > 0;
-                //cuando se encuentre el primer diagnóstico con resultado, salimos
-                if (conResultado)
-                    break;
-            }
-            //si no hay resultado para diagnóstico, validar estudios
-            if (!conResultado) {
-                List<DaSolicitudEstudio> solicitudEstudioList = resultadoFinalService.getSolicitudesEstByIdNotificacion(notificacion.getIdNotificacion());
-                for (DaSolicitudEstudio solicitudEstudio : solicitudEstudioList) {
-                    conResultado = resultadoFinalService.getDetResActivosBySolicitud(solicitudEstudio.getIdSolicitudEstudio()).size() > 0;
-                    //cuando se encuentre el primer estudio con resultado, salimos
+                //se valida si tiene resultado final aprobado
+                boolean conResultado = false;
+                List<DaSolicitudDx> solicitudDxList = resultadoFinalService.getSolicitudesDxByIdNotificacion(notificacion.getIdNotificacion());
+                for (DaSolicitudDx solicitudDx : solicitudDxList) {
+                    conResultado = resultadoFinalService.getDetResActivosBySolicitud(solicitudDx.getIdSolicitudDx()).size() > 0;
+                    //cuando se encuentre el primer diagnóstico con resultado, salimos
                     if (conResultado)
                         break;
                 }
+                //si no hay resultado para diagnóstico, validar estudios
+                if (!conResultado) {
+                    List<DaSolicitudEstudio> solicitudEstudioList = resultadoFinalService.getSolicitudesEstByIdNotificacion(notificacion.getIdNotificacion());
+                    for (DaSolicitudEstudio solicitudEstudio : solicitudEstudioList) {
+                        conResultado = resultadoFinalService.getDetResActivosBySolicitud(solicitudEstudio.getIdSolicitudEstudio()).size() > 0;
+                        //cuando se encuentre el primer estudio con resultado, salimos
+                        if (conResultado)
+                            break;
+                    }
+                }
+                map.put("conResultado", (conResultado ? messageSource.getMessage("lbl.yes", null, null) : messageSource.getMessage("lbl.no", null, null)));
+                mapResponse.put(indice, map);
+                indice++;
             }
-            map.put("conResultado", (conResultado ? messageSource.getMessage("lbl.yes", null, null) : messageSource.getMessage("lbl.no", null, null)));
-            mapResponse.put(indice, map);
-            indice ++;
         }
         jsonResponse = new Gson().toJson(mapResponse);
         UnicodeEscaper escaper     = UnicodeEscaper.above(127);
@@ -297,7 +307,12 @@ public class ReportesController {
         if (urlValidacion.isEmpty()) {
             mav.setViewName("reportes/porSemana");
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidadesAdtvases = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidadesAdtvases = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidadesAdtvases = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<TipoNotificacion> tiposNotificacion = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
             TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
@@ -397,7 +412,12 @@ public class ReportesController {
         if (urlValidacion.isEmpty()) {
             mav.setViewName("reportes/porDia");
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<TipoNotificacion> tiposNotificacion = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
             TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
@@ -408,7 +428,7 @@ public class ReportesController {
             List<ZonaEspecial> zonas = catalogosService.getZonasEspeciales();
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
-            mav.addObject("entidades",entidadesAdtvases);
+            mav.addObject("entidades",entidades);
             mav.addObject("tiposNotificacion", tiposNotificacion);
             mav.addObject("zonas",zonas);
 
@@ -487,7 +507,12 @@ public class ReportesController {
         }
         if (urlValidacion.isEmpty()) {
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
             List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 3);
             List<Anios> anios = catalogosService.getAnios();
@@ -613,7 +638,12 @@ public class ReportesController {
         if (urlValidacion.isEmpty()) {
             mav.setViewName("reportes/sinResultado");
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidadesAdtvases =  seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidadesAdtvases = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidadesAdtvases = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidadesAdtvases = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<TipoNotificacion> tiposNotificacion = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
             TipoNotificacion tipoNotificacionIRA = catalogosService.getTipoNotificacion("TPNOTI|IRAG");
@@ -762,7 +792,12 @@ public class ReportesController {
         }
         if (urlValidacion.isEmpty()) {
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
             List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 3);
             List<Anios> anios = catalogosService.getAnios();
@@ -821,7 +856,12 @@ public class ReportesController {
         }
         if (urlValidacion.isEmpty()) {
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
             List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 3);
             List<Anios> anios = catalogosService.getAnios();
@@ -882,8 +922,14 @@ public class ReportesController {
         }
         ModelAndView mav = new ModelAndView();
         if (urlValidacion.isEmpty()) {
-            List<EntidadesAdtvas> entidadesAdtvases = entidadAdmonService.getAllEntidadesAdtvas();
-            mav.addObject("entidades", entidadesAdtvases);
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
+            mav.addObject("entidades", entidades);
             mav.setViewName("reportes/positiveNegativeResults");
         } else
             mav.setViewName(urlValidacion);
@@ -980,10 +1026,18 @@ public class ReportesController {
                             if (soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoApellido() != null)
                                 nombreCompleto = nombreCompleto + " " + soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoApellido();
                             map.put("persona", nombreCompleto);
+                            if (soli.getIdTomaMx().getIdNotificacion().getDireccionResidencia()!=null && !soli.getIdTomaMx().getIdNotificacion().getDireccionResidencia().isEmpty()){
+                                map.put("direccion",soli.getIdTomaMx().getIdNotificacion().getDireccionResidencia());
+                            }else {
+                                map.put("direccion",soli.getIdTomaMx().getIdNotificacion().getPersona().getDireccionResidencia());
+                            }
+
                         } else if (soli.getIdTomaMx().getIdNotificacion().getSolicitante()!=null){
                             map.put("persona", soli.getIdTomaMx().getIdNotificacion().getSolicitante().getNombre());
+                            map.put("direccion", soli.getIdTomaMx().getIdNotificacion().getSolicitante().getDireccion());
                         } else {
                             map.put("persona", " ");
+                            map.put("direccion", "");
                         }
 
                         mapResponse.put(indice, map);

@@ -291,10 +291,10 @@ var EnterNotificationD = function () {
                     var len = response.length;
                     for ( var i = 0; i < len; i++) {
 
-                        var btnEdit = '<button type="button" class="btn btn-primary btn-xs" data-id="' + response[i].silais + "," + response[i].municipio   + "," + response[i].unidad.codigo  + "," + response[i].fechaNotificacion  + "," + response[i].patologia.codigo +
+                        var btnEdit = '<button title="Editar" type="button" class="btn btn-primary btn-xs" data-id="' + response[i].silais + "," + response[i].municipio   + "," + response[i].unidad.codigo  + "," + response[i].fechaNotificacion  + "," + response[i].patologia.codigo +
                             '" > <i class="fa fa-edit"></i>';
 
-                        var btnDelete = '<button type="button" class="btn btn-danger btn-xs" data-id="' + response[i].silais + "," + response[i].municipio   + "," + response[i].unidad.codigo  + "," + response[i].fechaNotificacion  + "," + response[i].patologia.codigo +
+                        var btnDelete = '<button title="Anular" type="button" class="btn btn-danger btn-xs" data-id="' + response[i].silais + "," + response[i].municipio   + "," + response[i].unidad.codigo  + "," + response[i].fechaNotificacion  + "," + response[i].patologia.codigo +
                             '" > <i class="fa fa-times"></i>';
 
                         table1.fnAddData(

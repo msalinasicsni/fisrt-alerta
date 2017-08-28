@@ -97,17 +97,17 @@ var Results = function () {
 
 
                         var editUrl = parametros.editUrl + data[i].idNotificacion.idNotificacion;
-                        var btnEdit = '<a href=' + editUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
+                        var btnEdit = '<a target="_blank" title="Editar" href=' + editUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
                         var overrideUrl = parametros.overrideUrl + data[i].idNotificacion.idNotificacion;
 
                         var tomaMxUrl = parametros.createMxUrl + data[i].idNotificacion.idNotificacion;
 
-                        var btnPdf = '<button type="button" class="btn btn-success btn-xs" data-id="' + data[i].idNotificacion.idNotificacion +
+                        var btnPdf = '<button type="button" title="Ficha en PDF" class="btn btn-success btn-xs" data-id="' + data[i].idNotificacion.idNotificacion +
                             '" > <i class="fa fa-file-pdf-o"></i>';
 
-                        var btnOverride = '<a href=' + overrideUrl + ' class="btn btn-xs btn-danger" ><i class="fa fa-times"></i></a>';
+                        var btnOverride = '<a title="Anular" href=' + overrideUrl + ' class="btn btn-xs btn-danger" ><i class="fa fa-times"></i></a>';
 
-                        var btnTomaMx = '<a href=' + tomaMxUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
+                        var btnTomaMx = '<a target="_blank" title="Tomar Mx" href=' + tomaMxUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
 
 
                         var pasivo = '<span class="label label-success"><i class="fa fa-thumbs-up fa-lg"></i></span>';
@@ -116,8 +116,8 @@ var Results = function () {
 
                             btnOverride = ' <button type="button" disabled class="btn btn-xs btn-danger"> <i class="fa fa-times"></i>';
 
-                            btnEdit = '<a href=' + editUrl + ' disabled class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
-                            btnTomaMx = '<a href=' + tomaMxUrl + ' disabled class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
+                            btnEdit = '<a target="_blank" title="Editar" href=' + editUrl + ' disabled class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
+                            btnTomaMx = '<a target="_blank" title="Tomar Mx" href=' + tomaMxUrl + ' disabled class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
 
 
                         }else{
