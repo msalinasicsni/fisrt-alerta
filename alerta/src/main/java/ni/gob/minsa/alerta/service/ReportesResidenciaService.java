@@ -95,7 +95,7 @@ public class ReportesResidenciaService {
         }
         else if (filtro.getCodArea().equals("AREAREP|SILAIS")){
 
-            queryCasos = session.createQuery(" select divi.nombre, " +
+            queryCasos = session.createQuery(" select distinct divi.nombre, " +
                     "(select count(noti.idNotificacion) from DaNotificacion noti " +
                     "where noti.codTipoNotificacion.codigo = :tipoNoti " +
                     " and noti.pasivo = false " +
@@ -106,8 +106,9 @@ public class ReportesResidenciaService {
                     "from SivePoblacionDivPol pob where pob.divpol.divisionpoliticaId = divi.divisionpoliticaId " +
                     "and pob.grupo =:tipoPob " +
                     "and (pob.anio =:anio)) " +
-                    "FROM Divisionpolitica divi " +
-                    "where divi.dependenciaSilais.entidadAdtvaId = :codSilais ");
+                    "FROM Divisionpolitica divi, Unidades as uni " +
+                    "where divi.pasivo = '0' and uni.pasivo='0' " +
+                    "and uni.municipio.codigoNacional = divi.codigoNacional and uni.entidadAdtva.entidadAdtvaId = :codSilais ");
 
             queryCasos.setParameter("codSilais", filtro.getCodSilais());
 
@@ -825,8 +826,10 @@ public class ReportesResidenciaService {
             queryCasos.setParameter("codSilais", filtro.getCodSilais());
 
             queryPoblacion = session.createQuery("Select sum(pob.total) as total " +
-                    "from SivePoblacionDivPol pob where pob.divpol.dependenciaSilais.entidadAdtvaId=:codSilais " +
+                    "from SivePoblacionDivPol pob where pob.divpol.pasivo = '0' " +
+                    //"pob.divpol.dependenciaSilais.entidadAdtvaId=:codSilais " +
                     "and pob.grupo =:tipoPob " +
+                    "and pob.divpol.codigoNacional in (select distinct uni.municipio.codigoNacional from Unidades as uni where uni.pasivo='0' and uni.entidadAdtva.entidadAdtvaId = :codSilais) " +
                     "and (pob.anio =:anio) " +
                     "group by pob.anio order by pob.anio");
             queryPoblacion.setParameter("codSilais", filtro.getCodSilais());
