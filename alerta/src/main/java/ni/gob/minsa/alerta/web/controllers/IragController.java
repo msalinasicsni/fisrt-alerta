@@ -162,7 +162,7 @@ public class IragController {
             catTVacFlu = catalogoService.getTipoVacunaFlu();
             catClasFNB = catalogoService.getClasificacionFinalNB();
             catClasFNV = catalogoService.getClasificacionFinalNV();
-            catCie10Irag = cie10Service.getCie10Irag("J458,J459");
+            catCie10Irag = cie10Service.getCie10Irag("J", true);
 
 
             mapModel = new HashMap<>();

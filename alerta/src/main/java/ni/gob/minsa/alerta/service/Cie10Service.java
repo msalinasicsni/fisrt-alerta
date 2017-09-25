@@ -5,6 +5,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,17 +53,27 @@ public class Cie10Service {
 
     }
 
+    /**
+     *
+     * @param codigo si son códigos específicos enviarlos separados por coma, Ejemplo: J458,J459. Sino enviar la inicial del del Capítulo, ejemplo: J
+     * @param todos true, si es capítulo completo, false, si son códigos específicos
+     * @return
+     */
     @SuppressWarnings("unchecked")
-    public List<Cie10> getCie10Irag(String codigo) {
+    public List<Cie10> getCie10Irag(String codigo, boolean todos) {
         List<Cie10> res = new ArrayList<>();
         try {
             Session session = sessionFactory.getCurrentSession();
             Criteria criteria = session.createCriteria(Cie10.class);
 
             String[] cod = codigo.split(",");
-            criteria.add(Restrictions.in("codigoCie10", cod));
+            if (!todos) {
+                criteria.add(Restrictions.in("codigoCie10", cod));
+            }else{
+                criteria.add(Restrictions.ilike("codigoCie10", codigo + "%"));
+            }
             criteria.add(Restrictions.eq("activo", true));
-
+            criteria.addOrder(Order.asc("codigoCie10"));
 
             res = criteria.list();
 

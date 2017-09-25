@@ -744,10 +744,10 @@
                     <c:forEach items="${catCie10Irag}" var="enf">
                         <c:choose>
                             <c:when test="${fn:contains(irag.diagnostico.codigoCie10, enf.codigoCie10)}">
-                                <option selected value="${enf.codigoCie10}">${enf.nombreCie10}</option>
+                                <option selected value="${enf.codigoCie10}">${enf.codigoCie10} - ${enf.nombreCie10}</option>
                             </c:when>
                             <c:otherwise>
-                                <option value="${enf.codigoCie10}">${enf.nombreCie10}</option>
+                                <option value="${enf.codigoCie10}">${enf.codigoCie10} - ${enf.nombreCie10}</option>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
