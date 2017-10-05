@@ -327,10 +327,10 @@ var PaginaInicio = function () {
                 return color;
             }
 
-            getDataDengueConfiramdo();
-            getDataDengueSospechoso();
+            //getDataDengueConfiramdo();
+            //getDataDengueSospechoso();
 
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            /*$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
                 var x = $(e.target).attr("href");         // active tab
                 if (x=='#s1'){
                     lineChart(datasetsDCCasos,labelsDC);
@@ -344,7 +344,7 @@ var PaginaInicio = function () {
                 if (x == '#ss2'){
                     lineChart4(datasetsDSTasas,labelsDS);
                 }
-            });
+            });*/
 
             //MAPA DENGUE SOSPECHOSO
             function getDataMapaDengueSospechoso() {
@@ -485,7 +485,7 @@ var PaginaInicio = function () {
             }
 
             var nivel = $("#nivelUsuario").val();
-            if ( nivel == "PAIS"){
+            /*if ( nivel == "PAIS"){
                 $("#divMapas").show();
                 $("#rev-toggles").show();
                 $("#rev-toggles2").show();
@@ -508,7 +508,7 @@ var PaginaInicio = function () {
 
             $('input[type=radio][name=nivelPais]').change(function() {
                 getDataMapaDengueSospechoso();
-            });
+            });*/
 
             /*TABLAS */
             var responsiveHelper_dt_basic = undefined;

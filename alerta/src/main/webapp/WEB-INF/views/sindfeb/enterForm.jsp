@@ -263,7 +263,7 @@
                                             			<div>
 															<label class="input">
 																<i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
-																<input class="form-control date-picker" data-date-end-date="+0d" data-date-start-date="-30d" 
+																<input class="form-control date-picker" data-date-end-date="+0d"
 																	type="text" name="fechaFicha" id="fechaFicha" value="<fmt:formatDate value="${daSindFeb.fechaFicha}" pattern="dd/MM/yyyy" />"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.date" />">
 																<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="act.enter" /> <spring:message code="sindfeb.date" /></b>
@@ -781,7 +781,7 @@
                                             			<div>
 															<label class="input">
 																<i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
-																<input class="form-control date-picker" data-date-end-date="+0d" data-date-start-date="-30d" 
+																<input class="form-control date-picker" data-date-end-date="+0d"
 																	type="text" name="fechaInicioSintomas" id="fechaInicioSintomas" value="<fmt:formatDate value="${daSindFeb.idNotificacion.fechaInicioSintomas}" pattern="dd/MM/yyyy" />"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.dos" />">
 																	<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.dos" /></b>
@@ -1042,7 +1042,7 @@
                                             			<div class="input-group">
 															<span class="input-group-addon"><i class="fa fa-pencil"></i></span>
 															<label class="input">
-																<input class="form-control date-picker" data-date-end-date="+0d" data-date-start-date="-30d" 
+																<input class="form-control date-picker" data-date-end-date="+0d"
 																	type="text" name="fechaIngreso" id="fechaIngreso" value="<fmt:formatDate value="${daSindFeb.fechaIngreso}" pattern="dd/MM/yyyy" />"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.hosp.date" />">
 																	<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.hosp.date" /></b>
@@ -1079,7 +1079,7 @@
                                             			<div class="input-group">
 															<span class="input-group-addon"><i class="fa fa-pencil"></i></span>
 															<label class="input">
-																<input class="form-control date-picker" data-date-end-date="+0d" data-date-start-date="-30d" 
+																<input class="form-control date-picker" data-date-end-date="+0d"
 																	type="text" name="fechaFallecido" id="fechaFallecido" value="<fmt:formatDate value="${daSindFeb.fechaFallecido}" pattern="dd/MM/yyyy" />"
 																	placeholder=" <spring:message code="act.enter" /> <spring:message code="sindfeb.dead.date" />">
 																	<b class="tooltip tooltip-top-left"> <i class="fa fa-info"></i> <spring:message code="sindfeb.dead.date" /></b>

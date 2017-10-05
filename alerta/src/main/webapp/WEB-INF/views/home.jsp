@@ -85,29 +85,30 @@
 				the <section></section> and you can use wells or panels instead 
 				-->
 			<!-- widget grid -->
-			<section id="widget-grid" class="">			
+			<section id="widget-grid" class="">
+            <input id="semanaI" hidden="hidden" value="${semanaI}" type="text" name="semanaI"/>
+            <input id="semanaF" hidden="hidden" value="${semanaF}" type="text" name="semanaF"/>
+            <input id="anioI" hidden="hidden" value="${anioI}" type="text" name="anioI"/>
+            <input id="anioF" hidden="hidden" value="${anioF}" type="text" name="anioF"/>
+            <input id="nivelUsuario" hidden="hidden" value="${nivel}" type="text" name="nivelUsuario"/>
+            <input id="semana" type="hidden" value="<spring:message code="week"/>"/>
+            <input id="semanaHasta" type="hidden" value="<spring:message code="hweek"/>"/>
+            <input id="nivel" type="hidden" value="<spring:message code="lbl.level"/>"/>
+            <input id="dengueConfirmado" type="hidden" value="<spring:message code="lbl.dengue.confirmed"/> "/>
+            <input id="dengueSospechoso" type="hidden" value="<spring:message code="lbl.dengue.suspect"/> "/>
+            <input id="dengueConfirmadoMAY" type="hidden" value="<spring:message code="lbl.dengue.confirmed.upper"/>"/>
+            <input id="dengueSospechosoMAY" type="hidden" value="<spring:message code="lbl.dengue.suspect.upper"/>"/>
+            <input id="nivelNac" type="hidden" value="<spring:message code="lbl.national"/>"/>
+            <input id="nivelUS" type="hidden" value="<spring:message code="lbl.us.assigned"/>"/>
+            <input id="nivelSilais" type="hidden" value="<spring:message code="lbl.SILAIS.assigned"/>"/>
+            <input id="week" type="hidden" value="<spring:message code="year2o"/>"/>
 				<!-- row -->
-				<div class="row">
+				<div class="row" id="linecharts1">
 					<article class="col-sm-12">
 						<!-- new widget -->
 						<div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" 
 							data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-                            <input id="semanaI" hidden="hidden" value="${semanaI}" type="text" name="semanaI"/>
-                            <input id="semanaF" hidden="hidden" value="${semanaF}" type="text" name="semanaF"/>
-                            <input id="anioI" hidden="hidden" value="${anioI}" type="text" name="anioI"/>
-                            <input id="anioF" hidden="hidden" value="${anioF}" type="text" name="anioF"/>
-                            <input id="nivelUsuario" hidden="hidden" value="${nivel}" type="text" name="nivelUsuario"/>
-                            <input id="semana" type="hidden" value="<spring:message code="week"/>"/>
-                            <input id="semanaHasta" type="hidden" value="<spring:message code="hweek"/>"/>
-                            <input id="nivel" type="hidden" value="<spring:message code="lbl.level"/>"/>
-                            <input id="dengueConfirmado" type="hidden" value="<spring:message code="lbl.dengue.confirmed"/> "/>
-                            <input id="dengueSospechoso" type="hidden" value="<spring:message code="lbl.dengue.suspect"/> "/>
-                            <input id="dengueConfirmadoMAY" type="hidden" value="<spring:message code="lbl.dengue.confirmed.upper"/>"/>
-                            <input id="dengueSospechosoMAY" type="hidden" value="<spring:message code="lbl.dengue.suspect.upper"/>"/>
-                            <input id="nivelNac" type="hidden" value="<spring:message code="lbl.national"/>"/>
-                            <input id="nivelUS" type="hidden" value="<spring:message code="lbl.us.assigned"/>"/>
-                            <input id="nivelSilais" type="hidden" value="<spring:message code="lbl.SILAIS.assigned"/>"/>
-                            <input id="week" type="hidden" value="<spring:message code="year2o"/>"/>
+
 							<header>
 								<span class="widget-icon"> <i class="glyphicon glyphicon-stats txt-color-darken"></i> </span>
 								<h2><spring:message code="lbl.dengue.confirmed"/></h2>
@@ -154,7 +155,7 @@
 				</div>
 				<!-- end row -->
                 <!-- row -->
-                <div class="row">
+                <div class="row" id="linecharts">
                     <article class="col-sm-12">
                         <!-- new widget -->
                         <div class="jarviswidget" id="wid-id-1" data-widget-togglebutton="false"
@@ -522,6 +523,9 @@
             };
             PaginaInicio.init(parametros);
             $("li.home").addClass("active");
+            $("#divMapas").hide(); //ocultados temporalmente
+            $("#linecharts").hide(); //ocultados temporalmente
+            $("#linecharts1").hide(); //ocultados temporalmente
 		});
 	</script>
 	<!-- END JAVASCRIPTS -->
