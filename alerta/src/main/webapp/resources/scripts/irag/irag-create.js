@@ -347,7 +347,7 @@ var CreateIrag = function () {
                         required: true
                     },
 
-                    fechaInicioSintomas: {
+                    'idNotificacion.fechaInicioSintomas': {
                         required: true
                     },
 
