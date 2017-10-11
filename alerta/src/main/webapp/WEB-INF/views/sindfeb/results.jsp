@@ -122,6 +122,36 @@
 							</div>
 						</div>
 						<!-- end widget -->
+                        <div class="modal fade" id="d_confirmacion"  role="dialog" tabindex="-1" data-aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header alert-warning">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                            &times;
+                                        </button>
+                                        <h4 class="modal-title fa fa-warning"> <spring:message code="msg.sending.confirm.title" /></h4>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <form method="{method}">
+                                            <input type=hidden id="overrideUrl"/>
+                                            <div id="cuerpo">
+                                                <label id="questionOverride"><spring:message code="lbl.question.override" /></label>
+
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="act.cancel" /></button>
+                                        <button id="btnOverride" type="button" class="btn btn-info" ><spring:message code="act.accept" /></button>
+                                    </div>
+
+                                </div>
+
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
 					</article>
 					<!-- WIDGET END -->
 				</div>

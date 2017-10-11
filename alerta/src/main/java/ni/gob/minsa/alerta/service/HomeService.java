@@ -285,7 +285,7 @@ public class HomeService {
 
                 sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti, UsuarioEntidad  ue " +
                         "where noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
-                        "noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true and noti.completa != true  " +
+                        "noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true " +
                         //"and noti.codSilaisAtencion.entidadAdtvaId = :codSilais " +
                         //"and noti.codTipoNotificacion.codigo = :tipoNoti " +
                         //" and noti.fechaRegistro between :fechaInicio and :fechaFin " +

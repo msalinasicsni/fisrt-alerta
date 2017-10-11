@@ -115,7 +115,6 @@ var SearchPerson = function () {
                              table1.fnAddData(
                              [data[i].identNumero, data[i].primerNombre, data[i].segundoNombre, data[i].primerApellido, data[i].segundoApellido, data[i].fechaNacimiento,data[i].muniResiNombre,'<a href='+ actionUrl + ' class="btn btn-default btn-xs"><i class="fa fa-mail-forward"></i></a>']);*/
                         }
-                        setTimeout($.unblockUI, 500);
                     }else {
                         $.smallBox({
                             title: $("#msg_no_results_found").val(),
@@ -125,6 +124,7 @@ var SearchPerson = function () {
                             timeout: 4000
                         });
                     }
+                    setTimeout($.unblockUI, 500);
     			})
     			.fail(function(jqXHR) {
 				    setTimeout($.unblockUI, 5);

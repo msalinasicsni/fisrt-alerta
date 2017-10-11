@@ -72,6 +72,9 @@ var Results = function () {
                     $('.fPdf')
                         .off("click", pdfHandler)
                         .on("click", pdfHandler);
+                    $('.fOverride')
+                        .off("click", overrideHandler)
+                        .on("click", overrideHandler);
 
                 }
 
@@ -85,6 +88,17 @@ var Results = function () {
                 }
             }
 
+            function overrideHandler() {
+                var id = $(this.innerHTML).data('id');
+                if (id != null) {
+                    $('#overrideUrl').val(id);
+                    $('#d_confirmacion').modal('show');
+                }
+            }
+
+            $('#btnOverride').click(function () {
+                window.location.href = parametros.overrideUrl + $('#overrideUrl').val();
+            });
 
             function getResults(idPerson) {
                 $.getJSON(parametros.getResultsUrl, {
@@ -105,7 +119,10 @@ var Results = function () {
                         var btnPdf = '<button type="button" title="Ficha en PDF" class="btn btn-success btn-xs" data-id="' + data[i].idNotificacion.idNotificacion +
                             '" > <i class="fa fa-file-pdf-o"></i>';
 
-                        var btnOverride = '<a title="Anular" href=' + overrideUrl + ' class="btn btn-xs btn-danger" ><i class="fa fa-times"></i></a>';
+                        var btnOverride = '<button title="Anular" type="button" class="btn btn-danger btn-xs" data-id="' + data[i].idNotificacion.idNotificacion +
+                            '" > <i class="fa fa-times"></i>';
+
+                        //var btnOverride = '<a title="Anular" href=' + overrideUrl + ' class="btn btn-xs btn-danger" ><i class="fa fa-times"></i></a>';
 
                         var btnTomaMx = '<a target="_blank" title="Tomar Mx" href=' + tomaMxUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
 
