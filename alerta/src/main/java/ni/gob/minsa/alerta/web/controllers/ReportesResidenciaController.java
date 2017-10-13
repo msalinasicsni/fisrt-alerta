@@ -112,7 +112,7 @@ public class ReportesResidenciaController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,2);
             List<Semanas> semanas = catalogosService.getSemanas();
             List<Anios> anios = catalogosService.getAnios();
             List<FactorPoblacion> factores = catalogosService.getFactoresPoblacion();
@@ -213,7 +213,7 @@ public class ReportesResidenciaController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,2);
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
             mav.addObject("entidades",entidades);
@@ -305,7 +305,7 @@ public class ReportesResidenciaController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,1);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,2);
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
             mav.addObject("entidades",entidades);
@@ -451,7 +451,7 @@ public class ReportesResidenciaController {
                 entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
             }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 1);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 2);
             List<Anios> anios = catalogosService.getAnios();
             List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
@@ -571,7 +571,7 @@ public class ReportesResidenciaController {
                 entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
             }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 1);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 2);
             List<Anios> anios = catalogosService.getAnios();
             List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
@@ -631,7 +631,7 @@ public class ReportesResidenciaController {
                 entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
             }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 1);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 2);
             List<Anios> anios = catalogosService.getAnios();
             List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");

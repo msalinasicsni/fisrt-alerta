@@ -1029,15 +1029,15 @@ public class ReportesController {
                             if (soli.getIdTomaMx().getIdNotificacion().getDireccionResidencia()!=null && !soli.getIdTomaMx().getIdNotificacion().getDireccionResidencia().isEmpty()){
                                 map.put("direccion",soli.getIdTomaMx().getIdNotificacion().getDireccionResidencia());
                             }else {
-                                map.put("direccion",soli.getIdTomaMx().getIdNotificacion().getPersona().getDireccionResidencia());
+                                map.put("direccion",(soli.getIdTomaMx().getIdNotificacion().getPersona().getDireccionResidencia()!=null?soli.getIdTomaMx().getIdNotificacion().getPersona().getDireccionResidencia():""));
                             }
 
                         } else if (soli.getIdTomaMx().getIdNotificacion().getSolicitante()!=null){
                             map.put("persona", soli.getIdTomaMx().getIdNotificacion().getSolicitante().getNombre());
-                            map.put("direccion", soli.getIdTomaMx().getIdNotificacion().getSolicitante().getDireccion());
+                            map.put("direccion", (soli.getIdTomaMx().getIdNotificacion().getSolicitante().getDireccion()!=null?soli.getIdTomaMx().getIdNotificacion().getSolicitante().getDireccion():""));
                         } else {
                             map.put("persona", " ");
-                            map.put("direccion", "");
+                            map.put("direccion", " ");
                         }
 
                         mapResponse.put(indice, map);
