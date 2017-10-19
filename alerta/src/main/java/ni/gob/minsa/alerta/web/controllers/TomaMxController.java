@@ -614,13 +614,14 @@ public class TomaMxController {
     @RequestMapping(value = "getMxs", method = RequestMethod.GET, produces = "application/json")
     public
     @ResponseBody
-    String fetchPosNegRequestJson(@RequestParam(value = "strFilter", required = true) String filtro) throws Exception {
+    String fetchPosNegRequestJson(@RequestParam(value = "strFilter", required = true) String filtro, HttpServletRequest request) throws Exception {
         logger.info("Obteniendo las solicitudes positivas y negativas seg?n filtros en JSON");
         FiltroMx filtroMx = jsonToFiltroMx(filtro);
         List<DaTomaMx> tomaMxList = null;
         tomaMxList = tomaMxService.getTomaMxByFiltro(filtroMx);
-
-        return tomaMxToJson(tomaMxList);
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+        return tomaMxToJson(tomaMxList, entidades);
     }
 
     /**
@@ -684,87 +685,91 @@ public class TomaMxController {
      * @param tomaMxList lista con las tomaMx a convertir
      * @return String
      */
-    private String tomaMxToJson(List<DaTomaMx> tomaMxList) {
+    private String tomaMxToJson(List<DaTomaMx> tomaMxList, List<EntidadesAdtvas> entidades) {
         String jsonResponse;
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
         Integer indice = 0;
         boolean esEstudio;
         for (DaTomaMx tomaMx : tomaMxList) {
-            esEstudio = tomaMxService.getSolicitudesEstudioByIdTomaMx(tomaMx.getIdTomaMx()).size() > 0;
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("idTomaMx", tomaMx.getIdTomaMx());
-            map.put("codigoUnicoMx", esEstudio?tomaMx.getCodigoUnicoMx():(tomaMx.getCodigoLab()!=null?tomaMx.getCodigoLab():(messageSource.getMessage("lbl.not.generated", null, null))));
-            map.put("fechaTomaMx", DateUtil.DateToString(tomaMx.getFechaHTomaMx(), "dd/MM/yyyy")+
-                    (tomaMx.getHoraTomaMx()!=null?" "+tomaMx.getHoraTomaMx():""));
+            //mostrar solo las muestras asociadas a los silais que tiene acceso el usuario
+            if ((tomaMx.getCodSilaisAtencion()!=null && entidades.contains(tomaMx.getCodSilaisAtencion()))
+                    || (tomaMx.getIdNotificacion().getCodSilaisAtencion()!=null && entidades.contains(tomaMx.getIdNotificacion().getCodSilaisAtencion()))) {
+                esEstudio = tomaMxService.getSolicitudesEstudioByIdTomaMx(tomaMx.getIdTomaMx()).size() > 0;
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("idTomaMx", tomaMx.getIdTomaMx());
+                map.put("codigoUnicoMx", esEstudio ? tomaMx.getCodigoUnicoMx() : (tomaMx.getCodigoLab() != null ? tomaMx.getCodigoLab() : (messageSource.getMessage("lbl.not.generated", null, null))));
+                map.put("fechaTomaMx", DateUtil.DateToString(tomaMx.getFechaHTomaMx(), "dd/MM/yyyy") +
+                        (tomaMx.getHoraTomaMx() != null ? " " + tomaMx.getHoraTomaMx() : ""));
 
-            if (tomaMx.getIdNotificacion().getCodSilaisAtencion() != null) {
-                map.put("codSilais", tomaMx.getIdNotificacion().getCodSilaisAtencion().getNombre());
-            } else {
-                map.put("codSilais", "");
-            }
-            if (tomaMx.getIdNotificacion().getCodUnidadAtencion() != null) {
-                map.put("codUnidadSalud", tomaMx.getIdNotificacion().getCodUnidadAtencion().getNombre());
-            } else {
-                map.put("codUnidadSalud", "");
-            }
-            map.put("tipoNoti", tomaMx.getIdNotificacion().getCodTipoNotificacion().getValor());
-            //laboratorio y area
-            if (tomaMx.getEnvio()!=null) {
-                map.put("laboratorio", tomaMx.getEnvio().getLaboratorioDestino().getNombre());
-            }else{
-                map.put("laboratorio", "");
-            }
-            map.put("estadoMx", tomaMx.getEstadoMx().getValor());
-
-            //Si hay persona
-            if (tomaMx.getIdNotificacion().getPersona() != null) {
-                /// se obtiene el nombre de la persona asociada a la ficha
-                String nombreCompleto = "";
-                nombreCompleto = tomaMx.getIdNotificacion().getPersona().getPrimerNombre();
-                if (tomaMx.getIdNotificacion().getPersona().getSegundoNombre() != null)
-                    nombreCompleto = nombreCompleto + " " + tomaMx.getIdNotificacion().getPersona().getSegundoNombre();
-                nombreCompleto = nombreCompleto + " " + tomaMx.getIdNotificacion().getPersona().getPrimerApellido();
-                if (tomaMx.getIdNotificacion().getPersona().getSegundoApellido() != null)
-                    nombreCompleto = nombreCompleto + " " + tomaMx.getIdNotificacion().getPersona().getSegundoApellido();
-                map.put("persona", nombreCompleto);
-            } else if (tomaMx.getIdNotificacion().getSolicitante() != null) {
-                map.put("persona", tomaMx.getIdNotificacion().getSolicitante().getNombre());
-            } else {
-                map.put("persona", " ");
-            }
-
-            //se arma estructura de diagn?sticos o estudios
-            List<DaSolicitudDx> solicitudDxList = tomaMxService.getSolicitudesDxByIdMX(tomaMx.getIdTomaMx());
-            List<DaSolicitudEstudio> solicitudE = tomaMxService.getSolicitudesEstudioByIdTomaMx(tomaMx.getIdTomaMx());
-            String solicitudes = "";
-            if (!solicitudDxList.isEmpty()) {
-                int cont = 0;
-
-                for (DaSolicitudDx solicitudDx : solicitudDxList) {
-                    cont++;
-                    if (cont == solicitudDxList.size()) {
-                        solicitudes += solicitudDx.getCodDx().getNombre();
-                    } else {
-                        solicitudes += solicitudDx.getCodDx().getNombre() + "," + " ";
-                    }
+                if (tomaMx.getIdNotificacion().getCodSilaisAtencion() != null) {
+                    map.put("codSilais", tomaMx.getIdNotificacion().getCodSilaisAtencion().getNombre());
+                } else {
+                    map.put("codSilais", "");
                 }
-            } else {
-                if(!solicitudE.isEmpty()){
+                if (tomaMx.getIdNotificacion().getCodUnidadAtencion() != null) {
+                    map.put("codUnidadSalud", tomaMx.getIdNotificacion().getCodUnidadAtencion().getNombre());
+                } else {
+                    map.put("codUnidadSalud", "");
+                }
+                map.put("tipoNoti", tomaMx.getIdNotificacion().getCodTipoNotificacion().getValor());
+                //laboratorio y area
+                if (tomaMx.getEnvio() != null) {
+                    map.put("laboratorio", tomaMx.getEnvio().getLaboratorioDestino().getNombre());
+                } else {
+                    map.put("laboratorio", "");
+                }
+                map.put("estadoMx", tomaMx.getEstadoMx().getValor());
+
+                //Si hay persona
+                if (tomaMx.getIdNotificacion().getPersona() != null) {
+                    /// se obtiene el nombre de la persona asociada a la ficha
+                    String nombreCompleto = "";
+                    nombreCompleto = tomaMx.getIdNotificacion().getPersona().getPrimerNombre();
+                    if (tomaMx.getIdNotificacion().getPersona().getSegundoNombre() != null)
+                        nombreCompleto = nombreCompleto + " " + tomaMx.getIdNotificacion().getPersona().getSegundoNombre();
+                    nombreCompleto = nombreCompleto + " " + tomaMx.getIdNotificacion().getPersona().getPrimerApellido();
+                    if (tomaMx.getIdNotificacion().getPersona().getSegundoApellido() != null)
+                        nombreCompleto = nombreCompleto + " " + tomaMx.getIdNotificacion().getPersona().getSegundoApellido();
+                    map.put("persona", nombreCompleto);
+                } else if (tomaMx.getIdNotificacion().getSolicitante() != null) {
+                    map.put("persona", tomaMx.getIdNotificacion().getSolicitante().getNombre());
+                } else {
+                    map.put("persona", " ");
+                }
+
+                //se arma estructura de diagn?sticos o estudios
+                List<DaSolicitudDx> solicitudDxList = tomaMxService.getSolicitudesDxByIdMX(tomaMx.getIdTomaMx());
+                List<DaSolicitudEstudio> solicitudE = tomaMxService.getSolicitudesEstudioByIdTomaMx(tomaMx.getIdTomaMx());
+                String solicitudes = "";
+                if (!solicitudDxList.isEmpty()) {
                     int cont = 0;
-                    for (DaSolicitudEstudio solicitudDx : solicitudE) {
+
+                    for (DaSolicitudDx solicitudDx : solicitudDxList) {
                         cont++;
                         if (cont == solicitudDxList.size()) {
-                            solicitudes += solicitudDx.getTipoEstudio().getNombre();
+                            solicitudes += solicitudDx.getCodDx().getNombre();
                         } else {
-                            solicitudes += solicitudDx.getTipoEstudio().getNombre() + "," + " ";
+                            solicitudes += solicitudDx.getCodDx().getNombre() + "," + " ";
+                        }
+                    }
+                } else {
+                    if (!solicitudE.isEmpty()) {
+                        int cont = 0;
+                        for (DaSolicitudEstudio solicitudDx : solicitudE) {
+                            cont++;
+                            if (cont == solicitudDxList.size()) {
+                                solicitudes += solicitudDx.getTipoEstudio().getNombre();
+                            } else {
+                                solicitudes += solicitudDx.getTipoEstudio().getNombre() + "," + " ";
+                            }
                         }
                     }
                 }
-            }
-            map.put("solicitudes", solicitudes);
+                map.put("solicitudes", solicitudes);
 
-            mapResponse.put(indice, map);
-            indice++;
+                mapResponse.put(indice, map);
+                indice++;
+            }
         }
         jsonResponse = new Gson().toJson(mapResponse);
         //escapar caracteres especiales, escape de los caracteres con valor numérico mayor a 127
