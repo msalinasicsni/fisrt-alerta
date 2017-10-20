@@ -6,7 +6,7 @@ import java.util.Date;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sive_patologias_vig", schema = "alerta", uniqueConstraints = @UniqueConstraint(columnNames = "CODIGO"))
+@Table(name = "sive_patologias_vig", schema = "sive", uniqueConstraints = @UniqueConstraint(columnNames = "CODIGO"))
 public class SivePatologias implements Serializable{
 	
 	/**

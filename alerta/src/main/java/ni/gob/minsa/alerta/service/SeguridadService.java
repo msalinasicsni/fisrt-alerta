@@ -64,12 +64,24 @@ public class SeguridadService {
                     infoSesion = (InfoSesion) infoResultado.getObjeto();
                 }
             }
-
-            infoSesion = new InfoSesion();
-            infoSesion.setUsuarioId(25);
+            //Desde aca
+            /*infoSesion = new InfoSesion();
+            //usuario produccion
+            infoSesion.setUsuarioId(6118);
+            infoSesion.setNombre("HOSPITAL REGIONAL CESAR AMADOR MOLINA");
+            infoSesion.setUsername("alerta-hopsmatagalpa");
+            infoSesion.setSistemaSesion("ALERTA");
+            //usuario de pruebas
+            /*infoSesion.setUsuarioId(4772);
             infoSesion.setNombre("Admin Alerta mok");
             infoSesion.setUsername("admalerta");
             infoSesion.setSistemaSesion("ALERTA");
+            //usuario de desarrollo
+            /*infoSesion.setUsuarioId(170);
+            infoSesion.setNombre("Adm Alerta");
+            infoSesion.setUsername("alerta");
+            infoSesion.setSistemaSesion("ALERTA");*/
+            //hasta aca
             ctx.close();
         }catch(Exception e){
             System.out.println("---- EXCEPTION");
@@ -108,7 +120,7 @@ public class SeguridadService {
         String urlRetorno="";
         if (seguridadHabilitada()) { //Si es false no se realiza ninguna validación
             if (!esUsuarioAutenticado(request.getSession())) {
-                String bdSessionId = "a";  // esta variable dejarla en blanco par activar la seguridad
+                String bdSessionId = "";  // esta variable dejarla en blanco par activar la seguridad
                 Cookie[] cookies = request.getCookies();
                 if (cookies != null) {
                     for (int i = 0; i < cookies.length; i++) {
@@ -183,7 +195,7 @@ public class SeguridadService {
      * @return True si el usuario tiene permiso, False en caso contrario
      */
     private boolean esUsuarioAutorizado(long pUsuarioId, String pSistema, String pViewId) {
-        boolean autorizado = true;
+        boolean autorizado = false;
         try {
             InitialContext ctx = new InitialContext();
             PortalService portalService = (PortalService) ctx.lookup(ConstantsSecurity.EJB_BIN);
@@ -204,7 +216,7 @@ public class SeguridadService {
      * @return TRUE: si es de nivel central  o la seguridad esta deshabilitada, FALSE: no es nivel central o sucedió un error
      */
     public boolean esUsuarioNivelCentral(long pUsuarioId, String pSistema) {
-        boolean nivelCentral=true;
+        boolean nivelCentral=false;
         if (seguridadHabilitada()) {
             try {
                 InitialContext ctx = new InitialContext();
@@ -236,9 +248,9 @@ public class SeguridadService {
             if (infoSesion != null) {
                 idUsuario = infoSesion.getUsuarioId();
             }
-        }else{
-            idUsuario= 25L;///usuario alerta en pruebas
-        }
+        }/*else{
+            idUsuario= 6118L; //4772L;///usuario alerta en pruebas
+        }*/
 
         return idUsuario;
     }
@@ -784,7 +796,7 @@ public class SeguridadService {
                             break;
                         }
                         case 2: {
-                            query += " where a.codigo not in ('AREAREP|PAIS','AREAREP|DEPTO','AREAREP|UNI') "; // no incluir pais, departamento y unidades
+                            query += " where a.codigo in ('AREAREP|SILAIS') "; // solo silais//query += " where a.codigo not in ('AREAREP|PAIS','AREAREP|DEPTO','AREAREP|UNI') "; // no incluir pais, departamento y unidades
                             break;
                         }
                         case 3 : {

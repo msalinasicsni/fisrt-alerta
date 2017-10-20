@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.service;
 
+import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.irag.DaIrag;
 import ni.gob.minsa.alerta.domain.muestra.*;
 import ni.gob.minsa.alerta.domain.vigilanciaSindFebril.DaSindFebril;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -190,6 +192,8 @@ public class EnvioMxService {
     }
 
     public List<Laboratorio> getLaboratorios(Integer pUsuarioId, String pCodigoSis){
+        List<Laboratorio> laboratorioList = new ArrayList<Laboratorio>();
+
       String query = "select distinct lab from Laboratorio as lab, EntidadAdtvaLaboratorio as el, EntidadesAdtvas as ent, UsuarioEntidad as usuent, Usuarios as usu, Sistema as sis " +
                 "where lab.codigo = el.laboratorio.codigo and el.entidadAdtva.codigo = ent.codigo " +
                 "and ent.id = usuent.entidadAdtva.entidadAdtvaId and usuent.usuario.usuarioId=usu.usuarioId and usuent.sistema.id = sis.id " +
@@ -201,7 +205,22 @@ public class EnvioMxService {
         qr.setParameter("pCodigoSis", pCodigoSis);
         qr.setParameter("pasivo", '0');
 
-        return qr.list();
+        laboratorioList = qr.list();
+        if (laboratorioList.size()<=0){
+            query = "select distinct lab from Laboratorio as lab, EntidadAdtvaLaboratorio as el, EntidadesAdtvas as ent, UsuarioUnidad as usuni, Usuarios as usu, Sistema as sis " +
+                    "where lab.codigo = el.laboratorio.codigo and el.entidadAdtva.codigo = ent.codigo " +
+                    "and ent.id = usuni.unidad.entidadAdtva.entidadAdtvaId and usuni.usuario.usuarioId=usu.usuarioId and usuni.sistema.id = sis.id " +
+                    "and el.pasivo = false " +
+                    "and sis.codigo = :pCodigoSis and usu.usuarioId = :pUsuarioId and ent.pasivo = :pasivo and usuni.unidad.pasivo = :pasivo order by lab.nombre";
+            qr = sessionFactory.getCurrentSession().createQuery(query);
+            qr.setParameter("pUsuarioId", pUsuarioId);
+            qr.setParameter("pCodigoSis", pCodigoSis);
+            qr.setParameter("pasivo", '0');
+
+            laboratorioList = qr.list();
+        }
+
+        return laboratorioList;
     }
 
     public List<Laboratorio> getAllLaboratorios(){

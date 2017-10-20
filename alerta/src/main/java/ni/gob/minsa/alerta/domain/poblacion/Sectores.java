@@ -17,7 +17,7 @@ import org.hibernate.annotations.ForeignKey;
 
 
 @Entity
-@Table(name = "sectores", schema = "alerta")
+@Table(name = "sectores", schema = "general")
 public class Sectores implements Serializable{
 
 	/**

@@ -4,6 +4,7 @@ import ni.gob.minsa.alerta.domain.audit.Auditable;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -12,7 +13,7 @@ import java.util.Date;
  * V1.0
  */
 @Entity
-@javax.persistence.Table(name = "sive_informe_diario", schema = "alerta")
+@javax.persistence.Table(name = "sive_informe_diario", schema = "sive")
 public class SiveInformeDiario implements Serializable, Auditable {
     private String silais;
     private String actor;

@@ -36,7 +36,7 @@ import ni.gob.minsa.alerta.domain.poblacion.Paises;
 })
 
 @Entity  @Indexed
-@Table(name="sis_personas",schema="alerta")
+@Table(name="sis_personas",schema="sis")
 
 public class SisPersona  implements java.io.Serializable {
 
@@ -153,7 +153,7 @@ public class SisPersona  implements java.io.Serializable {
 	     this.fechaRegistro=fechaRegistro;
 	     this.usuarioRegistro=usuarioRegistro;  
     }
-   
+
     @Id 
     @Column(name="PERSONA_ID", nullable=false, precision=10, scale=0)
     public long getPersonaId() {
@@ -423,8 +423,8 @@ public class SisPersona  implements java.io.Serializable {
     public void setTipoAsegurado(TipoAsegurado tipoasegurado) {
         this.tipoAsegurado = tipoasegurado;
     }
-    
-    
+
+
 
    /* @OneToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch=FetchType.LAZY,mappedBy = "personaFallecido")
     public Defuncion getDefuncion() {
