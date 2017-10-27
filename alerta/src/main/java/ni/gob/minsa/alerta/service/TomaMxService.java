@@ -153,6 +153,17 @@ public class TomaMxService {
 
     }
 
+    @SuppressWarnings("unchecked")
+    public List<DaTomaMx> getTomaMxActivaByIdNoti(String idNotificacion){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM DaTomaMx tmx where tmx.idNotificacion = :idNotificacion and tmx.anulada = false order by fechaHTomaMx asc");
+        query.setString("idNotificacion", idNotificacion);
+        //retrieve all
+        return query.list();
+    }
+
     public DaTomaMx getTomaMxByCodUnicoMx(String codigoUnicoMx){
         String query = "from DaTomaMx as a where codigoUnicoMx= :codigoUnicoMx";
 

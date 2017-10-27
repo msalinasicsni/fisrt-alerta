@@ -100,7 +100,7 @@ public class TomaMxController {
         String urlValidacion= "";
         try {
             urlValidacion = seguridadService.validarLogin(request);
-            //si la url esta vacia significa que la validación del login fue exitosa
+            //si la url esta vacia significa que la validaciï¿½n del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
         }catch (Exception e){
@@ -139,7 +139,7 @@ public class TomaMxController {
         String urlValidacion="";
         try {
             urlValidacion = seguridadService.validarLogin(request);
-            //si la url esta vacia significa que la validación del login fue exitosa
+            //si la url esta vacia significa que la validaciï¿½n del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
         }catch (Exception e){
@@ -187,9 +187,9 @@ public class TomaMxController {
     }
 
     /**
-     * Retorna una lista de dx según el tipo de muestra y de notificación
+     * Retorna una lista de dx segï¿½n el tipo de muestra y de notificaciï¿½n
      * @param codMx tipo de muestra
-     * @param tipoNoti tipo de notificación
+     * @param tipoNoti tipo de notificaciï¿½n
      * @return Un arreglo JSON de dx
      * @throws Exception
      */
@@ -197,13 +197,13 @@ public class TomaMxController {
     public
     @ResponseBody
     List<Dx_TipoMx_TipoNoti> getDxBySample(@RequestParam(value = "codMx", required = true) String codMx, @RequestParam(value = "tipoNoti", required = true) String tipoNoti) throws Exception {
-        logger.info("Obteniendo los diagnósticos segun muestra y tipo de Notificacion en JSON");
+        logger.info("Obteniendo los diagnï¿½sticos segun muestra y tipo de Notificacion en JSON");
         return tomaMxService.getDx(codMx, tipoNoti);
     }
 
     /**
-     * Obtener tomas de muestra de una notificación
-     * @param idNotificacion de la notificación a consultar
+     * Obtener tomas de muestra de una notificaciï¿½n
+     * @param idNotificacion de la notificaciï¿½n a consultar
      * @return List<DaTomaMx>
      * @throws Exception
      */
@@ -211,13 +211,13 @@ public class TomaMxController {
     public
     @ResponseBody
     List<DaTomaMx> getTestBySample(@RequestParam(value = "idNotificacion", required = true) String idNotificacion) throws Exception {
-        logger.info("Realizando búsqueda de Toma de Mx.");
+        logger.info("Realizando bï¿½squeda de Toma de Mx.");
 
         return tomaMxService.getTomaMxByIdNoti(idNotificacion);
     }
 
     /**
-     * Guardar toma de muestra de diagnóstico
+     * Guardar toma de muestra de diagnï¿½stico
      * @return ResponseEntity<String>
      * @throws Exception
      */
@@ -292,8 +292,8 @@ public class TomaMxController {
     /**
      * Guardar solicitudes de dx para una muestra
      * @param idTomaMx a la que pertenecen las solicitudes
-     * @param dx códigod de los dx solicitados
-     * @param request con los datos de autenticación
+     * @param dx cï¿½digod de los dx solicitados
+     * @param request con los datos de autenticaciï¿½n
      * @throws Exception
      */
     private void saveDxRequest(String idTomaMx, String dx, HttpServletRequest request) throws Exception {
@@ -330,20 +330,20 @@ public class TomaMxController {
     }
 
     /**
-     * Método para generar un string alfanumérico de 8 caracteres, que se usará como código único de muestra
+     * Mï¿½todo para generar un string alfanumï¿½rico de 8 caracteres, que se usarï¿½ como cï¿½digo ï¿½nico de muestra
      * @return String codigoUnicoMx
      */
     private String generarCodigoUnicoMx(){
         DaTomaMx validaC;
-        //Se genera el código
+        //Se genera el cï¿½digo
         String codigoUnicoMx = StringUtil.getCadenaAlfanumAleatoria(8);
-        //Se consulta BD para ver si existe toma de Mx que tenga mismo código
+        //Se consulta BD para ver si existe toma de Mx que tenga mismo cï¿½digo
         validaC = tomaMxService.getTomaMxByCodUnicoMx(codigoUnicoMx);
-        //si existe, de manera recursiva se solicita un nuevo código
+        //si existe, de manera recursiva se solicita un nuevo cï¿½digo
         if (validaC!=null){
             codigoUnicoMx = generarCodigoUnicoMx();
         }
-        //si no existe se retorna el último código generado
+        //si no existe se retorna el ï¿½ltimo cï¿½digo generado
         return codigoUnicoMx;
     }
 
@@ -359,7 +359,7 @@ public class TomaMxController {
         String urlValidacion= "";
         try {
             urlValidacion = seguridadService.validarLogin(request);
-            //si la url esta vacia significa que la validación del login fue exitosa
+            //si la url esta vacia significa que la validaciï¿½n del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
             if (!seguridadService.esUsuarioAutorizadoTomaMxEstudio((int)seguridadService.obtenerIdUsuario(request), ConstantsSecurity.SYSTEM_CODE)){
@@ -390,7 +390,7 @@ public class TomaMxController {
         String urlValidacion="";
         try {
             urlValidacion = seguridadService.validarLogin(request);
-            //si la url esta vacia significa que la validación del login fue exitosa
+            //si la url esta vacia significa que la validaciï¿½n del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
             if (!seguridadService.esUsuarioAutorizadoTomaMxEstudio((int)seguridadService.obtenerIdUsuario(request), ConstantsSecurity.SYSTEM_CODE)){
@@ -427,7 +427,7 @@ public class TomaMxController {
     }
 
     /**
-     * Retorna una lista de estudios por tipo de muestra y notificación
+     * Retorna una lista de estudios por tipo de muestra y notificaciï¿½n
      * @return Un arreglo JSON de dx
      */
     @RequestMapping(value = "getStudiesBySampleAndNoti", method = RequestMethod.GET, produces = "application/json")
@@ -436,14 +436,14 @@ public class TomaMxController {
     List<Estudio_TipoMx_TipoNoti> getEstudioBySampleAndNoti(@RequestParam(value = "codMx", required = true) String codMx,
                                                             @RequestParam(value = "tipoNoti", required = true) String tipoNoti,
                                                             @RequestParam(value = "idUnidadSalud", required = true) long idUnidadSalud) throws Exception {
-        logger.info("Obteniendo los diagnósticos segun muestra y tipo de Notificacion en JSON");
+        logger.info("Obteniendo los diagnï¿½sticos segun muestra y tipo de Notificacion en JSON");
         return tomaMxService.getEstudiosByTipoMxTipoNoti(codMx, tipoNoti, idUnidadSalud);
     }
 
     /**
      * Guardar tomas de muestra de estudio
-     * @param request con los datos de autenticación y datos de la muestra a guardar
-     * @param response con el resultado de la operación
+     * @param request con los datos de autenticaciï¿½n y datos de la muestra a guardar
+     * @param response con el resultado de la operaciï¿½n
      * @throws ServletException
      * @throws IOException
      */
@@ -582,7 +582,7 @@ public class TomaMxController {
      */
     @RequestMapping(value = "/searchMx/init", method = RequestMethod.GET)
     public ModelAndView initReportForm(HttpServletRequest request) throws Exception {
-        logger.debug("Iniciando formulario de búsqueda de muetras");
+        logger.debug("Iniciando formulario de bï¿½squeda de muetras");
         String urlValidacion;
         try {
             urlValidacion = seguridadService.validarLogin(request);
@@ -620,12 +620,15 @@ public class TomaMxController {
         List<DaTomaMx> tomaMxList = null;
         tomaMxList = tomaMxService.getTomaMxByFiltro(filtroMx);
         long idUsuario = seguridadService.obtenerIdUsuario(request);
-        List<EntidadesAdtvas> entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
-        return tomaMxToJson(tomaMxList, entidades);
+        boolean nivelCentral = seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE);
+        List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+        if (!nivelCentral)
+            seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+        return tomaMxToJson(tomaMxList, entidades, nivelCentral);
     }
 
     /**
-     * Convierte un JSON con los filtros de búsqueda a objeto FiltroMx
+     * Convierte un JSON con los filtros de bï¿½squeda a objeto FiltroMx
      * @param strJson JSON
      * @return FiltroMx
      * @throws Exception
@@ -680,19 +683,19 @@ public class TomaMxController {
     }
 
     /**
-     * Método que convierte una lista de tomaMx a un string con estructura Json
+     * Mï¿½todo que convierte una lista de tomaMx a un string con estructura Json
      *
      * @param tomaMxList lista con las tomaMx a convertir
      * @return String
      */
-    private String tomaMxToJson(List<DaTomaMx> tomaMxList, List<EntidadesAdtvas> entidades) {
+    private String tomaMxToJson(List<DaTomaMx> tomaMxList, List<EntidadesAdtvas> entidades, boolean nivelCentral) {
         String jsonResponse;
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
         Integer indice = 0;
         boolean esEstudio;
         for (DaTomaMx tomaMx : tomaMxList) {
             //mostrar solo las muestras asociadas a los silais que tiene acceso el usuario
-            if ((tomaMx.getCodSilaisAtencion()!=null && entidades.contains(tomaMx.getCodSilaisAtencion()))
+            if ((tomaMx.getCodSilaisAtencion()!=null && ( nivelCentral || entidades.contains(tomaMx.getCodSilaisAtencion())))
                     || (tomaMx.getIdNotificacion().getCodSilaisAtencion()!=null && entidades.contains(tomaMx.getIdNotificacion().getCodSilaisAtencion()))) {
                 esEstudio = tomaMxService.getSolicitudesEstudioByIdTomaMx(tomaMx.getIdTomaMx()).size() > 0;
                 Map<String, String> map = new HashMap<String, String>();
@@ -772,7 +775,7 @@ public class TomaMxController {
             }
         }
         jsonResponse = new Gson().toJson(mapResponse);
-        //escapar caracteres especiales, escape de los caracteres con valor numérico mayor a 127
+        //escapar caracteres especiales, escape de los caracteres con valor numï¿½rico mayor a 127
         UnicodeEscaper escaper = UnicodeEscaper.above(127);
         return escaper.translate(jsonResponse);
     }
@@ -838,8 +841,8 @@ public class TomaMxController {
     }
 
     /**
-     * Método para convertir una lista de solicitudes dx o estudios a un string con estructura Json
-     * @param dxList lista con las solicitudes de diagnósticos a convertir
+     * Mï¿½todo para convertir una lista de solicitudes dx o estudios a un string con estructura Json
+     * @param dxList lista con las solicitudes de diagnï¿½sticos a convertir
      * @param estudioList lista con las solicitudes de estudio a convertir
      * @return String
      * @throws java.io.UnsupportedEncodingException
@@ -899,15 +902,15 @@ public class TomaMxController {
             indice ++;
         }
         jsonResponse = new Gson().toJson(mapResponse);
-        //escapar caracteres especiales, escape de los caracteres con valor numérico mayor a 127
+        //escapar caracteres especiales, escape de los caracteres con valor numï¿½rico mayor a 127
         UnicodeEscaper escaper     = UnicodeEscaper.above(127);
         return escaper.translate(jsonResponse);
     }
 
     /**
-     * Método para anular una orden de examen
-     * @param request para obtener información de la petición del cliente. Contiene en un parámetro la estructura json del registro a anular
-     * @param response para notificar al cliente del resultado de la operación
+     * Mï¿½todo para anular una orden de examen
+     * @param request para obtener informaciï¿½n de la peticiï¿½n del cliente. Contiene en un parï¿½metro la estructura json del registro a anular
+     * @param response para notificar al cliente del resultado de la operaciï¿½n
      * @throws Exception
      */
     @RequestMapping(value = "anularSolicitud", method = RequestMethod.POST)
@@ -964,9 +967,9 @@ public class TomaMxController {
     }
 
     /**
-     * Método para agregar una solicitud de dx o estudio para una mx
-     * @param request para obtener información de la petición del cliente. Contiene en un parámetro la estructura json del registro a agregar
-     * @param response para notificar al cliente del resultado de la operación
+     * Mï¿½todo para agregar una solicitud de dx o estudio para una mx
+     * @param request para obtener informaciï¿½n de la peticiï¿½n del cliente. Contiene en un parï¿½metro la estructura json del registro a agregar
+     * @param response para notificar al cliente del resultado de la operaciï¿½n
      * @throws ServletException
      * @throws IOException
      */
@@ -1012,7 +1015,7 @@ public class TomaMxController {
         idTomaMx = jsonpObject.get("idTomaMx").getAsString();
         idDiagnostico = jsonpObject.get("idDiagnostico").getAsInt();
         DaTomaMx tomaMx = tomaMxService.getTomaMxById(idTomaMx);
-        //se valida si existe una orden activa para la muestra, el diagnóstico y el examen
+        //se valida si existe una orden activa para la muestra, el diagnï¿½stico y el examen
         DaSolicitudDx solicitudDx = tomaMxService.getSolicitudesDxByMxDx(idTomaMx, idDiagnostico);
         if (solicitudDx!=null){
             if (tomaMx.getEstadoMx().getCodigo().equalsIgnoreCase("ESTDMX|PEND")
@@ -1056,7 +1059,7 @@ public class TomaMxController {
         int idEstudio = 0;
         idTomaMx = jsonpObject.get("idTomaMx").getAsString();
         idEstudio = jsonpObject.get("idEstudio").getAsInt();
-        //se valida si existe una orden activa para la muestra, el diagnóstico y el examen
+        //se valida si existe una orden activa para la muestra, el diagnï¿½stico y el examen
         DaSolicitudEstudio solicitudEstudio = tomaMxService.getSolicitudesEstudioByMxEst(idTomaMx, idEstudio);
         if (solicitudEstudio!=null){
             Catalogo_Estudio estudio = tomaMxService.getEstudioById(idEstudio);
@@ -1085,7 +1088,7 @@ public class TomaMxController {
     }
 
     /**
-     * Guardar toma de muestra de diagnóstico
+     * Guardar toma de muestra de diagnï¿½stico
      * @return ResponseEntity<String>
      * @throws Exception
      */

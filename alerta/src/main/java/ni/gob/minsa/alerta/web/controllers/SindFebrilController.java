@@ -6,6 +6,7 @@ import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.irag.Respuesta;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
+import ni.gob.minsa.alerta.domain.muestra.DaTomaMx;
 import ni.gob.minsa.alerta.domain.muestra.OrdenExamen;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import ni.gob.minsa.alerta.domain.persona.Ocupacion;
@@ -100,7 +101,8 @@ public class SindFebrilController {
     private OrdenExamenMxService ordenExamenMxService;
     @Resource(name = "resultadosService")
     private ResultadosService resultadosService;
-
+    @Resource(name = "tomaMxService")
+    private TomaMxService tomaMxService;
     @Autowired
     MessageSource messageSource;
 
@@ -875,12 +877,25 @@ public class SindFebrilController {
                     }
 
                     String fis = febril.getIdNotificacion().getFechaInicioSintomas() != null? DateUtil.DateToString(febril.getIdNotificacion().getFechaInicioSintomas(), "yyyy/MM/dd"): null;
+                    String dsa = febril.getSsDSA() != null? febril.getSsDSA(): null;
+
+                    List<DaTomaMx> muestras = tomaMxService.getTomaMxActivaByIdNoti(febril.getIdNotificacion().getIdNotificacion());
+                    String[] fechaTM =  null;
+                    String anioTM = "--";
+                    String mesTM =  "--";
+                    String diaTM =  "--";
+                    if (muestras.size()>0){
+                        String fechaTomaMx = muestras.get(0).getFechaHTomaMx() != null?DateUtil.DateToString(muestras.get(0).getFechaHTomaMx(), "yyyy/MM/dd"):null;
+                        if (fechaTomaMx!=null) fechaTM = fechaTomaMx.split("/");
+                        anioTM = fechaTM != null ? fechaTM[0]: "--";
+                        mesTM = fechaTM != null ? fechaTM[1]: "--";
+                        diaTM = fechaTM != null ? fechaTM[2]:"--";
+                    }
+
                     String[] fechaFis = fis != null ? fis.split("/"): null;
                     String anioFis = fechaFis != null ? fechaFis[0]: "--";
                     String mesFis = fechaFis != null ? fechaFis[1]: "--";
                     String diaFis = fechaFis != null ? fechaFis[2]:"--";
-
-                    String dsa = febril.getSsDSA() != null? febril.getSsDSA(): null;
 
                     boolean fiebre = false;
                     boolean cefalea = false;
@@ -1350,6 +1365,13 @@ public class SindFebrilController {
                     GeneralUtils.drawTEXT(mesFis,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
                     x1 = x + 150;
                     GeneralUtils.drawTEXT(anioFis,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+
+                    x1 = x + 300;
+                    GeneralUtils.drawTEXT(diaTM,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+                    x1 = x + 325;
+                    GeneralUtils.drawTEXT(mesTM,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
+                    x1 = x + 345;
+                    GeneralUtils.drawTEXT(anioTM,y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     y-= 22;
                     x1 = x + 25;
