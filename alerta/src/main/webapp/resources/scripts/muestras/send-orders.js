@@ -206,7 +206,7 @@ var SendOrders = function () {
     			})
     			.fail(function() {
                     unBlockUI();
-				    alert( "error" );
+                        alert("error: " + data + " status: " + status + " er:" + er);
 				});
             }
 
@@ -277,7 +277,7 @@ var SendOrders = function () {
                                                 iconSmall: "fa fa-success",
                                                 timeout: 4000
                                             });
-                                            getOrders(false);
+                                            //getOrders(false);
                                             limpiarDatosEnvio();
                                         }
                                         desbloquearUI();
@@ -312,6 +312,7 @@ var SendOrders = function () {
             }
 
             function limpiarDatosEnvio(){
+                table1.fnClearTable();
                 $("#txtNombreTransporta").val('');
                 $("#txtTemperatura").val('');
                 $("#codLaboratorioProce").val('').change();
