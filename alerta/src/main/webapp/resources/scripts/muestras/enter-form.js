@@ -129,7 +129,9 @@ var EnterFormTomaMx = function () {
                         });
                         clearFields();
                         desbloquearUI();
-                        //window.location.href = parametros.searchUrl;
+                        setTimeout(function () {
+                            window.history.back();//window.location.href = parametros.searchUrl;
+                        }, 3000);
 
                     },
                     error: function () {

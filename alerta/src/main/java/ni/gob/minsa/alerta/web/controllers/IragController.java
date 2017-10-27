@@ -275,6 +275,7 @@ public class IragController {
                 }
             } else {
                 List<String> iragAutorizados = new ArrayList<String>();
+                boolean fichaincompleta=false;
                 for (DaIrag ira : results) {
                     if (idUsuario != 0) {
                         if (ira.getIdNotificacion().getCodSilaisAtencion()==null && ira.getIdNotificacion().getCodUnidadAtencion()==null){
@@ -282,10 +283,14 @@ public class IragController {
                         }else if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
                             iragAutorizados.add(ira.getIdNotificacion().getIdNotificacion());
                         }
+                        if (!ira.getIdNotificacion().isPasivo() && !fichaincompleta) {
+                            fichaincompleta = !ira.getIdNotificacion().isCompleta();
+                        }
                     }
                 }
                 mav.addObject("records", results);
                 mav.addObject("idPerson", idPerson);
+                mav.addObject("incompleta", fichaincompleta);
                 mav.addObject("iragAutorizadas", iragAutorizados);
                 mav.setViewName("irag/results");
             }

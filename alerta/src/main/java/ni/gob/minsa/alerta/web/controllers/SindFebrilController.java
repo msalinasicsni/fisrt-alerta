@@ -209,6 +209,7 @@ public class SindFebrilController {
 	        }
 	        else{
                 List<String> fichasAutorizadas = new ArrayList<String>();
+                boolean fichaincompleta=false;
                 for(DaSindFebril febril: results){
                     if (idUsuario != 0) {
                         if (febril.getIdNotificacion().getCodSilaisAtencion()==null && febril.getIdNotificacion().getCodUnidadAtencion()==null){
@@ -217,11 +218,15 @@ public class SindFebrilController {
                                     && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, febril.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
                                 fichasAutorizadas.add(febril.getIdNotificacion().getIdNotificacion());
                             }
+                        if (!febril.getIdNotificacion().isPasivo() && !fichaincompleta) {
+                            fichaincompleta = !febril.getIdNotificacion().isCompleta();
+                        }
 
                     }
                 }
 	        	mav.addObject("fichas", results);
                 mav.addObject("idPerson", idPerson);
+                mav.addObject("incompleta", fichaincompleta);
                 mav.addObject("fichasAutorizadas",fichasAutorizadas);
 	        	mav.setViewName("sindfeb/results");
 	        }

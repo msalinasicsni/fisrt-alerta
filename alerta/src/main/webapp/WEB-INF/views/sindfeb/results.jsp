@@ -80,11 +80,19 @@
 									<input class="form-control" type="text">
 
 								</div>
+                                <input type="hidden" id="inYes"  value="<spring:message code="lbl.yes"/>"/>
+                                <input type="hidden" id="inNo"  value="<spring:message code="lbl.no"/>"/>
+                                <input type="hidden" id="titleC"  value="<spring:message code="msg.sending.confirm.title"/>"/>
+                                <input type="hidden" id="contentC"  value="<spring:message code="msg.confirmation.content"/>"/>
+                                <input type="hidden" id="titleCancel"  value="<spring:message code="msg.sampling.cancel"/>"/>
+                                <input id="smallBox_content" type="hidden" value="<spring:message code="smallBox.content.4s"/>"/>
+                                <input id="msgIncompleta" type="hidden" value="<spring:message code="msg.noti.incompleta"/>"/>
+                                <input id="msgNoOverride" type="hidden" value="<spring:message code="msg.noti.in.laboratory"/>"/>
 								<!-- end widget edit box -->
 								<!-- widget content -->
 								<div class="widget-body no-padding">
                                     <input id="idPerson" hidden="hidden" value="${idPerson}" type="text" name="idPerson"/>
-
+                                    <input id="incompleta" hidden="hidden" value="${incompleta}" type="text" name="incompleta"/>
 
                                     <table id="fichas_result" class="table table-striped table-bordered table-hover" width="100%">
                                         <thead>
@@ -92,6 +100,7 @@
                                             <th data-class="expand"><i class="fa fa-fw fa-key text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.numFicha"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.date"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-times txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.active"/></th>
+                                            <th data-hide="phone"><i class="fa fa-fw fa-times txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.complete"/></th>
                                             <th data-hide="phone, tablet"><i class="fa fa-fw fa-folder-o txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.exp"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-stethoscope txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.unidad"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
@@ -115,10 +124,13 @@
 							</div>
 							<!-- end widget div -->
 							<div style="border: none" class="row">
-								<a href="${fn:escapeXml(newUrl)}"
+								<!--<a href="${fn:escapeXml(newUrl)}"
 									class="btn btn-default btn-large btn-primary pull-right"><i
 									class="fa fa-plus"></i> <spring:message
-										code="lbl.add.notification" /> </a>
+										code="lbl.add.notification" /> </a>-->
+                                <button type="button" id="agregarNoti" class="btn btn-default btn-large btn-primary pull-right">
+                                    <i class="fa fa-plus"></i> <spring:message code="lbl.add.notification" />
+                                </button>
 							</div>
 						</div>
 						<!-- end widget -->
@@ -191,7 +203,7 @@
     <c:url var="pdfUrl" value="/febriles/getPDF"/>
     <c:url var="overrideUrl" value="/febriles/delete/"/>
     <c:url var="createMxUrl" value="/tomaMx/create/"/>
-
+    <spring:url value="/tomaMx/tomaMxByIdNoti" var="tomaMxUrl"/>
 
     <!-- END PAGE LEVEL PLUGINS -->
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
@@ -206,6 +218,8 @@
                 pdfUrl: "${pdfUrl}",
                 overrideUrl: "${overrideUrl}",
                 createMxUrl: "${createMxUrl}",
+                tomaMxUrl: "${tomaMxUrl}",
+                newUrl: "${newUrl}",
                 fichasAutorizadas: "${fichasAutorizadas}"
             };
 

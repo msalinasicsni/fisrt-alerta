@@ -40,13 +40,15 @@ var Results = function () {
                     "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
                 "autoWidth": true,
                 "columns": [
-                    null, null, null, null, null, null, null, null, null,
-
+                    null, null, null, null, null, null, null, null, null,null,
                     {
                         "className": 'fPdf',
                         "orderable": false
                     },
-                    null,
+                    {
+                        "className": 'tomaMx',
+                        "orderable": false
+                    },
                     {
                         "className": 'fOverride',
                         "orderable": false
@@ -72,6 +74,9 @@ var Results = function () {
                     $('.fPdf')
                         .off("click", pdfHandler)
                         .on("click", pdfHandler);
+                    $('.tomaMx')
+                        .off("click", tomaMxHandler)
+                        .on("click", tomaMxHandler);
                     $('.fOverride')
                         .off("click", overrideHandler)
                         .on("click", overrideHandler);
@@ -80,6 +85,13 @@ var Results = function () {
 
 
             });
+
+            function tomaMxHandler() {
+                var id = $(this.innerHTML).data('id');
+                if (id != null) {
+                    validarTomaMx(id);
+                }
+            }
 
             function pdfHandler() {
                 var id = $(this.innerHTML).data('id');
@@ -91,13 +103,28 @@ var Results = function () {
             function overrideHandler() {
                 var id = $(this.innerHTML).data('id');
                 if (id != null) {
-                    $('#overrideUrl').val(id);
-                    $('#d_confirmacion').modal('show');
+                    //$('#overrideUrl').val(id);
+                    //$('#d_confirmacion').modal('show');
+                    validarAnulacionTomaMx(id);
                 }
             }
 
             $('#btnOverride').click(function () {
                 window.location.href = parametros.overrideUrl + $('#overrideUrl').val();
+            });
+
+            $('#agregarNoti').click(function () {
+                if ($("#incompleta").val()==='true'){
+                    $.smallBox({
+                        title: $('#msgIncompleta').val(),
+                        content:  $('#smallBox_content').val(),
+                        color: "#C79121",
+                        iconSmall: "fa fa-warning",
+                        timeout: 4000
+                    });
+                }else{
+                    window.location.href = parametros.newUrl;
+                }
             });
 
             function getResults(idPerson) {
@@ -114,7 +141,7 @@ var Results = function () {
                         var btnEdit = '<a target="_blank" title="Editar" href=' + editUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
                         var overrideUrl = parametros.overrideUrl + data[i].idNotificacion.idNotificacion;
 
-                        var tomaMxUrl = parametros.createMxUrl + data[i].idNotificacion.idNotificacion;
+                        //var tomaMxUrl = parametros.createMxUrl + data[i].idNotificacion.idNotificacion;
 
                         var btnPdf = '<button type="button" title="Ficha en PDF" class="btn btn-success btn-xs" data-id="' + data[i].idNotificacion.idNotificacion +
                             '" > <i class="fa fa-file-pdf-o"></i>';
@@ -124,17 +151,21 @@ var Results = function () {
 
                         //var btnOverride = '<a title="Anular" href=' + overrideUrl + ' class="btn btn-xs btn-danger" ><i class="fa fa-times"></i></a>';
 
-                        var btnTomaMx = '<a target="_blank" title="Tomar Mx" href=' + tomaMxUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
-
+                        //var btnTomaMx = '<a target="_blank" title="Tomar Mx" href=' + tomaMxUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
+                        var btnTomaMx = '<a data-toggle="modal" title="Tomar Mx" class="btn btn-primary btn-xs tomaMx" data-id='+data[i].idNotificacion.idNotificacion+'><i class="fa fa-eyedropper fa-fw"></i></a>';
 
                         var pasivo = '<span class="label label-success"><i class="fa fa-thumbs-up fa-lg"></i></span>';
+                        var completa = '<span class="label label-success"><i class="fa fa-thumbs-up fa-lg"></i></span>';
+                        if (data[i].idNotificacion.completa == false) {
+                            completa = '<span class="label label-danger"><i class="fa fa-thumbs-down fa-lg"></i></span>';
+                        }
                         if (data[i].idNotificacion.pasivo == true) {
                             pasivo = '<span class="label label-danger"><i class="fa fa-thumbs-down fa-lg"></i></span>';
 
                             btnOverride = ' <button type="button" disabled class="btn btn-xs btn-danger"> <i class="fa fa-times"></i>';
 
                             btnEdit = '<a target="_blank" title="Editar" href=' + editUrl + ' disabled class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
-                            btnTomaMx = '<a target="_blank" title="Tomar Mx" href=' + tomaMxUrl + ' disabled class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
+                            btnTomaMx = '<a target="_blank" title="Tomar Mx" href="#" disabled class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
 
 
                         }else{
@@ -157,9 +188,88 @@ var Results = function () {
                         }
 
                         table1.fnAddData(
-                            [data[i].numFicha, fechaFormateada, pasivo, data[i].codExpediente, nombreUnidad, data[i].idNotificacion.persona.primerNombre, data[i].idNotificacion.persona.primerApellido, data[i].idNotificacion.persona.segundoApellido, btnEdit, btnPdf, btnTomaMx, btnOverride  ]);
+                            [data[i].numFicha, fechaFormateada, pasivo, completa, data[i].codExpediente, nombreUnidad, data[i].idNotificacion.persona.primerNombre, data[i].idNotificacion.persona.primerApellido, data[i].idNotificacion.persona.segundoApellido, btnEdit, btnPdf, btnTomaMx, btnOverride  ]);
 
 
+                    }
+
+                });
+            }
+
+            function validarAnulacionTomaMx (idNotificacion){
+                blockUI();
+                $.getJSON(parametros.tomaMxUrl, {
+                    idNotificacion: idNotificacion,
+                    ajax: 'true'
+                }, function (data) {
+                    //var actionUrl = parametros.createMxUrl + idNotificacion;
+                    unBlockUI();
+                    var len = data.length;
+                    if(len > 0) {
+                        var permitir = true;
+                        for (var i = 0; i < len; i++) {
+                            //estados ya dentro del sistema de laboratorio
+                            if (data[i].estadoMx.codigo=='ESTDMX|RCP' ||
+                                data[i].estadoMx.codigo=='ESTDMX|TRAS' ||
+                                data[i].estadoMx.codigo=='ESTDMX|EPLAB' ||
+                                data[i].estadoMx.codigo=='ESTDMX|RCLAB'){
+                                $.smallBox({
+                                    title: $('#msgNoOverride').val(),
+                                    content: "<i class='fa fa-clock-o'></i> <i>" + $("#smallBox_content").val() + "</i>",
+                                    color: "#C79121",
+                                    iconSmall: "fa fa-times fa-2x fadeInRight animated",
+                                    timeout: 4000
+                                });
+                                permitir = false;
+                                break;
+                            }
+                        }
+                        if (permitir){
+                            $('#overrideUrl').val(idNotificacion);
+                            $('#d_confirmacion').modal('show');
+                        }
+                    }else{
+                        $('#overrideUrl').val(idNotificacion);
+                        $('#d_confirmacion').modal('show');
+                    }
+
+                });
+            }
+
+            function validarTomaMx (idNotificacion){
+                blockUI();
+                $.getJSON(parametros.tomaMxUrl, {
+                    idNotificacion: idNotificacion,
+                    ajax: 'true'
+                }, function (data) {
+                    var actionUrl = parametros.createMxUrl + idNotificacion;
+                    unBlockUI();
+                    if(data.length > 0){
+                        var opcSi = $("#inYes").val();
+                        var opcNo = $("#inNo").val();
+                        $.SmartMessageBox({
+
+                            title: $('#titleC').val(),
+                            content: $('#contentC').val(),
+                            buttons: '['+opcSi+']['+opcNo+']'
+                        }, function (ButtonPressed) {
+                            if (ButtonPressed === opcSi) {
+                                window.location.href = actionUrl;
+
+                            }
+                            if (ButtonPressed === opcNo) {
+                                $.smallBox({
+                                    title: $('#titleCancel').val(),
+                                    content: "<i class='fa fa-clock-o'></i> <i>"+$("#smallBox_content").val()+"</i>",
+                                    color: "#C46A69",
+                                    iconSmall: "fa fa-times fa-2x fadeInRight animated",
+                                    timeout: 4000
+                                });
+                            }
+
+                        });
+                    }else{
+                        window.location.href =  actionUrl;
                     }
 
                 });

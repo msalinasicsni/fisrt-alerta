@@ -97,16 +97,27 @@
 									<!-- This area used as dropdown edit box -->
 									<input class="form-control" type="text">	
 								</div>
+
+                                <input type="hidden" id="inYes"  value="<spring:message code="lbl.yes"/>"/>
+                                <input type="hidden" id="inNo"  value="<spring:message code="lbl.no"/>"/>
+                                <input type="hidden" id="titleC"  value="<spring:message code="msg.sending.confirm.title"/>"/>
+                                <input type="hidden" id="contentC"  value="<spring:message code="msg.confirmation.content"/>"/>
+                                <input type="hidden" id="titleCancel"  value="<spring:message code="msg.sampling.cancel"/>"/>
+                                <input id="smallBox_content" type="hidden" value="<spring:message code="smallBox.content.4s"/>"/>
+                                <input id="msgIncompleta" type="hidden" value="<spring:message code="msg.noti.incompleta"/>"/>
+                                <input id="msgNoOverride" type="hidden" value="<spring:message code="msg.noti.in.laboratory"/>"/>
 								<!-- end widget edit box -->
 								<!-- widget content -->
 								<div class="widget-body no-padding">
                                     <input id="idPerson" hidden="hidden" value="${idPerson}" type="text" name="idPerson"/>
+                                    <input id="incompleta" hidden="hidden" value="${incompleta}" type="text" name="incompleta"/>
 
                                     <table id="noti_results" class="table table-striped table-bordered table-hover" width="100%">
                                         <thead>
                                         <tr>
                                             <th data-class="expand"><i class="fa fa-fw fa-key text-muted hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.consultation.date"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-times txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.active"/></th>
+                                            <th data-hide="phone"><i class="fa fa-fw fa-times txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.complete"/></th>
                                             <th data-hide="phone, tablet"><i class="fa fa-fw fa-folder-o txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="lbl.file.number"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-stethoscope txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="sindfeb.unidad"/></th>
                                             <th data-hide="phone"><i class="fa fa-fw fa-user txt-color-blue hidden-md hidden-sm hidden-xs"></i> <spring:message code="person.name1"/></th>
@@ -235,8 +246,11 @@
 							<!-- end widget div -->
 
                             <div style="border: none" class="row">
-                                <a href="${fn:escapeXml(newUrl)}" class="btn btn-default btn-large btn-primary pull-right"><i class="fa fa-plus"></i> <spring:message code="lbl.add.notification"/>   </a>
-
+                                <!--<a href="${fn:escapeXml(newUrl)}" class="btn btn-default btn-large btn-primary pull-right"><i class="fa fa-plus"></i> <spring:message code="lbl.add.notification"/>   </a>
+                                -->
+                                <button type="button" id="agregarNoti" class="btn btn-default btn-large btn-primary pull-right">
+                                    <i class="fa fa-plus"></i> <spring:message code="lbl.add.notification" />
+                                </button>
                             </div>
 
 						</div>
@@ -315,7 +329,7 @@
     <c:url var="overrideUrl" value="/irag/override/"/>
     <c:url var="createMxUrl" value="/tomaMx/create/"/>
     <c:url var="pdfUrl" value="/irag/getPDF"/>
-
+    <spring:url value="/tomaMx/tomaMxByIdNoti" var="tomaMxUrl"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			pageSetUp();
@@ -326,8 +340,9 @@
                 createMxUrl: "${createMxUrl}",
                 pdfUrl:"${pdfUrl}",
                 blockMess: "${blockMess}",
-                iragAutorizadas:"${iragAutorizadas}"
-
+                iragAutorizadas:"${iragAutorizadas}",
+                tomaMxUrl: "${tomaMxUrl}",
+                newUrl: "${newUrl}"
 
 
             };
