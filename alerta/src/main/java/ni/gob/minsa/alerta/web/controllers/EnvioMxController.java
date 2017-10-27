@@ -118,8 +118,11 @@ public class EnvioMxController {
         FiltroMx filtroMx = jsonToFiltroMx(filtro);
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         List<DaTomaMx> tomaMxList = envioMxService.getMxPendientes(filtroMx);
-        List<Unidades> unidadesPermitidas = seguridadService.obtenerUnidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
-        return tomaMxToJson(tomaMxList, unidadesPermitidas);
+        boolean nivelCentral = seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE);
+        List<Unidades> unidadesPermitidas = new ArrayList<Unidades>();
+        if (!nivelCentral)
+            seguridadService.obtenerUnidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+        return tomaMxToJson(tomaMxList, unidadesPermitidas, nivelCentral);
     }
 
     /**
@@ -213,12 +216,12 @@ public class EnvioMxController {
      * @param tomaMxList lista de muestras
      * @return JSON
      */
-    private String tomaMxToJson(List<DaTomaMx> tomaMxList, List<Unidades> unidadesPermitidas){
+    private String tomaMxToJson(List<DaTomaMx> tomaMxList, List<Unidades> unidadesPermitidas, boolean nivelCentral){
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
         Integer indice=0;
         for(DaTomaMx tomaMx:tomaMxList){
-            if (unidadesPermitidas.contains(tomaMx.getCodUnidadAtencion())) {
+            if (nivelCentral || unidadesPermitidas.contains(tomaMx.getCodUnidadAtencion())) {
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("idTomaMx", tomaMx.getIdTomaMx());
                 //map.put("fechaHoraOrden",DateToString(orden.getFechaHSolicitud(),"dd/MM/yyyy hh:mm:ss a"));
