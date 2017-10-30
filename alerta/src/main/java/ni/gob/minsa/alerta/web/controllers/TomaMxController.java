@@ -623,7 +623,7 @@ public class TomaMxController {
         boolean nivelCentral = seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE);
         List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
         if (!nivelCentral)
-            seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
         return tomaMxToJson(tomaMxList, entidades, nivelCentral);
     }
 

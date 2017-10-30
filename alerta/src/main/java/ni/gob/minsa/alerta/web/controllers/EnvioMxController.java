@@ -121,7 +121,7 @@ public class EnvioMxController {
         boolean nivelCentral = seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE);
         List<Unidades> unidadesPermitidas = new ArrayList<Unidades>();
         if (!nivelCentral)
-            seguridadService.obtenerUnidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+            unidadesPermitidas = seguridadService.obtenerUnidadesPorUsuario((int)idUsuario,ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
         return tomaMxToJson(tomaMxList, unidadesPermitidas, nivelCentral);
     }
 
