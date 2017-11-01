@@ -89,7 +89,7 @@ public class PersonaController {
     public @ResponseBody List<SisPersona> fetchPersonasJson(@RequestParam(value = "strFilter", required = true) String filtro,
                                                             @RequestParam(value = "pPaginaActual", required = true) int pPaginaActual) {
         logger.info("Obteniendo las personas en JSON");
-        List<SisPersona> personas = personaService.getPersonas(pPaginaActual,100,filtro);
+        List<SisPersona> personas = personaService.getPersonas(pPaginaActual,50,filtro);
         if (personas == null){
         	logger.debug("Nulo");
         }
