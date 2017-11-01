@@ -107,6 +107,12 @@ var SearchMx = function () {
                     }},
                     finToma: {required: function () {
                         return $('#inicioToma').val().length > 0;
+                    }},
+                    inicioEnvio: {required: function () {
+                        return $('#finEnvio').val().length > 0;
+                    }},
+                    finEnvio: {required: function () {
+                        return $('#inicioEnvio').val().length > 0;
                     }}
                 },
                 // Do not change code below
@@ -116,7 +122,6 @@ var SearchMx = function () {
                 submitHandler: function (form) {
                     table.fnClearTable();
                     //add here some ajax code to submit your form or just call form.submit() if you want to submit the form without ajax
-                    codigos = "";
                     getMxs(false)
                 }
             });
@@ -124,9 +129,10 @@ var SearchMx = function () {
             function getMxs(showAll) {
                 var mxFiltros = {};
                 if (showAll) {
-
                     mxFiltros['fechaInicioToma'] = '';
                     mxFiltros['fechaFinToma'] = '';
+                    mxFiltros['fechaInicioEnvio'] = '';
+                    mxFiltros['fechaFinEnvio'] = '';
                     mxFiltros['codSilais'] = '';
                     mxFiltros['codUnidadSalud'] = '';
                     mxFiltros['nombreSolicitud'] = '';
@@ -134,6 +140,8 @@ var SearchMx = function () {
                 } else {
                     mxFiltros['fechaInicioToma'] = $('#inicioToma').val();
                     mxFiltros['fechaFinToma'] = $('#finToma').val();
+                    mxFiltros['fechaInicioEnvio'] = $('#inicioEnvio').val();
+                    mxFiltros['fechaFinEnvio'] = $('#finEnvio').val();
                     mxFiltros['codSilais'] = $('#codSilais').find('option:selected').val();
                     mxFiltros['codUnidadSalud'] = $('#codUnidadSalud').find('option:selected').val();
                     mxFiltros['nombreSolicitud'] = encodeURI($('#nombreSol').val());

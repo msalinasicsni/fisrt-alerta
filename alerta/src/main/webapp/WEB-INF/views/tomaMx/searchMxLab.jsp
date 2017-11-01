@@ -117,6 +117,8 @@
                                     <b class="tooltip tooltip-bottom-right"><i class="fa fa-warning txt-color-pink"></i><spring:message code="tooltip.send.name"/></b>
                                 </label>
                             </section>
+                        </div>
+                        <div class="row">
                             <section class="col col-sm-6 col-md-6 col-lg-3">
                                 <label class="text-left txt-color-blue font-md">
                                     <spring:message code="lbl.send.start.date.mx"/>
@@ -137,6 +139,28 @@
                                     <input type="text" name="finToma" id="finToma"
                                            placeholder="<spring:message code="lbl.date.format"/>"
                                            class="form-control to_date" data-date-end-date="+0d"/>
+                                </label>
+                            </section>
+                            <section class="col col-sm-6 col-md-6 col-lg-3">
+                                <label class="text-left txt-color-blue font-md">
+                                    <spring:message code="lbl.shipment.start.date"/>
+                                </label>
+                                <label class="input">
+                                    <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
+                                    <input type="text" name="inicioEnvio" id="inicioEnvio"
+                                           placeholder="<spring:message code="lbl.date.format"/>"
+                                           class="form-control from_date2" data-date-end-date="+0d"/>
+                                </label>
+                            </section>
+                            <section class="col col-sm-6 col-md-6 col-lg-3">
+                                <label class="text-left txt-color-blue font-md">
+                                    <spring:message code="lbl.shipment.end.date"/>
+                                </label>
+                                <label class="input">
+                                    <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
+                                    <input type="text" name="finEnvio" id="finEnvio"
+                                           placeholder="<spring:message code="lbl.date.format"/>"
+                                           class="form-control to_date2" data-date-end-date="+0d"/>
                                 </label>
                             </section>
                         </div>

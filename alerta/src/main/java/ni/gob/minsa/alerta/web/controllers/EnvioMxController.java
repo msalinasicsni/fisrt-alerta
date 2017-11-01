@@ -183,11 +183,13 @@ public class EnvioMxController {
                     DaTomaMx tomaMxUpd = tomaMxService.getTomaMxById(idSoli);
                     tomaMxUpd.setEnvio(envioOrden);
                     tomaMxUpd.setEstadoMx(estadoMx);
-                    tomaMxService.updateTomaMx(tomaMxUpd);
-                    List<DaSolicitudDx> solicitudDxList = tomaMxService.getRutinasByIdMX(tomaMxUpd.getIdTomaMx());
-                    for (DaSolicitudDx solicitudDx : solicitudDxList){
-                        solicitudDx.setLabProcesa(envioOrden.getLaboratorioDestino());
-                        tomaMxService.updateSolicitudDx(solicitudDx);
+                    try {
+                        int proce = tomaMxService.updateLabProcesaDxByMx(envioOrden.getLaboratorioDestino().getCodigo(), tomaMxUpd.getIdTomaMx());
+                        if (proce>0)
+                            tomaMxService.updateTomaMx(tomaMxUpd);
+                    }catch (Exception ex){
+                        resultado=resultado+". \n "+ex.getMessage();
+                        ex.printStackTrace();
                     }
                     cantOrdenesProc++;
                 }

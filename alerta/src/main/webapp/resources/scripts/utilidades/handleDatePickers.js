@@ -54,5 +54,52 @@ var handleDatePickers = function (idioma) {
                 //se actualiza la fecha en que inicia el datepicker
                 $('.from_date').datepicker('setEndDate', FromEndDate);
             });
+
+        //Fecha Inicio Rango 2
+        $('.from_date2').datepicker({
+            language: idioma,
+            format:'dd/mm/yyyy',
+            autoclose: true
+        })
+            .on('changeDate', function (selected) {
+                //console.log('change fecha inicio');
+                startDate = new Date(selected.date.valueOf());
+                startDate.setDate(startDate.getDate(new Date(selected.date.valueOf())));
+                //si la fecha de inicio es mayor a la fecha de fin, entoces la fecha de fin se etsablece igual a la fecha de inicio
+                startDateCompare=new Date(selected.date.getFullYear(),selected.date.getMonth(),selected.date.getDate(),0,0,0);
+                endDateCompare=$('.to_date2').datepicker("getDate");
+                if(endDateCompare!=null&&endDateCompare!='undefined'){
+                    if (startDateCompare > endDateCompare){
+                        //console.log('fec inicio es mayor - from_date');
+                        $('.to_date2').datepicker('update', startDateCompare);
+                    }
+                }
+                //se actualiza la fecha en que inicia el datepicker
+                $('.to_date2').datepicker('setStartDate', startDate);
+            });
+
+        //Fecha Fin Rango 2
+        $('.to_date2')
+            .datepicker({
+                language: idioma,
+                format:'dd/mm/yyyy',
+                autoclose: true
+            })
+            .on('changeDate', function (selected) {
+                //console.log('change fecha fin');
+                FromEndDate = new Date(selected.date.valueOf());
+                FromEndDate.setDate(FromEndDate.getDate(new Date(selected.date.valueOf())));
+                //si la fecha de inicio es mayor a la fecha de fin, entoces la fecha de inicio se etsablece igual a la fecha de fin
+                endDateCompare=new Date(selected.date.getFullYear(),selected.date.getMonth(),selected.date.getDate(),0,0,0);
+                startDateCompare=$('.from_date2').datepicker("getDate");
+                if(endDateCompare!=null&&endDateCompare!='undefined'){
+                    if (startDateCompare > endDateCompare){
+                        //console.log('fec fin es menor - to_date');
+                        $('.from_date2').datepicker('update', endDateCompare);
+                    }
+                }
+                //se actualiza la fecha en que inicia el datepicker
+                $('.from_date2').datepicker('setEndDate', FromEndDate);
+            });
     }
 };

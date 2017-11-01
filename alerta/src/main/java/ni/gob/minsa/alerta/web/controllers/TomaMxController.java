@@ -615,10 +615,9 @@ public class TomaMxController {
     public
     @ResponseBody
     String fetchPosNegRequestJson(@RequestParam(value = "strFilter", required = true) String filtro, HttpServletRequest request) throws Exception {
-        logger.info("Obteniendo las solicitudes positivas y negativas seg?n filtros en JSON");
+        logger.info("Obteniendo las muestras seg?n filtros en JSON");
         FiltroMx filtroMx = jsonToFiltroMx(filtro);
-        List<DaTomaMx> tomaMxList = null;
-        tomaMxList = tomaMxService.getTomaMxByFiltro(filtroMx);
+        List<DaTomaMx> tomaMxList = tomaMxService.getTomaMxByFiltro(filtroMx);
         long idUsuario = seguridadService.obtenerIdUsuario(request);
         boolean nivelCentral = seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE);
         List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
@@ -636,8 +635,8 @@ public class TomaMxController {
     private FiltroMx jsonToFiltroMx(String strJson) throws Exception {
         JsonObject jObjectFiltro = new Gson().fromJson(strJson, JsonObject.class);
         FiltroMx filtroMx = new FiltroMx();
-        Date fechaInicio = null;
-        Date fechaFin = null;
+        Date fechaInicioEnvio = null;
+        Date fechaFinEnvio = null;
         Date fechaInicioToma = null;
         Date fechaFinToma = null;
         String codSilais = null;
@@ -649,10 +648,10 @@ public class TomaMxController {
 
         if (jObjectFiltro.get("nombrePersona") != null && !jObjectFiltro.get("nombrePersona").getAsString().isEmpty())
             nombreApellido = jObjectFiltro.get("nombrePersona").getAsString();
-        if (jObjectFiltro.get("fechaInicio") != null && !jObjectFiltro.get("fechaInicio").getAsString().isEmpty())
-            fechaInicio = DateUtil.StringToDate(jObjectFiltro.get("fechaInicio").getAsString() + " 00:00:00");
-        if (jObjectFiltro.get("fechaFin") != null && !jObjectFiltro.get("fechaFin").getAsString().isEmpty())
-            fechaFin = DateUtil.StringToDate(jObjectFiltro.get("fechaFin").getAsString() + " 23:59:59");
+        if (jObjectFiltro.get("fechaInicioEnvio") != null && !jObjectFiltro.get("fechaInicioEnvio").getAsString().isEmpty())
+            fechaInicioEnvio = DateUtil.StringToDate(jObjectFiltro.get("fechaInicioEnvio").getAsString() + " 00:00:00");
+        if (jObjectFiltro.get("fechaFinEnvio") != null && !jObjectFiltro.get("fechaFinEnvio").getAsString().isEmpty())
+            fechaFinEnvio = DateUtil.StringToDate(jObjectFiltro.get("fechaFinEnvio").getAsString() + " 23:59:59");
         if (jObjectFiltro.get("codSilais") != null && !jObjectFiltro.get("codSilais").getAsString().isEmpty())
             codSilais = jObjectFiltro.get("codSilais").getAsString();
         if (jObjectFiltro.get("codUnidadSalud") != null && !jObjectFiltro.get("codUnidadSalud").getAsString().isEmpty())
@@ -671,8 +670,8 @@ public class TomaMxController {
         filtroMx.setNombreApellido(nombreApellido);
         filtroMx.setCodSilais(codSilais);
         filtroMx.setCodUnidadSalud(codUnidadSalud);
-        filtroMx.setFechaInicioNotifi(fechaInicio);
-        filtroMx.setFechaFinNotifi(fechaFin);
+        filtroMx.setFechaInicioEnvio(fechaInicioEnvio);
+        filtroMx.setFechaFinEnvio(fechaFinEnvio);
         filtroMx.setTipoNotificacion(tipoNotificacion);
         filtroMx.setResultadoFinal(finalRes);
         filtroMx.setNombreSolicitud(nombreSolicitud);

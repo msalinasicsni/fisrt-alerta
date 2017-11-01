@@ -144,13 +144,13 @@ var IragResults = function () {
                         var editUrl = parametros.editUrl + data[i].idNotificacion.idNotificacion;
                         //var tomaMxUrl = parametros.createMxUrl + data[i].idNotificacion.idNotificacion;
 
-                        var btnEdit = '<a target="_blank" title="Editar" href=' + editUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
+                        var btnEdit = '<a title="Editar" href=' + editUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
 
                         var btnPdf = '<button type="button" title="Ficha en PDF" class="btn btn-success btn-xs" data-id="' + data[i].idNotificacion.idNotificacion +
                             '" > <i class="fa fa-file-pdf-o"></i>';
 
                         //var btnTomaMx = '<a target="_blank" title="Tomar Mx" href=' + tomaMxUrl + ' class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
-                        var btnTomaMx = '<a data-toggle="modal" title="Tomar Mx" class="btn btn-primary btn-xs tomaMx" data-id='+data[i].idNotificacion.idNotificacion+'><i class="fa fa-eyedropper fa-fw"></i></a>';
+                        var btnTomaMx = '<a title="Tomar Mx" class="btn btn-primary btn-xs tomaMx" data-id='+data[i].idNotificacion.idNotificacion+'><i class="fa fa-eyedropper fa-fw"></i></a>';
 
                         var btnOverride = '<button title="Anular" type="button" class="btn btn-danger btn-xs" data-id="' + data[i].idNotificacion.idNotificacion +
                             '" > <i class="fa fa-times"></i>';
@@ -163,8 +163,8 @@ var IragResults = function () {
                         if (data[i].idNotificacion.pasivo == true) {
                             pasivo = '<span class="label label-danger"><i class="fa fa-thumbs-down fa-lg"></i></span>';
 
-                            btnEdit = '<a target="_blank" title="Editar" href=' + editUrl + ' disabled class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
-                            btnTomaMx = '<a target="_blank" title="Tomar Mx" href="#" disabled class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
+                            btnEdit = '<a  title="Editar" href=' + editUrl + ' disabled class="btn btn-xs btn-primary" ><i class="fa fa-edit"></i></a>';
+                            btnTomaMx = '<a  title="Tomar Mx" href="#" disabled class="btn btn-xs btn-primary" ><i class="fa fa-eyedropper"></i></a>';
                             btnOverride = ' <button type="button" disabled class="btn btn-xs btn-danger"> <i class="fa fa-times"></i>';
 
                         } else {

@@ -6,18 +6,20 @@ import java.util.Date;
  * Created by FIRSTICT on 11/21/2014.
  */
 public class FiltroMx {
-    String nombreApellido;
-    Date fechaInicioTomaMx;
-    Date fechaFinTomaMx;
-    String codSilais;
-    String codUnidadSalud;
-    String codTipoMx;
-    String codTipoSolicitud;
-    String nombreSolicitud;
-    String tipoNotificacion;
-    Date fechaInicioNotifi;
-    Date fechaFinNotifi;
-    String resultadoFinal;
+    private String nombreApellido;
+    private Date fechaInicioTomaMx;
+    private Date fechaFinTomaMx;
+    private String codSilais;
+    private String codUnidadSalud;
+    private String codTipoMx;
+    private String codTipoSolicitud;
+    private String nombreSolicitud;
+    private String tipoNotificacion;
+    private Date fechaInicioNotifi;
+    private Date fechaFinNotifi;
+    private String resultadoFinal;
+    private Date fechaInicioEnvio;
+    private Date fechaFinEnvio;
 
     public String getNombreApellido() {
         return nombreApellido;
@@ -102,4 +104,20 @@ public class FiltroMx {
     public String getResultadoFinal() { return resultadoFinal; }
 
     public void setResultadoFinal(String resultadoFinal) { this.resultadoFinal = resultadoFinal; }
+
+    public Date getFechaInicioEnvio() {
+        return fechaInicioEnvio;
+    }
+
+    public void setFechaInicioEnvio(Date fechaInicioEnvio) {
+        this.fechaInicioEnvio = fechaInicioEnvio;
+    }
+
+    public Date getFechaFinEnvio() {
+        return fechaFinEnvio;
+    }
+
+    public void setFechaFinEnvio(Date fechaFinEnvio) {
+        this.fechaFinEnvio = fechaFinEnvio;
+    }
 }

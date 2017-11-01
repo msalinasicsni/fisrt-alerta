@@ -173,6 +173,21 @@ public class TomaMxService {
         return  (DaTomaMx)q.uniqueResult();
     }
 
+    public Integer updateLabProcesaDxByMx(String labo, String idTomaMx) throws Exception{
+        // Retrieve session from Hibernate
+        Session s = sessionFactory.openSession();
+        Transaction tx = s.beginTransaction();
+
+        String hqlDx = "update DaSolicitudDx set labProcesa.codigo=:labo where idTomaMx.idTomaMx = :idTomaMx ";
+        int updateEntities = s.createQuery(hqlDx)
+                .setString("idTomaMx", idTomaMx)
+                .setString("labo",labo)
+                .executeUpdate();
+        tx.commit();
+        s.close();
+        return updateEntities;
+    }
+
     /*********************************************************/
     // ESTUDIOS
     /*********************************************************/
@@ -304,6 +319,13 @@ public class TomaMxService {
             crit.add( Restrictions.and(
                             Restrictions.between("tomaMx.fechaHTomaMx", filtro.getFechaInicioTomaMx(),filtro.getFechaFinTomaMx()))
             );
+        }
+        //Se filtra por rango de fecha de envio de muestra
+        if (filtro.getFechaInicioEnvio()!=null && filtro.getFechaFinEnvio()!=null){
+            crit.createAlias("tomaMx.envio","envio");
+            crit.add(Subqueries.propertyIn("envio.idEnvio", DetachedCriteria.forClass(DaEnvioMx.class)
+                    .add(Restrictions.between("fechaHoraEnvio", filtro.getFechaInicioEnvio(),filtro.getFechaFinEnvio()))
+                    .setProjection(Property.forName("idEnvio"))));
         }
         //nombre solicitud
         if (filtro.getNombreSolicitud() != null) {

@@ -259,41 +259,26 @@ public class HomeService {
         switch (nivelUsuario) {
             case "PAIS":
                 queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                        "where noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false  and noti.completa != true  " +
-                        //" and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                        //" and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                        "where noti.pasivo = false and noti.completa != true and mx.anulada = false and dx.anulado = false and dx.aprobada = false " +
                         " order by noti.fechaRegistro asc");
 
                 sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti " +
                         "where noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true  " +
-                        //" and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                        //" and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                         " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
-                        //" and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti " +
-                        //" and dx.idTomaMx.idNotificacion.fechaRegistro between :fechaInicio and :fechaFin )" +
                         ") order by noti.fechaRegistro asc";
 
                 break;
             case "SILAIS":
                 queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti, UsuarioEntidad ue " +
                         "where noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and " +
-                        "noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false and noti.completa != true  " +
-                        //"and noti.codSilaisAtencion.entidadAdtvaId = :codSilais " +
-                        //"and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                        //" and noti.fechaRegistro between :fechaInicio and :fechaFin " +
+                        "noti.pasivo = false and noti.completa != true and mx.anulada = false and dx.anulado = false and dx.aprobada = false " +
                         " order by noti.fechaRegistro asc");
 
                 sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti, UsuarioEntidad  ue " +
                         "where noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
                         "noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true " +
-                        //"and noti.codSilaisAtencion.entidadAdtvaId = :codSilais " +
-                        //"and noti.codTipoNotificacion.codigo = :tipoNoti " +
-                        //" and noti.fechaRegistro between :fechaInicio and :fechaFin " +
                         " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx,UsuarioEntidad  ue2 where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
                         "and dx.idTomaMx.idNotificacion.codSilaisAtencion.entidadAdtvaId = ue2.entidadAdtva.entidadAdtvaId and ue2.usuario.usuarioId = :idUsuario and ue2.sistema.codigo = :sistema and ue2.entidadAdtva.pasivo = '0' "+
-                        //" and dx.idTomaMx.idNotificacion.codSilaisAtencion.entidadAdtvaId = :codSilais " +
-                        //"and dx.idTomaMx.idNotificacion.codTipoNotificacion.codigo = :tipoNoti " +
-                        //" and dx.idTomaMx.idNotificacion.fechaRegistro between :fechaInicio and :fechaFin )" +
                         ")order by noti.fechaRegistro asc";
 
                 queryCasos.setParameter("idUsuario", idUsuario);
@@ -354,95 +339,51 @@ public class HomeService {
 
         List<DaNotificacion> resultado = new ArrayList<DaNotificacion>();
         Session session = sessionFactory.getCurrentSession();
-        String query = "", query2 = "";
-        Query q = null, q2 = null;
+        String query = "";
+        Query q = null;
         switch (nivelUsuario) {
             case "PAIS":
-                //IRAG
-                query = "select noti from DaIrag irag inner join irag.idNotificacion noti where noti.pasivo = false and noti.completa != true and irag.condiciones like :codCondicion";
+                query = "select noti from DaNotificacion noti where noti.pasivo = false and noti.completa != true and embarazada.codigo = :codigoEmb";
                 q = session.createQuery(query);
-                q.setParameter("codCondicion", "%" + "CONDPRE|EMB" + "%");//código para condición embarazo
-
-                //SINDROMES FEBRILES
-                query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti where noti.pasivo = false and noti.completa != true and sf.embarazo.codigo = :codigoEmb";
-                q2 = session.createQuery(query2);
-                q2.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
+                q.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
 
                 resultado.addAll(q.list());
-                resultado.addAll(q2.list());
                 break;
             case "SILAIS":
-                //IRAG
-                query = "select noti from DaIrag irag inner join irag.idNotificacion noti, UsuarioEntidad ue " +
+                query = "select noti from DaNotificacion noti, UsuarioEntidad ue " +
                         "where  noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
-                        "noti.pasivo = false  and noti.completa != true and irag.condiciones like :codCondicion";
+                        "noti.pasivo = false and noti.completa != true and noti.embarazada.codigo = :codigoEmb";
                 q = session.createQuery(query);
-                q.setParameter("codCondicion", "%" + "CONDPRE|EMB" + "%");//código para condición embarazo
+                q.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
                 q.setParameter("idUsuario", idUsuario);
                 q.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
 
-                //SINDROMES FEBRILES
-                query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti, UsuarioEntidad ue " +
-                        "where  noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
-                        "noti.pasivo = false and noti.completa != true and sf.embarazo.codigo = :codigoEmb";
-                q2 = session.createQuery(query2);
-                q2.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
-                q2.setParameter("idUsuario", idUsuario);
-                q2.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
-
                 resultado.addAll(q.list());
-                resultado.addAll(q2.list());
                 break;
             case "UNIDAD":
                 if (conSubUnidades) {
-                    //IRAG
-
-                    query = "select noti from DaIrag irag inner join irag.idNotificacion noti, Unidades uni, Usuarios usu, Sistema sis, UsuarioUnidad usuni " +
+                    query = "select noti from DaNotificacion noti, Unidades uni, Usuarios usu, Sistema sis, UsuarioUnidad usuni " +
                             "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id  " +
                             "and sis.codigo = :sistema and usu.usuarioId = :idUsuario and uni.pasivo = '0' " +
                             "and (noti.codUnidadAtencion.unidadId = uni.unidadId or noti.codUnidadAtencion.unidadAdtva = uni.unidadId) " +
-                            "and noti.pasivo = false and noti.completa != true and irag.condiciones like :codCondicion";
+                            "and noti.pasivo = false and noti.completa != true and noti.embarazada.codigo = :codigoEmb";
 
                     q = session.createQuery(query);
-                    q.setParameter("codCondicion", "%" + "CONDPRE|EMB" + "%");//código para condición embarazo
+                    q.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
                     q.setParameter("idUsuario", idUsuario);
                     q.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
 
-                    //SINDROMES FEBRILES
-                    query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti, Unidades uni, Usuarios usu, Sistema sis, UsuarioUnidad usuni " +
-                            "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id  " +
-                            "and sis.codigo = :sistema and usu.usuarioId = :idUsuario and uni.pasivo = '0' " +
-                            "and (noti.codUnidadAtencion.unidadId = uni.unidadId or noti.codUnidadAtencion.unidadAdtva = uni.unidadId) " +
-                            "and noti.pasivo = false and noti.completa != true and sf.embarazo.codigo = :codigoEmb";
-
-                    q2 = session.createQuery(query2);
-                    q2.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
-                    q2.setParameter("idUsuario", idUsuario);
-                    q2.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
-
                     resultado.addAll(q.list());
-                    resultado.addAll(q2.list());
                 }else{
-                    //IRAG
-                    query = "select noti from DaIrag irag inner join irag.idNotificacion noti, UsuarioUnidad uu " +
+                    query = "select noti from DaNotificacion noti, UsuarioUnidad uu " +
                             "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
-                            "noti.pasivo = false and noti.completa != true and irag.condiciones like :codCondicion";
+                            "noti.pasivo = false and noti.completa != true and noti.embarazada.codigo = :codigoEmb";
                     q = session.createQuery(query);
-                    q.setParameter("codCondicion", "%" + "CONDPRE|EMB" + "%");//código para condición embarazo
+                    q.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
                     q.setParameter("idUsuario", idUsuario);
                     q.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
 
-                    //SINDROMES FEBRILES
-                    query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti, UsuarioUnidad uu " +
-                            "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
-                            "noti.pasivo = false and noti.completa != true and sf.embarazo.codigo = :codigoEmb";
-                    q2 = session.createQuery(query2);
-                    q2.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
-                    q2.setParameter("idUsuario", idUsuario);
-                    q2.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
-
                     resultado.addAll(q.list());
-                    resultado.addAll(q2.list());
                 }
                 break;
             default: break;
@@ -461,91 +402,69 @@ public class HomeService {
         Query q = null, q2 = null;
         switch (nivelUsuario) {
             case "PAIS":
-                //IRAG
-                query = "select noti from DaIrag irag inner join irag.idNotificacion noti where noti.pasivo = false and noti.completa != true and irag.uci = :uci ";
+                query = "from DaNotificacion noti where noti.pasivo = false and noti.completa != true and (idNotificacion in (" +
+                        " select noti.idNotificacion from DaIrag irag inner join irag.idNotificacion noti where noti.pasivo = false and noti.completa != true and irag.uci = :uci)" +
+                        " or idNotificacion in (" +
+                        " select noti.idNotificacion from DaSindFebril sf inner join sf.idNotificacion noti where noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp))";
                 q = session.createQuery(query);
                 q.setParameter("uci",1);//si estuvo en UCI
-
-                //SINDROMES FEBRILES
-                query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti where noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp";
-                q2 = session.createQuery(query2);
-                q2.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
-
+                q.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
                 resultado.addAll(q.list());
-                resultado.addAll(q2.list());
                 break;
             case "SILAIS":
-                //IRAG
-                query = "select noti from DaIrag irag inner join irag.idNotificacion noti, UsuarioEntidad ue " +
+
+                query = "from DaNotificacion noti where noti.pasivo = false and noti.completa != true and (idNotificacion in (" +
+                        "select noti.idNotificacion from DaIrag irag inner join irag.idNotificacion noti, UsuarioEntidad ue " +
                         "where  noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
-                        "noti.pasivo = false and noti.completa != true and irag.uci = :uci ";
+                        "noti.pasivo = false and noti.completa != true and irag.uci = :uci )" +
+                        " or idNotificacion in (" +
+                        "select noti.idNotificacion from DaSindFebril sf inner join sf.idNotificacion noti, UsuarioEntidad ue " +
+                        "where  noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
+                        "noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp))";
                 q = session.createQuery(query);
                 q.setParameter("uci",1);//si estuvo en UCI
+                q.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
                 q.setParameter("idUsuario", idUsuario);
                 q.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
-
-                //SINDROMES FEBRILES
-                query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti, UsuarioEntidad ue " +
-                        "where  noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
-                        "noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp";
-                q2 = session.createQuery(query2);
-                q2.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
-                q2.setParameter("idUsuario", idUsuario);
-                q2.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
-
                 resultado.addAll(q.list());
-                resultado.addAll(q2.list());
                 break;
             case "UNIDAD":
                 if (conSubUnidades) {
-                    //IRAG
-                    query = "select noti from DaIrag irag inner join irag.idNotificacion noti, Unidades uni, Usuarios usu, Sistema sis, UsuarioUnidad usuni " +
+                    query = "from DaNotificacion noti where noti.pasivo = false and noti.completa != true and (idNotificacion in (" +
+                            "select noti.idNotificacion from DaIrag irag inner join irag.idNotificacion noti, Unidades uni, Usuarios usu, Sistema sis, UsuarioUnidad usuni " +
                             "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id  " +
                             "and sis.codigo = :sistema and usu.usuarioId = :idUsuario and uni.pasivo = '0' " +
                             "and (noti.codUnidadAtencion.unidadId = uni.unidadId or noti.codUnidadAtencion.unidadAdtva = uni.unidadId) " +
-                            "and noti.pasivo = false and noti.completa != true and irag.uci = :uci";
-
+                            "and noti.pasivo = false and noti.completa != true and irag.uci = :uci)" +
+                            " or idNotificacion in (" +
+                            "select noti.idNotificacion from DaSindFebril sf inner join sf.idNotificacion noti, Unidades uni, Usuarios usu, Sistema sis, UsuarioUnidad usuni " +
+                            "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id  " +
+                            "and sis.codigo = :sistema and usu.usuarioId = :idUsuario and uni.pasivo = '0' " +
+                            "and (noti.codUnidadAtencion.unidadId = uni.unidadId or noti.codUnidadAtencion.unidadAdtva = uni.unidadId) " +
+                            "and noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp "+
+                            "))";
                     q = session.createQuery(query);
                     q.setParameter("uci",1);//si estuvo en UCI
+                    q.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
                     q.setParameter("idUsuario", idUsuario);
                     q.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
-
-                    //SINDROMES FEBRILES
-
-                    query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti, Unidades uni, Usuarios usu, Sistema sis, UsuarioUnidad usuni " +
-                            "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id  " +
-                            "and sis.codigo = :sistema and usu.usuarioId = :idUsuario and uni.pasivo = '0' " +
-                            "and (noti.codUnidadAtencion.unidadId = uni.unidadId or noti.codUnidadAtencion.unidadAdtva = uni.unidadId) " +
-                            "and noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp";
-
-                    q2 = session.createQuery(query2);
-                    q2.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
-                    q2.setParameter("idUsuario", idUsuario);
-                    q2.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
-
                     resultado.addAll(q.list());
-                    resultado.addAll(q2.list());
                 }else{
-                    //IRAG
-                    query = "select noti from DaIrag irag inner join irag.idNotificacion noti, UsuarioUnidad uu " +
+                    query = "from DaNotificacion noti where noti.pasivo = false and noti.completa != true and (idNotificacion in (" +
+                            "select noti.idNotificacion from DaIrag irag inner join irag.idNotificacion noti, UsuarioUnidad uu " +
                             "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
-                            "noti.pasivo = false and noti.completa != true and irag.uci = :uci";
+                            "noti.pasivo = false and noti.completa != true and irag.uci = :uci)" +
+                            " or idNotificacion in (" +
+                            "select noti.idNotificacion from DaSindFebril sf inner join sf.idNotificacion noti, UsuarioUnidad uu " +
+                            "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
+                            "noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp" +
+                            "))";
                     q = session.createQuery(query);
                     q.setParameter("uci",1);//si estuvo en UCI
+                    q.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
                     q.setParameter("idUsuario", idUsuario);
                     q.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
-
-                    //SINDROMES FEBRILES
-                    query2 = "select noti from DaSindFebril sf inner join sf.idNotificacion noti, UsuarioUnidad uu " +
-                            "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
-                            "noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp";
-                    q2 = session.createQuery(query2);
-                    q2.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
-                    q2.setParameter("idUsuario", idUsuario);
-                    q2.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
-
                     resultado.addAll(q.list());
-                    resultado.addAll(q2.list());
                 }
                 break;
             default: break;
