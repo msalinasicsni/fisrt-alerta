@@ -23,16 +23,7 @@ import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.DateUtil;
 import ni.gob.minsa.alerta.utilities.FiltrosReporte;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
-import ni.gob.minsa.alerta.utilities.pdfUtils.BaseTable;
-import ni.gob.minsa.alerta.utilities.pdfUtils.Cell;
-import ni.gob.minsa.alerta.utilities.pdfUtils.GeneralUtils;
-import ni.gob.minsa.alerta.utilities.pdfUtils.Row;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.text.translate.UnicodeEscaper;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +39,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
-import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -148,8 +136,12 @@ public class ReportesController {
         logger.info("Obteniendo las ordenes de examen pendienetes según filtros en JSON");
         FiltroMx filtroMx = jsonToFiltroMx(filtro);
         List<DaNotificacion> notificacionList = daNotificacionService.getNoticesByFilro(filtroMx);
-        List<Unidades> unidadesPermitidas = seguridadService.obtenerUnidadesPorUsuario((int)seguridadService.obtenerIdUsuario(request),ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
-        return notificacionesToJson(notificacionList, unidadesPermitidas);
+        long idUsuario = seguridadService.obtenerIdUsuario(request);
+        boolean nivelCentral = seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE);
+        List<Unidades> unidadesPermitidas = new ArrayList<Unidades>();
+        if (!nivelCentral)
+            unidadesPermitidas = seguridadService.obtenerUnidadesPorUsuario((int)seguridadService.obtenerIdUsuario(request),ConstantsSecurity.SYSTEM_CODE, HealthUnitType.UnidadesPrimHosp.getDiscriminator());
+        return notificacionesToJson(notificacionList, unidadesPermitidas, nivelCentral);
     }
 
     /**
@@ -208,12 +200,12 @@ public class ReportesController {
      * @param notificacions lista de nofiticaciones
      * @return JSON
      */
-    private String notificacionesToJson(List<DaNotificacion> notificacions, List<Unidades> unidadesPermitidas){
+    private String notificacionesToJson(List<DaNotificacion> notificacions, List<Unidades> unidadesPermitidas, boolean nivelCentral){
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
         Integer indice=0;
         for(DaNotificacion notificacion : notificacions){
-            if (unidadesPermitidas.contains(notificacion.getCodUnidadAtencion())) {
+            if (nivelCentral || unidadesPermitidas.contains(notificacion.getCodUnidadAtencion())) {
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("idNotificacion", notificacion.getIdNotificacion());
                 if (notificacion.getFechaInicioSintomas() != null)
