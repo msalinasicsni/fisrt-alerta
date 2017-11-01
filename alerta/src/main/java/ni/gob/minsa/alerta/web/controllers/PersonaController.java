@@ -22,6 +22,7 @@ import ni.gob.minsa.alerta.domain.poblacion.Paises;
 import ni.gob.minsa.alerta.service.*;
 
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
+import ni.gob.minsa.alerta.utilities.DateUtil;
 import ni.gob.minsa.ciportal.dto.InfoResultado;
 import ni.gob.minsa.ejbPersona.dto.Persona;
 import org.slf4j.Logger;
@@ -88,7 +89,7 @@ public class PersonaController {
     public @ResponseBody List<SisPersona> fetchPersonasJson(@RequestParam(value = "strFilter", required = true) String filtro,
                                                             @RequestParam(value = "pPaginaActual", required = true) int pPaginaActual) {
         logger.info("Obteniendo las personas en JSON");
-        List<SisPersona> personas = personaService.getPersonas(pPaginaActual,20,filtro);
+        List<SisPersona> personas = personaService.getPersonas(pPaginaActual,100,filtro);
         if (personas == null){
         	logger.debug("Nulo");
         }
@@ -106,6 +107,8 @@ public class PersonaController {
         Persona persona = personaService.buscarPorId(idPerson);
         mav.setViewName("personas/search");
         mav.addObject("persona",persona);
+        int edad = DateUtil.calcularEdadAnios(persona.getFechaNacimiento());
+        mav.addObject("edad", edad + " aÃ±os");
         return mav;
     }
     @RequestMapping(value = "create", method = RequestMethod.GET)
@@ -114,7 +117,7 @@ public class PersonaController {
         String urlValidacion="";
         try {
             urlValidacion = seguridadService.validarLogin(request);
-            //si la url esta vacia significa que la validación del login fue exitosa
+            //si la url esta vacia significa que la validaciï¿½n del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
         }catch (Exception e){
@@ -155,7 +158,7 @@ public class PersonaController {
         String urlValidacion="";
         try {
             urlValidacion = seguridadService.validarLogin(request);
-            //si la url esta vacia significa que la validación del login fue exitosa
+            //si la url esta vacia significa que la validaciï¿½n del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
         }catch (Exception e){
@@ -223,7 +226,7 @@ public class PersonaController {
     /**
      * Agrega o actualiza una persona mediante el componente de persona del MINSA
      * @param request con los datos de la persona
-     * @param response con el resultado de la acción
+     * @param response con el resultado de la acciï¿½n
      * @throws ServletException
      * @throws IOException
      */
@@ -273,7 +276,7 @@ public class PersonaController {
                 personaService.remover();
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.error("Cerrar conexión error",e);
+                logger.error("Cerrar conexiï¿½n error",e);
                 //resultado = messageSource.getMessage("msg.person.error.unhandled",null,null);
                 //resultado=resultado+". \n "+(e.getMessage()!=null?e.getMessage():"");
             }
