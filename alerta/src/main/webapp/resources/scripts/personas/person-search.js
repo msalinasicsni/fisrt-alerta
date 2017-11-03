@@ -22,7 +22,7 @@ var SearchPerson = function () {
         //main function to initiate the module
         init: function (parametros) {
             var page=0;
-            var rowsPage=100;
+            var rowsPage=50;
             $("#prev").prop('disabled',true);
             $("#next").prop('disabled',true);
 			var responsiveHelper_dt_basic = undefined;
