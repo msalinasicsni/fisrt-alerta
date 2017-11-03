@@ -100,8 +100,7 @@ var EnterFormTomaMx = function () {
                     $validator.focusInvalid();
                     return false;
                 }else{
-                    save();
-
+                    validateFechaToma();
                 }
 
             });
@@ -109,6 +108,38 @@ var EnterFormTomaMx = function () {
             $('#back').click(function() {
                 window.history.back();
             });
+
+
+            function validateFechaToma() {
+                bloquearUI(parametros.blockMess);
+                var valores = $('#dx').val();
+                var strValores = '';
+                for (var i = 0; i < valores.length; i++) {
+                    if (i == 0)
+                        strValores = +valores[i];
+                    else
+                        strValores = strValores + ',' + valores[i];
+                }
+                $.getJSON(parametros.validateUrl, {
+                    idNotificacion : $('#idNotificacion').val(),
+                    fechaHTomaMx: $('#fechaHTomaMx').val(),
+                    dxs: strValores,
+                    ajax : 'true'
+                }, function(data) {
+                    if (data.respuesta==="OK"){
+                        save();
+                    }else{
+                        $.smallBox({
+                            title: data.respuesta ,
+                            content:  $('#disappear').val(),
+                            color: "#C79121",
+                            iconSmall: "fa fa-check-circle",
+                            timeout: 4000
+                        });
+                    }
+                });
+               desbloquearUI();
+            }
 
             function save() {
                 var datos_form = $('#registroMx').serialize();

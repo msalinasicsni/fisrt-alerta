@@ -216,6 +216,41 @@ public class TomaMxController {
         return tomaMxService.getTomaMxByIdNoti(idNotificacion);
     }
 
+    @RequestMapping(value = "validateTomaMx", method = RequestMethod.GET, produces = "application/json")
+    public
+    @ResponseBody
+    String validateTomaMx(@RequestParam(value = "idNotificacion", required = true) String idNotificacion,
+                          @RequestParam(value = "fechaHTomaMx", required = true) String fechaToma,
+                          @RequestParam(value = "dxs", required = true) String dxs) throws Exception {
+        logger.info("Realizando validacion de Toma de Mx.");
+        int totalEncontrados = 0;
+        String respuesta = "OK";
+        String[] dxArray = dxs.split(",");
+        Date fecha1 = DateUtil.StringToDate(fechaToma, "dd/MM/yyyy");
+        List<DaTomaMx> muestras = tomaMxService.getTomaMxActivaByIdNoti(idNotificacion);
+        for(DaTomaMx muestra : muestras){
+            List<DaSolicitudDx> solicitudDxList = tomaMxService.getSoliDxByIdMxFechaToma(muestra.getIdTomaMx(), fecha1);
+            for(String dx : dxArray) {
+                for (DaSolicitudDx solicitudDx : solicitudDxList) {
+                    if (solicitudDx.getCodDx().getIdDiagnostico().equals(Integer.valueOf(dx))) {
+                        totalEncontrados++;
+                        break;
+                    }
+                }
+            }
+            if (totalEncontrados == dxArray.length && totalEncontrados == solicitudDxList.size()) {
+                respuesta = messageSource.getMessage("msg.existe.toma", null, null);
+                break;
+            }
+            totalEncontrados = 0;
+        }
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("respuesta", respuesta);
+        String jsonResponse = new Gson().toJson(map);
+        return jsonResponse;
+    }
+
     /**
      * Guardar toma de muestra de diagn�stico
      * @return ResponseEntity<String>

@@ -630,6 +630,7 @@
     <spring:url value="/tomaMx/search" var="searchUrl"/>
     <spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
     <spring:url var="unidadesUrl"   value="/api/v1/unidadesPrimHosp"  />
+    <spring:url value="/tomaMx/validateTomaMx" var="validateUrl"/>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -639,8 +640,8 @@
                               saveTomaUrl: "${saveTomaUrl}",
                               searchUrl: "${searchUrl}",
                               municipiosUrl:"${municipiosURL}",
-                              unidadesUrl: "${unidadesUrl}"
-
+                              unidadesUrl: "${unidadesUrl}",
+                validateUrl: "${validateUrl}"
             };
             EnterFormTomaMx.init(parametros);
             SeleccionUnidad.init(parametros);
