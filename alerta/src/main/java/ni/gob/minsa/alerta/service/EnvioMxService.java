@@ -27,12 +27,11 @@ public class EnvioMxService {
     @Resource(name="sessionFactory")
     private SessionFactory sessionFactory;
 
-    public String addEnvioOrden(DaEnvioMx dto) throws Exception {
-        String idEnvio;
+    public void addEnvioOrden(DaEnvioMx dto) throws Exception {
         try {
             if (dto != null) {
                 Session session = sessionFactory.getCurrentSession();
-                idEnvio = (String)session.save(dto);
+                session.save(dto);
             }
             else
                 throw new Exception("Objeto Envio Orden es NULL");
@@ -40,7 +39,6 @@ public class EnvioMxService {
             ex.printStackTrace();
             throw ex;
         }
-        return idEnvio;
     }
 
     public List<DaTomaMx> getMxPendientes(FiltroMx filtro){

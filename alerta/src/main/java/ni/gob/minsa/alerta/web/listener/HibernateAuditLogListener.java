@@ -48,7 +48,7 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
      */ 
 	@Override
 	public void onPostDelete(PostDeleteEvent event) {
-        try {  
+        try {
             final Serializable entityId = event.getPersister().hasIdentifierProperty() ? event.getPersister().getIdentifier(event.getEntity(), event.getSession()) : null;  
             final String entityName = event.getEntity().getClass().toString();  
             final Date transTime = new Date(); // new Date(event.getSource().getTimestamp());
@@ -65,7 +65,7 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
 
 
                 final String actorId = obj.getActor();
-	            StatelessSession session = event.getPersister().getFactory().openStatelessSession();  
+	            StatelessSession session = event.getPersister().getFactory().openStatelessSession();
 	            session.beginTransaction();  
 	  
 	            if (LOG.isDebugEnabled()) {  
@@ -90,7 +90,7 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
      */            
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
-		try {    
+		try {
             final String entityId = event.getPersister().hasIdentifierProperty() ? event.getPersister().getIdentifier(event.getEntity(), event.getSession())  
                     .toString() : "";  
             final String entityName = event.getEntity().getClass().toString();  
@@ -101,8 +101,8 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
             	Auditable obj = (Auditable) event.getEntity();
             	//Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 final String actorId = obj.getActor();
-	            // need to have a separate session for audit save  
-	            StatelessSession session = event.getPersister().getFactory().openStatelessSession();  
+	            // need to have a separate session for audit save
+	            StatelessSession session = event.getPersister().getFactory().openStatelessSession();
 	            session.beginTransaction();  
 	  
 	            for (String propertyName : event.getPersister().getPropertyNames()) { 
@@ -121,13 +121,13 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
 	            	}
 	            }  
 	  
-	            session.getTransaction().commit();  
-	            session.close(); 
+	            session.getTransaction().commit();
+	            session.close();
             }
         } catch (HibernateException e) {
             e.printStackTrace();
             LOG.error("Unable to process audit log for INSERT operation", e);  
-        }  
+        }
 	}
 
 	/** 
@@ -138,7 +138,7 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
      */
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
-		try {  
+		try {
             final Serializable entityId = event.getId();
             final String entityName = event.getEntity().getClass().toString();  
             final Date transTime = new Date(); // new Date(event.getSource().getTimestamp());  
@@ -148,47 +148,54 @@ PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener
                 Auditable obj = (Auditable) event.getEntity();
 
                 final String actorId = obj.getActor();
-                // need to have a separate session for audit save  
-	            StatelessSession session = event.getPersister().getFactory().openStatelessSession();  
-	            session.beginTransaction();
+                // need to have a separate session for audit save
+                StatelessSession session = event.getPersister().getFactory().openStatelessSession();
+                try {
+                    session.beginTransaction();
 
-	            // get the existing entity from session so that we can extract existing property values  
-	            Object existingEntity = session.get(event.getEntity().getClass(), entityId);
+                    // get the existing entity from session so that we can extract existing property values
+                    Object existingEntity = session.get(event.getEntity().getClass(), entityId);
 
-	            // cycle through property names, extract corresponding property values and insert new entry in audit trail  
-	            for (String propertyName : event.getPersister().getPropertyNames()) {  
-	            	if (obj.isFieldAuditable(propertyName)){
-                        newPropValue = event.getPersister().getPropertyValue(event.getEntity(), propertyName);
-		                if (newPropValue != null) {  
-			                // collections will fire their own events  
-		                    if (!(newPropValue instanceof Collection)) {
-                                oldPropValue = event.getPersister().getPropertyValue(existingEntity, propertyName);
-                                if (!(oldPropValue == null && newPropValue.equals(""))) {
-                                    if (!newPropValue.equals(oldPropValue)) {
-                                        if (LOG.isDebugEnabled()) {
-                                            LOG.debug("{} for: {}, ID: {}, property: {}, old value: {}, new value: {}, actor: {}, date: {}", new Object[]{OPERATION_TYPE_UPDATE, entityName, entityId, propertyName, oldPropValue, newPropValue, actorId, transTime});
+                    // cycle through property names, extract corresponding property values and insert new entry in audit trail
+                    for (String propertyName : event.getPersister().getPropertyNames()) {
+                        if (obj.isFieldAuditable(propertyName)) {
+                            newPropValue = event.getPersister().getPropertyValue(event.getEntity(), propertyName);
+                            if (newPropValue != null) {
+                                // collections will fire their own events
+                                if (!(newPropValue instanceof Collection)) {
+                                    oldPropValue = event.getPersister().getPropertyValue(existingEntity, propertyName);
+                                    if (!(oldPropValue == null && newPropValue.equals(""))) {
+                                        if (!newPropValue.equals(oldPropValue)) {
+                                            if (LOG.isDebugEnabled()) {
+                                                LOG.debug("{} for: {}, ID: {}, property: {}, old value: {}, new value: {}, actor: {}, date: {}", new Object[]{OPERATION_TYPE_UPDATE, entityName, entityId, propertyName, oldPropValue, newPropValue, actorId, transTime});
+                                            }
+                                            session.insert(new AuditTrail(entityId.toString(), entityName, propertyName, oldPropValue != null ? oldPropValue.toString() : null, newPropValue != null ? newPropValue
+                                                    .toString() : null, OPERATION_TYPE_UPDATE, actorId, transTime));
                                         }
-                                        session.insert(new AuditTrail(entityId.toString(), entityName, propertyName, oldPropValue != null ? oldPropValue.toString() : null, newPropValue != null ? newPropValue
-                                                .toString() : null, OPERATION_TYPE_UPDATE, actorId, transTime));
                                     }
                                 }
-		                	}
-		                }else{//si tenia valor y ahora se esta seteando en null debe registrar pista
-                            oldPropValue = event.getPersister().getPropertyValue(existingEntity, propertyName);
-                            if (oldPropValue != null && !(oldPropValue instanceof Collection)){
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug("{} for: {}, ID: {}, property: {}, old value: {}, new value: {}, actor: {}, date: {}", new Object[]{OPERATION_TYPE_UPDATE, entityName, entityId, propertyName, oldPropValue, newPropValue, actorId, transTime});
+                            } else {//si tenia valor y ahora se esta seteando en null debe registrar pista
+                                oldPropValue = event.getPersister().getPropertyValue(existingEntity, propertyName);
+                                if (oldPropValue != null && !(oldPropValue instanceof Collection)) {
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug("{} for: {}, ID: {}, property: {}, old value: {}, new value: {}, actor: {}, date: {}", new Object[]{OPERATION_TYPE_UPDATE, entityName, entityId, propertyName, oldPropValue, newPropValue, actorId, transTime});
+                                    }
+                                    session.insert(new AuditTrail(entityId.toString(), entityName, propertyName, oldPropValue.toString(), null, OPERATION_TYPE_UPDATE, actorId, transTime));
                                 }
-                                session.insert(new AuditTrail(entityId.toString(), entityName, propertyName, oldPropValue.toString(), null, OPERATION_TYPE_UPDATE, actorId, transTime));
                             }
                         }
-	            	}
-	            }  
-	  
-	            session.getTransaction().commit();  
-	            session.close(); 
+                    }
+
+                    session.getTransaction().commit();
+                }catch (HibernateException e){
+                    LOG.error("Unable to process audit log for UPDATE operation", e);
+                    throw e;
+                }finally {
+                    if (session!=null)
+                        session.close();
+                }
             }
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             LOG.error("Unable to process audit log for UPDATE operation", e);  
         }

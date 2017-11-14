@@ -168,31 +168,29 @@ public class EnvioMxController {
             EstadoMx estadoMx = catalogosService.getEstadoMx("ESTDMX|ENV");
 
             try {
-                idEnvio = envioMxService.addEnvioOrden(envioOrden);
+                envioMxService.addEnvioOrden(envioOrden);
             }catch (Exception ex){
                 resultado = messageSource.getMessage("msg.sending.error.add",null,null);
                 resultado=resultado+". \n "+ex.getMessage();
                 ex.printStackTrace();
             }
-            if (!idEnvio.isEmpty()) {
-                envioOrden.setIdEnvio(idEnvio);
+            if (!envioOrden.getIdEnvio().isEmpty()) {
 
                 JsonObject jObjectOrdenes = new Gson().fromJson(strOrdenes, JsonObject.class);
                 for (int i = 0; i < cantOrdenes; i++) {
                     String idSoli = jObjectOrdenes.get(String.valueOf(i)).getAsString();
                     DaTomaMx tomaMxUpd = tomaMxService.getTomaMxById(idSoli);
-                    tomaMxUpd.setEnvio(envioOrden);
-                    tomaMxUpd.setEstadoMx(estadoMx);
                     try {
                         int proce = tomaMxService.updateLabProcesaDxByMx(envioOrden.getLaboratorioDestino().getCodigo(), tomaMxUpd.getIdTomaMx());
                         if (proce>0)
-                            tomaMxService.updateTomaMx(tomaMxUpd);
+                            tomaMxService.updateEnvioEnTomaMx(estadoMx.getCodigo(), envioOrden.getIdEnvio(), tomaMxUpd, usuario.getUsername());
                     }catch (Exception ex){
                         resultado=resultado+". \n "+ex.getMessage();
                         ex.printStackTrace();
                     }
                     cantOrdenesProc++;
                 }
+                idEnvio = envioOrden.getIdEnvio();
             }
         } catch (Exception ex) {
             logger.error(ex.getMessage(),ex);

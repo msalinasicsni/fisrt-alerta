@@ -1,5 +1,6 @@
 package ni.gob.minsa.alerta.service;
 
+import ni.gob.minsa.alerta.domain.audit.AuditTrail;
 import ni.gob.minsa.alerta.domain.examen.CatalogoExamenes;
 import ni.gob.minsa.alerta.domain.muestra.*;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
@@ -184,6 +185,47 @@ public class TomaMxService {
                 .setString("idTomaMx", idTomaMx)
                 .setString("labo",labo)
                 .executeUpdate();
+        tx.commit();
+        s.close();
+        return updateEntities;
+    }
+
+    public Integer updateEnvioEnTomaMx(String estado, String idEnvio, DaTomaMx tomaMx, String username) throws Exception{
+        // Retrieve session from Hibernate
+        Session s = sessionFactory.openSession();
+
+        Transaction tx = s.beginTransaction();//envio.idEnvio = :idEnvio,
+
+        String hqlDx = "update da_tomamx set ID_ENVIO = :idEnvio, COD_ESTADOMX = :estado where ID_TOMAMX = :idTomaMx ";
+        int updateEntities = s.createSQLQuery(hqlDx)
+                .setString("idEnvio",idEnvio)
+                .setString("estado", estado)
+                .setString("idTomaMx", tomaMx.getIdTomaMx())
+                .executeUpdate();
+
+
+        AuditTrail auditTrail = new AuditTrail();
+        auditTrail.setEntityId(tomaMx.getIdTomaMx());
+        auditTrail.setEntityName(tomaMx.getClass().getName());
+        auditTrail.setEntityProperty("estadoMx");
+        auditTrail.setEntityPropertyNewValue(estado);
+        auditTrail.setEntityPropertyOldValue(tomaMx.getEstadoMx().getCodigo());
+        auditTrail.setOperationType("UPDATE");
+        auditTrail.setOperationDate(new Date());
+        auditTrail.setUsername(username);
+        s.save(auditTrail);
+
+        auditTrail = new AuditTrail();
+        auditTrail.setEntityId(tomaMx.getIdTomaMx());
+        auditTrail.setEntityName(tomaMx.getClass().getName());
+        auditTrail.setEntityProperty("envio");
+        auditTrail.setEntityPropertyNewValue(idEnvio);
+        auditTrail.setEntityPropertyOldValue((tomaMx.getEnvio()!=null?tomaMx.getEnvio().getIdEnvio():null));
+        auditTrail.setOperationType("UPDATE");
+        auditTrail.setOperationDate(new Date());
+        auditTrail.setUsername(username);
+        s.save(auditTrail);
+
         tx.commit();
         s.close();
         return updateEntities;
