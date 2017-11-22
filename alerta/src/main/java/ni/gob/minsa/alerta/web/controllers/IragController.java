@@ -278,10 +278,14 @@ public class IragController {
                 boolean fichaincompleta=false;
                 for (DaIrag ira : results) {
                     if (idUsuario != 0) {
-                        if (ira.getIdNotificacion().getCodSilaisAtencion()==null && ira.getIdNotificacion().getCodUnidadAtencion()==null){
+                        if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
                             iragAutorizados.add(ira.getIdNotificacion().getIdNotificacion());
-                        }else if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodSilaisAtencion().getCodigo()) && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
-                            iragAutorizados.add(ira.getIdNotificacion().getIdNotificacion());
+                        }else {
+                            if (ira.getIdNotificacion().getCodSilaisAtencion() == null && ira.getIdNotificacion().getCodUnidadAtencion() == null) {
+                                iragAutorizados.add(ira.getIdNotificacion().getIdNotificacion());
+                            } else if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodSilaisAtencion().getCodigo()) || seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, ira.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
+                                iragAutorizados.add(ira.getIdNotificacion().getIdNotificacion());
+                            }
                         }
                         if (!ira.getIdNotificacion().isPasivo() && !fichaincompleta) {
                             fichaincompleta = !ira.getIdNotificacion().isCompleta();

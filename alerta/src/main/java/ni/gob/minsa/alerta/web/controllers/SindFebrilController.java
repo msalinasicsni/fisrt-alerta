@@ -214,12 +214,16 @@ public class SindFebrilController {
                 boolean fichaincompleta=false;
                 for(DaSindFebril febril: results){
                     if (idUsuario != 0) {
-                        if (febril.getIdNotificacion().getCodSilaisAtencion()==null && febril.getIdNotificacion().getCodUnidadAtencion()==null){
+                        if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
                             fichasAutorizadas.add(febril.getIdNotificacion().getIdNotificacion());
-                        } else if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, febril.getIdNotificacion().getCodSilaisAtencion().getCodigo())
-                                    && seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, febril.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
+                        }else {
+                            if (febril.getIdNotificacion().getCodSilaisAtencion() == null && febril.getIdNotificacion().getCodUnidadAtencion() == null) {
+                                fichasAutorizadas.add(febril.getIdNotificacion().getIdNotificacion());
+                            } else if (seguridadService.esUsuarioAutorizadoEntidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, febril.getIdNotificacion().getCodSilaisAtencion().getCodigo())
+                                    || seguridadService.esUsuarioAutorizadoUnidad((int) idUsuario, ConstantsSecurity.SYSTEM_CODE, febril.getIdNotificacion().getCodUnidadAtencion().getCodigo())) {
                                 fichasAutorizadas.add(febril.getIdNotificacion().getIdNotificacion());
                             }
+                        }
                         if (!febril.getIdNotificacion().isPasivo() && !fichaincompleta) {
                             fichaincompleta = !febril.getIdNotificacion().isCompleta();
                         }
