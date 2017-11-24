@@ -165,14 +165,14 @@ var EnterFormTomaMx = function () {
                         }, 3000);
 
                     },
-                    error: function () {
+                    error: function (response) {
                         desbloquearUI();
                         $.smallBox({
-                            title: $('#msjErrorSaving').val(),
+                            title: response.responseJSON.error,
                             content:  $('#disappear').val(),
                             color: "#C46A69",
                             iconSmall: "fa fa-warning",
-                            timeout: 2000
+                            timeout: 4000
                         });
                     }
                 });

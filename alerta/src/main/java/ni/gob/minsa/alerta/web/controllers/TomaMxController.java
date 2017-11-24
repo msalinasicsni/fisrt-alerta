@@ -223,8 +223,19 @@ public class TomaMxController {
                           @RequestParam(value = "fechaHTomaMx", required = true) String fechaToma,
                           @RequestParam(value = "dxs", required = true) String dxs) throws Exception {
         logger.info("Realizando validacion de Toma de Mx.");
-        int totalEncontrados = 0;
         String respuesta = "OK";
+        if (existeTomaMx(idNotificacion, fechaToma, dxs)){
+            respuesta = messageSource.getMessage("msg.existe.toma", null, null);
+        }
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("respuesta", respuesta);
+        String jsonResponse = new Gson().toJson(map);
+        return jsonResponse;
+    }
+
+    private boolean existeTomaMx(String idNotificacion, String fechaToma, String dxs) throws Exception{
+        int totalEncontrados = 0;
+        boolean respuesta = false;
         String[] dxArray = dxs.split(",");
         Date fecha1 = DateUtil.StringToDate(fechaToma, "dd/MM/yyyy");
         List<DaTomaMx> muestras = tomaMxService.getTomaMxActivaByIdNoti(idNotificacion);
@@ -239,16 +250,12 @@ public class TomaMxController {
                 }
             }
             if (totalEncontrados == dxArray.length && totalEncontrados == solicitudDxList.size()) {
-                respuesta = messageSource.getMessage("msg.existe.toma", null, null);
+                respuesta = true;
                 break;
             }
             totalEncontrados = 0;
         }
-
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("respuesta", respuesta);
-        String jsonResponse = new Gson().toJson(map);
-        return jsonResponse;
+        return respuesta;
     }
 
     /**
@@ -270,58 +277,68 @@ public class TomaMxController {
             , @RequestParam(value = "codUnidadAtencion", required = false) Integer codUnidadAtencion
             , @RequestParam(value = "codSilaisAtencion", required = false) Integer codSilaisAtencion
 
-    ) throws Exception {
+    )  {
         logger.debug("Guardando datos de Toma de Muestra");
+        try {
+            DaTomaMx tomaMx = new DaTomaMx();
 
-        DaTomaMx tomaMx = new DaTomaMx();
-
-        DaNotificacion notifi= daNotificacionService.getNotifById(idNotificacion);
-        tomaMx.setIdNotificacion(notifi);
-        if(fechaHTomaMx != null){
-            tomaMx.setFechaHTomaMx(StringToTimestamp(fechaHTomaMx));
-        }
-
-        if(horaTomaMx != null){
-            tomaMx.setHoraTomaMx(horaTomaMx);
-        }
-
-        tomaMx.setCodTipoMx(tomaMxService.getTipoMxById(codTipoMx));
-        tomaMx.setCanTubos(canTubos);
-
-        if(volumen != null && !volumen.equals("")){
-            tomaMx.setVolumen(Float.valueOf(volumen));
-        }
-
-        tomaMx.setHoraRefrigeracion(horaRefrigeracion);
-
-
-        if(mxSeparada != null){
-            if(mxSeparada == 1){
-                tomaMx.setMxSeparada(true);
-            }else {
-                tomaMx.setMxSeparada(false);
+            DaNotificacion notifi = daNotificacionService.getNotifById(idNotificacion);
+            tomaMx.setIdNotificacion(notifi);
+            if (fechaHTomaMx != null) {
+                tomaMx.setFechaHTomaMx(StringToTimestamp(fechaHTomaMx));
             }
+
+            if (horaTomaMx != null) {
+                tomaMx.setHoraTomaMx(horaTomaMx);
+            }
+
+            tomaMx.setCodTipoMx(tomaMxService.getTipoMxById(codTipoMx));
+            tomaMx.setCanTubos(canTubos);
+
+            if (volumen != null && !volumen.equals("")) {
+                tomaMx.setVolumen(Float.valueOf(volumen));
+            }
+
+            tomaMx.setHoraRefrigeracion(horaRefrigeracion);
+
+
+            if (mxSeparada != null) {
+                if (mxSeparada == 1) {
+                    tomaMx.setMxSeparada(true);
+                } else {
+                    tomaMx.setMxSeparada(false);
+                }
+            }
+
+            tomaMx.setFechaRegistro(new Timestamp(new Date().getTime()));
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            tomaMx.setUsuario(usuarioService.getUsuarioById((int) idUsuario));
+            tomaMx.setEstadoMx(catalogoService.getEstadoMx("ESTDMX|PEND"));
+
+            if (codSilaisAtencion == null && codUnidadAtencion == null) {
+                tomaMx.setCodSilaisAtencion(notifi.getCodSilaisAtencion());
+                tomaMx.setCodUnidadAtencion(notifi.getCodUnidadAtencion());
+            } else {
+                tomaMx.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
+                tomaMx.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
+            }
+
+            String codigo = generarCodigoUnicoMx();
+            tomaMx.setCodigoUnicoMx(codigo);
+            tomaMx.setCodigoLab(null);
+            if (existeTomaMx(idNotificacion, fechaHTomaMx, dx)) {
+                throw new Exception(messageSource.getMessage("msg.existe.toma", null, null));
+            } else {
+                tomaMxService.addTomaMx(tomaMx);
+                saveDxRequest(tomaMx.getIdTomaMx(), dx, request);
+                return createJsonResponse(tomaMx);
+            }
+        }catch (Exception ex){
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("error", ex.getMessage());
+            return createErrorJsonResponse(map);
         }
 
-        tomaMx.setFechaRegistro(new Timestamp(new Date().getTime()));
-        long idUsuario = seguridadService.obtenerIdUsuario(request);
-        tomaMx.setUsuario(usuarioService.getUsuarioById((int)idUsuario));
-        tomaMx.setEstadoMx(catalogoService.getEstadoMx("ESTDMX|PEND"));
-
-        if(codSilaisAtencion == null && codUnidadAtencion == null){
-            tomaMx.setCodSilaisAtencion(notifi.getCodSilaisAtencion());
-            tomaMx.setCodUnidadAtencion(notifi.getCodUnidadAtencion());
-        }else{
-            tomaMx.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
-            tomaMx.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));
-        }
-
-        String codigo = generarCodigoUnicoMx();
-        tomaMx.setCodigoUnicoMx(codigo);
-        tomaMx.setCodigoLab(null);
-        tomaMxService.addTomaMx(tomaMx);
-        saveDxRequest(tomaMx.getIdTomaMx(), dx, request);
-        return createJsonResponse(tomaMx);
     }
 
     /**
@@ -362,6 +379,14 @@ public class TomaMxController {
         Gson gson = new Gson();
         String json = gson.toJson(o);
         return new ResponseEntity<>(json, headers, HttpStatus.CREATED);
+    }
+
+    private ResponseEntity<String> createErrorJsonResponse(Object o) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+        Gson gson = new Gson();
+        String json = gson.toJson(o);
+        return new ResponseEntity<>(json, headers, HttpStatus.CONFLICT);
     }
 
     /**
