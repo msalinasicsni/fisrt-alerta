@@ -7,6 +7,7 @@ import ni.gob.minsa.alerta.domain.concepto.Catalogo_Lista;
 import ni.gob.minsa.alerta.domain.resultados.DetalleResultadoFinal;
 import ni.gob.minsa.alerta.utilities.DateUtil;
 import ni.gob.minsa.alerta.utilities.FiltrosReporte;
+import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -46,6 +47,8 @@ public class ReportesResidenciaService {
     private static final String sqlWhereSemana = " WHERE cal.anio = :anio and cal.noSemana between :semanaI and :semanaF order by cal.noSemana";
     private static final String sqlDataDia = "select  noti.fechaRegistro, count(noti.idNotificacion) as casos ";
     private static final String sqlDataSinR = "select distinct noti ";
+    private static final String sqlRutina = " and dx.codDx.idDiagnostico = :idDx ";
+    private static final String sqlFechasProcRut = " and dx.idSolicitudDx in (select r.solicitudDx.idSolicitudDx  from DetalleResultadoFinal r where r.pasivo = false and r.fechahRegistro between :fechaInicio and :fechaFin) "; //" and mx.fechaHTomaMx between :fechaInicio and :fechaFin ";
 
     /**
      * Método que retornar la información para generar reporte y gráfico de notificaciones por area (casos y tasas)
@@ -1096,5 +1099,322 @@ public class ReportesResidenciaService {
 
 
         return crit.list();
+    }
+
+    /**
+     * M?todo que retornar la informaci?n para generar reporte y gr?fico de dx por tipo de resultado (positivo, negativo, sin resultado y % positividad)
+     * @param filtro indicando el nivel (pais, silais, departamento, municipio, unidad salud), tipo notificaci?n, rango de fechas, factor tasas de poblaci?n
+     * @return Lista de objetos a mostrar
+     */
+    @SuppressWarnings("unchecked")
+    public List<Object[]> getDataDxResultReport(FiltrosReporte filtro) {
+        // Retrieve session from Hibernate
+        List<Object[]> resTemp1 = new ArrayList<Object[]>();
+        List<Object[]> resTemp2 = new ArrayList<Object[]>();
+
+        List<Object[]> resFinal = new ArrayList<Object[]>();
+        Session session = sessionFactory.getCurrentSession();
+        Query queryNotiDx = null;
+        Query queryIdNoti = null;
+        String queryNotiEstudios = "";
+
+
+        if (filtro.getCodArea().equals("AREAREP|PAIS")) {
+
+            if (filtro.isPorSilais()) {
+                queryNotiDx = session.createQuery(" select ent.codigo, ent.nombre, " + //TOTAL RUTINAS
+                        " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                        "and noti.municipioResidencia.dependenciaSilais.codigo = ent.codigo " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and dx.aprobada = true and mx.anulada = false " +
+                        sqlRutina + sqlFechasProcRut +
+                        " group by noti.municipioResidencia.dependenciaSilais.codigo) as dx, " +
+                        " coalesce( " + //TOTAL RUTINAS CON RESULTADO
+                        " (select sum(case dx.aprobada when true then 1 else 0 end) " +
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        " and  noti.municipioResidencia.dependenciaSilais.codigo = ent.codigo " +
+                        sqlRutina + sqlFechasProcRut +
+                        " and noti.pasivo = false and dx.anulado = false " +
+                        " and dx.aprobada = true " +
+                        " and mx.anulada = false),0) as conresultado, " +
+                        " coalesce( " + //TOTAL RUTINAS SIN RESULTADO
+                        " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        sqlRutina + sqlFechasProcRut +
+                        " and  noti.municipioResidencia.dependenciaSilais.codigo = ent.codigo " +
+                        " and noti.pasivo = false and dx.anulado = false " +
+                        " and dx.aprobada = true " +
+                        " and mx.anulada = false),0) as sinresultado " +
+                        " from EntidadesAdtvas ent " +
+                        " where ent.pasivo = 0 " +
+                        " order by ent.codigo ");
+
+                queryIdNoti = session.createQuery(" select noti.municipioResidencia.dependenciaSilais.codigo, dx.idSolicitudDx " +
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.idNotificacion = mx.idNotificacion " +
+                        sqlRutina +sqlFechasProcRut +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        " and noti.pasivo = false and dx.anulado = false " +
+                        " and mx.anulada = false " +
+                        " and dx.aprobada = true " +
+                        " and noti.municipioResidencia is not null " +
+                        " order by noti.municipioResidencia.dependenciaSilais.codigo");
+
+            }else{
+                queryNotiDx = session.createQuery(" select div.divisionpoliticaId, div.nombre, " +
+                        " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion.idNotificacion" +
+                        " and noti.municipioResidencia.dependencia.divisionpoliticaId = div.divisionpoliticaId " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and dx.aprobada = true and mx.anulada = false " +
+                        sqlRutina +sqlFechasProcRut +
+                        " group by noti.municipioResidencia.dependencia.divisionpoliticaId) as dx, " +
+                        " coalesce( " +
+                        " (select sum(case dx.aprobada when true then 1 else 0 end) " +
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        " and  noti.municipioResidencia.dependencia.divisionpoliticaId = div.divisionpoliticaId " +
+                        sqlRutina +sqlFechasProcRut +
+                        " and noti.pasivo = false and dx.anulado = false and dx.aprobada = true " +
+                        " and mx.anulada = false),0) as conresultado, " +
+                        " coalesce( " +
+                        " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        sqlRutina +sqlFechasProcRut +
+                        " and  noti.municipioResidencia.dependencia.divisionpoliticaId = div.divisionpoliticaId " +
+                        " and noti.pasivo = false and dx.anulado = false and dx.aprobada = true " +
+                        " and mx.anulada = false),0) as sinresultado " +
+                        " from Divisionpolitica div " +
+                        "where div.dependencia is null and div.pasivo = '0'" +
+                        " order by div.divisionpoliticaId ");
+
+                queryIdNoti = session.createQuery(" select noti.municipioResidencia.dependencia.divisionpoliticaId, dx.idSolicitudDx " +
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                        " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion " +
+                        sqlRutina +sqlFechasProcRut +
+                        " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        " and noti.pasivo = false and dx.anulado = false " +
+                        " and mx.anulada = false " +
+                        " and dx.aprobada = true " +
+                        " order by noti.municipioResidencia.dependencia.divisionpoliticaId");
+
+            }
+
+            //rutinas
+            queryIdNoti.setParameter("idDx", filtro.getIdDx());
+            queryIdNoti.setParameter("fechaInicio", filtro.getFechaInicio());
+            queryIdNoti.setParameter("fechaFin", filtro.getFechaFin());
+            resTemp2.addAll(queryIdNoti.list());
+
+        } else if (filtro.getCodArea().equals("AREAREP|SILAIS")) {
+
+            queryNotiDx = session.createQuery(" select distinct div.divisionpoliticaId, div.nombre, " +
+                    " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                    " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion.idNotificacion" +
+                    " and noti.municipioResidencia.divisionpoliticaId = div.divisionpoliticaId " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false " +
+                    sqlRutina +sqlFechasProcRut +
+                    " group by noti.municipioResidencia.divisionpoliticaId), " +
+                    " coalesce( " +
+                    " (select sum(case dx.aprobada when true then 1 else 0 end) " +
+                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                    " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                    " and  noti.municipioResidencia.divisionpoliticaId = div.divisionpoliticaId " +
+                    sqlRutina +sqlFechasProcRut +
+                    " and noti.pasivo = false and dx.anulado = false " +
+                    " and mx.anulada = false),0) as conresultado, " +
+                    " coalesce( " +
+                    " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
+                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                    " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                    sqlRutina +sqlFechasProcRut +
+                    " and  noti.municipioResidencia.divisionpoliticaId = div.divisionpoliticaId " +
+                    " and noti.pasivo = false and dx.anulado = false " +
+                    " and mx.anulada = false),0) as sinresultado " +
+                    " from Divisionpolitica div, Unidades as uni " +
+                    "where div.pasivo = '0' and uni.pasivo='0' " +
+                    "and uni.municipio.codigoNacional = div.codigoNacional and uni.entidadAdtva.entidadAdtvaId = :codSilais " +
+                    " order by div.divisionpoliticaId ");
+
+            queryIdNoti = session.createQuery(" select noti.municipioResidencia.divisionpoliticaId, dx.idSolicitudDx " +
+                    " from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                    " where noti.municipioResidencia is not null and noti.pasivo = false and dx.anulado = false " +
+                    " and mx.anulada = false " +
+                    " and dx.aprobada = true " +
+                    sqlRutina +sqlFechasProcRut +
+                    " and noti.municipioResidencia.dependenciaSilais.entidadAdtvaId = :codSilais " +
+                    " order by noti.municipioResidencia.divisionpoliticaId ");
+
+
+            queryNotiDx.setParameter("codSilais", filtro.getCodSilais());
+
+            //rutinas
+            queryIdNoti.setParameter("idDx", filtro.getIdDx());
+            queryIdNoti.setParameter("fechaInicio", filtro.getFechaInicio());
+            queryIdNoti.setParameter("fechaFin", filtro.getFechaFin());
+            queryIdNoti.setParameter("codSilais", filtro.getCodSilais());
+            resTemp2.addAll(queryIdNoti.list());
+
+        } else if (filtro.getCodArea().equals("AREAREP|DEPTO")) {
+
+            queryNotiDx = session.createQuery(" select div.divisionpoliticaId, div.nombre, " +
+                    " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                    " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion.idNotificacion" +
+                    " and noti.municipioResidencia.divisionpoliticaId = div.divisionpoliticaId " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false " +
+                    sqlRutina +sqlFechasProcRut +
+                    " group by noti.municipioResidencia.divisionpoliticaId) as dx, " +
+                    " coalesce( " +
+                    " (select sum(case dx.aprobada when true then 1 else 0 end) " +
+                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                    " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                    " and  noti.municipioResidencia.divisionpoliticaId = div.divisionpoliticaId " +
+                    sqlRutina +sqlFechasProcRut +
+                    " and noti.pasivo = false and dx.anulado = false " +
+                    " and mx.anulada = false),0) as conresultado, " +
+                    " coalesce( " +
+                    " (select  sum(case dx.aprobada when false then 1 else 0 end) " +
+                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                    " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion.idNotificacion " +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                    sqlRutina +sqlFechasProcRut +
+                    " and  noti.municipioResidencia.divisionpoliticaId = div.divisionpoliticaId " +
+                    " and noti.pasivo = false and dx.anulado = false " +
+                    " and mx.anulada = false),0) as sinresultado " +
+                    " from Divisionpolitica div " +
+                    "where div.dependencia.divisionpoliticaId = :codDepartamento " +
+                    " order by div.divisionpoliticaId ");
+
+            queryIdNoti = session.createQuery(" select noti.municipioResidencia.divisionpoliticaId, dx.idSolicitudDx " +
+                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                    " where noti.municipioResidencia is not null and noti.idNotificacion = mx.idNotificacion " +
+                    sqlRutina +sqlFechasProcRut +
+                    " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                    " and noti.pasivo = false and dx.anulado = false " +
+                    " and mx.anulada = false " +
+                    " and dx.aprobada = true " +
+                    " and noti.municipioResidencia.dependencia.divisionpoliticaId = :codDepartamento " +
+                    " order by noti.municipioResidencia.divisionpoliticaId ");
+
+            queryNotiDx.setParameter("codDepartamento", filtro.getCodDepartamento());
+
+            //rutinas
+            queryIdNoti.setParameter("idDx", filtro.getIdDx());
+            queryIdNoti.setParameter("fechaInicio", filtro.getFechaInicio());
+            queryIdNoti.setParameter("fechaFin", filtro.getFechaFin());
+            queryIdNoti.setParameter("codDepartamento", filtro.getCodDepartamento());
+            resTemp2.addAll(queryIdNoti.list());
+
+        }
+
+        queryNotiDx.setParameter("idDx", filtro.getIdDx());
+        queryNotiDx.setParameter("fechaInicio", filtro.getFechaInicio());
+        queryNotiDx.setParameter("fechaFin", filtro.getFechaFin());
+
+        resTemp1.addAll(queryNotiDx.list());
+
+        for (Object[] reg : resTemp1) {
+            Object[] reg1 = new Object[8];
+            reg1[0] = reg[1]; //Nombre Silais
+            reg1[1] = reg[2]; //Cantidad Notificaciones (NO SE USA)
+            reg1[2] = (Long)reg[2]; //Cantidad Dx
+
+            int pos = 0;
+            int neg = 0;
+            int inadecuada = 0;
+            for (Object[] sol : resTemp2) {
+                if (sol[0].equals(reg[0])) {
+
+                    List<DetalleResultadoFinal> finalRes = resultadoFinalService.getDetResActivosBySolicitud(sol[1].toString());
+                    for (DetalleResultadoFinal res : finalRes) {
+                        if (res.getRespuesta() != null) {
+                            if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                Integer idLista = Integer.valueOf(res.getValor());
+                                Catalogo_Lista valor = null;
+                                try {
+                                    valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (valor != null) {
+                                    if (valor.getValor().trim().toLowerCase().contains("positivo")) {
+                                        pos++;
+                                        break;
+                                    } else if (valor.getValor().trim().toLowerCase().contains("negativo")) {
+                                        neg++;
+                                        break;
+                                    }
+                                }
+
+
+                            } else if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
+                                if (res.getValor().trim().toLowerCase().contains("positivo")) {
+                                    pos++;
+                                    break;
+                                } else if (res.getValor().trim().toLowerCase().contains("negativo")) {
+                                    neg++;
+                                }else if (res.getValor().trim().toLowerCase().contains("mx inadecuada")){
+                                    inadecuada++;
+                                }
+
+                            }
+
+                        } else if (res.getRespuestaExamen() != null) {
+                            if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                                Integer idLista = Integer.valueOf(res.getValor());
+                                Catalogo_Lista valor = null;
+                                try {
+                                    valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (valor != null) {
+                                    if (valor.getValor().trim().toLowerCase().contains("positivo")) {
+                                        pos++;
+                                        break;
+                                    } else if (valor.getValor().trim().toLowerCase().contains("negativo")) {
+                                        neg++;
+                                        break;
+                                    }
+                                }
+
+                            } else if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
+                                if (res.getValor().trim().toLowerCase().contains("positivo")) {
+                                    pos++;
+                                    break;
+                                } else if (res.getValor().trim().toLowerCase().contains("negativo")) {
+                                    neg++;
+                                    break;
+                                }else if (res.getValor().trim().toLowerCase().contains("mx inadecuada")){
+                                    inadecuada++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            reg1[3] = pos; // Positivo
+            reg1[4] = neg; // Negativo
+            reg1[5] = (Long)reg[4]; // Sin Resultado dx
+            Long totalConySinResultado = (Long) reg1[2];
+            reg1[6] = (totalConySinResultado != 0 ? (double) Math.round(Integer.valueOf(reg1[3].toString()).doubleValue() / totalConySinResultado * 100 * 100) / 100 : 0);
+            reg1[7] = inadecuada; //muestras inadecuadas
+            resFinal.add(reg1);
+
+        }
+        return resFinal;
     }
 }
