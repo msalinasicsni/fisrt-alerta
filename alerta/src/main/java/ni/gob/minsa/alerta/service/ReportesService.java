@@ -51,6 +51,9 @@ public class ReportesService {
     private static final String sqlDataSinR = "select distinct noti ";
     private static final String sqlRutina = " and dx.codDx.idDiagnostico = :idDx ";
     private static  final String sqlFechasRut =  " and mx.envio.fechaHoraEnvio between :fechaInicio and :fechaFin ";
+    private static final String sqlFechasProcRut = " and dx.idSolicitudDx in (select r.solicitudDx.idSolicitudDx  from DetalleResultadoFinal r where r.pasivo = false and r.fechahRegistro between :fechaInicio and :fechaFin) "; //" and mx.fechaHTomaMx between :fechaInicio and :fechaFin ";
+    private static final String sqlFechasAproRut =  " and dx.fechaAprobacion between :fechaInicio and :fechaFin ";
+    private static final String sqlLab = " and dx.labProcesa.codigo = :codigoLab ";
 
 
     /**
@@ -2471,4 +2474,28 @@ public class ReportesService {
         return resFinal;
     }
 
+    public List<DaSolicitudDx> getDiagnosticosAprobadosByFiltro(FiltrosReporte filtro){
+        Session session = sessionFactory.getCurrentSession();
+        Query queryNotiDx = null;
+        if (filtro.getCodArea().equals("AREAREP|PAIS")) {
+            queryNotiDx = session.createQuery(" select dx from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                    "where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true "+ sqlLab + sqlRutina + sqlFechasAproRut);
+        }else if (filtro.getCodArea().equals("AREAREP|SILAIS")) {
+            queryNotiDx = session.createQuery(" select dx from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                    "where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true "+ sqlLab + sqlRutina + sqlFechasAproRut +
+                    "  and noti.codSilaisAtencion.entidadAdtvaId =:codSilais ");
+            queryNotiDx.setParameter("codSilais", filtro.getCodSilais());
+        } else if (filtro.getCodArea().equals("AREAREP|UNI")) {
+            queryNotiDx = session.createQuery(" select dx from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                    "where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true "+ sqlLab + sqlRutina + sqlFechasAproRut +
+                    "  and noti.codUnidadAtencion.unidadId =:codUnidad ");
+            queryNotiDx.setParameter("codUnidad", filtro.getCodUnidad());
+        }
+
+        queryNotiDx.setParameter("codigoLab", filtro.getCodLaboratio());
+        queryNotiDx.setParameter("idDx", filtro.getIdDx());
+        queryNotiDx.setParameter("fechaInicio", filtro.getFechaInicio());
+        queryNotiDx.setParameter("fechaFin", filtro.getFechaFin());
+        return queryNotiDx.list();
+    }
 }
