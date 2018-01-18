@@ -234,26 +234,15 @@ public class TomaMxController {
     }
 
     private boolean existeTomaMx(String idNotificacion, String fechaToma, String dxs) throws Exception{
-        int totalEncontrados = 0;
         boolean respuesta = false;
-        String[] dxArray = dxs.split(",");
         Date fecha1 = DateUtil.StringToDate(fechaToma, "dd/MM/yyyy");
         List<DaTomaMx> muestras = tomaMxService.getTomaMxActivaByIdNoti(idNotificacion);
         for(DaTomaMx muestra : muestras){
             List<DaSolicitudDx> solicitudDxList = tomaMxService.getSoliDxByIdMxFechaToma(muestra.getIdTomaMx(), fecha1);
-            for(String dx : dxArray) {
-                for (DaSolicitudDx solicitudDx : solicitudDxList) {
-                    if (solicitudDx.getCodDx().getIdDiagnostico().equals(Integer.valueOf(dx))) {
-                        totalEncontrados++;
-                        break;
-                    }
-                }
-            }
-            if (totalEncontrados == dxArray.length && totalEncontrados == solicitudDxList.size()) {
+            if (solicitudDxList.size()>0) {
                 respuesta = true;
                 break;
             }
-            totalEncontrados = 0;
         }
         return respuesta;
     }
