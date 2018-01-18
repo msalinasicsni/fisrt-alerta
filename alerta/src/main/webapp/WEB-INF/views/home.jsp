@@ -327,7 +327,7 @@
                     <div class="jarviswidget jarviswidget-color-darken" id="wid-id-4">
                         <header>
                             <span class="widget-icon"> <i class="fa fa-reorder"></i> </span>
-                            <h2><spring:message code="lbl.noti.without.result" /> </h2>
+                            <h2><spring:message code="lbl.noti.without.result" /></h2>
                         </header>
                         <!-- widget div-->
                         <div>
@@ -370,7 +370,7 @@
                     <div class="jarviswidget jarviswidget-color-darken" id="wid-id-5">
                         <header>
                             <span class="widget-icon"> <i class="fa fa-reorder"></i> </span>
-                            <h2><spring:message code="lbl.noti.pregnant" /> </h2>
+                            <h2><spring:message code="lbl.noti.pregnant" /></h2>
                         </header>
                         <!-- widget div-->
                         <div>
@@ -411,7 +411,7 @@
                     <div class="jarviswidget jarviswidget-color-darken" id="wid-id-6">
                         <header>
                             <span class="widget-icon"> <i class="fa fa-reorder"></i> </span>
-                            <h2><spring:message code="lbl.noti.hospitalized" /> </h2>
+                            <h2><spring:message code="lbl.noti.hospitalized" /></h2>
                         </header>
                         <!-- widget div-->
                         <div>

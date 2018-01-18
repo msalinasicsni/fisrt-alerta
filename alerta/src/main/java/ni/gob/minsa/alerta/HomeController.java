@@ -75,7 +75,7 @@ public class HomeController {
                 anioI = String.valueOf(calendarioEpi.getAnio() - 2);
             }
             long idUsuario = seguridadService.obtenerIdUsuario(request);
-            String nivelUsuario = seguridadService.getNivelUsuario((int)idUsuario);
+            String nivelUsuario = "UNIDAD"; //seguridadService.getNivelUsuario((int)idUsuario);
             model.addAttribute("semanaI",semI);
             model.addAttribute("semanaF",semF);
             model.addAttribute("anioF",anioF);

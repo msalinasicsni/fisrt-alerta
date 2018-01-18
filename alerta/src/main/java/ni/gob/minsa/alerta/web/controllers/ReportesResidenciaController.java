@@ -8,6 +8,7 @@ import ni.gob.minsa.alerta.domain.catalogos.FactorPoblacion;
 import ni.gob.minsa.alerta.domain.catalogos.Semanas;
 import ni.gob.minsa.alerta.domain.concepto.Catalogo_Lista;
 import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
+import ni.gob.minsa.alerta.domain.muestra.Catalogo_Dx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
 import ni.gob.minsa.alerta.domain.muestra.FiltroMx;
@@ -78,6 +79,10 @@ public class ReportesResidenciaController {
     private RespuestasExamenService respuestasExamenService;
 
     @Autowired
+    @Qualifier(value = "tomaMxService")
+    private TomaMxService tomaMxService;
+
+    @Autowired
     MessageSource messageSource;
 
     /*******************************************************************/
@@ -112,7 +117,7 @@ public class ReportesResidenciaController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,2);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,4);
             List<Semanas> semanas = catalogosService.getSemanas();
             List<Anios> anios = catalogosService.getAnios();
             List<FactorPoblacion> factores = catalogosService.getFactoresPoblacion();
@@ -213,7 +218,7 @@ public class ReportesResidenciaController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,2);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,4);
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
             mav.addObject("entidades",entidades);
@@ -305,7 +310,7 @@ public class ReportesResidenciaController {
             tiposNotificacion.add(tipoNotificacionSF);
             tiposNotificacion.add(tipoNotificacionIRA);
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,2);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,4);
             mav.addObject("areas", areas);
             mav.addObject("departamentos", departamentos);
             mav.addObject("entidades",entidades);
@@ -451,7 +456,7 @@ public class ReportesResidenciaController {
                 entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
             }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 2);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 4);
             List<Anios> anios = catalogosService.getAnios();
             List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
@@ -549,7 +554,7 @@ public class ReportesResidenciaController {
     /************************ REPORTE POR SEXO ***********************/
     /*******************************************************************/
 
-    @RequestMapping(value = "sexReport", method = RequestMethod.GET)
+    @RequestMapping(value = "genderReport", method = RequestMethod.GET)
     public String initSexReport(Model model,HttpServletRequest request) throws Exception {
         logger.debug("Reporte por Sexo");
         String urlValidacion="";
@@ -571,7 +576,7 @@ public class ReportesResidenciaController {
                 entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
             }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 2);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 4);
             List<Anios> anios = catalogosService.getAnios();
             List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
@@ -597,7 +602,7 @@ public class ReportesResidenciaController {
      * @return Object
      * @throws Exception
      */
-    @RequestMapping(value = "datasexReport", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "datagenderReport", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List<Object[]> fetchDataSexJson(@RequestParam(value = "filtro", required = true) String filtro) throws Exception{
         logger.info("Obteniendo los datos para reporte por Sexo ");
@@ -631,7 +636,7 @@ public class ReportesResidenciaController {
                 entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
             }
             List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
-            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 2);
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int) idUsuario, 4);
             List<Anios> anios = catalogosService.getAnios();
             List<TipoNotificacion> tipoNoti = new ArrayList<TipoNotificacion>();// = catalogosService.getTipoNotificacion();
             TipoNotificacion tipoNotificacionSF = catalogosService.getTipoNotificacion("TPNOTI|SINFEB");
@@ -1037,5 +1042,61 @@ public class ReportesResidenciaController {
 
         }
         return valorResultado + "," + mostrar;
+    }
+
+    /*******************************************************************/
+    /************************ REPORTE POR RESULTADO DX ***********************/
+    /*******************************************************************/
+
+    @RequestMapping(value = "reportResultDx", method = RequestMethod.GET)
+    public String initReportResultDx(Model model,HttpServletRequest request) throws Exception {
+        logger.debug("Reporte por Resultado");
+        String urlValidacion="";
+        try {
+            urlValidacion = seguridadService.validarLogin(request);
+            //si la url esta vacia significa que la validación del login fue exitosa
+            if (urlValidacion.isEmpty())
+                urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
+        }catch (Exception e){
+            e.printStackTrace();
+            urlValidacion = "404";
+        }
+        if (urlValidacion.isEmpty()) {
+            long idUsuario = seguridadService.obtenerIdUsuario(request);
+            List<EntidadesAdtvas> entidades = new ArrayList<EntidadesAdtvas>();
+            if (seguridadService.esUsuarioNivelCentral(idUsuario, ConstantsSecurity.SYSTEM_CODE)){
+                entidades = entidadAdmonService.getAllEntidadesAdtvas();
+            }else {
+                entidades = seguridadService.obtenerEntidadesPorUsuario((int) idUsuario, ConstantsSecurity.SYSTEM_CODE);
+            }
+            List<Divisionpolitica> departamentos = divisionPoliticaService.getAllDepartamentos();
+            List<AreaRep> areas = seguridadService.getAreasUsuario((int)idUsuario,4);
+            List<Anios> anios = catalogosService.getAnios();
+            List<Catalogo_Dx> catDx = tomaMxService.getCatalogosDx();
+            List<FactorPoblacion> factor = catalogosService.getFactoresPoblacion();
+            model.addAttribute("areas", areas);
+            model.addAttribute("anios", anios);
+            model.addAttribute("entidades", entidades);
+            model.addAttribute("departamentos", departamentos);
+            model.addAttribute("dxs", catDx);
+            model.addAttribute("factor", factor);
+            return "reportes/residencia/porResultadoDx";
+        }else{
+            return  urlValidacion;
+        }
+    }
+
+    /**
+     * Método para obtener data para Reporte por Resultado dx
+     * @param filtro JSon con los datos de los filtros a aplicar en la búsqueda
+     * @return Object
+     * @throws Exception
+     */
+    @RequestMapping(value = "dataReportResultDx", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<Object[]> fetchReportResultDxJson(@RequestParam(value = "filtro", required = true) String filtro) throws Exception{
+        logger.info("Obteniendo los datos para Reporte por Resultado Dx ");
+        FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
+        return reportesService.getDataDxResultReport(filtroRep);
     }
 }

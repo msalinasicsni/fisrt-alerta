@@ -43,7 +43,7 @@
     <ol class="breadcrumb">
         <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i>
             <spring:message code="lbl.report" />
-            <i class="fa fa-angle-right"></i> <a href="<spring:url value="/reportes/sexReport/" htmlEscape="true "/>"><spring:message code="menu.report.sex" /></a></li>
+            <i class="fa fa-angle-right"></i> <a href="<spring:url value="/reportes/genderReport/" htmlEscape="true "/>"><spring:message code="menu.report.sex" /></a></li>
     </ol>
     <!-- end breadcrumb -->
     <jsp:include page="../fragments/layoutOptions.jsp" />
@@ -509,7 +509,7 @@
 <spring:url value="/resources/scripts/utilidades/seleccionUnidadReporte.js" var="seleccionUnidadReporte" />
 <script src="${seleccionUnidadReporte}"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-<c:url var="sActionUrl" value="/reportes/datasexReport"/>
+<c:url var="sActionUrl" value="/reportes/datagenderReport"/>
 <c:set var="noData"><spring:message code="lbl.no.data" /></c:set>
 <c:set var="msgNoData"><spring:message code="msg.no.data.found" /></c:set>
 <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>

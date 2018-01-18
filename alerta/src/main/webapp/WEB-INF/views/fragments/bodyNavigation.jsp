@@ -191,7 +191,10 @@
                                 <a href="<spring:url value="/reportes/posNegResults/init" htmlEscape="true "/>" title="<spring:message code="lbl.posNegReport" />"><spring:message code="lbl.posNegReport" /></a>
                             </li>
                             <li class="sex">
-                                <a href="<spring:url value="/reportes/sexReport" htmlEscape="true "/>" title="<spring:message code="menu.report.sex" />"><i class=""></i> <spring:message code="menu.report.sex" /></a>
+                                <a href="<spring:url value="/reportes/genderReport" htmlEscape="true "/>" title="<spring:message code="menu.report.sex" />"><i class=""></i> <spring:message code="menu.report.sex" /></a>
+                            </li>
+                            <li class="resultDxVig">
+                                <a href="<spring:url value="/reports/reportResultDxVig/init" htmlEscape="true "/>" title="<spring:message code="menu.report.result.dx.vig" />"> <spring:message code="menu.report.result.dx.vig" /></a>
                             </li>
                         </ul>
                     </li>
@@ -213,11 +216,14 @@
                             <li class="homeresult">
                                 <a href="<spring:url value="/reportesPorResidencia/reportResult" htmlEscape="true "/>" title="<spring:message code="menu.report.result" />"><i class=""></i> <spring:message code="menu.report.result" /></a>
                             </li>
+                            <li class="homeResultDx">
+                                <a href="<spring:url value="/reportesPorResidencia/reportResultDx" htmlEscape="true "/>" title="<spring:message code="menu.report.result.dx" />"><i class=""></i> <spring:message code="menu.report.result.dx" /></a>
+                            </li>
                             <li class="homeposnegresults">
                                 <a href="<spring:url value="/reportesPorResidencia/posNegResults/init" htmlEscape="true "/>" title="<spring:message code="lbl.posNegReport" />"><spring:message code="lbl.posNegReport" /></a>
                             </li>
                             <li class="homesex">
-                                <a href="<spring:url value="/reportesPorResidencia/sexReport" htmlEscape="true "/>" title="<spring:message code="menu.report.sex" />"><i class=""></i> <spring:message code="menu.report.sex" /></a>
+                                <a href="<spring:url value="/reportesPorResidencia/genderReport" htmlEscape="true "/>" title="<spring:message code="menu.report.sex" />"><i class=""></i> <spring:message code="menu.report.sex" /></a>
                             </li>
                         </ul>
                     </li>

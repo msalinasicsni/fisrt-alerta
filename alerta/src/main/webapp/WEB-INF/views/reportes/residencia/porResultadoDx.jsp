@@ -41,8 +41,8 @@
     <!-- breadcrumb -->
     <ol class="breadcrumb">
         <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i>
-            <spring:message code="lbl.reports" /> <i class="fa fa-angle-right"></i> <spring:message code="menu.reports.home" />
-            <i class="fa fa-angle-right"></i><a href="<spring:url value="/reportesPorResidencia/reportResult/" htmlEscape="true "/>"><spring:message code="menu.report.result" /></a></li>
+            <spring:message code="lbl.report" />
+            <i class="fa fa-angle-right"></i> <a href="<spring:url value="/reportes/reportResult/" htmlEscape="true "/>"><spring:message code="menu.report.result" /></a></li>
     </ol>
     <!-- end breadcrumb -->
     <jsp:include page="../../fragments/layoutOptions.jsp" />
@@ -57,9 +57,7 @@
         <h1 class="page-title txt-color-blueDark">
             <!-- PAGE HEADER -->
             <i class="fa-fw fa fa-line-chart"></i>
-            <spring:message code="lbl.reports" />
-            <i class="fa fa-angle-right"></i>
-            <spring:message code="menu.reports.home" />
+            <spring:message code="lbl.report" />
 						<span> <i class="fa fa-angle-right"></i>
 							<spring:message code="menu.report.result" />
 						</span>
@@ -71,6 +69,7 @@
     <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
         <!-- sparks -->
         <ul id="sparks">
+
         </ul>
         <!-- end sparks -->
     </div>
@@ -127,7 +126,7 @@
                 <input id="usT" type="hidden" value="<spring:message code="lbl.health.unit"/>"/>
                 <input id="areaL" type="hidden" value="<spring:message code="lbl.health.area"/>"/>
                 <input id="departaT" type="hidden" value="<spring:message code="lbl.department"/>"/>
-
+                <input id="lblZona" type="hidden" value="<spring:message code="lbl.special.area"/>:"/>
 
                 <form id="result_form" class ="smart-form">
                     <fieldset>
@@ -136,10 +135,10 @@
                             <section class="col col-sm-12 col-md-12 col-lg-12">
                                 <div class="input-group">
                                     <span class="input-group-addon"> <i class="fa fa-list"></i></span>
-                                    <select  name="codTipoNoti" id="codTipoNoti" data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.notification.type" />" class="select2">
+                                    <select  name="idDx" id="idDx" data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.diagnosis" />" class="select2">
                                         <option value=""></option>
-                                        <c:forEach items="${tipoNoti}" var="noti">
-                                            <option value="${noti.codigo}">${noti.valor}</option>
+                                        <c:forEach items="${dxs}" var="dx">
+                                            <option value="${dx.idDiagnostico}">${dx.nombre}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -223,6 +222,21 @@
                         <!-- END ROW -->
                         <!-- START ROW -->
                         <div class="row">
+                            <section class="col col-sm-12 col-md-12 col-lg-12" id="zona" hidden="hidden">
+                                <div class="input-group">
+                                    <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
+                                    <select data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.special.area" />"
+                                            name="codZona" id="codZona" class="select2">
+                                        <option value=""></option>
+                                        <c:forEach items="${zonas}" var="zona">
+                                            <option value="${zona.codigo}">${zona.valor}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </section>
+                        </div>
+                        <!-- START ROW -->
+                        <div class="row">
                             <section class="col col-sm-12 col-md-12 col-lg-12" id="unidad" hidden="hidden">
                                 <div class="input-group">
                                     <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
@@ -261,7 +275,7 @@
                                     <input class="form-control date-picker"
                                            type="text" name="initDate" id="initDate"
 
-                                           placeholder=" <spring:message code="lbl.init.date"/>"/>
+                                           placeholder=" <spring:message code="lbl.shipment.start.date"/>"/>
                                 </label>
 
 
@@ -278,7 +292,7 @@
                                     <input class="form-control date-picker"
                                            type="text" name="endDate" id="endDate"
 
-                                           placeholder=" <spring:message code="lbl.end.date"/>"/>
+                                           placeholder=" <spring:message code="lbl.shipment.end.date"/>"/>
                                 </label>
 
                             </section>
@@ -331,17 +345,13 @@
                 <table id="tableRES" class="table table-striped table-bordered table-hover" width="100%">
                     <thead>
                     <tr>
-
                         <th id="firstTh"></th>
-                        <th><spring:message code="lbl.notifications"/></th>
-                        <th><spring:message code="lbl.requests"/></th>
+                        <th><spring:message code="lbl.ento.total"/></th>
                         <th><spring:message code="lbl.positives"/></th>
                         <th><spring:message code="lbl.negatives"/></th>
                         <th><spring:message code="lbl.without.res"/></th>
                         <th><spring:message code="lbl.mx.inadecuada"/></th>
                         <th><spring:message code="lbl.pos.percentage"/></th>
-
-
                     </tr>
 
                     </thead>
@@ -459,12 +469,12 @@
 <script src="${jqueryBlockUi}"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<spring:url value="/resources/scripts/reportes/porResultado.js" var="porResJS" />
+<spring:url value="/resources/scripts/reportes/porResultadoDx.js" var="porResJS" />
 <script src="${porResJS}"></script>
 <spring:url value="/resources/scripts/utilidades/seleccionUnidadReporte.js" var="seleccionUnidadReporte" />
 <script src="${seleccionUnidadReporte}"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-<c:url var="sActionUrl" value="/reportesPorResidencia/dataReportResult"/>
+<c:url var="sActionUrl" value="/reportes/dataReportResultDx"/>
 <c:set var="noData"><spring:message code="lbl.no.data" /></c:set>
 <c:set var="msgNoData"><spring:message code="msg.no.data.found" /></c:set>
 <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
@@ -484,9 +494,9 @@
         SeleccionUnidadReporte.init(parametros);
         handleDatePickers("${pageContext.request.locale.language}");
         $("li.reportes").addClass("open");
-        $("li.homeresult").addClass("active");
+        $("li.homeResultDx").addClass("active");
         if("top"!=localStorage.getItem("sm-setmenu")){
-            $("li.homeresult").parents("ul").slideDown(200);
+            $("li.homeResultDx").parents("ul").slideDown(200);
         }
     });
 </script>

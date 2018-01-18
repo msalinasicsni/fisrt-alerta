@@ -769,7 +769,7 @@ public class ReportesController {
     /************************ REPORTE POR SEXO ***********************/
     /*******************************************************************/
 
-    @RequestMapping(value = "sexReport", method = RequestMethod.GET)
+    @RequestMapping(value = "genderReport", method = RequestMethod.GET)
     public String initSexReport(Model model,HttpServletRequest request) throws Exception {
         logger.debug("Reporte por Sexo");
         String urlValidacion="";
@@ -821,7 +821,7 @@ public class ReportesController {
      * @return Object
      * @throws Exception
      */
-    @RequestMapping(value = "datasexReport", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "datagenderReport", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List<Object[]> fetchDataSexJson(@RequestParam(value = "filtro", required = true) String filtro) throws Exception{
         logger.info("Obteniendo los datos para reporte por Sexo ");

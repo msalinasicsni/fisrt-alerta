@@ -575,4 +575,19 @@ public class TomaMxService {
         q.setParameter("fechaToma", fechaToma);
         return q.list();
     }
+
+    /**REPORTE DE RESULTADOS DX PARA VIGILANCIA*/
+    public List<DaSolicitudDx> getSolicitudesDxByIdToma(String idTomaMx, String codigoLab){
+        String query = "select distinct sdx from DaSolicitudDx sdx inner join sdx.idTomaMx mx " +
+                "where sdx.anulado = false and mx.idTomaMx = :idTomaMx " +
+                "and (sdx.labProcesa.codigo = :codigoLab" +
+                " or sdx.idSolicitudDx in (select oe.solicitudDx.idSolicitudDx " +
+                "                   from OrdenExamen oe where oe.solicitudDx.idSolicitudDx = sdx.idSolicitudDx and oe.labProcesa.codigo = :codigoLab )) " +
+                "ORDER BY sdx.fechaHSolicitud ";
+
+        Query q = sessionFactory.getCurrentSession().createQuery(query);
+        q.setParameter("idTomaMx",idTomaMx);
+        q.setParameter("codigoLab",codigoLab);
+        return q.list();
+    }
 }

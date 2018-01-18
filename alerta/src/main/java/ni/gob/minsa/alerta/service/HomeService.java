@@ -260,26 +260,26 @@ public class HomeService {
             case "PAIS":
                 queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
                         "where noti.pasivo = false and noti.completa != true and mx.anulada = false and dx.anulado = false and dx.aprobada = false " +
-                        " order by noti.fechaRegistro asc");
+                        " order by noti.fechaRegistro desc");
 
                 sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti " +
                         "where noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true  " +
                         " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
-                        ") order by noti.fechaRegistro asc";
+                        ") order by noti.fechaRegistro desc";
 
                 break;
             case "SILAIS":
                 queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti, UsuarioEntidad ue " +
                         "where noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and " +
                         "noti.pasivo = false and noti.completa != true and mx.anulada = false and dx.anulado = false and dx.aprobada = false " +
-                        " order by noti.fechaRegistro asc");
+                        " order by noti.fechaRegistro desc");
 
                 sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti, UsuarioEntidad  ue " +
                         "where noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
                         "noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true " +
                         " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx,UsuarioEntidad  ue2 where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
                         "and dx.idTomaMx.idNotificacion.codSilaisAtencion.entidadAdtvaId = ue2.entidadAdtva.entidadAdtvaId and ue2.usuario.usuarioId = :idUsuario and ue2.sistema.codigo = :sistema and ue2.entidadAdtva.pasivo = '0' "+
-                        ")order by noti.fechaRegistro asc";
+                        ") order by noti.fechaRegistro desc";
 
                 queryCasos.setParameter("idUsuario", idUsuario);
                 queryCasos.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
@@ -288,38 +288,36 @@ public class HomeService {
             case "UNIDAD":
                 if (conSubUnidades) {
                     queryCasos = session.createQuery(sqlDataSinR + "From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti, UsuarioUnidad uu " +
-                            "where (noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' " +
-                            " or noti.codUnidadAtencion.unidadAdtva = uu.unidad.unidadId "+
-                            ") and " +
-                            "noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false and noti.completa != true " +
-                            " order by noti.fechaRegistro asc");
+                            "where (noti.codUnidadAtencion.unidadId = uu.unidad.unidadId or noti.codUnidadAtencion.unidadAdtva = uu.unidad.unidadId) " +
+                            "and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' " +
+                            "and noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false and noti.completa != true " +
+                            " order by noti.fechaRegistro desc");
 
                     sqlCasosEstudios = sqlDataSinR + "From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti, UsuarioUnidad uu " +
-                            "where (noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' " +
-                            " or noti.codUnidadAtencion.unidadAdtva = uu.unidad.unidadId "+
-                            ") and " +
-                            " noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true " +
+                            "where (noti.codUnidadAtencion.unidadId = uu.unidad.unidadId or noti.codUnidadAtencion.unidadAdtva = uu.unidad.unidadId) " +
+                            "and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' " +
+                            "and noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true " +
                             " and noti.idNotificacion not in (" +
                             "   select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
-                            ") order by noti.fechaRegistro asc";
+                            ") order by noti.fechaRegistro desc";
                 } else {
                     queryCasos = session.createQuery(sqlDataSinR + " From DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti, UsuarioUnidad uu " +
                             "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
                             " noti.pasivo = false and dx.anulado = false and dx.aprobada = false and mx.anulada = false and noti.completa != true " +
-                            " order by noti.fechaRegistro asc");
+                            " order by noti.fechaRegistro desc");
 
                     sqlCasosEstudios = sqlDataSinR + " From DaSolicitudEstudio est inner join est.idTomaMx mx inner join mx.idNotificacion noti, UsuarioUnidad uu " +
                             "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
                             "noti.pasivo = false and est.anulado = false and est.aprobada = false and mx.anulada = false and noti.completa != true " +
                             " and noti.idNotificacion not in (select dx.idTomaMx.idNotificacion.idNotificacion From DaSolicitudDx dx where dx.idTomaMx.idNotificacion.pasivo = false and dx.anulado = false and dx.aprobada = false and dx.idTomaMx.anulada = false " +
-                            ") order by noti.fechaRegistro asc";
+                            ") order by noti.fechaRegistro desc";
                 }
                 queryCasos.setParameter("idUsuario", idUsuario);
                 queryCasos.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
                 filtrarUsuario = true;
                 break;
         }
-
+        queryCasos.setMaxResults(50);
         resultadoTemp = queryCasos.list();
 
         //estudios
@@ -343,21 +341,23 @@ public class HomeService {
         Query q = null;
         switch (nivelUsuario) {
             case "PAIS":
-                query = "select noti from DaNotificacion noti where noti.pasivo = false and noti.completa != true and embarazada.codigo = :codigoEmb";
+                query = "select noti from DaNotificacion noti where noti.pasivo = false and noti.completa != true and embarazada.codigo = :codigoEmb" +
+                        " order by noti.fechaRegistro desc";
                 q = session.createQuery(query);
                 q.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
-
+                q.setMaxResults(50);
                 resultado.addAll(q.list());
                 break;
             case "SILAIS":
                 query = "select noti from DaNotificacion noti, UsuarioEntidad ue " +
                         "where  noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
-                        "noti.pasivo = false and noti.completa != true and noti.embarazada.codigo = :codigoEmb";
+                        "noti.pasivo = false and noti.completa != true and noti.embarazada.codigo = :codigoEmb" +
+                        " order by noti.fechaRegistro desc";
                 q = session.createQuery(query);
                 q.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
                 q.setParameter("idUsuario", idUsuario);
                 q.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
-
+                q.setMaxResults(50);
                 resultado.addAll(q.list());
                 break;
             case "UNIDAD":
@@ -366,23 +366,25 @@ public class HomeService {
                             "where uni.unidadId = usuni.unidad.unidadId and usu.usuarioId = usuni.usuario.usuarioId and usuni.sistema.id = sis.id  " +
                             "and sis.codigo = :sistema and usu.usuarioId = :idUsuario and uni.pasivo = '0' " +
                             "and (noti.codUnidadAtencion.unidadId = uni.unidadId or noti.codUnidadAtencion.unidadAdtva = uni.unidadId) " +
-                            "and noti.pasivo = false and noti.completa != true and noti.embarazada.codigo = :codigoEmb";
+                            "and noti.pasivo = false and noti.completa != true and noti.embarazada.codigo = :codigoEmb" +
+                            " order by noti.fechaRegistro desc";
 
                     q = session.createQuery(query);
                     q.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
                     q.setParameter("idUsuario", idUsuario);
                     q.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
-
+                    q.setMaxResults(50);
                     resultado.addAll(q.list());
                 }else{
                     query = "select noti from DaNotificacion noti, UsuarioUnidad uu " +
                             "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
-                            "noti.pasivo = false and noti.completa != true and noti.embarazada.codigo = :codigoEmb";
+                            "noti.pasivo = false and noti.completa != true and noti.embarazada.codigo = :codigoEmb" +
+                            " order by noti.fechaRegistro desc";
                     q = session.createQuery(query);
                     q.setParameter("codigoEmb", "RESP|S"); //respuesta afirmativa
                     q.setParameter("idUsuario", idUsuario);
                     q.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
-
+                    q.setMaxResults(50);
                     resultado.addAll(q.list());
                 }
                 break;
@@ -405,10 +407,12 @@ public class HomeService {
                 query = "from DaNotificacion noti where noti.pasivo = false and noti.completa != true and (idNotificacion in (" +
                         " select noti.idNotificacion from DaIrag irag inner join irag.idNotificacion noti where noti.pasivo = false and noti.completa != true and irag.uci = :uci)" +
                         " or idNotificacion in (" +
-                        " select noti.idNotificacion from DaSindFebril sf inner join sf.idNotificacion noti where noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp))";
+                        " select noti.idNotificacion from DaSindFebril sf inner join sf.idNotificacion noti where noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp))" +
+                        " order by noti.fechaRegistro desc";
                 q = session.createQuery(query);
                 q.setParameter("uci",1);//si estuvo en UCI
                 q.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
+                q.setMaxResults(50);
                 resultado.addAll(q.list());
                 break;
             case "SILAIS":
@@ -420,12 +424,14 @@ public class HomeService {
                         " or idNotificacion in (" +
                         "select noti.idNotificacion from DaSindFebril sf inner join sf.idNotificacion noti, UsuarioEntidad ue " +
                         "where  noti.codSilaisAtencion.entidadAdtvaId = ue.entidadAdtva.entidadAdtvaId and ue.usuario.usuarioId = :idUsuario and ue.sistema.codigo = :sistema and ue.entidadAdtva.pasivo = '0' and " +
-                        "noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp))";
+                        "noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp))" +
+                        " order by noti.fechaRegistro desc";
                 q = session.createQuery(query);
                 q.setParameter("uci",1);//si estuvo en UCI
                 q.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
                 q.setParameter("idUsuario", idUsuario);
                 q.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
+                q.setMaxResults(50);
                 resultado.addAll(q.list());
                 break;
             case "UNIDAD":
@@ -442,12 +448,13 @@ public class HomeService {
                             "and sis.codigo = :sistema and usu.usuarioId = :idUsuario and uni.pasivo = '0' " +
                             "and (noti.codUnidadAtencion.unidadId = uni.unidadId or noti.codUnidadAtencion.unidadAdtva = uni.unidadId) " +
                             "and noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp "+
-                            "))";
+                            "))  order by noti.fechaRegistro desc";
                     q = session.createQuery(query);
                     q.setParameter("uci",1);//si estuvo en UCI
                     q.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
                     q.setParameter("idUsuario", idUsuario);
                     q.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
+                    q.setMaxResults(50);
                     resultado.addAll(q.list());
                 }else{
                     query = "from DaNotificacion noti where noti.pasivo = false and noti.completa != true and (idNotificacion in (" +
@@ -458,12 +465,13 @@ public class HomeService {
                             "select noti.idNotificacion from DaSindFebril sf inner join sf.idNotificacion noti, UsuarioUnidad uu " +
                             "where noti.codUnidadAtencion.unidadId = uu.unidad.unidadId and uu.usuario.usuarioId = :idUsuario and uu.sistema.codigo = :sistema and uu.unidad.pasivo = '0' and " +
                             "noti.pasivo = false and noti.completa != true and sf.hosp.codigo = :codigoHosp" +
-                            "))";
+                            "))  order by noti.fechaRegistro desc";
                     q = session.createQuery(query);
                     q.setParameter("uci",1);//si estuvo en UCI
                     q.setParameter("codigoHosp", "RESP|S"); //respuesta afirmativa
                     q.setParameter("idUsuario", idUsuario);
                     q.setParameter("sistema", ConstantsSecurity.SYSTEM_CODE);
+                    q.setMaxResults(50);
                     resultado.addAll(q.list());
                 }
                 break;

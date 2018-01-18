@@ -42,7 +42,7 @@
     <!-- breadcrumb -->
     <ol class="breadcrumb">
         <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i>
-            <spring:message code="lbl.reports" /> <i class="fa fa-angle-right"></i> <spring:message code="menu.reports.home" /> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/reportesPorResidencia/sexReport" htmlEscape="true "/>"><spring:message code="menu.report.sex" /></a></li>
+            <spring:message code="lbl.reports" /> <i class="fa fa-angle-right"></i> <spring:message code="menu.reports.home" /> <i class="fa fa-angle-right"></i> <a href="<spring:url value="/reportesPorResidencia/genderReport" htmlEscape="true "/>"><spring:message code="menu.report.sex" /></a></li>
     </ol>
     <!-- end breadcrumb -->
     <jsp:include page="../../fragments/layoutOptions.jsp" />
@@ -492,7 +492,7 @@
 <spring:url value="/resources/scripts/utilidades/seleccionUnidadReporte.js" var="seleccionUnidadReporte" />
 <script src="${seleccionUnidadReporte}"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-<c:url var="sActionUrl" value="/reportesPorResidencia/datasexReport"/>
+<c:url var="sActionUrl" value="/reportesPorResidencia/datagenderReport"/>
 <c:set var="noData"><spring:message code="lbl.no.data" /></c:set>
 <c:set var="msgNoData"><spring:message code="msg.no.data.found" /></c:set>
 <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>

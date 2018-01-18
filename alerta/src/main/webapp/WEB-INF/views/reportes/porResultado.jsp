@@ -347,7 +347,7 @@
 
                         <th id="firstTh"></th>
                         <th><spring:message code="lbl.notifications"/></th>
-                        <th><spring:message code="lbl.send.dx.orders"/></th>
+                        <th><spring:message code="lbl.requests"/></th>
                         <th><spring:message code="lbl.positives"/></th>
                         <th><spring:message code="lbl.negatives"/></th>
                         <th><spring:message code="lbl.without.res"/></th>

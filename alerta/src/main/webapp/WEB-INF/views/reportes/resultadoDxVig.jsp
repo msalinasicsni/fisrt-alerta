@@ -6,29 +6,15 @@
 <html>
 <!-- BEGIN HEAD -->
 <head>
-    <jsp:include page="../../fragments/headTag.jsp" />
-    <spring:url value="/resources/js/plugin/chartjs/chartjs.css" var="chartjsCss" />
-    <link href="${chartjsCss}" rel="stylesheet" type="text/css"/>
-    <style>
-        /* columns right and center aligned datatables */
-        .aw-right {
-            padding-left: 0;
-            padding-right: 10px;
-            text-align: right;
-        }
-        td.highlight {
-            font-weight: bold;
-            color: red;
-        }
-    </style>
+    <jsp:include page="../fragments/headTag.jsp" />
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
 <body class="">
 <!-- #HEADER -->
-<jsp:include page="../../fragments/bodyHeader.jsp" />
+<jsp:include page="../fragments/bodyHeader.jsp" />
 <!-- #NAVIGATION -->
-<jsp:include page="../../fragments/bodyNavigation.jsp" />
+<jsp:include page="../fragments/bodyNavigation.jsp" />
 <!-- MAIN PANEL -->
 <div id="main" data-role="main">
 <!-- RIBBON -->
@@ -41,11 +27,11 @@
     <!-- breadcrumb -->
     <ol class="breadcrumb">
         <li><a href="<spring:url value="/" htmlEscape="true "/>"><spring:message code="menu.home" /></a> <i class="fa fa-angle-right"></i>
-            <spring:message code="lbl.reports" /> <i class="fa fa-angle-right"></i> <spring:message code="menu.reports.home" />
-            <i class="fa fa-angle-right"></i><a href="<spring:url value="/reportesPorResidencia/reportResult/" htmlEscape="true "/>"><spring:message code="menu.report.result" /></a></li>
+            <spring:message code="menu.reports" />
+            <i class="fa fa-angle-right"></i> <a href="<spring:url value="/reports/reportResultDxVig/init" htmlEscape="true "/>"><spring:message code="menu.report.result.dx.vig" /></a></li>
     </ol>
     <!-- end breadcrumb -->
-    <jsp:include page="../../fragments/layoutOptions.jsp" />
+    <jsp:include page="../fragments/layoutOptions.jsp" />
 </div>
 <!-- END RIBBON -->
 <!-- MAIN CONTENT -->
@@ -57,11 +43,9 @@
         <h1 class="page-title txt-color-blueDark">
             <!-- PAGE HEADER -->
             <i class="fa-fw fa fa-line-chart"></i>
-            <spring:message code="lbl.reports" />
-            <i class="fa fa-angle-right"></i>
-            <spring:message code="menu.reports.home" />
+            <spring:message code="menu.reports" />
 						<span> <i class="fa fa-angle-right"></i>
-							<spring:message code="menu.report.result" />
+							<spring:message code="menu.report.result.dx.vig" />
 						</span>
         </h1>
     </div>
@@ -71,6 +55,7 @@
     <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
         <!-- sparks -->
         <ul id="sparks">
+
         </ul>
         <!-- end sparks -->
     </div>
@@ -87,9 +72,9 @@
 <!-- row -->
 <div class="row">
 <!-- NEW WIDGET START -->
-<article class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
     <!-- Widget ID (each widget will need unique ID)-->
-    <div class="jarviswidget" id="wid-id-0">
+    <div class="jarviswidget jarviswidget-color-darken" id="wid-id-0">
         <!-- widget options:
             usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
             data-widget-colorbutton="false"
@@ -115,31 +100,20 @@
             <!-- end widget edit box -->
             <!-- widget content -->
             <div class="widget-body">
-                <input id="nicRepublic" type="hidden" value="<spring:message code="lbl.nicaragua.republic"/>"/>
-                <input id="dep" type="hidden" value="<spring:message code="lbl.dep"/>"/>
-                <input id="munic" type="hidden" value="<spring:message code="lbl.munic"/>"/>
-                <input id="unit" type="hidden" value="<spring:message code="lbl.unit"/>"/>
-                <input id="from" type="hidden" value="<spring:message code="lbl.from"/>"/>
-                <input id="to" type="hidden" value="<spring:message code="lbl.to"/>"/>
-                <input id="municps" type="hidden" value="<spring:message code="lbl.municps"/>"/>
-                <input id="silaisT" type="hidden" value="<spring:message code="lbl.silais"/>"/>
-                <input id="municT" type="hidden" value="<spring:message code="muni"/>"/>
-                <input id="usT" type="hidden" value="<spring:message code="lbl.health.unit"/>"/>
-                <input id="areaL" type="hidden" value="<spring:message code="lbl.health.area"/>"/>
-                <input id="departaT" type="hidden" value="<spring:message code="lbl.department"/>"/>
-
-
+                <input id="text_opt_select" type="hidden" value="<spring:message code="lbl.select"/>"/>
                 <form id="result_form" class ="smart-form">
                     <fieldset>
                         <!-- START ROW -->
                         <div class="row">
                             <section class="col col-sm-12 col-md-12 col-lg-12">
+                                <label class="text-left txt-color-blue font-md">
+                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.lab" /> </label>
                                 <div class="input-group">
                                     <span class="input-group-addon"> <i class="fa fa-list"></i></span>
-                                    <select  name="codTipoNoti" id="codTipoNoti" data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.notification.type" />" class="select2">
+                                    <select  name="codigoLab" id="codigoLab" data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.lab" />" class="select2">
                                         <option value=""></option>
-                                        <c:forEach items="${tipoNoti}" var="noti">
-                                            <option value="${noti.codigo}">${noti.valor}</option>
+                                        <c:forEach items="${laboratorios}" var="lab">
+                                            <option value="${lab.codigo}">${lab.nombre}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -149,9 +123,28 @@
                         <!-- START ROW -->
                         <div class="row">
                             <section class="col col-sm-12 col-md-12 col-lg-12">
+                                <label class="text-left txt-color-blue font-md">
+                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.diagnosis" /> </label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"> <i class="fa fa-list"></i></span>
+                                    <select  name="idDx" id="idDx" data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.diagnosis" />" class="select2">
+                                        <option value=""></option>
+                                        <c:forEach items="${dxs}" var="dx">
+                                            <option value="${dx.idDiagnostico}">${dx.nombre}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </section>
+                        </div>
+                        <!-- END ROW -->
+                        <!-- START ROW -->
+                        <div class="row">
+                            <section class="col col-sm-12 col-md-12 col-lg-12">
+                                <label class="text-left txt-color-blue font-md">
+                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.level" /> </label>
                                 <div class="input-group">
                                     <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
-                                    <select  name="codArea" id="codArea" data-placeholder="<spring:message code="act.select" /> <spring:message code="level" />" class="select2">
+                                    <select  name="codArea" id="codArea" data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.level" />" class="select2">
                                         <option value=""></option>
                                         <c:forEach items="${areas}" var="area">
                                             <option value="${area.codigo}">${area.valor}</option>
@@ -182,9 +175,11 @@
                         <!-- START ROW -->
                         <div class="row">
                             <section class="col col-sm-12 col-md-12 col-lg-12" id="silais" hidden="hidden">
+                                <label class="text-left txt-color-blue font-md">
+                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.silais" /> </label>
                                 <div class="input-group">
                                     <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
-                                    <select data-placeholder="<spring:message code="act.select" /> <spring:message code="silais" />" name="codSilaisAtencion" id="codSilaisAtencion" class="select2">
+                                    <select data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.silais" />" name="codSilais" id="codSilais" class="select2">
                                         <option value=""></option>
                                         <c:forEach items="${entidades}" var="entidad">
                                             <option value="${entidad.entidadAdtvaId}">${entidad.nombre}</option>
@@ -196,34 +191,9 @@
                         <!-- END ROW -->
                         <!-- START ROW -->
                         <div class="row">
-                            <section class="col col-sm-12 col-md-12 col-lg-12" id="departamento" hidden="hidden">
-                                <div class="input-group">
-                                    <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
-                                    <select data-placeholder="<spring:message code="msg.select.depa" />" name="codDepartamento" id="codDepartamento" class="select2">
-                                        <option value=""></option>
-                                        <c:forEach items="${departamentos}" var="departamento">
-                                            <option value="${departamento.divisionpoliticaId}">${departamento.nombre}</option>
-                                        </c:forEach>
-                                    </select>
-                                </div>
-                            </section>
-                        </div>
-                        <!-- END ROW -->
-                        <!-- START ROW -->
-                        <div class="row">
-                            <section class="col col-sm-12 col-md-12 col-lg-12" id="municipio" hidden="hidden">
-                                <div class="input-group">
-                                    <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
-                                    <select data-placeholder="<spring:message code="act.select" /> <spring:message code="muni" />" name="codMunicipio" id="codMunicipio" class="select2">
-                                        <option value=""></option>
-                                    </select>
-                                </div>
-                            </section>
-                        </div>
-                        <!-- END ROW -->
-                        <!-- START ROW -->
-                        <div class="row">
                             <section class="col col-sm-12 col-md-12 col-lg-12" id="unidad" hidden="hidden">
+                                <label class="text-left txt-color-blue font-md">
+                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.health.unit" /> </label>
                                 <div class="input-group">
                                     <span class="input-group-addon"> <i class="fa fa-location-arrow"></i></span>
                                     <select data-placeholder="<spring:message code="act.select" /> <spring:message code="lbl.health.unit" />" name="codUnidadAtencion" id="codUnidadAtencion" class="select2">
@@ -249,103 +219,57 @@
                             </section>
                         </div>
                         <!-- END ROW -->
-
                         <!-- START ROW -->
                         <div class="row">
 
                             <section class="col col-sm-12 col-md-12 col-lg-6">
-
+                                <label class="text-left txt-color-blue font-md">
+                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.init.approval.date" /> </label>
                                 <label class="input">
                                     <i class="icon-prepend fa fa-pencil"></i> <i
                                         class="icon-append fa fa-calendar fa-fw"></i>
                                     <input class="form-control date-picker"
                                            type="text" name="initDate" id="initDate"
 
-                                           placeholder=" <spring:message code="lbl.init.date"/>"/>
+                                           placeholder=" <spring:message code="lbl.init.approval.date"/>"/>
                                 </label>
 
 
                             </section>
 
                             <section class="col col-sm-12 col-md-6 col-lg-6">
-                                <%--  <label class="text-left txt-color-blue font-md">
-                                      <spring:message code="lbl.end.date"/>
-                                  </label>--%>
-
+                                <label class="text-left txt-color-blue font-md">
+                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.end.approval.date"/>
+                                  </label>
                                 <label class="input">
                                     <i class="icon-prepend fa fa-pencil"></i> <i
                                         class="icon-append fa fa-calendar fa-fw"></i>
                                     <input class="form-control date-picker"
                                            type="text" name="endDate" id="endDate"
 
-                                           placeholder=" <spring:message code="lbl.end.date"/>"/>
+                                           placeholder=" <spring:message code="lbl.end.approval.date"/>"/>
                                 </label>
 
                             </section>
 
                         </div>
-
+                        <div class="row">
+                            <section class="col col-sm-12 col-md-6 col-lg-6">
+                                <label class="text-left txt-color-blue font-md"><spring:message
+                                        code="lbl.include.sample.inadequate"/></label>
+                                <label class="checkbox">
+                                    <input type="checkbox" checked name="ckbmxinadecuada" id="ckbmxinadecuada">
+                                    <i></i>
+                                </label>
+                            </section>
+                        </div>
 
                         <!-- END ROW -->
                         <footer>
-                            <button type="submit" class="btn btn-info"><i class="fa fa-refresh"></i> <spring:message code="update" /></button>
+                            <a id="exportExcel" class="btn btn-success btn-lg pull-right header-btn" href="#"><i class="fa fa-file-excel-o"></i> <spring:message code="lbl.export.excel" /></a>
                         </footer>
                     </fieldset>
                 </form>
-            </div>
-            <!-- end widget content -->
-        </div>
-        <!-- end widget div -->
-    </div>
-    <!-- end widget -->
-</article>
-
-<article class="col-xs-12 col-sm-12 col-md-7 col-lg-12">
-    <!-- Widget ID (each widget will need unique ID)-->
-    <div class="jarviswidget" id="wid-id-4">
-        <!-- widget options:
-            usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-            data-widget-colorbutton="false"
-            data-widget-editbutton="false"
-            data-widget-togglebutton="false"
-            data-widget-deletebutton="false"
-            data-widget-fullscreenbutton="false"
-            data-widget-custombutton="false"
-            data-widget-collapsed="true"
-            data-widget-sortable="false"
-        -->
-        <header>
-            <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-            <h2><spring:message code="lbl.distritution.by.result"/> </h2>
-        </header>
-        <!-- widget div-->
-        <div>
-            <!-- widget edit box -->
-            <div class="jarviswidget-editbox">
-                <!-- This area used as dropdown edit box -->
-                <input class="form-control" type="text">
-            </div>
-            <!-- end widget edit box -->
-            <!-- widget content -->
-            <div class="widget-body">
-                <table id="tableRES" class="table table-striped table-bordered table-hover" width="100%">
-                    <thead>
-                    <tr>
-
-                        <th id="firstTh"></th>
-                        <th><spring:message code="lbl.notifications"/></th>
-                        <th><spring:message code="lbl.requests"/></th>
-                        <th><spring:message code="lbl.positives"/></th>
-                        <th><spring:message code="lbl.negatives"/></th>
-                        <th><spring:message code="lbl.without.res"/></th>
-                        <th><spring:message code="lbl.mx.inadecuada"/></th>
-                        <th><spring:message code="lbl.pos.percentage"/></th>
-
-
-                    </tr>
-
-                    </thead>
-                </table>
             </div>
             <!-- end widget content -->
         </div>
@@ -357,52 +281,6 @@
 
 </div>
 <!-- end row -->
-<!-- row -->
-<div id="dWid3" class="row">
-    <!-- NEW WIDGET START -->
-    <article class="col-xs-12 col-sm-12 col-md-7 col-lg-12">
-        <!-- Widget ID (each widget will need unique ID)-->
-        <div class="jarviswidget" id="wid-id-3">
-            <!-- widget options:
-                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-                data-widget-colorbutton="false"
-                data-widget-editbutton="false"
-                data-widget-togglebutton="false"
-                data-widget-deletebutton="false"
-                data-widget-fullscreenbutton="false"
-                data-widget-custombutton="false"
-                data-widget-collapsed="true"
-                data-widget-sortable="false"
-            -->
-            <header>
-                <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-                <h2><spring:message code="lbl.distribution.by.positivity"/> </h2>
-
-            </header>
-            <!-- widget div-->
-            <div>
-                <!-- widget edit box -->
-                <div class="jarviswidget-editbox">
-                    <!-- This area used as dropdown edit box -->
-                    <input class="form-control" type="text">
-                </div>
-                <!-- end widget edit box -->
-                <!-- widget content -->
-                <div class="widget-body">
-                    <!-- this is what the user will see -->
-                    <div id="lineChart-title" align="center"></div>
-                    <div id="lineLegend"></div>
-                    <canvas  id="lineChart" height="120"></canvas>
-                </div>
-                <!-- end widget content -->
-            </div>
-            <!-- end widget div -->
-        </div>
-        <!-- end widget -->
-    </article>
-    <!-- WIDGET END -->
-</div>
-<!-- end row -->
 
 </section>
 <!-- end widget grid -->
@@ -411,22 +289,11 @@
 </div>
 <!-- END MAIN PANEL -->
 <!-- BEGIN FOOTER -->
-<jsp:include page="../../fragments/footer.jsp" />
+<jsp:include page="../fragments/footer.jsp" />
 <!-- END FOOTER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
-<jsp:include page="../../fragments/corePlugins.jsp" />
+<jsp:include page="../fragments/corePlugins.jsp" />
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<spring:url value="/resources/js/plugin/datatables/jquery.dataTables.min.js" var="dataTables" />
-<script src="${dataTables}"></script>
-<spring:url value="/resources/js/plugin/datatables/dataTables.colVis.min.js" var="dataTablesColVis" />
-<script src="${dataTablesColVis}"></script>
-<spring:url value="/resources/js/plugin/datatables/dataTables.tableTools.min.js" var="dataTablesTableTools" />
-<script src="${dataTablesTableTools}"></script>
-<spring:url value="/resources/js/plugin/datatables/dataTables.bootstrap.min.js" var="dataTablesBootstrap" />
-<script src="${dataTablesBootstrap}"></script>
-<spring:url value="/resources/js/plugin/datatable-responsive/datatables.responsive.min.js" var="dataTablesResponsive" />
-<script src="${dataTablesResponsive}"></script>
-<spring:url value="/resources/js/plugin/datatables/swf/copy_csv_xls_pdf.swf" var="dataTablesTTSWF" />
 <!-- JQUERY VALIDATE -->
 <spring:url value="/resources/js/plugin/jquery-validate/jquery.validate.min.js" var="jqueryValidate" />
 <script src="${jqueryValidate}"></script>
@@ -440,11 +307,6 @@
 <spring:url value="/resources/js/plugin/select2/select2_locale_{language}.js" var="selectPluginLocale">
     <spring:param name="language" value="${pageContext.request.locale.language}" /></spring:url>
 <script src="${selectPluginLocale}"></script>
-<!-- jQuery Chart JS-->
-<spring:url value="/resources/js/plugin/chartjs/chart.min.js" var="chartJs"/>
-<script src="${chartJs}"></script>
-<spring:url value="/resources/js/plugin/chartjs/legend.js" var="legendChartJs"/>
-<script src="${legendChartJs}"></script>
 <!-- bootstrap datepicker -->
 <spring:url value="/resources/js/plugin/bootstrap-datepicker/bootstrap-datepicker.js" var="datepickerPlugin" />
 <script src="${datepickerPlugin}"></script>
@@ -459,34 +321,31 @@
 <script src="${jqueryBlockUi}"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<spring:url value="/resources/scripts/reportes/porResultado.js" var="porResJS" />
+<spring:url value="/resources/scripts/reportes/resultadoDxVig.js" var="porResJS" />
 <script src="${porResJS}"></script>
-<spring:url value="/resources/scripts/utilidades/seleccionUnidadReporte.js" var="seleccionUnidadReporte" />
-<script src="${seleccionUnidadReporte}"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-<c:url var="sActionUrl" value="/reportesPorResidencia/dataReportResult"/>
-<c:set var="noData"><spring:message code="lbl.no.data" /></c:set>
+<c:set var="msgTitle"><spring:message code="lbl.alert" /></c:set>
 <c:set var="msgNoData"><spring:message code="msg.no.data.found" /></c:set>
 <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
-<spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
-<spring:url var="unidadesUrl"   value="/api/v1/uniRepPorSilaisyMuni"/>
+<c:url var="unidadesURL" value="/api/v1/unidadesPrimariasHospSilais"/>
+<c:url var="excelUrl" value="/reports/downloadExcel" />
 <script type="text/javascript">
     $(document).ready(function() {
         pageSetUp();
-        var parametros = {sActionUrl: "${sActionUrl}",
+        var parametros = {
             blockMess:"${blockMess}",
-            municipiosUrl:"${municipiosURL}",
-            unidadesUrl: "${unidadesUrl}",
-            dataTablesTTSWF: "${dataTablesTTSWF}",
-            noData: "${noData}",
-            msgNoData: "${msgNoData}"};
-        resultReport.init(parametros);
-        SeleccionUnidadReporte.init(parametros);
+            sUnidadesUrl: "${unidadesURL}",
+            msgNoData: "${msgNoData}",
+            msgTitle: "${msgTitle}",
+            sMailUrl: "${sMailUrl}",
+            excelUrl: "${excelUrl}"
+        };
+        resultReportDxVig.init(parametros);
         handleDatePickers("${pageContext.request.locale.language}");
         $("li.reportes").addClass("open");
-        $("li.homeresult").addClass("active");
+        $("li.resultDxVig").addClass("active");
         if("top"!=localStorage.getItem("sm-setmenu")){
-            $("li.homeresult").parents("ul").slideDown(200);
+            $("li.resultDxVig").parents("ul").slideDown(200);
         }
     });
 </script>
