@@ -69,7 +69,6 @@ var SearchMx = function () {
                     "t" +
                     "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
                 "aaSorting": [],
-
                 "oTableTools": {
                     "aButtons": [
                         {
@@ -80,9 +79,14 @@ var SearchMx = function () {
                     ],
                     "sSwfPath": parametros.sTableToolsPath
                 },
-
                 "autoWidth": true,
-
+                "columns": [
+                    null, null, null, null, null, null, null, null, null, null,
+                    {
+                        "className": 'override',
+                        "orderable": false
+                    }
+                ],
                 "preDrawCallback": function () {
                     // Initialize the responsive datatables helper once.
                     if (!responsiveHelper_dt_basic) {
@@ -94,6 +98,11 @@ var SearchMx = function () {
                 },
                 "drawCallback": function (oSettings) {
                     responsiveHelper_dt_basic.respond();
+                },
+                fnDrawCallback: function () {
+                    $('.override')
+                        .off("click", overrideHandler)
+                        .on("click", overrideHandler);
                 }
 
             });
@@ -125,6 +134,29 @@ var SearchMx = function () {
                     getMxs(false)
                 }
             });
+
+            <!-- formulario para anular examen -->
+            $('#override-mx-form').validate({
+                // Rules for form validation
+                rules: {
+                    causaAnulacion: {required: true}
+                },
+                // Do not change code below
+                errorPlacement: function (error, element) {
+                    error.insertAfter(element.parent());
+                },
+                submitHandler: function (form) {
+                    anularMuestra($("#idMx").val());
+                }
+            });
+
+            function overrideHandler() {
+                var id = $(this.innerHTML).data('id');
+                if (id != null) {
+                    $("#idMx").val(id);
+                    showModalOverride();
+                }
+            }
 
             function getMxs(showAll) {
                 var mxFiltros = {};
@@ -159,10 +191,11 @@ var SearchMx = function () {
                     if (len > 0) {
                         for (var i = 0; i < len; i++) {
                             var actionUrl = parametros.editUrl+dataToLoad[i].idTomaMx;
+                            var btnOverride = '<button title="Anular" type="button" class="btn btn-danger btn-xs" data-id="' + dataToLoad[i].idTomaMx + '" > <i class="fa fa-times"></i></button>';
                             table.fnAddData(
                                 [dataToLoad[i].codigoUnicoMx , dataToLoad[i].fechaTomaMx, dataToLoad[i].tipoNoti, dataToLoad[i].codSilais, dataToLoad[i].codUnidadSalud,
                                     dataToLoad[i].persona, dataToLoad[i].laboratorio, dataToLoad[i].estadoMx, dataToLoad[i].solicitudes,
-                                        '<a target="_blank" title="Editar" href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>']);
+                                        '<a target="_blank" title="Editar" href=' + actionUrl + ' class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>', btnOverride]);
                         }
 
                     } else {
@@ -181,6 +214,59 @@ var SearchMx = function () {
                     });
             }
 
+            function showModalOverride() {
+                $("#causaAnulacion").val('');
+                $("#modalOverride").modal({
+                    show: true
+                });
+            }
+
+            function hideModalOverride() {
+                $('#modalOverride').modal('hide');
+            }
+
+            function anularMuestra(idMx) {
+                var anulacionObj = {};
+                anulacionObj['idMx'] = idMx;
+                anulacionObj['causaAnulacion'] = $("#causaAnulacion").val();
+                anulacionObj['mensaje'] = '';
+               blockUI();
+                $.ajax(
+                    {
+                        url: parametros.sOverrideUrl,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: JSON.stringify(anulacionObj),
+                        contentType: 'application/json',
+                        mimeType: 'application/json',
+                        success: function (data) {
+                            if (data.mensaje.length > 0) {
+                                $.smallBox({
+                                    title: data.mensaje,
+                                    content: $("#smallBox_content").val(),
+                                    color: "#C46A69",
+                                    iconSmall: "fa fa-warning",
+                                    timeout: 4000
+                                });
+                            } else {
+                                getMxs(false);
+                                hideModalOverride();
+                                var msg = $("#msg_override_success").val();
+                                $.smallBox({
+                                    title: msg,
+                                    content: $("#smallBox_content").val(),
+                                    color: "#739E73",
+                                    iconSmall: "fa fa-success",
+                                    timeout: 4000
+                                });
+                            }
+                            unBlockUI();
+                        },
+                        error: function (jqXHR) {
+                            unBlockUI();
+                        }
+                    });
+            }
         }
     };
 

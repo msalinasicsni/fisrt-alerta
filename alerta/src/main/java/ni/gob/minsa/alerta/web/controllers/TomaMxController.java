@@ -1203,4 +1203,51 @@ public class TomaMxController {
         tomaMxService.addTomaMx(tomaMx);
         return createJsonResponse(tomaMx);
     }
+
+    @RequestMapping(value = "override", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    protected void anularMuestra(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String json;
+        String resultado = "";
+        String idMx=null;
+        String causaAnulacion = "";
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF8"));
+            json = br.readLine();
+            //Recuperando Json enviado desde el cliente
+            JsonObject jsonpObject = new Gson().fromJson(json, JsonObject.class);
+            idMx = jsonpObject.get("idMx").getAsString();
+            causaAnulacion = jsonpObject.get("causaAnulacion").getAsString();
+            DaTomaMx tomaMx = tomaMxService.getTomaMxById(idMx);
+            if (tomaMx!=null) {
+                if (tomaMx.getEstadoMx().getCodigo().equalsIgnoreCase("ESTDMX|PEND")) {
+                    tomaMx.setAnulada(true);
+                    tomaMx.setFechaAnulacion(new Timestamp(new Date().getTime()));
+                    tomaMxService.updateTomaMx(tomaMx);
+                    List<DaSolicitudDx> solicitudDxList = tomaMxService.getSolicitudesDxByIdMX(tomaMx.getIdTomaMx());
+                    for (DaSolicitudDx solicitudDx : solicitudDxList) {
+                        tomaMxService.bajaSolicitudDx(seguridadService.obtenerNombreUsuario(request), solicitudDx.getIdSolicitudDx(), causaAnulacion);
+                    }
+                }else
+                {
+                    throw new Exception(messageSource.getMessage("msg.sample.already.sent.lab",null,null));
+                }
+
+            }else{
+                throw new Exception(messageSource.getMessage("msg.tomamx.notfound",null,null));
+            }
+
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(),ex);
+            ex.printStackTrace();
+            resultado =  messageSource.getMessage("msg.override.tomamx.error",null,null);
+            resultado=resultado+". \n "+ex.getMessage();
+        }finally {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("idMx",String.valueOf(idMx));
+            map.put("mensaje",resultado);
+            String jsonResponse = new Gson().toJson(map);
+            response.getOutputStream().write(jsonResponse.getBytes());
+            response.getOutputStream().close();
+        }
+    }
 }
