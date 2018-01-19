@@ -236,13 +236,9 @@ public class TomaMxController {
     private boolean existeTomaMx(String idNotificacion, String fechaToma, String dxs) throws Exception{
         boolean respuesta = false;
         Date fecha1 = DateUtil.StringToDate(fechaToma, "dd/MM/yyyy");
-        List<DaTomaMx> muestras = tomaMxService.getTomaMxActivaByIdNoti(idNotificacion);
-        for(DaTomaMx muestra : muestras){
-            List<DaSolicitudDx> solicitudDxList = tomaMxService.getSoliDxByIdMxFechaToma(muestra.getIdTomaMx(), fecha1);
-            if (solicitudDxList.size()>0) {
-                respuesta = true;
-                break;
-            }
+        List<DaTomaMx> muestras = tomaMxService.getTomaMxByIdNotiAndFechaToma(idNotificacion, fecha1);
+        if (muestras.size()>0) {
+            respuesta = true;
         }
         return respuesta;
     }

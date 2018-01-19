@@ -590,4 +590,19 @@ public class TomaMxService {
         q.setParameter("codigoLab",codigoLab);
         return q.list();
     }
+
+    /**
+     * Obtiene las mx tomadas para una notificación en fecha de toma especifica
+     * @param id del estudio a buscar
+     * @return Catalogo_Estudio
+     */
+    public List<DaTomaMx> getTomaMxByIdNotiAndFechaToma(String id, Date fechaToma){
+        String query = "select mx from DaTomaMx mx " +
+                "where mx.idNotificacion.idNotificacion  = :id and mx.fechaHTomaMx = :fechaToma";
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery(query);
+        q.setString("id", id);
+        q.setParameter("fechaToma", fechaToma);
+        return q.list();
+    }
 }
