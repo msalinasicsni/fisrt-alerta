@@ -513,7 +513,7 @@ public class DaIrag implements Serializable, Auditable {
     }
 
     @Basic
-    @Column(name = "MANIFESTACIONES", nullable = true, insertable = true, updatable = true, length = 100)
+    @Column(name = "MANIFESTACIONES", nullable = true, insertable = true, updatable = true, length = 400)
     public String getManifestaciones() {
         return manifestaciones;
     }
@@ -532,9 +532,8 @@ public class DaIrag implements Serializable, Auditable {
         this.otraManifestacion = otraManifestacion;
     }
 
-
     @Basic
-    @Column(name = "CONDICIONES", nullable = true, insertable = true, updatable = true, length = 100)
+    @Column(name = "CONDICIONES", nullable = true, insertable = true, updatable = true, length = 300)
     public String getCondiciones() {
         return condiciones;
     }
