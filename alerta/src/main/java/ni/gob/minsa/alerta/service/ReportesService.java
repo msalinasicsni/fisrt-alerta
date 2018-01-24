@@ -44,17 +44,17 @@ public class ReportesService {
     private RespuestasExamenService respuestasExamenService;
 
     private static final String sqlTipoNoti = " and noti.codTipoNotificacion.codigo = :tipoNoti ";
-    private static  final String sqlFechas =  "and noti.fechaRegistro between :fechaInicio and :fechaFin ";
+    private static final String sqlFechas =  "and noti.fechaRegistro between :fechaInicio and :fechaFin ";
     private static final String sqlDataSemana = "select cal.noSemana ";
     private static final String sqlWhereSemana = " WHERE cal.anio = :anio and cal.noSemana between :semanaI and :semanaF order by cal.noSemana";
     private static final String sqlDataDia = "select  noti.fechaRegistro, count(noti.idNotificacion) as casos ";
     private static final String sqlDataSinR = "select distinct noti ";
     private static final String sqlRutina = " and dx.codDx.idDiagnostico = :idDx ";
-    private static  final String sqlFechasRut =  " and mx.envio.fechaHoraEnvio between :fechaInicio and :fechaFin ";
+    private static final String sqlFechasRut =  " and mx.envio.fechaHoraEnvio between :fechaInicio and :fechaFin ";
     private static final String sqlFechasProcRut = " and dx.idSolicitudDx in (select r.solicitudDx.idSolicitudDx  from DetalleResultadoFinal r where r.pasivo = false and r.fechahRegistro between :fechaInicio and :fechaFin) "; //" and mx.fechaHTomaMx between :fechaInicio and :fechaFin ";
     private static final String sqlFechasAproRut =  " and dx.fechaAprobacion between :fechaInicio and :fechaFin ";
     private static final String sqlLab = " and dx.labProcesa.codigo = :codigoLab ";
-
+    private static final String sqlFIS = " and noti.fechaInicioSintomas between :fisInicio and :fisFinal ";
 
     /**
      * M�todo que retornar la informaci�n para generar reporte y gr�fico de notificaciones por area (casos y tasas)
@@ -2479,23 +2479,28 @@ public class ReportesService {
         Query queryNotiDx = null;
         if (filtro.getCodArea().equals("AREAREP|PAIS")) {
             queryNotiDx = session.createQuery(" select dx from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true "+ sqlLab + sqlRutina + sqlFechasAproRut);
+                    "where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true "+ sqlLab + sqlRutina + (filtro.getFisInicial()!=null && filtro.getFisFinal()!=null? sqlFIS : sqlFechasAproRut));
         }else if (filtro.getCodArea().equals("AREAREP|SILAIS")) {
             queryNotiDx = session.createQuery(" select dx from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true "+ sqlLab + sqlRutina + sqlFechasAproRut +
+                    "where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true "+ sqlLab + sqlRutina + (filtro.getFisInicial()!=null && filtro.getFisFinal()!=null? sqlFIS : sqlFechasAproRut) +
                     "  and noti.codSilaisAtencion.entidadAdtvaId =:codSilais ");
             queryNotiDx.setParameter("codSilais", filtro.getCodSilais());
         } else if (filtro.getCodArea().equals("AREAREP|UNI")) {
             queryNotiDx = session.createQuery(" select dx from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
-                    "where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true "+ sqlLab + sqlRutina + sqlFechasAproRut +
+                    "where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true "+ sqlLab + sqlRutina + (filtro.getFisInicial()!=null && filtro.getFisFinal()!=null? sqlFIS : sqlFechasAproRut) +
                     "  and noti.codUnidadAtencion.unidadId =:codUnidad ");
             queryNotiDx.setParameter("codUnidad", filtro.getCodUnidad());
         }
 
         queryNotiDx.setParameter("codigoLab", filtro.getCodLaboratio());
         queryNotiDx.setParameter("idDx", filtro.getIdDx());
-        queryNotiDx.setParameter("fechaInicio", filtro.getFechaInicio());
-        queryNotiDx.setParameter("fechaFin", filtro.getFechaFin());
+        if (filtro.getFisInicial()!=null && filtro.getFisFinal()!=null){
+            queryNotiDx.setParameter("fisInicio", filtro.getFisInicial());
+            queryNotiDx.setParameter("fisFinal", filtro.getFisFinal());
+        }else {
+            queryNotiDx.setParameter("fechaInicio", filtro.getFechaInicio());
+            queryNotiDx.setParameter("fechaFin", filtro.getFechaFin());
+        }
         return queryNotiDx.list();
     }
 }
