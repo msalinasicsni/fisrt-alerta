@@ -45,9 +45,9 @@ public class SeguridadService {
     }
 
     /**
-     * Método que obtiene la información del login activo
+     * Mï¿½todo que obtiene la informaciï¿½n del login activo
      * @param pBdSessionId nombre del cockie establecido por el sistema de seguridad del MINSA
-     * @return InfoSesion de la sesión actual
+     * @return InfoSesion de la sesiï¿½n actual
      */
     private InfoSesion obtenerInfoSesion(String pBdSessionId) {
         InfoSesion infoSesion = null;
@@ -72,9 +72,9 @@ public class SeguridadService {
             infoSesion.setUsername("alerta-hopsmatagalpa");
             infoSesion.setSistemaSesion("ALERTA");
             //usuario de pruebas
-            /*infoSesion.setUsuarioId(4772);
-            infoSesion.setNombre("Admin Alerta mok");
-            infoSesion.setUsername("admalerta");
+            infoSesion.setUsuarioId(4791);
+            infoSesion.setNombre("Juan Marcio Palacios");
+            infoSesion.setUsername("jpalacios");
             infoSesion.setSistemaSesion("ALERTA");
             //usuario de desarrollo
             /*infoSesion.setUsuarioId(170);
@@ -92,7 +92,7 @@ public class SeguridadService {
     }
 
     /**
-     * Método que ejecuta el servicio del portal para obtener la url de inicio del portal del MINSA
+     * Mï¿½todo que ejecuta el servicio del portal para obtener la url de inicio del portal del MINSA
      * @return String con url de incio del MINSA
      */
     public String obtenerUrlPortal() {
@@ -112,13 +112,13 @@ public class SeguridadService {
     }
 
     /**
-     * Método que valida si es correcto el login en el sistema
-     * @param request petición actual
+     * Mï¿½todo que valida si es correcto el login en el sistema
+     * @param request peticiï¿½n actual
      * @return String vacio "" si login es correcto, en caso contrario url de login del portal del minsa
      */
     public String validarLogin(HttpServletRequest request){
         String urlRetorno="";
-        if (seguridadHabilitada()) { //Si es false no se realiza ninguna validación
+        if (seguridadHabilitada()) { //Si es false no se realiza ninguna validaciï¿½n
             if (!esUsuarioAutenticado(request.getSession())) {
                 String bdSessionId = "";  // esta variable dejarla en blanco par activar la seguridad
                 Cookie[] cookies = request.getCookies();
@@ -151,21 +151,21 @@ public class SeguridadService {
     }
 
     /**
-     * Método que valida si el usuario logueado tiene acceso a la vista solicitada
+     * Mï¿½todo que valida si el usuario logueado tiene acceso a la vista solicitada
      * @param request reques actual
-     * @param codSistema código de sistema actual
-     * @param hayParametro TRUE indica que en el contextPath el último elemento es un párametro de spring, FALSE no hay parámetro
-     * @return String vacio "" si tiene autorización, si no tiene retorna url de acceso denegado
+     * @param codSistema cï¿½digo de sistema actual
+     * @param hayParametro TRUE indica que en el contextPath el ï¿½ltimo elemento es un pï¿½rametro de spring, FALSE no hay parï¿½metro
+     * @return String vacio "" si tiene autorizaciï¿½n, si no tiene retorna url de acceso denegado
      */
     public String validarAutorizacionUsuario(HttpServletRequest request, String codSistema, boolean hayParametro){
         String urlRetorno="";
-        if (seguridadHabilitada()) { //Si es false no se realiza ninguna validación
+        if (seguridadHabilitada()) { //Si es false no se realiza ninguna validaciï¿½n
             boolean autorizado;
             InfoSesion infoSesion = (InfoSesion) request.getSession().getAttribute("infoSesionActual");
 
             if (infoSesion != null) {
                 String pViewId = request.getServletPath();
-                if (hayParametro) // indica que el último componente de la url es un parámetro de spring, por lo tanto no se debe tomar en cuenta al validar autorización
+                if (hayParametro) // indica que el ï¿½ltimo componente de la url es un parï¿½metro de spring, por lo tanto no se debe tomar en cuenta al validar autorizaciï¿½n
                     pViewId = pViewId.substring(0, pViewId.lastIndexOf("/"));
                 autorizado = esUsuarioAutorizado(infoSesion.getUsuarioId(), codSistema, pViewId);
                 if (!autorizado) {
@@ -179,18 +179,18 @@ public class SeguridadService {
     }
 
     /**
-     * Método que determina si la sesión que contiene la información del usuario aunticada existe, es decir hay usuario autenticado
-     * @param session sesión actual
-     * @return TRUE si existe sessión, False en caso contrario
+     * Mï¿½todo que determina si la sesiï¿½n que contiene la informaciï¿½n del usuario aunticada existe, es decir hay usuario autenticado
+     * @param session sesiï¿½n actual
+     * @return TRUE si existe sessiï¿½n, False en caso contrario
      */
     private boolean esUsuarioAutenticado(HttpSession session) {
         return session.getAttribute("infoSesionActual")!=null;
     }
 
     /**
-     * Método que consume el portal de seguridad para determinar si un usario determinado tiene autorización se ingresar a una vista determinada, en el sistema actual
+     * Mï¿½todo que consume el portal de seguridad para determinar si un usario determinado tiene autorizaciï¿½n se ingresar a una vista determinada, en el sistema actual
      * @param pUsuarioId id del usuario autenticado
-     * @param pSistema código del sistema actual, ALERTA
+     * @param pSistema cï¿½digo del sistema actual, ALERTA
      * @param pViewId url de la vista solicitada
      * @return True si el usuario tiene permiso, False en caso contrario
      */
@@ -210,10 +210,10 @@ public class SeguridadService {
     }
 
     /**
-     * Método que determina si un usuario determinado esta configurado como usario de nivel central en el sistema
+     * Mï¿½todo que determina si un usuario determinado esta configurado como usario de nivel central en el sistema
      * @param pUsuarioId id del usuario autenticado
-     * @param pSistema código del sistema actual, ALERTA
-     * @return TRUE: si es de nivel central  o la seguridad esta deshabilitada, FALSE: no es nivel central o sucedió un error
+     * @param pSistema cï¿½digo del sistema actual, ALERTA
+     * @return TRUE: si es de nivel central  o la seguridad esta deshabilitada, FALSE: no es nivel central o sucediï¿½ un error
      */
     public boolean esUsuarioNivelCentral(long pUsuarioId, String pSistema) {
         boolean nivelCentral=false;
@@ -235,9 +235,9 @@ public class SeguridadService {
     }
 
     /**
-     * Método que consulta la sessión con información del usuario y obtiene el id el usuario auntenticado
-     * @param request petición actual
-     * @return long con Id del usuario almacenado en sesión o O si no se encontró
+     * Mï¿½todo que consulta la sessiï¿½n con informaciï¿½n del usuario y obtiene el id el usuario auntenticado
+     * @param request peticiï¿½n actual
+     * @return long con Id del usuario almacenado en sesiï¿½n o O si no se encontrï¿½
      */
     public long obtenerIdUsuario(HttpServletRequest request){
         long idUsuario =0 ;
@@ -256,9 +256,9 @@ public class SeguridadService {
     }
 
     /**
-     *  Método que consulta la sessión con información del usuario y obtiene el nombre el usuario auntenticado
-     * @param request petición actual
-     * @return String con el nombre del usuario auntenticado, "" si no se encontró, por defecto alerta
+     *  Mï¿½todo que consulta la sessiï¿½n con informaciï¿½n del usuario y obtiene el nombre el usuario auntenticado
+     * @param request peticiï¿½n actual
+     * @return String con el nombre del usuario auntenticado, "" si no se encontrï¿½, por defecto alerta
      */
     public String obtenerNombreUsuario(HttpServletRequest request){
         String nombreUsuario="";
@@ -275,8 +275,8 @@ public class SeguridadService {
     }
 
     /**
-     * Método que obtiene el árbol del menu del sistema según la configuración en la seguridad, luego se arma el menú en un string
-     * @param request petición actual
+     * Mï¿½todo que obtiene el ï¿½rbol del menu del sistema segï¿½n la configuraciï¿½n en la seguridad, luego se arma el menï¿½ en un string
+     * @param request peticiï¿½n actual
      * @return String que contiene el html de todas las opciones de menu
      */
     public String obtenerMenu(HttpServletRequest request){
@@ -307,9 +307,9 @@ public class SeguridadService {
     }
 
     /**
-     * Método que apartir de un nodoArbol que contiene el menú de la seguridad arma un string con estructura html de las opciones del menu para ser presentadas en las vistas
-     * Éste método es recursivo, pues se necesita acceder hasta el nivel mas bajo de la estructura (hijos)
-     * @param nodoArbol Estructura de menú según la seguridad
+     * Mï¿½todo que apartir de un nodoArbol que contiene el menï¿½ de la seguridad arma un string con estructura html de las opciones del menu para ser presentadas en las vistas
+     * ï¿½ste mï¿½todo es recursivo, pues se necesita acceder hasta el nivel mas bajo de la estructura (hijos)
+     * @param nodoArbol Estructura de menï¿½ segï¿½n la seguridad
      * @param contextPath del sistema
      * @return String que contiene el html de todas las opciones de menu
      */
@@ -361,8 +361,8 @@ public class SeguridadService {
     }
 
     /**
-     * Método que se ejecuta cuando se selecciona la opción "Salir" del sistema
-     * @param request sesión actual para limpiarla
+     * Mï¿½todo que se ejecuta cuando se selecciona la opciï¿½n "Salir" del sistema
+     * @param request sesiï¿½n actual para limpiarla
      */
     public void logOut(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -374,9 +374,9 @@ public class SeguridadService {
     }
 
     /**
-     * Método que obtiene las entidades administrativas (SILAIS) a las que tiene autorización el usuario en el sistema
+     * Mï¿½todo que obtiene las entidades administrativas (SILAIS) a las que tiene autorizaciï¿½n el usuario en el sistema
      * @param pUsuarioId id del usuario autenticado
-     * @param pCodigoSis código del sistema, ALERTA
+     * @param pCodigoSis cï¿½digo del sistema, ALERTA
      * @return List<EntidadesAdtvas>
      */
     public List<EntidadesAdtvas> obtenerEntidadesPorUsuario(Integer pUsuarioId, String pCodigoSis){
@@ -409,11 +409,11 @@ public class SeguridadService {
     }
 
     /**
-     * Método que valida si el usuario logueado tiene autorización sobre una entidad administrativa determinada
+     * Mï¿½todo que valida si el usuario logueado tiene autorizaciï¿½n sobre una entidad administrativa determinada
      * @param pUsuarioId id del usuario autenticado
-     * @param pCodigoSis código del sistema, ALERTA
-     * @param pCodEntidad código de la entidad a validar
-     * @return TRUE: si tiena autorización o la seguridad esta deshabilitada, FALSE: no tiene autorización
+     * @param pCodigoSis cï¿½digo del sistema, ALERTA
+     * @param pCodEntidad cï¿½digo de la entidad a validar
+     * @return TRUE: si tiena autorizaciï¿½n o la seguridad esta deshabilitada, FALSE: no tiene autorizaciï¿½n
      */
     public boolean esUsuarioAutorizadoEntidad(Integer pUsuarioId, String pCodigoSis, long pCodEntidad){
         //if (seguridadHabilitada()) {
@@ -450,9 +450,9 @@ public class SeguridadService {
     }
 
     /**
-     * Método que obtiene todas las unidades de salud a las que tiene autorización el usuario en el sistema
+     * Mï¿½todo que obtiene todas las unidades de salud a las que tiene autorizaciï¿½n el usuario en el sistema
      * @param pUsuarioId id del usuario autenticado
-     * @param pCodigoSis código del sistema, ALERTA
+     * @param pCodigoSis cï¿½digo del sistema, ALERTA
      * @param tipoUnidades tipos de unidades a carga. Eje: Primarias , Primarias+Hospitales
      * @return List<Unidades>
      */
@@ -488,11 +488,11 @@ public class SeguridadService {
     }
 
     /**
-     * Método que valida si el usuario logueado tiene autorización sobre una unidad de salud determinada
+     * Mï¿½todo que valida si el usuario logueado tiene autorizaciï¿½n sobre una unidad de salud determinada
      * @param pUsuarioId id del usuario autenticado
-     * @param pCodigoSis código del sistema, ALERTA
-     * @param pCodUnidad código de la unidad a validar
-     * @return TRUE: si tiena autorización o la seguridad esta deshabilitada, FALSE: no tiene autorización
+     * @param pCodigoSis cï¿½digo del sistema, ALERTA
+     * @param pCodUnidad cï¿½digo de la unidad a validar
+     * @return TRUE: si tiena autorizaciï¿½n o la seguridad esta deshabilitada, FALSE: no tiene autorizaciï¿½n
      */
     public boolean esUsuarioAutorizadoUnidad(Integer pUsuarioId, String pCodigoSis, long pCodUnidad){
         //if (seguridadHabilitada()) {
@@ -530,10 +530,10 @@ public class SeguridadService {
     }
 
     /**
-     * Método que obtiene todas las unidades de salud a las que tiene autorización el usuario en el sistema según el SILAIS y el tipo de Unidad
+     * Mï¿½todo que obtiene todas las unidades de salud a las que tiene autorizaciï¿½n el usuario en el sistema segï¿½n el SILAIS y el tipo de Unidad
      * @param pUsuarioId id del usuario autenticado
-     * @param pCodSilais Código del silais a filtrar
-     * @param pCodigoSis código del sistema, ALERTA
+     * @param pCodSilais Cï¿½digo del silais a filtrar
+     * @param pCodigoSis cï¿½digo del sistema, ALERTA
      * @param tipoUnidades tipos de unidades a carga. Eje: Primarias , Primarias+Hospitales
      * @return List<Unidades>
      */
@@ -570,10 +570,10 @@ public class SeguridadService {
     }
 
     /**
-     * Método que obtiene todas las unidades de salud a las que tiene autorización el usuario en el sistema según el SILAIS
+     * Mï¿½todo que obtiene todas las unidades de salud a las que tiene autorizaciï¿½n el usuario en el sistema segï¿½n el SILAIS
      * @param pUsuarioId id del usuario autenticado
-     * @param pCodSilais Código del silais a filtrar
-     * @param pCodigoSis código del sistema, ALERTA
+     * @param pCodSilais Cï¿½digo del silais a filtrar
+     * @param pCodigoSis cï¿½digo del sistema, ALERTA
      * @return List<Unidades>
      */
     public List<Unidades> obtenerUnidadesPorUsuarioEntidad(Integer pUsuarioId, long pCodSilais, String pCodigoSis){
@@ -609,11 +609,11 @@ public class SeguridadService {
     }
 
     /**
-     * Método que obtiene todas las unidades de salud a las que tiene autorización el usuario en el sistema según el SILAIS y municipio
+     * Mï¿½todo que obtiene todas las unidades de salud a las que tiene autorizaciï¿½n el usuario en el sistema segï¿½n el SILAIS y municipio
      * @param pUsuarioId id del usuario autenticado
-     * @param pCodSilais Código del silais a filtrar
-     * @param pCodMunicipio Código del municio a filtrar
-     * @param pCodigoSis código del sistema, ALERTA
+     * @param pCodSilais Cï¿½digo del silais a filtrar
+     * @param pCodMunicipio Cï¿½digo del municio a filtrar
+     * @param pCodigoSis cï¿½digo del sistema, ALERTA
      * @param tipoUnidades tipos de unidades a carga. Eje: Primarias , Primarias+Hospitales
      * @return List<Unidades>
      */
@@ -653,10 +653,10 @@ public class SeguridadService {
     }
 
     /**
-     * Método que obtiene los municipios autorizados en el sistema para el usuario según el SILAIS, las unidades autorizadas y el tipo de Unidad
+     * Mï¿½todo que obtiene los municipios autorizados en el sistema para el usuario segï¿½n el SILAIS, las unidades autorizadas y el tipo de Unidad
      * @param pUsuarioId id del usuario autenticado
-     * @param pCodSilais Código del silais a filtrar
-     * @param pCodigoSis código del sistema, ALERTA
+     * @param pCodSilais Cï¿½digo del silais a filtrar
+     * @param pCodigoSis cï¿½digo del sistema, ALERTA
      * @return List<Divisionpolitica>
      */
     public List<Divisionpolitica> obtenerMunicipiosPorUsuarioEntidad(Integer pUsuarioId, long pCodSilais, String pCodigoSis){
@@ -695,9 +695,9 @@ public class SeguridadService {
     }
 
     /**
-     * Método que valida si el usuario tiene asignada una unidad de salud, que tiene asignado algún estudio para permitir toma de muestra de estudio
+     * Mï¿½todo que valida si el usuario tiene asignada una unidad de salud, que tiene asignado algï¿½n estudio para permitir toma de muestra de estudio
      * @param pUsuarioId id del usuario autenticado
-     * @param pCodigoSis código del sistema, ALERTA
+     * @param pCodigoSis cï¿½digo del sistema, ALERTA
      * @return boolean
      */
     public boolean esUsuarioAutorizadoTomaMxEstudio(Integer pUsuarioId, String pCodigoSis){
@@ -747,7 +747,7 @@ public class SeguridadService {
     }
 
     /**
-     * Método que obtiene la lista de areas por las que puede generar reportes un usuario
+     * Mï¿½todo que obtiene la lista de areas por las que puede generar reportes un usuario
      * @param idUsuario id del usuario a validar
      * @param menorNivelPermitido nivel mas bajo permitido a obtener areas: 1=PAIS, 2=SILAIS, 3=UNIDAD
      * @return
@@ -768,7 +768,7 @@ public class SeguridadService {
                             break;
                         }
                         case 2: {
-                            query += " where a.codigo not in ('AREAREP|UNI') "; // sólo no incluir unidad
+                            query += " where a.codigo not in ('AREAREP|UNI') "; // sï¿½lo no incluir unidad
                             break;
                         }
                         case 3 : {
@@ -822,7 +822,7 @@ public class SeguridadService {
                             break;
                         }
                         case 3 : {
-                            query += " where a.codigo in ('AREAREP|UNI') "; // sólo unidad
+                            query += " where a.codigo in ('AREAREP|UNI') "; // sï¿½lo unidad
                             break;
                         }
                         case 4: {
@@ -832,7 +832,7 @@ public class SeguridadService {
                         default: break;
                     }
                     /*if (menorNivelPermitido==3) {
-                        query += " where a.codigo in ('AREAREP|UNI') "; // sólo unidad
+                        query += " where a.codigo in ('AREAREP|UNI') "; // sï¿½lo unidad
                     }else {
                         query += " where 1 = 0";  // ninguno
                     }*/
