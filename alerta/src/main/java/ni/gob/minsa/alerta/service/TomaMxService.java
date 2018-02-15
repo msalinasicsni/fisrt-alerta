@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Date;
 import java.util.List;
 
@@ -318,8 +320,14 @@ public class TomaMxService {
         // se filtra por nombre y apellido persona
         if (filtro.getNombreApellido()!=null) {
             //crit.createAlias("notifi.persona", "person");
-            String[] partes = filtro.getNombreApellido().split(" ");
-            String[] partesSnd = filtro.getNombreApellido().split(" ");
+            String nombreApellido = "";
+            try {
+                nombreApellido = URLDecoder.decode(filtro.getNombreApellido(), "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            String[] partes = nombreApellido.split(" ");
+            String[] partesSnd = nombreApellido.split(" ");
             for (int i = 0; i < partes.length; i++) {
                 try {
                     partesSnd[i] = varSoundex.encode(partes[i]);
