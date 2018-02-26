@@ -115,6 +115,9 @@
                                         <c:forEach items="${laboratorios}" var="lab">
                                             <option value="${lab.codigo}">${lab.nombre}</option>
                                         </c:forEach>
+                                        <c:if test="${fn:length(laboratorios) gt 1}">
+                                            <option value="ALL"><spring:message code="act.show.all" /></option>
+                                        </c:if>
                                     </select>
                                 </div>
                             </section>
@@ -221,6 +224,54 @@
                         <!-- END ROW -->
                         <!-- START ROW -->
                         <div class="row">
+                            <section class="col col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="inline-group">
+                                    <section class="col col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                        <label class="radio">
+                                            <input type="radio" name="rbFechaBusqueda" value="FIS" id="rbFIS" checked="checked">
+                                            <i></i><spring:message code="lbl.symptoms.start.date"/></label>
+                                    </section>
+                                    <section class="col col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                        <label class="radio">
+                                            <input type="radio" name="rbFechaBusqueda" id="rbFA" value="FA">
+                                            <i></i><spring:message code="lbl.processing.date"/></label>
+                                    </section>
+                                </div>
+                            </section>
+                        </div>
+                        <!-- END ROW -->
+                        <!-- START ROW -->
+                        <div class="row" id="divFIS">
+
+                            <section class="col col-sm-12 col-md-12 col-lg-6">
+                                <label class="text-left txt-color-blue font-md">
+                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.symptoms.start.date.init" /> </label>
+                                <label class="input">
+                                    <i class="icon-prepend fa fa-pencil"></i> <i
+                                        class="icon-append fa fa-calendar fa-fw"></i>
+                                    <input class="form-control from_date"
+                                           type="text" name="initFIS" id="initFIS"
+                                           placeholder=" <spring:message code="lbl.symptoms.start.date.init.ph"/>"/>
+                                </label>
+                            </section>
+                            <section class="col col-sm-12 col-md-6 col-lg-6">
+                                <label class="text-left txt-color-blue font-md">
+                                    <i class="fa fa-fw fa-asterisk txt-color-red font-sm"></i><spring:message code="lbl.symptoms.start.date.end"/>
+                                </label>
+                                <label class="input">
+                                    <i class="icon-prepend fa fa-pencil"></i> <i
+                                        class="icon-append fa fa-calendar fa-fw"></i>
+                                    <input class="form-control to_date"
+                                           type="text" name="endFIS" id="endFIS"
+
+                                           placeholder=" <spring:message code="lbl.symptoms.start.date.end.ph"/>"/>
+                                </label>
+
+                            </section>
+
+                        </div>
+                        <!-- START ROW -->
+                        <div class="row" id="divFA" hidden="hidden">
 
                             <section class="col col-sm-12 col-md-12 col-lg-6">
                                 <label class="text-left txt-color-blue font-md">
@@ -337,7 +388,6 @@
             sUnidadesUrl: "${unidadesURL}",
             msgNoData: "${msgNoData}",
             msgTitle: "${msgTitle}",
-            sMailUrl: "${sMailUrl}",
             excelUrl: "${excelUrl}"
         };
         resultReportDxVig.init(parametros);

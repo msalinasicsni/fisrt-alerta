@@ -31,8 +31,7 @@ public class ResultadoFinalService {
     @SuppressWarnings("unchecked")
     public List<DaSolicitudDx> getSolicitudesDxByIdNotificacion(String idNotificacion){
         Session session = sessionFactory.getCurrentSession();
-        Soundex varSoundex = new Soundex();
-        Criteria crit = session.createCriteria(DaSolicitudDx.class, "diagnostico");
+       Criteria crit = session.createCriteria(DaSolicitudDx.class, "diagnostico");
         crit.createAlias("diagnostico.idTomaMx","tomaMx");
         //crit.createAlias("tomaMx.estadoMx","estado");
         crit.createAlias("tomaMx.idNotificacion", "noti");
@@ -54,7 +53,6 @@ public class ResultadoFinalService {
 
     public List<DaSolicitudEstudio> getSolicitudesEstByIdNotificacion(String idNotificacion){
         Session session = sessionFactory.getCurrentSession();
-        Soundex varSoundex = new Soundex();
         Criteria crit = session.createCriteria(DaSolicitudEstudio.class, "estudio");
         crit.createAlias("estudio.idTomaMx","tomaMx");
         //crit.createAlias("tomaMx.estadoMx","estado");

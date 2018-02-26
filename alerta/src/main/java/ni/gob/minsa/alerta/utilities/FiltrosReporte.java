@@ -27,6 +27,8 @@ public class FiltrosReporte {
     Integer idDx;
     boolean incluirMxInadecuadas;
     String codLaboratio;
+    Date fisInicial;
+    Date fisFinal;
 
     public String getCodArea() {
         return codArea;
@@ -172,4 +174,19 @@ public class FiltrosReporte {
         this.codLaboratio = codLaboratio;
     }
 
+    public Date getFisInicial() {
+        return fisInicial;
+    }
+
+    public void setFisInicial(Date fisInicial) {
+        this.fisInicial = fisInicial;
+    }
+
+    public Date getFisFinal() {
+        return fisFinal;
+    }
+
+    public void setFisFinal(Date fisFinal) {
+        this.fisFinal = fisFinal;
+    }
 }

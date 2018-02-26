@@ -54,6 +54,12 @@ var resultReportDxVig = function () {
                     },
                     codigoLab: {
                         required:true
+                    },
+                    initFIS:{
+                        required:true
+                    },
+                    endFIS:{
+                        required:true
                     }
                 },
                 // Do not change code below
@@ -64,6 +70,16 @@ var resultReportDxVig = function () {
                 }
             });
 
+            $('input[type=radio][name=rbFechaBusqueda]').change(function() {
+                if (this.value == 'FIS') {
+                    $("#divFA").hide();
+                    $("#divFIS").show();
+                }
+                else if (this.value == 'FA') {
+                    $("#divFIS").hide();
+                    $("#divFA").show();
+                }
+            });
 
             $('#codArea').change(
                 function() {
@@ -96,17 +112,6 @@ var resultReportDxVig = function () {
                     }
                 });
 
-
-            function showMessage(title,content,color,icon,timeout){
-                $.smallBox({
-                    title: title,
-                    content: content,
-                    color: color,
-                    iconSmall: icon,
-                    timeout: timeout
-                });
-            }
-
             <!-- al seleccionar SILAIS -->
             $('#codSilais').change(function () {
                 bloquearUI();
@@ -137,51 +142,6 @@ var resultReportDxVig = function () {
                 desbloquearUI();
             });
 
-            $("#sendMail").click(function () {
-                var $validarForm = $("#result_form").valid();
-                if (!$validarForm) {
-                    $validator.focusInvalid();
-                    return false;
-                } else {
-                    sendMail();
-                }
-            });
-
-
-            function sendMail() {
-                var filtro = {};
-                //filtro['subunidades'] = $('#ckUS').is(':checked');
-                filtro['fechaInicio'] = $('#initDate').val();
-                filtro['fechaFin'] = $('#endDate').val();
-                filtro['codSilais'] = $('#codSilais').find('option:selected').val();
-                filtro['codUnidadSalud'] = $('#codUnidadAtencion').find('option:selected').val();
-                //filtro['codDepartamento'] = $('#codDepartamento').find('option:selected').val();
-                //filtro['codMunicipio'] = $('#codMunicipio').find('option:selected').val();
-                filtro['codArea'] = $('#codArea').find('option:selected').val();
-                //filtro['tipoNotificacion'] = $('#codTipoNoti').find('option:selected').val();
-                filtro['porSilais'] = $('input[name="rbNivelPais"]:checked', '#result_form').val();
-                //filtro['codZona'] = $('#codZona').find('option:selected').val();
-                filtro['idDx'] = $('#idDx').find('option:selected').val();
-                filtro['incluirMxInadecuadas']=($('#ckbmxinadecuada').is(':checked'));
-                filtro['codLabo'] = $('#codigoLab').find('option:selected').val();
-                bloquearUI(parametros.blockMess);
-                $.getJSON(parametros.sMailUrl, {
-                    filtro: JSON.stringify(filtro),
-                    ajax: 'true'
-                }, function(data) {
-                    if (data==='OK'){
-                        showMessage(parametros.msgTitle, $("#msg_email_ok").val(), "#739E73", "fa fa-success", 3000);
-                    }else {
-                        showMessage(parametros.msgTitle, data, "#AF801C", "fa fa-warning", 6000);
-                    }
-                    desbloquearUI();
-                })
-                    .fail(function(XMLHttpRequest, textStatus, errorThrown) {
-                        alert(" status: " + textStatus + " er:" + errorThrown);
-                        setTimeout($.unblockUI, 5);
-                    });
-            }
-
             $("#exportExcel").click(function(){
                 var $validarForm = $("#result_form").valid();
                 if (!$validarForm) {
@@ -191,8 +151,6 @@ var resultReportDxVig = function () {
                     bloquearUI('');
                     var filtro = {};
                     //filtro['subunidades'] = $('#ckUS').is(':checked');
-                    filtro['fechaInicio'] = $('#initDate').val();
-                    filtro['fechaFin'] = $('#endDate').val();
                     filtro['codSilais'] = $('#codSilais').find('option:selected').val();
                     filtro['codUnidadSalud'] = $('#codUnidadAtencion').find('option:selected').val();
                     //filtro['codDepartamento'] = $('#codDepartamento').find('option:selected').val();
@@ -204,6 +162,13 @@ var resultReportDxVig = function () {
                     filtro['idDx'] = $('#idDx').find('option:selected').val();
                     filtro['incluirMxInadecuadas']=($('#ckbmxinadecuada').is(':checked'));
                     filtro['codLabo'] = $('#codigoLab').find('option:selected').val();
+                    if ($('input[name="rbFechaBusqueda"]:checked', '#result_form').val()==="FIS") {
+                        filtro['fisInicial'] = $('#initFIS').val();
+                        filtro['fisFinal'] = $('#endFIS').val();
+                    }else{
+                        filtro['fechaInicio'] = $('#initDate').val();
+                        filtro['fechaFin'] = $('#endDate').val();
+                    }
                     $(this).attr("href",parametros.excelUrl+"?filtro="+JSON.stringify(filtro));
                     desbloquearUI();
                 }
