@@ -315,7 +315,7 @@
                 <option value=""></option>
                 <c:forEach items="${uni}" var="unid">
                     <c:choose>
-                        <c:when test="${fn:contains(irag.idNotificacion.codUnidadAtencion.codigo, unid.codigo)}">
+                        <c:when test="${irag.idNotificacion.codUnidadAtencion.codigo eq unid.codigo}">
                             <option selected value="${unid.codigo}">${unid.nombre}</option>
                         </c:when>
                         <c:otherwise>

@@ -179,57 +179,74 @@ public class TomaMxService {
 
     public Integer updateLabProcesaDxByMx(String labo, String idTomaMx) throws Exception{
         // Retrieve session from Hibernate
-        Session s = sessionFactory.openSession();
-        Transaction tx = s.beginTransaction();
+        Session s = null;
+        int updateEntities = 0;
+        try {
+            s = sessionFactory.openSession();
+            Transaction tx = s.beginTransaction();
 
-        String hqlDx = "update DaSolicitudDx set labProcesa.codigo=:labo where idTomaMx.idTomaMx = :idTomaMx ";
-        int updateEntities = s.createQuery(hqlDx)
-                .setString("idTomaMx", idTomaMx)
-                .setString("labo",labo)
-                .executeUpdate();
-        tx.commit();
-        s.close();
+            String hqlDx = "update DaSolicitudDx set labProcesa.codigo=:labo where idTomaMx.idTomaMx = :idTomaMx ";
+            updateEntities = s.createQuery(hqlDx)
+                    .setString("idTomaMx", idTomaMx)
+                    .setString("labo", labo)
+                    .executeUpdate();
+            tx.commit();
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }finally {
+            if (s!=null) s.close();
+        }
+
         return updateEntities;
     }
 
-    public Integer updateEnvioEnTomaMx(String estado, String idEnvio, DaTomaMx tomaMx, String username) throws Exception{
+    public Integer updateEnvioEnTomaMx(String estado, String idEnvio, DaTomaMx tomaMx, String username){
         // Retrieve session from Hibernate
-        Session s = sessionFactory.openSession();
+        Session s = null;
+        int updateEntities = 0;
+        try {
+            s = sessionFactory.openSession();
+            Transaction tx = s.beginTransaction();//envio.idEnvio = :idEnvio,
 
-        Transaction tx = s.beginTransaction();//envio.idEnvio = :idEnvio,
-
-        String hqlDx = "update da_tomamx set ID_ENVIO = :idEnvio, COD_ESTADOMX = :estado where ID_TOMAMX = :idTomaMx ";
-        int updateEntities = s.createSQLQuery(hqlDx)
-                .setString("idEnvio",idEnvio)
-                .setString("estado", estado)
-                .setString("idTomaMx", tomaMx.getIdTomaMx())
-                .executeUpdate();
+            String hqlDx = "update da_tomamx set ID_ENVIO = :idEnvio, COD_ESTADOMX = :estado where ID_TOMAMX = :idTomaMx ";
+            updateEntities = s.createSQLQuery(hqlDx)
+                    .setString("idEnvio", idEnvio)
+                    .setString("estado", estado)
+                    .setString("idTomaMx", tomaMx.getIdTomaMx())
+                    .executeUpdate();
 
 
-        AuditTrail auditTrail = new AuditTrail();
-        auditTrail.setEntityId(tomaMx.getIdTomaMx());
-        auditTrail.setEntityName(tomaMx.getClass().getName());
-        auditTrail.setEntityProperty("estadoMx");
-        auditTrail.setEntityPropertyNewValue(estado);
-        auditTrail.setEntityPropertyOldValue(tomaMx.getEstadoMx().getCodigo());
-        auditTrail.setOperationType("UPDATE");
-        auditTrail.setOperationDate(new Date());
-        auditTrail.setUsername(username);
-        s.save(auditTrail);
+            AuditTrail auditTrail = new AuditTrail();
+            auditTrail.setEntityId(tomaMx.getIdTomaMx());
+            auditTrail.setEntityName(tomaMx.getClass().getName());
+            auditTrail.setEntityProperty("estadoMx");
+            auditTrail.setEntityPropertyNewValue(estado);
+            auditTrail.setEntityPropertyOldValue(tomaMx.getEstadoMx().getCodigo());
+            auditTrail.setOperationType("UPDATE");
+            auditTrail.setOperationDate(new Date());
+            auditTrail.setUsername(username);
+            s.save(auditTrail);
 
-        auditTrail = new AuditTrail();
-        auditTrail.setEntityId(tomaMx.getIdTomaMx());
-        auditTrail.setEntityName(tomaMx.getClass().getName());
-        auditTrail.setEntityProperty("envio");
-        auditTrail.setEntityPropertyNewValue(idEnvio);
-        auditTrail.setEntityPropertyOldValue((tomaMx.getEnvio()!=null?tomaMx.getEnvio().getIdEnvio():null));
-        auditTrail.setOperationType("UPDATE");
-        auditTrail.setOperationDate(new Date());
-        auditTrail.setUsername(username);
-        s.save(auditTrail);
+            auditTrail = new AuditTrail();
+            auditTrail.setEntityId(tomaMx.getIdTomaMx());
+            auditTrail.setEntityName(tomaMx.getClass().getName());
+            auditTrail.setEntityProperty("envio");
+            auditTrail.setEntityPropertyNewValue(idEnvio);
+            auditTrail.setEntityPropertyOldValue((tomaMx.getEnvio() != null ? tomaMx.getEnvio().getIdEnvio() : null));
+            auditTrail.setOperationType("UPDATE");
+            auditTrail.setOperationDate(new Date());
+            auditTrail.setUsername(username);
+            s.save(auditTrail);
 
-        tx.commit();
-        s.close();
+            tx.commit();
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }finally {
+            if (s!=null) s.close();
+        }
+
         return updateEntities;
     }
 
