@@ -1316,24 +1316,41 @@ public class ReportesService {
                                 }
 
                                 if (valor != null) {
-                                    if (valor.getValor().trim().toLowerCase().equals("positivo")) {
-                                        pos++;
-                                        break;
-                                    } else if (valor.getValor().trim().toLowerCase().equals("negativo")) {
+                                    if (valor.getValor().trim().toLowerCase().equals("negativo")
+                                            || valor.getValor().trim().toLowerCase().contains("no reactor")
+                                            || valor.getValor().trim().toLowerCase().contains("no detectado")
+                                            || valor.getValor().trim().toUpperCase().contains("MTB-ND")) {
                                         neg++;
+                                        break;
+                                    }else if (valor.getValor().trim().toLowerCase().equals("mx inadecuada")){
+                                        inadecuada++;
+                                    }else if (valor.getValor().trim().toLowerCase().equals("positivo")
+                                            || valor.getValor().trim().toLowerCase().contains("reactor")
+                                            || valor.getValor().trim().toLowerCase().contains("detectado")
+                                            || valor.getValor().trim().toUpperCase().contains("MTB-DET")
+                                            || (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                        pos++;
                                         break;
                                     }
                                 }
 
 
                             } else if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
-                                if (res.getValor().trim().toLowerCase().equals("positivo")) {
-                                    pos++;
-                                    break;
-                                } else if (res.getValor().trim().toLowerCase().equals("negativo")) {
+                                if (res.getValor().trim().toLowerCase().equals("negativo")
+                                        || res.getValor().trim().toLowerCase().contains("no reactor")
+                                        || res.getValor().trim().toLowerCase().contains("no detectado")
+                                        || res.getValor().trim().toUpperCase().contains("MTB-ND")) {
                                     neg++;
+                                    break;
                                 }else if (res.getValor().trim().toLowerCase().equals("mx inadecuada")){
                                     inadecuada++;
+                                }else if (res.getValor().trim().toLowerCase().equals("positivo")
+                                        || res.getValor().trim().toLowerCase().contains("reactor")
+                                        || res.getValor().trim().toLowerCase().contains("detectado")
+                                        || res.getValor().trim().toUpperCase().contains("MTB-DET")
+                                        || (!res.getValor().trim().toLowerCase().contains("negativo") && !res.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                    pos++;
+                                    break;
                                 }
 
                             }
@@ -1349,24 +1366,40 @@ public class ReportesService {
                                 }
 
                                 if (valor != null) {
-                                    if (valor.getValor().trim().toLowerCase().equals("positivo")) {
-                                        pos++;
-                                        break;
-                                    } else if (valor.getValor().trim().toLowerCase().equals("negativo")) {
+                                    if (valor.getValor().trim().toLowerCase().equals("negativo")
+                                            || valor.getValor().trim().toLowerCase().contains("no reactor")
+                                            || valor.getValor().trim().toLowerCase().contains("no detectado")
+                                            || valor.getValor().trim().toUpperCase().contains("MTB-ND")) {
                                         neg++;
+                                        break;
+                                    }else if (valor.getValor().trim().toLowerCase().equals("mx inadecuada")){
+                                        inadecuada++;
+                                    }else if (valor.getValor().trim().toLowerCase().equals("positivo")
+                                            || valor.getValor().trim().toLowerCase().contains("reactor")
+                                            || valor.getValor().trim().toLowerCase().contains("detectado")
+                                            || valor.getValor().trim().toUpperCase().contains("MTB-DET")
+                                            || (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                        pos++;
                                         break;
                                     }
                                 }
 
                             } else if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
-                                if (res.getValor().trim().toLowerCase().equals("positivo")) {
-                                    pos++;
-                                    break;
-                                } else if (res.getValor().trim().toLowerCase().equals("negativo")) {
+                                if (res.getValor().trim().toLowerCase().equals("negativo")
+                                        || res.getValor().trim().toLowerCase().contains("no reactor")
+                                        || res.getValor().trim().toLowerCase().contains("no detectado")
+                                        || res.getValor().trim().toUpperCase().contains("MTB-ND")) {
                                     neg++;
                                     break;
                                 }else if (res.getValor().trim().toLowerCase().equals("mx inadecuada")){
                                     inadecuada++;
+                                }else if (res.getValor().trim().toLowerCase().equals("positivo")
+                                        || res.getValor().trim().toLowerCase().contains("reactor")
+                                        || res.getValor().trim().toLowerCase().contains("detectado")
+                                        || res.getValor().trim().toUpperCase().contains("MTB-DET")
+                                        || (!res.getValor().toString().trim().toLowerCase().contains("negativo") && !res.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                    pos++;
+                                    break;
                                 }
                             }
                         }
@@ -2403,24 +2436,43 @@ public class ReportesService {
                                 }
 
                                 if (valor != null) {
-                                    if (valor.getValor().trim().toLowerCase().contains("positivo")) {
-                                        pos++;
-                                        break;
-                                    } else if (valor.getValor().trim().toLowerCase().contains("negativo")) {
+                                    if (valor.getValor().trim().toLowerCase().contains("negativo")
+                                            || valor.getValor().trim().toLowerCase().contains("no reactor")
+                                            || valor.getValor().trim().toLowerCase().contains("no detectado")
+                                            || valor.getValor().trim().toUpperCase().contains("MTB-ND")) {
                                         neg++;
+                                        break;
+                                    }else if (valor.getValor().trim().toLowerCase().contains("mx inadecuada")){
+                                        inadecuada++;
+                                        break;
+                                    }else if (valor.getValor().trim().toLowerCase().contains("positivo")
+                                            || valor.getValor().trim().toLowerCase().contains("reactor")
+                                            || valor.getValor().trim().toLowerCase().contains("detectado")
+                                            || valor.getValor().trim().toUpperCase().contains("MTB-DET")
+                                            || (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                        pos++;
                                         break;
                                     }
                                 }
 
 
                             } else if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
-                                if (res.getValor().trim().toLowerCase().contains("positivo")) {
-                                    pos++;
-                                    break;
-                                } else if (res.getValor().trim().toLowerCase().contains("negativo")) {
+                                if (res.getValor().trim().toLowerCase().contains("negativo")
+                                        || res.getValor().trim().toLowerCase().contains("no reactor")
+                                        || res.getValor().trim().toLowerCase().contains("no detectado")
+                                        || res.getValor().trim().toUpperCase().contains("MTB-ND")) {
                                     neg++;
+                                    break;
                                 }else if (res.getValor().trim().toLowerCase().contains("mx inadecuada")){
                                     inadecuada++;
+                                    break;
+                                }else if (res.getValor().trim().toLowerCase().contains("positivo")
+                                        || res.getValor().trim().toLowerCase().contains("reactor")
+                                        || res.getValor().trim().toLowerCase().contains("detectado")
+                                        || res.getValor().trim().toUpperCase().contains("MTB-DET")
+                                        || (!res.getValor().trim().toLowerCase().contains("negativo") && !res.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                    pos++;
+                                    break;
                                 }
 
                             }
@@ -2436,24 +2488,42 @@ public class ReportesService {
                                 }
 
                                 if (valor != null) {
-                                    if (valor.getValor().trim().toLowerCase().contains("positivo")) {
-                                        pos++;
-                                        break;
-                                    } else if (valor.getValor().trim().toLowerCase().contains("negativo")) {
+                                    if (valor.getValor().trim().toLowerCase().contains("negativo")
+                                            || valor.getValor().trim().toLowerCase().contains("no reactor")
+                                            || valor.getValor().trim().toLowerCase().contains("no detectado")
+                                            || valor.getValor().trim().toUpperCase().contains("MTB-ND")) {
                                         neg++;
+                                        break;
+                                    }else if (valor.getValor().trim().toLowerCase().contains("mx inadecuada")){
+                                        inadecuada++;
+                                        break;
+                                    } else if (valor.getValor().trim().toLowerCase().contains("positivo")
+                                            || valor.getValor().trim().toLowerCase().contains("reactor")
+                                            || valor.getValor().trim().toLowerCase().contains("detectado")
+                                            || valor.getValor().trim().toUpperCase().contains("MTB-DET")
+                                            || (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                        pos++;
                                         break;
                                     }
                                 }
 
                             } else if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
-                                if (res.getValor().trim().toLowerCase().contains("positivo")) {
-                                    pos++;
-                                    break;
-                                } else if (res.getValor().trim().toLowerCase().contains("negativo")) {
+                                if (res.getValor().trim().toLowerCase().contains("negativo")
+                                        || res.getValor().trim().toLowerCase().contains("no reactor")
+                                        || res.getValor().trim().toLowerCase().contains("no detectado")
+                                        || res.getValor().trim().toUpperCase().contains("MTB-ND")) {
                                     neg++;
                                     break;
                                 }else if (res.getValor().trim().toLowerCase().contains("mx inadecuada")){
                                     inadecuada++;
+                                    break;
+                                }else if (res.getValor().trim().toLowerCase().contains("positivo")
+                                        || res.getValor().trim().toLowerCase().contains("reactor")
+                                        || res.getValor().trim().toLowerCase().contains("detectado")
+                                        || res.getValor().trim().toUpperCase().contains("MTB-DET")
+                                        || (!res.getValor().toString().trim().toLowerCase().contains("negativo") && !res.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                    pos++;
+                                    break;
                                 }
                             }
                         }
