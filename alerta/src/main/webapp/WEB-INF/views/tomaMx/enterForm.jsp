@@ -210,7 +210,6 @@
                                         <section class="col col-md-3">
                                             <label class="text-left txt-color-blue font-md">
                                                 <spring:message code="person.sexo" />
-                                                <spring:message code="person.sexo" />
                                             </label>
 
                                             <div class="input-group">
@@ -267,6 +266,23 @@
                                         </section>
 
 
+                                    </div>
+                                    <div class="row">
+                                        <section class="col col-md-3">
+                                            <label class="text-left txt-color-blue font-md">
+                                                <spring:message code="lbl.symptoms.start.date" />
+                                            </label>
+
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+                                                <label class="input">
+                                                    <input style="background-color: #f0fff0" class="form-control" readonly id="fechaInicioSintomas" name="fechaInicioSintomas"
+                                                           type="text" value="<fmt:formatDate value="${noti.fechaInicioSintomas}" pattern="dd/MM/yyyy" />"
+                                                           placeholder=" <spring:message code="lbl.symptoms.start.date" />">
+                                                </label>
+                                                <span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
+                                            </div>
+                                        </section>
                                     </div>
 
 

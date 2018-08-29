@@ -24,11 +24,12 @@ public class DetalleResultado implements Serializable {
     OrdenExamen examen;
     RespuestaExamen respuesta;
     User usuarioRegistro;
-    Timestamp fechahRegistro;
+    Timestamp fechahProcesa;
     boolean pasivo;
     String razonAnulacion;
     User usuarioAnulacion;
     Timestamp fechahAnulacion;
+    Timestamp fechahoraRegistro;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -63,14 +64,13 @@ public class DetalleResultado implements Serializable {
     }
 
     @Basic
-    @DateTimeFormat(iso = DateTimeFormat.ISO.NONE )
-    @Column(name = "FECHAH_REGISTRO", nullable = false, insertable = true, updatable = false)
-    public Timestamp getFechahRegistro() {
-        return fechahRegistro;
+    @Column(name = "FECHAH_REGISTRO", nullable = false, insertable = true, updatable = true)
+    public Timestamp getFechahProcesa() {
+        return fechahProcesa;
     }
 
-    public void setFechahRegistro(Timestamp fechahRegistro) {
-        this.fechahRegistro = fechahRegistro;
+    public void setFechahProcesa(Timestamp fechahRegistro) {
+        this.fechahProcesa = fechahRegistro;
     }
 
     @Basic
@@ -137,5 +137,15 @@ public class DetalleResultado implements Serializable {
 
     public void setUsuarioAnulacion(User usuarioAnulacion) {
         this.usuarioAnulacion = usuarioAnulacion;
+    }
+
+    @Basic
+    @Column(name = "FECHA_REG_SISTEMA", nullable = true, insertable = true, updatable = false)
+    public Timestamp getFechahoraRegistro() {
+        return fechahoraRegistro;
+    }
+
+    public void setFechahoraRegistro(Timestamp fechahoraRegistro) {
+        this.fechahoraRegistro = fechahoraRegistro;
     }
 }

@@ -630,4 +630,13 @@ public class TomaMxService {
         q.setParameter("fechaToma", fechaToma);
         return q.list();
     }
+
+    @SuppressWarnings("unchecked")
+    public List<DaSolicitudDx> getSoliDxAprobByIdToma(String idTomaMx){
+        String query = "from DaSolicitudDx where idTomaMx.idTomaMx = :idTomaMx and anulado = false and  aprobada = true ORDER BY fechaHSolicitud";
+        Query q = sessionFactory.getCurrentSession().createQuery(query);
+        q.setParameter("idTomaMx",idTomaMx);
+        return q.list();
+    }
+
 }

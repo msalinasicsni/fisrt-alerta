@@ -43,7 +43,9 @@ public class DaNotificacion implements Serializable, Auditable {
     private Solicitante solicitante;
     private Respuesta embarazada;
     private Integer semanasEmbarazo;
-	private boolean completa;
+    private String codigoPacienteVIH;
+    private String codExpediente;
+    private boolean completa;
     private String actor;
 
     @Id
@@ -209,7 +211,26 @@ public class DaNotificacion implements Serializable, Auditable {
         this.semanasEmbarazo = semanasEmbarazo;
     }
 
-	@Basic
+    @Basic
+    @Column(name = "CODIGO_VIH", length=100)
+    public String getCodigoPacienteVIH() {
+        return codigoPacienteVIH;
+    }
+
+    public void setCodigoPacienteVIH(String codigoPacienteVIH) {
+        this.codigoPacienteVIH = codigoPacienteVIH;
+    }
+
+    @Basic
+    @Column(name = "COD_EXPEDIENTE", nullable = true, insertable = true, updatable = true, length = 30)
+    public String getCodExpediente() {
+        return codExpediente;
+    }
+
+    public void setCodExpediente(String codExpediente) {
+        this.codExpediente = codExpediente;
+    }
+    @Basic
     @Column(name = "COMPLETA", nullable = true, insertable = true, updatable = true)
     public boolean isCompleta() { return completa; }
 

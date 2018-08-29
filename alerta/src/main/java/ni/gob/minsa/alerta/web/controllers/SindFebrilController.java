@@ -464,6 +464,7 @@ public class SindFebrilController {
                     daNotificacion.setIdNotificacion(idNotificacion);
                     daSindFeb = sindFebrilService.getDaSindFebril(idNotificacion);
                 }
+                daNotificacion.setCodExpediente(codExpediente);
                 daNotificacion.setActor(seguridadService.obtenerNombreUsuario(request));
                 daSindFeb.setIdNotificacion(daNotificacion);
                 Date dateFicha = formatter.parse(fechaFicha);
@@ -1902,7 +1903,7 @@ public class SindFebrilController {
                                             contt++;
                                             //first record
                                             if (contt == 1) {
-                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy HH:mm:ss");
+                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahProcesa(), "dd/MM/yyyy HH:mm:ss");
                                                 if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
                                                     Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
                                                     rExamen = resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();
@@ -2035,7 +2036,7 @@ public class SindFebrilController {
                                             cont2++;
                                             //first record
                                             if (cont2 == 1) {
-                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy HH:mm:ss");
+                                                fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahProcesa(), "dd/MM/yyyy HH:mm:ss");
                                                 if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
                                                     Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
                                                     rExamen = resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();

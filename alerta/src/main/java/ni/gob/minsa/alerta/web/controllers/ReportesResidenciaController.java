@@ -930,13 +930,19 @@ public class ReportesResidenciaController {
                 Integer idLista = Integer.valueOf(res.getValor());
                 Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
 
-                if (valor.getValor().trim().toLowerCase().equals("positivo") ||valor.getValor().trim().toLowerCase().equals("negativo") ) {
+                if (valor.getValor().trim().toLowerCase().equals("positivo") ||valor.getValor().trim().toLowerCase().equals("negativo")
+                        || valor.getValor().trim().toLowerCase().contains("reactor") || valor.getValor().trim().toLowerCase().contains("detectado")
+                        || valor.getValor().trim().toUpperCase().contains("MTB-")
+                        || (!valor.getValor().trim().toLowerCase().contains("indetermin") && !valor.getValor().trim().toLowerCase().equals("mx inadecuada"))) {
                     mostrar = true;
                     valorResultado = valor.getValor();
                 }
 
             } else if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
-                if (res.getValor().trim().toLowerCase().equals("positivo") || res.getValor().trim().toLowerCase().equals("negativo")) {
+                if (res.getValor().trim().toLowerCase().equals("positivo") || res.getValor().trim().toLowerCase().equals("negativo")
+                        || res.getValor().trim().toLowerCase().contains("reactor") || res.getValor().trim().toLowerCase().contains("detectado")
+                        || res.getValor().trim().toUpperCase().contains("MTB-")
+                        || (!res.getValor().trim().toLowerCase().contains("indetermin") && !res.getValor().trim().toLowerCase().equals("mx inadecuada"))) {
                     mostrar = true;
                     valorResultado = res.getValor();
                 }
@@ -946,13 +952,19 @@ public class ReportesResidenciaController {
                 Integer idLista = Integer.valueOf(res.getValor());
                 Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
 
-                if (valor.getValor().trim().toLowerCase().equals("positivo") || valor.getValor().trim().toLowerCase().equals("negativo") ) {
+                if (valor.getValor().trim().toLowerCase().equals("positivo") || valor.getValor().trim().toLowerCase().equals("negativo")
+                        || valor.getValor().trim().toLowerCase().contains("reactor") || valor.getValor().trim().toLowerCase().contains("detectado")
+                        || valor.getValor().trim().toUpperCase().contains("MTB-")
+                        || (!valor.getValor().trim().toLowerCase().contains("indetermin") && !valor.getValor().trim().toLowerCase().equals("mx inadecuada"))) {
                     mostrar = true;
                     valorResultado = valor.getValor();
                 }
 
             } else if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
-                if (res.getValor().trim().toLowerCase().equals("positivo") || res.getValor().trim().toLowerCase().equals("negativo")) {
+                if (res.getValor().trim().toLowerCase().equals("positivo") || res.getValor().trim().toLowerCase().equals("negativo")
+                        || res.getValor().trim().toLowerCase().contains("reactor") || res.getValor().trim().toLowerCase().contains("detectado")
+                        || res.getValor().trim().toUpperCase().contains("MTB-")
+                        || (!res.getValor().trim().toLowerCase().contains("indetermin") && !res.getValor().trim().toLowerCase().equals("mx inadecuada"))) {
                     mostrar = true;
                     valorResultado = res.getValor();
                 }
@@ -971,13 +983,19 @@ public class ReportesResidenciaController {
                 Integer idLista = Integer.valueOf(res.getValor());
                 Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
 
-                if (valor.getValor().toLowerCase().equals("negativo") ) {
+                if (valor.getValor().toLowerCase().equals("negativo")
+                        || valor.getValor().trim().toLowerCase().contains("no reactor")
+                        || valor.getValor().trim().toLowerCase().contains("no detectado")
+                        || valor.getValor().trim().toUpperCase().contains("MTB-ND")) {
                     mostrar = true;
                     valorResultado = valor.getValor();
                 }
 
             } else if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
-                if (res.getValor().toLowerCase().equals("negativo")) {
+                if (res.getValor().toLowerCase().equals("negativo")
+                        || res.getValor().trim().toLowerCase().contains("no reactor")
+                        || res.getValor().trim().toLowerCase().contains("no detectado")
+                        || res.getValor().trim().toUpperCase().contains("MTB-ND")) {
                     mostrar = true;
                     valorResultado = res.getValor();
                 }
@@ -987,16 +1005,23 @@ public class ReportesResidenciaController {
                 Integer idLista = Integer.valueOf(res.getValor());
                 Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
 
-                if (valor.getValor().toLowerCase().equals("negativo") ) {
+                if (valor.getValor().toLowerCase().equals("negativo")
+                        || valor.getValor().trim().toLowerCase().contains("no reactor")
+                        || valor.getValor().trim().toLowerCase().contains("no detectado")
+                        || valor.getValor().trim().toUpperCase().contains("MTB-ND")) {
                     mostrar = true;
                     valorResultado = valor.getValor();
                 }
 
             } else if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
-                if (res.getValor().toLowerCase().equals("negativo")) {
+                if (res.getValor().toLowerCase().equals("negativo")
+                        || res.getValor().trim().toLowerCase().contains("no reactor")
+                        || res.getValor().trim().toLowerCase().contains("no detectado")
+                        || res.getValor().trim().toUpperCase().contains("MTB-ND")) {
                     mostrar = true;
                     valorResultado = res.getValor();
                 }
+
             }
 
         }
@@ -1012,13 +1037,20 @@ public class ReportesResidenciaController {
                 Integer idLista = Integer.valueOf(res.getValor());
                 Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
 
-                if (valor.getValor().trim().toLowerCase().equals("positivo") ) {
+                if (valor.getValor().trim().toLowerCase().contains("positivo")
+                        || (valor.getValor().trim().toLowerCase().contains("reactor") && !valor.getValor().trim().toLowerCase().contains("no reactor"))
+                        || (valor.getValor().trim().toLowerCase().contains("detectado") && !valor.getValor().trim().toLowerCase().contains("no detectado"))
+                        || (valor.getValor().trim().toUpperCase().contains("MTB-DET") && !valor.getValor().trim().toUpperCase().contains("MTB-ND"))) {
                     mostrar = true;
                     valorResultado = valor.getValor();
                 }
 
             } else if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
-                if (res.getValor().trim().toLowerCase().equals("positivo")) {
+                if (res.getValor().trim().toLowerCase().equals("positivo")
+                        || (res.getValor().trim().toLowerCase().contains("reactor") && !res.getValor().trim().toLowerCase().contains("no reactor"))
+                        || (res.getValor().trim().toLowerCase().contains("detectado") && !res.getValor().trim().toLowerCase().contains("no detectado"))
+                        || (res.getValor().trim().toUpperCase().contains("MTB-DET") && !res.getValor().trim().toUpperCase().contains("MTB-ND"))
+                        || (!res.getValor().trim().toLowerCase().contains("negativo") && !res.getValor().trim().toLowerCase().contains("indetermin") && !res.getValor().trim().toLowerCase().equals("mx inadecuada"))) {
                     mostrar = true;
                     valorResultado = res.getValor();
                 }
@@ -1028,13 +1060,21 @@ public class ReportesResidenciaController {
                 Integer idLista = Integer.valueOf(res.getValor());
                 Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
 
-                if (valor.getValor().trim().toLowerCase().equals("positivo")) {
+                if (valor.getValor().trim().toLowerCase().equals("positivo")
+                        || (valor.getValor().trim().toLowerCase().contains("reactor") && !valor.getValor().trim().toLowerCase().contains("no reactor"))
+                        || (valor.getValor().trim().toLowerCase().contains("detectado") && !valor.getValor().trim().toLowerCase().contains("no detectado"))
+                        || (valor.getValor().trim().toUpperCase().contains("MTB-DET") && !valor.getValor().trim().toUpperCase().contains("MTB-ND"))
+                        || (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin") && !valor.getValor().trim().toLowerCase().equals("mx inadecuada"))) {
                     mostrar = true;
                     valorResultado = valor.getValor();
                 }
 
             } else if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
-                if (res.getValor().trim().toLowerCase().equals("positivo")) {
+                if (res.getValor().trim().toLowerCase().equals("positivo")
+                        || (res.getValor().trim().toLowerCase().contains("reactor") && !res.getValor().trim().toLowerCase().contains("no reactor"))
+                        || (res.getValor().trim().toLowerCase().contains("detectado") && !res.getValor().trim().toLowerCase().contains("no detectado"))
+                        || (res.getValor().trim().toUpperCase().contains("MTB-DET") && !res.getValor().trim().toUpperCase().contains("MTB-ND"))
+                        || (!res.getValor().trim().toLowerCase().contains("negativo") && !res.getValor().trim().toLowerCase().contains("indetermin") && !res.getValor().trim().toLowerCase().equals("mx inadecuada"))) {
                     mostrar = true;
                     valorResultado = res.getValor();
                 }

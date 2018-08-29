@@ -672,6 +672,7 @@ public class IragController {
                     }
                 }
             }
+            irag.getIdNotificacion().setCodExpediente(irag.getCodExpediente());
 
             irag.setCodClasFDetalleNB(catalogoService.getClasificacionFinalNB(codClasFDetalleNB));
             irag.setCodClasFDetalleNV(catalogoService.getClasificacionFinalNV(codClasFDetalleNV));
@@ -2067,7 +2068,7 @@ public class IragController {
                                         cont1++;
                                         //first record
                                         if (cont1 == 1) {
-                                            fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahRegistro(), "dd/MM/yyyy hh:mm:ss a");
+                                            fechaProcesamiento = DateUtil.DateToString(resExamen.getFechahProcesa(), "dd/MM/yyyy hh:mm:ss a");
                                             if (resExamen.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
                                                 Catalogo_Lista valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(Integer.valueOf(resExamen.getValor()));
                                                 rExamen = resExamen.getRespuesta().getNombre() + ":" + " " + valor.getValor();

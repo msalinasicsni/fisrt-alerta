@@ -20,6 +20,7 @@ public class Catalogo_Lista implements Serializable {
 
     Integer idCatalogoLista;
     String valor;
+    String etiqueta;
     Concepto idConcepto;
     boolean pasivo;
     User usarioRegistro;
@@ -44,6 +45,16 @@ public class Catalogo_Lista implements Serializable {
 
     public void setValor(String valor) {
         this.valor = valor;
+    }
+
+    @Basic
+    @Column(name= "ETIQUETA", nullable = true, insertable = true, updatable = true, length = 150)
+    public String getEtiqueta() {
+        return etiqueta;
+    }
+
+    public void setEtiqueta(String etiqueta) {
+        this.etiqueta = etiqueta;
     }
 
     @LazyCollection(LazyCollectionOption.FALSE)
