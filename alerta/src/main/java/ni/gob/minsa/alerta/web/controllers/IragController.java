@@ -257,10 +257,14 @@ public class IragController {
                 if (persona != null) {
                     noti.setPersona(persona);
                     irag.setIdNotificacion(noti);
-                    Divisionpolitica departamentoProce = divisionPoliticaService.getDepartamentoByMunicipi(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
-                    List<Divisionpolitica> municipiosResi = departamentoProce!= null? divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional()):null;
-                    List<Comunidades> comunidades = comunidadesService.getComunidades(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
-
+                    Divisionpolitica departamentoProce = null;
+                    List<Divisionpolitica> municipiosResi = null;
+                    List<Comunidades> comunidades = null;
+                    if (irag.getIdNotificacion().getPersona().getMunicipioResidencia()!=null) {
+                        departamentoProce = divisionPoliticaService.getDepartamentoByMunicipi(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
+                        municipiosResi = departamentoProce != null ? divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional()) : null;
+                        comunidades = comunidadesService.getComunidades(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
+                    }
                     mav.addObject("entidades", entidades);
                     mav.addObject("autorizado", autorizado);
                     mav.addObject("departamentoProce", departamentoProce);
@@ -353,9 +357,14 @@ public class IragController {
             if (persona != null) {
                 noti.setPersona(persona);
                 irag.setIdNotificacion(noti);
-                Divisionpolitica departamentoProce = divisionPoliticaService.getDepartamentoByMunicipi(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
-                List<Divisionpolitica> municipiosResi = divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional());
-                List<Comunidades> comunidades = comunidadesService.getComunidades(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
+                Divisionpolitica departamentoProce = null;
+                List<Divisionpolitica> municipiosResi = null;
+                List<Comunidades> comunidades = null;
+                if (irag.getIdNotificacion().getPersona().getMunicipioResidencia()!=null) {
+                    departamentoProce = divisionPoliticaService.getDepartamentoByMunicipi(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
+                    municipiosResi = departamentoProce != null ? divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional()) : null;
+                    comunidades = comunidadesService.getComunidades(irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional());
+                }
 
                 mav.addObject("entidades", entidades);
                 mav.addObject("autorizado", autorizado);
@@ -438,7 +447,7 @@ public class IragController {
                     }
 
                     //datos persona
-                    Divisionpolitica departamentoProce;
+                    Divisionpolitica departamentoProce = null;
                     List<Divisionpolitica> municipiosResi = null;
                     List<Comunidades> comunidades = null;
 
@@ -448,6 +457,12 @@ public class IragController {
                         municipiosResi = divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional());
                         String comu = irag.getIdNotificacion().getPersona().getMunicipioResidencia().getCodigoNacional();
                         comunidades = comunidadesService.getComunidades(comu);
+                    }else if (irag.getIdNotificacion().getMunicipioResidencia() != null) {
+                        String municipioResidencia = irag.getIdNotificacion().getMunicipioResidencia().getCodigoNacional();
+                        departamentoProce = divisionPoliticaService.getDepartamentoByMunicipi(municipioResidencia);
+                        municipiosResi = divisionPoliticaService.getMunicipiosFromDepartamento(departamentoProce.getCodigoNacional());
+                        String comu = irag.getIdNotificacion().getMunicipioResidencia().getCodigoNacional();
+                        comunidades = comunidadesService.getComunidades(comu);
                     }
 
 
@@ -455,6 +470,7 @@ public class IragController {
                     mav.addObject("autorizado", autorizado);
                     mav.addObject("entidades", entidades);
                     mav.addObject("munic", munic);
+                    mav.addObject("departamentoProce", departamentoProce);
                     mav.addObject("municipiosResi", municipiosResi);
                     mav.addObject("comunidades", comunidades);
                     mav.addObject("uni", uni);

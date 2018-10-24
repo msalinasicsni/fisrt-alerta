@@ -580,7 +580,7 @@
                 <option value=""></option>
                 <c:forEach items="${departamentos}" var="depa">
                     <c:choose>
-                        <c:when test="${depa.divisionpoliticaId eq irag.idNotificacion.persona.municipioResidencia.dependencia.divisionpoliticaId}">
+                        <c:when test="${depa.divisionpoliticaId eq departamentoProce.divisionpoliticaId}">
                             <option selected value="${depa.codigoNacional}">${depa.nombre}</option>
                         </c:when>
                         <c:otherwise>
@@ -607,7 +607,7 @@
                 <option value=""></option>
                 <c:forEach items="${municipiosResi}" var="muniResi">
                     <c:choose>
-                        <c:when test="${muniResi.codigoNacional eq irag.idNotificacion.persona.municipioResidencia.codigoNacional}">
+                        <c:when test="${muniResi.codigoNacional eq irag.idNotificacion.persona.municipioResidencia.codigoNacional or muniResi.codigoNacional eq irag.idNotificacion.municipioResidencia.codigoNacional}">
                             <option selected value="${muniResi.codigoNacional}">${muniResi.nombre}</option>
                         </c:when>
                         <c:otherwise>
