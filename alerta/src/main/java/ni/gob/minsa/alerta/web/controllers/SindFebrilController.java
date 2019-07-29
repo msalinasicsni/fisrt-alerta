@@ -455,6 +455,7 @@ public class SindFebrilController {
                 daNotificacion.setCompleta(Boolean.parseBoolean(completa));
                 daNotificacion.setEmbarazada(catalogoService.getRespuesta(embarazo));
                 daNotificacion.setSemanasEmbarazo(mesesEmbarazo);
+                daNotificacion.setDireccionResidencia(direccionResidencia);
 
                 //	daNotificacion.setUsuarioRegistro(usuarioService.getUsuarioById(1));
                 daNotificacion.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|SINFEB"));
@@ -753,7 +754,7 @@ public class SindFebrilController {
 
                     String tutor = febril.getNombPadre() != null? febril.getNombPadre(): "----------";
 
-                    String direccion = febril.getIdNotificacion().getDireccionResidencia() != null? febril.getIdNotificacion().getDireccionResidencia(): "----------";
+                    String direccion = febril.getIdNotificacion().getDireccionResidencia() != null? febril.getIdNotificacion().getDireccionResidencia(): (febril.getIdNotificacion().getPersona().getDireccionResidencia()!=null?febril.getIdNotificacion().getPersona().getDireccionResidencia():"----------");//18072019
 
                     String procedencia = febril.getCodProcedencia() != null? febril.getCodProcedencia().getValor(): null;
 

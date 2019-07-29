@@ -67,15 +67,20 @@ public class SeguridadService {
             //Desde aca
             /*infoSesion = new InfoSesion();
             //usuario produccion
-            infoSesion.setUsuarioId(6118);
-            infoSesion.setNombre("HOSPITAL REGIONAL CESAR AMADOR MOLINA");
-            infoSesion.setUsername("alerta-hopsmatagalpa");
+            infoSesion.setUsuarioId(5859);
+            infoSesion.setNombre("ALERTA MANAGUA SILAIS");
+            infoSesion.setUsername("alerta-managua");
             infoSesion.setSistemaSesion("ALERTA");
             //usuario de pruebas
-            infoSesion.setUsuarioId(4791);
+            /*infoSesion.setUsuarioId(4791);
             infoSesion.setNombre("Juan Marcio Palacios");
             infoSesion.setUsername("jpalacios");
             infoSesion.setSistemaSesion("ALERTA");
+            */
+            /*infoSesion.setUsuarioId(4772);
+            infoSesion.setNombre("Admin Alerta");
+            infoSesion.setUsername("admalerta");
+            infoSesion.setSistemaSesion("ALERTA");*/
             //usuario de desarrollo
             /*infoSesion.setUsuarioId(170);
             infoSesion.setNombre("Adm Alerta");

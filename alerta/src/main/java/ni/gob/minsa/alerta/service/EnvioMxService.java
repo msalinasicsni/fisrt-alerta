@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -257,4 +258,12 @@ public class EnvioMxService {
         q.setParameter("idTomaMx",idTomaMx);
         return q.list();
     }
+
+    public int tieneEstudios(String idTomaMx){
+        String query = "select count(1) from da_solicitud_estudio where id_tomamx = :idTomaMx ";
+        Query q = sessionFactory.getCurrentSession().createSQLQuery(query);
+        q.setParameter("idTomaMx", idTomaMx);
+        return ((BigDecimal)q.list().get(0)).intValue();
+    }
+
 }
