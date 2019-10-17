@@ -29,6 +29,9 @@ public class FiltrosReporte {
     String codLaboratio;
     Date fisInicial;
     Date fisFinal;
+    boolean nivelCentral;
+    String diagnosticos;
+    String consolidarPor;
 
     public String getCodArea() {
         return codArea;
@@ -188,5 +191,29 @@ public class FiltrosReporte {
 
     public void setFisFinal(Date fisFinal) {
         this.fisFinal = fisFinal;
+    }
+
+    public boolean isNivelCentral() {
+        return nivelCentral;
+    }
+
+    public void setNivelCentral(boolean nivelCentral) {
+        this.nivelCentral = nivelCentral;
+    }
+
+    public String getDiagnosticos() {
+        return diagnosticos;
+    }
+
+    public void setDiagnosticos(String diagnosticos) {
+        this.diagnosticos = diagnosticos;
+    }
+
+    public String getConsolidarPor() {
+        return consolidarPor;
+    }
+
+    public void setConsolidarPor(String consolidarPor) {
+        this.consolidarPor = consolidarPor;
     }
 }

@@ -5,9 +5,11 @@ import ni.gob.minsa.alerta.domain.examen.CatalogoExamenes;
 import ni.gob.minsa.alerta.domain.muestra.*;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
 import ni.gob.minsa.alerta.domain.solicitante.Solicitante;
+import ni.gob.minsa.alerta.utilities.reportes.Solicitud;
 import org.apache.commons.codec.language.Soundex;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
+import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -613,6 +615,20 @@ public class TomaMxService {
         Query q = sessionFactory.getCurrentSession().createQuery(query);
         q.setParameter("idTomaMx",idTomaMx);
         q.setParameter("codigoLab",codigoLab);
+        return q.list();
+    }
+
+    public List<Solicitud> getSolicitudesDxByIdTomaV2(String idTomaMx, String codigoLab){
+        String query = "select distinct sdx.codDx.idDiagnostico as idSolicitud, sdx.codDx.nombre as nombre from DaSolicitudDx sdx inner join sdx.idTomaMx mx " +
+                "where sdx.anulado = false and mx.idTomaMx = :idTomaMx " +
+                "and (sdx.labProcesa.codigo = :codigoLab" +
+                " or sdx.idSolicitudDx in (select oe.solicitudDx.idSolicitudDx " +
+                "                   from OrdenExamen oe where oe.solicitudDx.idSolicitudDx = sdx.idSolicitudDx and oe.labProcesa.codigo = :codigoLab )) ";
+
+        Query q = sessionFactory.getCurrentSession().createQuery(query);
+        q.setParameter("idTomaMx",idTomaMx);
+        q.setParameter("codigoLab",codigoLab);
+        q.setResultTransformer(Transformers.aliasToBean(Solicitud.class));
         return q.list();
     }
 

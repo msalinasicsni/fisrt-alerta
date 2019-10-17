@@ -4,12 +4,14 @@ import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
 import ni.gob.minsa.alerta.domain.concepto.Catalogo_Lista;
 import ni.gob.minsa.alerta.domain.resultados.DetalleResultadoFinal;
+import ni.gob.minsa.alerta.utilities.reportes.ResultadoSolicitud;
 import org.apache.commons.codec.language.Soundex;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,6 +88,29 @@ public class ResultadoFinalService {
         Query q2 = session.createQuery(query2);
         q2.setParameter("idSolicitud", idSolicitud);
         resultadoFinals.addAll(q2.list());
+        return  resultadoFinals;
+    }
+
+    public List<ResultadoSolicitud> getDetResActivosBySolicitudV2(String idSolicitud){
+        List<ResultadoSolicitud> resultadoFinals = new ArrayList<ResultadoSolicitud>();
+        Session session = sessionFactory.getCurrentSession();
+        String query = "select a.idDetalle as idDetalle, coalesce((select rs.nombre from RespuestaSolicitud rs where rs.idRespuesta = a.respuesta.idRespuesta), null) as respuesta, coalesce((select rs.codigo from Catalogo rs where rs.codigo = a.respuesta.concepto.tipo.codigo), null) as tipo, a.valor as valor," +
+                " coalesce((select rs.nombre from RespuestaExamen rs where rs.idRespuesta = a.respuestaExamen.idRespuesta), null) as respuestaExamen, coalesce((select rs.codigo from Catalogo rs where rs.codigo = a.respuestaExamen.concepto.tipo.codigo), null) as tipoExamen " +
+                "from DetalleResultadoFinal as a inner join a.solicitudDx as r where a.pasivo = false and r.idSolicitudDx = :idSolicitud ";
+
+        Query q = session.createQuery(query);
+        q.setParameter("idSolicitud", idSolicitud);
+        q.setResultTransformer(Transformers.aliasToBean(ResultadoSolicitud.class));
+        resultadoFinals = q.list();
+        if (resultadoFinals.size()<=0) {
+            String query2 = "select a.idDetalle as idDetalle, coalesce((select rs.nombre from RespuestaSolicitud rs where rs.idRespuesta = a.respuesta.idRespuesta), null) as respuesta, coalesce((select rs.codigo from Catalogo rs where rs.codigo = a.respuesta.concepto.tipo.codigo), null) as tipo, a.valor as valor," +
+                    " coalesce((select rs.nombre from RespuestaExamen rs where rs.idRespuesta = a.respuestaExamen.idRespuesta), null) as respuestaExamen, coalesce((select rs.codigo from Catalogo rs where rs.codigo = a.respuestaExamen.concepto.tipo.codigo), null) as tipoExamen " +
+                    "from DetalleResultadoFinal as a inner join a.solicitudEstudio as r where a.pasivo = false and r.idSolicitudEstudio = :idSolicitud ";
+            Query q2 = session.createQuery(query2);
+            q2.setParameter("idSolicitud", idSolicitud);
+            q2.setResultTransformer(Transformers.aliasToBean(ResultadoSolicitud.class));
+            resultadoFinals.addAll(q2.list());
+        }
         return  resultadoFinals;
     }
 

@@ -72,7 +72,7 @@
 <!-- row -->
 <div class="row">
 <!-- NEW WIDGET START -->
-<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+<article class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
     <!-- Widget ID (each widget will need unique ID)-->
     <div class="jarviswidget jarviswidget-color-darken" id="wid-id-0">
         <!-- widget options:

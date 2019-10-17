@@ -1,9 +1,11 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.muestra.OrdenExamen;
+import ni.gob.minsa.alerta.utilities.reportes.DatosOrdenExamen;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -94,6 +96,25 @@ public class OrdenExamenMxService {
         Query q2 = session.createQuery("select oe from OrdenExamen as oe inner join oe.solicitudEstudio as se where se.idSolicitudEstudio =:idSolicitud ");
         q2.setParameter("idSolicitud",idSolicitud);
         ordenExamenList.addAll(q2.list());
+        return ordenExamenList;
+    }
+
+    public List<DatosOrdenExamen> getOrdenesExamenByIdSolicitudV2(String idSolicitud){
+        Session session = sessionFactory.getCurrentSession();
+        List<DatosOrdenExamen> ordenExamenList = new ArrayList<DatosOrdenExamen>();
+        //se toman las que son de diagnóstico.
+        Query q = session.createQuery("select oe.idOrdenExamen as idOrdenExamen, oe.codExamen.nombre as examen from OrdenExamen as oe inner join oe.solicitudDx as sdx where sdx.idSolicitudDx =:idSolicitud and oe.anulado = false ");
+        q.setParameter("idSolicitud",idSolicitud);
+        q.setResultTransformer(Transformers.aliasToBean(DatosOrdenExamen.class));
+        ordenExamenList = q.list();
+        if (ordenExamenList.size()<=0) {
+            //se toman las que son de estudio
+            Query q2 = session.createQuery("select oe.idOrdenExamen as idOrdenExamen, oe.codExamen.nombre as examen from OrdenExamen as oe inner join oe.solicitudEstudio as se where se.idSolicitudEstudio =:idSolicitud and oe.anulado = false ");
+            q2.setParameter("idSolicitud", idSolicitud);
+            q2.setResultTransformer(Transformers.aliasToBean(DatosOrdenExamen.class));
+            ordenExamenList.addAll(q2.list());
+        }
+
         return ordenExamenList;
     }
 }
