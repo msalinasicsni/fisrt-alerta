@@ -635,7 +635,7 @@
                 <option value=""></option>
                 <c:forEach items="${comunidades}" var="comu">
                     <c:choose>
-                        <c:when test="${comu.codigo eq irag.idNotificacion.persona.comunidadResidencia.codigo}">
+                        <c:when test="${comu.codigo eq irag.idNotificacion.comunidadResidencia.codigo or comu.codigo eq irag.idNotificacion.persona.comunidadResidencia.codigo}">
                             <option selected value="${comu.codigo}">${comu.nombre}-${comu.sector.unidad.nombre}</option>
                         </c:when>
                         <c:otherwise>
@@ -657,9 +657,18 @@
         <div class="input">
 
             <i class="icon-prepend fa fa-map-marker fa-fw"></i> <i class="icon-append fa fa-sort-alpha-asc fa-fw"></i>
-            <input class="form-control" type="text" name="direccionResidencia" id="direccionResidencia"
-                   value="${irag.idNotificacion.persona.direccionResidencia}"
-                   placeholder=" <spring:message code="person.direccion" />">
+            <c:choose>
+                <c:when test="${not empty irag.idNotificacion.direccionResidencia}">
+                    <input class="form-control" type="text" name="direccionResidencia" id="direccionResidencia"
+                           value="${irag.idNotificacion.direccionResidencia}"
+                           placeholder=" <spring:message code="person.direccion" />">
+                </c:when>
+                <c:otherwise>
+                    <input class="form-control" type="text" name="direccionResidencia" id="direccionResidencia"
+                           value="${irag.idNotificacion.persona.direccionResidencia}"
+                           placeholder=" <spring:message code="person.direccion" />">
+                </c:otherwise>
+            </c:choose>
             <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message
                     code="person.direccion"/></b>
         </div>

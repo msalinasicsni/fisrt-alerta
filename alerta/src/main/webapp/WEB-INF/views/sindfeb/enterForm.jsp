@@ -450,7 +450,7 @@
 																<option value=""></option>
 																<c:forEach items="${departamentos}" var="departamento">
 																	<c:choose> 
-																		<c:when test="${departamento.codigoNacional eq daSindFeb.idNotificacion.persona.municipioResidencia.dependencia.codigoNacional}">
+																		<c:when test="${departamento.codigoNacional eq daSindFeb.idNotificacion.municipioResidencia.dependencia.codigoNacional or departamento.codigoNacional eq daSindFeb.idNotificacion.persona.municipioResidencia.dependencia.codigoNacional}">
 																			<option selected value="${departamento.codigoNacional}">${departamento.nombre}</option>
 																		</c:when>
 																		<c:otherwise>
@@ -471,7 +471,7 @@
 																<option value=""></option>
 																<c:forEach items="${municipiosResi}" var="municipioResi">
 																	<c:choose> 
-																		<c:when test="${municipioResi.codigoNacional eq daSindFeb.idNotificacion.persona.municipioResidencia.codigoNacional}">
+																		<c:when test="${municipioResi.codigoNacional eq daSindFeb.idNotificacion.municipioResidencia.codigoNacional or municipioResi.codigoNacional eq daSindFeb.idNotificacion.persona.municipioResidencia.codigoNacional}">
 																			<option selected value="${municipioResi.codigoNacional}">${municipioResi.nombre}</option>
 																		</c:when>
 																		<c:otherwise>
@@ -492,7 +492,7 @@
 																<option value=""></option>
 																<c:forEach items="${comunidades}" var="comunid">
 																	<c:choose> 
-																		<c:when test="${comunid.codigo eq daSindFeb.idNotificacion.persona.comunidadResidencia.codigo}">
+																		<c:when test="${comunid.codigo eq daSindFeb.idNotificacion.comunidadResidencia.codigo or comunid.codigo eq daSindFeb.idNotificacion.persona.comunidadResidencia.codigo}">
 																			<option selected value="${comunid.codigo}">${comunid.nombre}-${comunid.sector.unidad.nombre}</option>
 																		</c:when>
 																		<c:otherwise>

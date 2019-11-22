@@ -32,6 +32,8 @@ public class FiltrosReporte {
     boolean nivelCentral;
     String diagnosticos;
     String consolidarPor;
+    String codigosLaboratorios;
+    String idTomaMx;
 
     public String getCodArea() {
         return codArea;
@@ -215,5 +217,21 @@ public class FiltrosReporte {
 
     public void setConsolidarPor(String consolidarPor) {
         this.consolidarPor = consolidarPor;
+    }
+
+    public String getCodigosLaboratorios() {
+        return codigosLaboratorios;
+    }
+
+    public void setCodigosLaboratorios(String codigosLaboratorios) {
+        this.codigosLaboratorios = codigosLaboratorios;
+    }
+
+    public String getIdTomaMx() {
+        return idTomaMx;
+    }
+
+    public void setIdTomaMx(String idTomaMx) {
+        this.idTomaMx = idTomaMx;
     }
 }

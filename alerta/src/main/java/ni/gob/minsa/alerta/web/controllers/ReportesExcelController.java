@@ -215,6 +215,7 @@ public class ReportesExcelController {
         }
         for (Laboratorio lab : laboratorios) {
             filtroRep.setCodLaboratio(lab.getCodigo());
+            filtroRep.setIdTomaMx(null);
             List<ResultadoVigilancia> dxList = reportesService.getDiagnosticosAprobadosByFiltroV2(filtroRep);
             if (dx.getNombre().toLowerCase().contains("dengue")) {
                 setDatosDengue(dxList, registrosPos, registrosNeg, lab.getCodigo(), filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
@@ -234,8 +235,7 @@ public class ReportesExcelController {
                 setDatosBioMolVR(dxList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
             } else if (idDxsVirusResp != null) {
                 filtroRep.setIdDx(Integer.valueOf(idDxsVirusResp[1]));//PONER DX BIOMOL LAB ACTUAL
-                List<ResultadoVigilancia> dxListBio = reportesService.getDiagnosticosAprobadosByFiltroV2(filtroRep);
-                setDatosVirusResp(dxList, dxListBio, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
+                setDatosVirusResp(dxList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size(), filtroRep);
                 filtroRep.setIdDx(Integer.valueOf(idDxsVirusResp[0]));//VOLVER A PONER DX DE IFI PARA EL PROX LAB
             }else if (dx!=null){
                 tipoReporte = dx.getNombre().replace(" ", "_");
@@ -1187,7 +1187,7 @@ public class ReportesExcelController {
         }
     }
 
-    private void setDatosVirusResp(List<ResultadoVigilancia> dxListIfi, List<ResultadoVigilancia> dxListBio, List<Object[]> registrosPos, List<Object[]> registrosNeg, boolean incluirMxInadecuadas, List<Object[]> registrosMxInadec, int numColumnas) throws Exception{
+    private void setDatosVirusResp(List<ResultadoVigilancia> dxListIfi, List<Object[]> registrosPos, List<Object[]> registrosNeg, boolean incluirMxInadecuadas, List<Object[]> registrosMxInadec, int numColumnas, FiltrosReporte filtroRep) throws Exception{
 // create data rows
         int rowCountPos = registrosPos.size()+1;
         int rowCountNeg = registrosNeg.size()+1;
@@ -1267,8 +1267,12 @@ public class ReportesExcelController {
                 }
             };
             //si se encuentra la muestra poner agregar datos de bio molecular a la fila
+            boolean tieneBioMol = false;
+            filtroRep.setIdTomaMx(solicitudDx.getIdTomaMx());
+            List<ResultadoVigilancia> dxListBio = reportesService.getDiagnosticosAprobadosByFiltroV2(filtroRep);
             Collection<ResultadoVigilancia> resExamen = FilterLists.filter(dxListBio, byIdOrdenExamen);
             if (resExamen.size()>0) {
+                tieneBioMol = true;
                 for(ResultadoVigilancia dxBm : resExamen){
                     validarPCRVirusResp(registro, dxBm.getIdSolicitud(), 36);
                     registro[42] = DateUtil.DateToString(dxBm.getFechaAprobacion(),"dd/MM/yyyy");
@@ -1298,7 +1302,14 @@ public class ReportesExcelController {
             }else if (!registro[35].toString().toLowerCase().contains("indetermin") || !registro[43].toString().toLowerCase().contains("indetermin")) {
                 registro[0]= rowCountPos++;
                 registrosPos.add(registro);
-                registro[44] = "Positivo";
+                if (tieneBioMol)
+                    registro[44] = registro[43].toString();
+                else {
+                    if(!registro[25].toString().equalsIgnoreCase("Positivo"))
+                        registro[44] = registro[35].toString();
+                    else
+                        registro[44] = registro[35].toString() + ", " + messageSource.getMessage("lbl.pcr.flu.a.NS.2", null, null);
+                }
             }
         }
     }

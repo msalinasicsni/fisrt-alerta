@@ -57,6 +57,7 @@ public class ReportesService {
     private static final String sqlFechasAproRut =  " and dx.fechaAprobacion between :fechaInicio and :fechaFin ";
     private static final String sqlLab = " and dx.labProcesa.codigo = :codigoLab ";
     private static final String sqlFIS = " and noti.fechaInicioSintomas between :fisInicio and :fisFinal ";
+    private static final String sqlIdToma = " and mx.idTomaMx = :idTomaMx ";
 
     /**
      * M�todo que retornar la informaci�n para generar reporte y gr�fico de notificaciones por area (casos y tasas)
@@ -2598,7 +2599,8 @@ public class ReportesService {
                     " mx.idTomaMx as idTomaMx, mx.fechaHTomaMx as fechaTomaMx, mx.codigoLab as codigoMx, mx.codigoUnicoMx as codUnicoMx, mx.codTipoMx.idTipoMx as idTipoMx, mx.codTipoMx.nombre as nombreTipoMx, dx.idSolicitudDx as idSolicitud, dx.fechaAprobacion as fechaAprobacion," +
                     " dx.labProcesa.codigo as codigoLabProcesa, dx.labProcesa.nombre as nombreLabProcesa  " +
                     " from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti inner join noti.persona p  " +
-                    " where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true and dx.controlCalidad = false "+ sqlLab + sqlRutina + (filtro.getFisInicial()!=null && filtro.getFisFinal()!=null? sqlFIS : sqlFechasAproRut));
+                    " where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true and dx.controlCalidad = false "+
+                    (filtro.getIdTomaMx()!=null? sqlIdToma + sqlRutina : (sqlLab + sqlRutina + (filtro.getFisInicial()!=null && filtro.getFisFinal()!=null? sqlFIS : sqlFechasAproRut))));
 
         }else if (filtro.getCodArea().equals("AREAREP|SILAIS")) {
             queryNotiDx = session.createQuery(" select cast(p.personaId as string) as codigoExpUnico, p.primerNombre as primerNombre, p.segundoNombre as segundoNombre, p.primerApellido as primerApellido, p.segundoApellido as segundoApellido, p.fechaNacimiento as fechaNacimiento, p.sexo.codigo as sexo, " +
@@ -2615,7 +2617,8 @@ public class ReportesService {
                     " mx.idTomaMx as idTomaMx, mx.fechaHTomaMx as fechaTomaMx, mx.codigoLab as codigoMx, mx.codigoUnicoMx as codUnicoMx, mx.codTipoMx.idTipoMx as idTipoMx, mx.codTipoMx.nombre as nombreTipoMx, dx.idSolicitudDx as idSolicitud, dx.fechaAprobacion as fechaAprobacion,  " +
                     " dx.labProcesa.codigo as codigoLabProcesa, dx.labProcesa.nombre as nombreLabProcesa  " +
                     " from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti inner join noti.persona p " +
-                    " where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true and dx.controlCalidad = false "+ sqlLab + sqlRutina + (filtro.getFisInicial()!=null && filtro.getFisFinal()!=null? sqlFIS : sqlFechasAproRut) +
+                    " where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true and dx.controlCalidad = false "+
+                    (filtro.getIdTomaMx()!=null? sqlIdToma + sqlRutina : (sqlLab + sqlRutina + (filtro.getFisInicial()!=null && filtro.getFisFinal()!=null? sqlFIS : sqlFechasAproRut)))+
                     " and noti.codSilaisAtencion.entidadAdtvaId =:codSilais ");
             queryNotiDx.setParameter("codSilais", filtro.getCodSilais());
 
@@ -2634,21 +2637,26 @@ public class ReportesService {
                     " mx.idTomaMx as idTomaMx, mx.fechaHTomaMx as fechaTomaMx, mx.codigoLab as codigoMx, mx.codigoUnicoMx as codUnicoMx, mx.codTipoMx.idTipoMx as idTipoMx, mx.codTipoMx.nombre as nombreTipoMx, dx.idSolicitudDx as idSolicitud, dx.fechaAprobacion as fechaAprobacion,  " +
                     " dx.labProcesa.codigo as codigoLabProcesa, dx.labProcesa.nombre as nombreLabProcesa  " +
                     " from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti inner join noti.persona p " +
-                    " where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true and dx.controlCalidad = false "+ sqlLab + sqlRutina + (filtro.getFisInicial()!=null && filtro.getFisFinal()!=null? sqlFIS : sqlFechasAproRut) +
+                    " where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true and dx.controlCalidad = false "+
+                    (filtro.getIdTomaMx()!=null? sqlIdToma + sqlRutina : (sqlLab + sqlRutina + (filtro.getFisInicial()!=null && filtro.getFisFinal()!=null? sqlFIS : sqlFechasAproRut))) +
                     " and noti.codUnidadAtencion.unidadId =:codUnidad ");
             queryNotiDx.setParameter("codUnidad", filtro.getCodUnidad());
         }
-
-        queryNotiDx.setParameter("codigoLab", filtro.getCodLaboratio());
-        queryNotiDx.setParameter("idDx", filtro.getIdDx());
-        if (filtro.getFisInicial()!=null && filtro.getFisFinal()!=null){
-            queryNotiDx.setParameter("fisInicio", filtro.getFisInicial());
-            queryNotiDx.setParameter("fisFinal", filtro.getFisFinal());
-        }else {
-            queryNotiDx.setParameter("fechaInicio", filtro.getFechaInicio());
-            queryNotiDx.setParameter("fechaFin", filtro.getFechaFin());
+        if(filtro.getIdTomaMx() != null)
+        {
+            queryNotiDx.setParameter("idTomaMx", filtro.getIdTomaMx());
+            queryNotiDx.setParameter("idDx", filtro.getIdDx());
+        } else {
+            queryNotiDx.setParameter("codigoLab", filtro.getCodLaboratio());
+            queryNotiDx.setParameter("idDx", filtro.getIdDx());
+            if (filtro.getFisInicial() != null && filtro.getFisFinal() != null) {
+                queryNotiDx.setParameter("fisInicio", filtro.getFisInicial());
+                queryNotiDx.setParameter("fisFinal", filtro.getFisFinal());
+            } else {
+                queryNotiDx.setParameter("fechaInicio", filtro.getFechaInicio());
+                queryNotiDx.setParameter("fechaFin", filtro.getFechaFin());
+            }
         }
-
         queryNotiDx.setResultTransformer(Transformers.aliasToBean(ResultadoVigilancia.class));
         return queryNotiDx.list();
     }

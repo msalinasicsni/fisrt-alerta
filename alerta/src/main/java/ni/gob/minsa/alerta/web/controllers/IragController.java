@@ -200,7 +200,7 @@ public class IragController {
         String urlValidacion = "";
         try {
             urlValidacion = seguridadService.validarLogin(request);
-            //si la url esta vacia significa que la validación del login fue exitosa
+            //si la url esta vacia significa que la validaciï¿½n del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, false);
         } catch (Exception e) {
@@ -227,7 +227,7 @@ public class IragController {
         String urlValidacion = "";
         try {
             urlValidacion = seguridadService.validarLogin(request);
-            //si la url esta vacia significa que la validación del login fue exitosa
+            //si la url esta vacia significa que la validaciï¿½n del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
         } catch (Exception e) {
@@ -313,7 +313,7 @@ public class IragController {
     public
     @ResponseBody
     List<DaIrag> getResults(@RequestParam(value = "idPerson", required = true) long idPerson) throws Exception {
-        logger.info("Obteniendo los resultados de la búsqueda");
+        logger.info("Obteniendo los resultados de la bï¿½squeda");
         List<DaIrag> results = null;
         results = daIragService.getDaIragPersona(idPerson);
         return results;
@@ -331,7 +331,7 @@ public class IragController {
         String urlValidacion = "";
         try {
             urlValidacion = seguridadService.validarLogin(request);
-            //si la url esta vacia significa que la validación del login fue exitosa
+            //si la url esta vacia significa que la validaciï¿½n del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
         } catch (Exception e) {
@@ -398,7 +398,7 @@ public class IragController {
         boolean autorizado = true;
         try {
             urlValidacion = seguridadService.validarLogin(request);
-            //si la url esta vacia significa que la validación del login fue exitosa
+            //si la url esta vacia significa que la validaciï¿½n del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
         } catch (Exception e) {
@@ -704,7 +704,7 @@ public class IragController {
 
             return createJsonResponse(irag);
         } else {
-            throw new Exception("No tiene autorización para guardar notificación en esta unidad de salud");
+            throw new Exception("No tiene autorizaciï¿½n para guardar notificaciï¿½n en esta unidad de salud");
         }
 
     }
@@ -727,6 +727,7 @@ public class IragController {
             // noti.setUsuarioRegistro(usuarioService.getUsuarioById(1));
             noti.setCodTipoNotificacion(catalogoService.getTipoNotificacion("TPNOTI|IRAG"));
             noti.setMunicipioResidencia(persona.getMunicipioResidencia());
+            noti.setComunidadResidencia(persona.getComunidadResidencia());
             noti.setDireccionResidencia(persona.getDireccionResidencia());
             noti.setUrgente(catalogoService.getRespuesta(urgente));
             noti.setCompleta(Boolean.parseBoolean(completa));
@@ -830,6 +831,7 @@ public class IragController {
 
             if (noti !=null && !noti.isCompleta()){
                 noti.setMunicipioResidencia(persona.getMunicipioResidencia());
+                noti.setComunidadResidencia(persona.getComunidadResidencia());
                 noti.setDireccionResidencia(persona.getDireccionResidencia());
                 noti.setCompleta(Boolean.parseBoolean(completa));
                 noti.setActor(seguridadService.obtenerNombreUsuario(request));
@@ -854,7 +856,7 @@ public class IragController {
         String urlValidacion = "";
         try {
             urlValidacion = seguridadService.validarLogin(request);
-            //si la url esta vacia significa que la validación del login fue exitosa
+            //si la url esta vacia significa que la validaciï¿½n del login fue exitosa
             if (urlValidacion.isEmpty())
                 urlValidacion = seguridadService.validarAutorizacionUsuario(request, ConstantsSecurity.SYSTEM_CODE, true);
         } catch (Exception e) {
@@ -1162,7 +1164,7 @@ public class IragController {
                     GeneralUtils.drawTEXT(nExp, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
                     y -= 20;
-                    //menor o mayor de 5 años
+                    //menor o mayor de 5 aï¿½os
                     if (anios != null) {
                         int edadAnios = Integer.parseInt(anios);
                         if (edadAnios > 5) {
@@ -2269,7 +2271,7 @@ public class IragController {
                     GeneralUtils.drawTEXT(fechaRegistro, y, x1, stream, 7, PDType1Font.TIMES_ROMAN);
 
 
-                    //fecha impresión
+                    //fecha impresiï¿½n
                    /* GeneralUtils.drawTEXT(messageSource.getMessage("lbl.print.datetime", null, null), 100, 605, stream, 10, PDType1Font.HELVETICA_BOLD);
                     GeneralUtils.drawTEXT(fechaImpresion, 100, 900, stream, 10, PDType1Font.HELVETICA);*/
 
@@ -2472,7 +2474,7 @@ public class IragController {
             indice ++;
         }
         jsonResponse = new Gson().toJson(mapResponse);
-        //escapar caracteres especiales, escape de los caracteres con valor numérico mayor a 127
+        //escapar caracteres especiales, escape de los caracteres con valor numï¿½rico mayor a 127
         UnicodeEscaper escaper     = UnicodeEscaper.above(127);
         return escaper.translate(jsonResponse);
     }

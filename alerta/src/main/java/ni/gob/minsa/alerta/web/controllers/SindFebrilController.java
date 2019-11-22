@@ -419,10 +419,12 @@ public class SindFebrilController {
         //antes actualizar a la persona
         InfoResultado infoResultado;
         try{
+            Divisionpolitica muniResid = divisionPoliticaService.getDivisionPolitiacaByCodNacional(municipioResidencia);
+            Comunidades comuResid = comunidadesService.getComunidad(comunidadResidencia);
             if (ConstantsSecurity.ENABLE_PERSON_COMPONENT) {
                 SisPersona pers = daNotificacion.getPersona();
-                pers.setMunicipioResidencia(divisionPoliticaService.getDivisionPolitiacaByCodNacional(municipioResidencia));
-                pers.setComunidadResidencia(comunidadesService.getComunidad(comunidadResidencia));
+                pers.setMunicipioResidencia(muniResid);
+                pers.setComunidadResidencia(comuResid);
                 pers.setDireccionResidencia(direccionResidencia);
                 pers.setOcupacion(catalogoService.getOcupacion(ocupacion));
                 Persona persona = personaService.ensamblarObjetoPersona(pers);
@@ -445,7 +447,8 @@ public class SindFebrilController {
             if (infoResultado.isOk() && infoResultado.getObjeto() != null ){
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                 SisPersona persona = personaService.getPersona(personaId);
-                daNotificacion.setMunicipioResidencia(persona.getMunicipioResidencia());
+                daNotificacion.setMunicipioResidencia(muniResid);
+                daNotificacion.setComunidadResidencia(comuResid);
                 daNotificacion.setFechaRegistro(new Timestamp(new Date().getTime()));
                 daNotificacion.setCodSilaisAtencion(entidadAdmonService.getSilaisByCodigo(codSilaisAtencion));
                 daNotificacion.setCodUnidadAtencion(unidadesService.getUnidadByCodigo(codUnidadAtencion));

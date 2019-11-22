@@ -6,6 +6,7 @@ import ni.gob.minsa.alerta.domain.estructura.EntidadesAdtvas;
 import ni.gob.minsa.alerta.domain.estructura.Unidades;
 import ni.gob.minsa.alerta.domain.irag.Respuesta;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
+import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.domain.solicitante.Solicitante;
@@ -37,6 +38,7 @@ public class DaNotificacion implements Serializable, Auditable {
     private Timestamp fechaAnulacion;
     private Timestamp fechaRegistro;
     private Divisionpolitica municipioResidencia;
+    private Comunidades comunidadResidencia;
     private String direccionResidencia;
     private Date fechaInicioSintomas;
     private Respuesta urgente;
@@ -152,6 +154,15 @@ public class DaNotificacion implements Serializable, Auditable {
 
     public void setMunicipioResidencia(Divisionpolitica municipioResidencia) { this.municipioResidencia = municipioResidencia; }
 
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Comunidades.class)
+    @JoinColumn(name="CODIGO_COMUNIDAD_RESIDENCIA", referencedColumnName="CODIGO", nullable=true)
+    public Comunidades getComunidadResidencia() {
+        return this.comunidadResidencia;
+    }
+
+    public void setComunidadResidencia(Comunidades comunidadResidencia) {
+        this.comunidadResidencia = comunidadResidencia;
+    }
 
     @Column(name = "DIRECCION_RESIDENCIA", length = 100)
     public String getDireccionResidencia() {
