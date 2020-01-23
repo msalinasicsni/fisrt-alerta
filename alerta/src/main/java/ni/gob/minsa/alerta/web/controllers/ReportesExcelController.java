@@ -235,7 +235,8 @@ public class ReportesExcelController {
                 setDatosBioMolVR(dxList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
             } else if (idDxsVirusResp != null) {
                 filtroRep.setIdDx(Integer.valueOf(idDxsVirusResp[1]));//PONER DX BIOMOL LAB ACTUAL
-                setDatosVirusResp(dxList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size(), filtroRep);
+                List<ResultadoVigilancia> dxListBio = reportesService.getDiagnosticosAprobadosByFiltroV2(filtroRep);
+                setDatosVirusResp(dxList, dxListBio, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size(), filtroRep);
                 filtroRep.setIdDx(Integer.valueOf(idDxsVirusResp[0]));//VOLVER A PONER DX DE IFI PARA EL PROX LAB
             }else if (dx!=null){
                 tipoReporte = dx.getNombre().replace(" ", "_");
@@ -1187,7 +1188,7 @@ public class ReportesExcelController {
         }
     }
 
-    private void setDatosVirusResp(List<ResultadoVigilancia> dxListIfi, List<Object[]> registrosPos, List<Object[]> registrosNeg, boolean incluirMxInadecuadas, List<Object[]> registrosMxInadec, int numColumnas, FiltrosReporte filtroRep) throws Exception{
+    private void setDatosVirusResp(List<ResultadoVigilancia> dxListIfi, List<ResultadoVigilancia> dxListBio, List<Object[]> registrosPos, List<Object[]> registrosNeg, boolean incluirMxInadecuadas, List<Object[]> registrosMxInadec, int numColumnas, FiltrosReporte filtroRep) throws Exception{
 // create data rows
         int rowCountPos = registrosPos.size()+1;
         int rowCountNeg = registrosNeg.size()+1;
@@ -1268,8 +1269,8 @@ public class ReportesExcelController {
             };
             //si se encuentra la muestra poner agregar datos de bio molecular a la fila
             boolean tieneBioMol = false;
-            filtroRep.setIdTomaMx(solicitudDx.getIdTomaMx());
-            List<ResultadoVigilancia> dxListBio = reportesService.getDiagnosticosAprobadosByFiltroV2(filtroRep);
+            //filtroRep.setIdTomaMx(solicitudDx.getIdTomaMx());
+            //List<ResultadoVigilancia> dxListBio = reportesService.getDiagnosticosAprobadosByFiltroV2(filtroRep);
             Collection<ResultadoVigilancia> resExamen = FilterLists.filter(dxListBio, byIdOrdenExamen);
             if (resExamen.size()>0) {
                 tieneBioMol = true;
@@ -1282,6 +1283,8 @@ public class ReportesExcelController {
                 registro[42] = "";
                 registro[43] = "";
             }
+            if (dxListBio.size()>0 && resExamen.size()>0)
+                dxListBio.removeAll(resExamen);
             registro[45] = (irag.getFechaEgreso()!=null? DateUtil.DateToString(irag.getFechaEgreso(),"dd/MM/yyyy"):"");
             registro[46] = (irag.getUci()!=null?(irag.getUci()==1?messageSource.getMessage("lbl.yes", null, null):messageSource.getMessage("lbl.no", null, null)): "");
             registro[47] = irag.getNoDiasHospitalizado();
@@ -1309,6 +1312,101 @@ public class ReportesExcelController {
                         registro[44] = registro[35].toString();
                     else
                         registro[44] = registro[35].toString() + ", " + messageSource.getMessage("lbl.pcr.flu.a.NS.2", null, null);
+                }
+            }
+        }
+        //los que solo tienen PCR
+        if (dxListBio.size()>0){
+            for (ResultadoVigilancia solicitudDx : dxListBio) {
+                String nombres = "";
+                String apellidos = "";
+                Object[] registro = new Object[numColumnas];
+                registro[1] = solicitudDx.getNombreLabProcesa();
+                registro[2] = solicitudDx.getCodigoMx()!=null?solicitudDx.getCodigoMx():solicitudDx.getCodUnicoMx();
+
+                nombres = solicitudDx.getPrimerNombre();
+                if (solicitudDx.getSegundoNombre()!=null)
+                    nombres += " "+solicitudDx.getSegundoNombre();
+                registro[3] = nombres;
+
+                apellidos = solicitudDx.getPrimerApellido();
+                if (solicitudDx.getSegundoApellido()!=null)
+                    apellidos += " "+solicitudDx.getSegundoApellido();
+                registro[4] = apellidos;
+
+                Integer edad = null;
+                String medidaEdad = "";
+                String[] arrEdad = DateUtil.calcularEdad(solicitudDx.getFechaNacimiento(), new Date()).split("/");
+                if (arrEdad[0] != null && !arrEdad[0].equalsIgnoreCase("0")) {
+                    edad = Integer.valueOf(arrEdad[0]); medidaEdad = "A";
+                }else if (arrEdad[1] != null && !arrEdad[1].equalsIgnoreCase("0")) {
+                    edad = Integer.valueOf(arrEdad[1]); medidaEdad = "M";
+                }else if (arrEdad[2] != null) {
+                    edad = Integer.valueOf(arrEdad[2]); medidaEdad = "D";
+                }
+                registro[5] = DateUtil.DateToString(solicitudDx.getFechaNacimiento(), "dd/MM/yyyy");
+                registro[6] = edad;
+                registro[7] = medidaEdad;
+                String sexo = solicitudDx.getSexo();
+                registro[8] = sexo.substring(sexo.length()-1, sexo.length());
+
+                String direccion = solicitudDx.getDireccionResidencia();
+                if (solicitudDx.getTelefonoResidencia()!=null || solicitudDx.getTelefonoMovil()!=null ){
+                    direccion += ". TEL. ";
+                    direccion+= (solicitudDx.getTelefonoResidencia()!=null?solicitudDx.getTelefonoResidencia()+",":"");
+                    direccion+= (solicitudDx.getTelefonoMovil()!=null?solicitudDx.getTelefonoMovil():"");
+                }
+                registro[9] = direccion;
+                registro[10] = (solicitudDx.getCodigoSilaisNoti()!=null?solicitudDx.getNombreSilaisNoti(): //silais en la notificacion
+                        (solicitudDx.getCodigoSilaisMx()!=null?solicitudDx.getNombreSilaisMx():"")); //solais en la toma mx
+                registro[11] = (solicitudDx.getCodigoMuniNoti()!=null?solicitudDx.getNombreMuniNoti(): //unidad en la noti
+                        (solicitudDx.getCodigoMuniMx()!=null?solicitudDx.getNombreMuniMx():"")); //unidad en la toma mx
+                registro[12] = (solicitudDx.getCodigoUnidadNoti()!=null?solicitudDx.getNombreUnidadNoti(): //unidad en la noti
+                        (solicitudDx.getCodigoUnidadMx()!=null?solicitudDx.getNombreUnidadMx():"")); //unidad en la toma mx
+                DatosDaIrag irag = daIragService.getFormByIdV2(solicitudDx.getIdNotificacion());
+                registro[13] = (irag.getCodCaptacion()!=null?irag.getCodCaptacion():"");
+                registro[14] = irag.getCodExpediente();
+                registro[15] = (irag.getCodClasificacion()!=null?irag.getCodClasificacion():"");
+                registro[16] = (solicitudDx.getUrgente()!=null?solicitudDx.getUrgente():"");
+                registro[17] = (irag.getFechaConsulta()!=null?DateUtil.DateToString(irag.getFechaConsulta(), "dd/MM/yyyy"):"");
+                registro[18] = (irag.getFechaPrimeraConsulta()!=null?DateUtil.DateToString(irag.getFechaPrimeraConsulta(), "dd/MM/yyyy"):"");
+                registro[19] = (solicitudDx.getComunidadResidencia()!=null?solicitudDx.getComunidadResidencia():"");
+                registro[20] = (irag.getCodProcedencia()!=null?irag.getCodProcedencia():"");
+                registro[21] = (irag.getDiagnostico()!=null?irag.getDiagnostico():"");
+                registro[22] = irag.getNombreMadreTutor();
+
+                registro[23] = DateUtil.DateToString(solicitudDx.getFechaInicioSintomas(),"dd/MM/yyyy");
+                registro[24] = DateUtil.DateToString(solicitudDx.getFechaTomaMx(),"dd/MM/yyyy");
+
+                //validarTipoIFI(registro, solicitudDx.getIdSolicitud(), 25);
+                registro[34] = ""; //DateUtil.DateToString(solicitudDx.getFechaAprobacion(),"dd/MM/yyyy");
+                registro[35] = ""; //parseFinalResultDetails(solicitudDx.getIdSolicitud());
+
+                validarPCRVirusResp(registro, solicitudDx.getIdSolicitud(), 36);
+                registro[42] = DateUtil.DateToString(solicitudDx.getFechaAprobacion(),"dd/MM/yyyy");
+                registro[43] = parseFinalResultDetails(solicitudDx.getIdSolicitud());
+
+                registro[45] = (irag.getFechaEgreso()!=null? DateUtil.DateToString(irag.getFechaEgreso(),"dd/MM/yyyy"):"");
+                registro[46] = (irag.getUci()!=null?(irag.getUci()==1?messageSource.getMessage("lbl.yes", null, null):messageSource.getMessage("lbl.no", null, null)): "");
+                registro[47] = irag.getNoDiasHospitalizado();
+                registro[48] = (irag.getVentilacionAsistida()!=null?(irag.getVentilacionAsistida()==1?messageSource.getMessage("lbl.yes", null, null):messageSource.getMessage("lbl.no", null, null)): "");
+                registro[49] = irag.getDiagnostico1Egreso();
+                registro[50] = irag.getDiagnostico2Egreso();
+                registro[51] = irag.getCodCondEgreso();
+                registro[52] = irag.getCodClasFCaso();
+
+                if (registro[43].toString().equalsIgnoreCase("") || registro[43].toString().toLowerCase().contains("negativo")) {
+                    registro[0]= rowCountNeg++;
+                    registrosNeg.add(registro);
+                    registro[44] = "Negativo";
+                } else if (incluirMxInadecuadas && (registro[43].toString().toLowerCase().contains("inadecuada"))){
+                    registro[0]= rowCountInadec++;
+                    registrosMxInadec.add(registro);
+                    registro[44] = "Mx Inadecuada";
+                }else if (!registro[43].toString().toLowerCase().contains("indetermin")) {
+                    registro[0]= rowCountPos++;
+                    registrosPos.add(registro);
+                    registro[44] = registro[43].toString();
                 }
             }
         }
