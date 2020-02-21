@@ -89,6 +89,9 @@ public class ReportesExcelController {
     @Resource(name = "parametrosService")
     private ParametrosService parametrosService;
 
+    @Resource(name = "daDatosVIHService")
+    private DaDatosVIHService daDatosVIHService;
+
     @Autowired
     MessageSource messageSource;
 
@@ -177,25 +180,37 @@ public class ReportesExcelController {
         ModelAndView excelView = new ModelAndView("excelView");
         boolean mostrarTabla1 = true, mostrarTabla2 = true;
         String tipoReporte = "";
-        if (dx.getNombre().toLowerCase().contains("dengue")) {
+        if (dx!=null &&dx.getNombre().toLowerCase().contains("dengue")) {
             tipoReporte = "DENGUE";
             setNombreColumnasDengue(columnas);
-        } else if (dx.getNombre().toLowerCase().contains("chikun")) {
+        } else if (dx!=null &&dx.getNombre().toLowerCase().contains("chikun")) {
             tipoReporte = "CHIK";
             setNombreColumnasChik(columnas);
-        } else if (dx.getNombre().toLowerCase().contains("zika")) {
+        } else if (dx!=null &&dx.getNombre().toLowerCase().contains("zika")) {
             tipoReporte = "ZIKA";
             setNombreColumnasZika(columnas);
-        } else if (dx.getNombre().toLowerCase().contains("leptospi")) {
+        } else if (dx!=null &&dx.getNombre().toLowerCase().contains("leptospi")) {
             tipoReporte = "LEPTO";
             setNombreColumnasLepto(columnas);
+        }else if (dx!=null && dx.getNombre().toLowerCase().contains("molecular") && dx.getNombre().toLowerCase().contains("vih")) {
+            tipoReporte = "ADN_VIH";
+            filtroRep.setIncluirMxInadecuadas(false);
+            setNombreColumnasVIHMolecular(columnas);
+        } else if (dx!=null && dx.getNombre().toLowerCase().contains("seguimiento") && dx.getNombre().toLowerCase().contains("vih")) {
+            tipoReporte = "CV-CD4_VIH";
+            mostrarTabla2 = false;
+            filtroRep.setIncluirMxInadecuadas(false);
+            setNombreColumnasVIHSeguimiento(columnas);
+        } else if (dx!=null && dx.getNombre().toLowerCase().contains("serolog") && dx.getNombre().toLowerCase().contains("vih")) {
+            tipoReporte = "SEROLOGIA_VIH";
+            setNombreColumnasVIHSerologia(columnas);
         }//Mycobacterium Tuberculosis
-        else if (dx.getNombre().toLowerCase().contains("mycobacterium") && (dx.getNombre().toLowerCase().contains("tuberculosis") || dx.getNombre().toLowerCase().contains("tb"))) {
+        else if (dx!=null &&dx.getNombre().toLowerCase().contains("mycobacterium") && (dx.getNombre().toLowerCase().contains("tuberculosis") || dx.getNombre().toLowerCase().contains("tb"))) {
             tipoReporte = "XPERT_TB";
             mostrarTabla2 = false;
             setNombreColumnasMycobacTB(columnas);
         }//Cultivo TB
-        else if (dx.getNombre().toLowerCase().contains("cultivo") && (dx.getNombre().toLowerCase().contains("tuberculosis") || dx.getNombre().toLowerCase().contains("tb"))) {
+        else if (dx!=null &&dx.getNombre().toLowerCase().contains("cultivo") && (dx.getNombre().toLowerCase().contains("tuberculosis") || dx.getNombre().toLowerCase().contains("tb"))) {
             tipoReporte = "CULTIVO_TB";
             mostrarTabla2 = false;
             filtroRep.setIncluirMxInadecuadas(false);
@@ -203,7 +218,7 @@ public class ReportesExcelController {
         } else if (dx!=null && dx.getNombre().toLowerCase().contains("ifi virus respiratorio") && idDxsVirusResp == null) {
             tipoReporte = "IFI_VIRUS_RESP";
             setNombreColumnasIFIVR(columnas);
-        }else if (dx.getNombre().toLowerCase().contains("molecular virus respiratorio") && idDxsVirusResp == null) {
+        }else if (dx!=null &&dx.getNombre().toLowerCase().contains("molecular virus respiratorio") && idDxsVirusResp == null) {
             tipoReporte = "BIO_MOL_VIRUS_RESP";
             setNombreColumnasBioMolVR(columnas);
         }else if (idDxsVirusResp != null) {
@@ -216,33 +231,39 @@ public class ReportesExcelController {
         for (Laboratorio lab : laboratorios) {
             filtroRep.setCodLaboratio(lab.getCodigo());
             filtroRep.setIdTomaMx(null);
-            List<ResultadoVigilancia> dxList = reportesService.getDiagnosticosAprobadosByFiltroV2(filtroRep);
-            if (dx.getNombre().toLowerCase().contains("dengue")) {
-                setDatosDengue(dxList, registrosPos, registrosNeg, lab.getCodigo(), filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
-            } else if (dx.getNombre().toLowerCase().contains("chikun")) {
-                setDatosChikungunya(dxList, registrosPos, registrosNeg, lab.getCodigo(), filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
-            } else if (dx.getNombre().toLowerCase().contains("zika")) {
-                setDatosZika(dxList, registrosPos, registrosNeg, lab.getCodigo(), filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
-            } else if (dx.getNombre().toLowerCase().contains("leptospi")) {
-                setDatosLepto(dxList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
-            } else if (dx.getNombre().toLowerCase().contains("mycobacterium") && (dx.getNombre().toLowerCase().contains("tuberculosis") || dx.getNombre().toLowerCase().contains("tb"))) {
-                setDatosXpertTB(dxList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
-            } else if (dx.getNombre().toLowerCase().contains("cultivo") && (dx.getNombre().toLowerCase().contains("tuberculosis") || dx.getNombre().toLowerCase().contains("tb"))) {
-                setDatosCultivoTB(dxList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
+            List<ResultadoVigilancia> rvList = reportesService.getDiagnosticosAprobadosByFiltroV2(filtroRep);
+            if (dx!=null && dx.getNombre().toLowerCase().contains("dengue")) {
+                setDatosDengue(rvList, registrosPos, registrosNeg, lab.getCodigo(), filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
+            } else if (dx!=null && dx.getNombre().toLowerCase().contains("chikun")) {
+                setDatosChikungunya(rvList, registrosPos, registrosNeg, lab.getCodigo(), filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
+            } else if (dx!=null && dx.getNombre().toLowerCase().contains("zika")) {
+                setDatosZika(rvList, registrosPos, registrosNeg, lab.getCodigo(), filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
+            } else if (dx!=null && dx.getNombre().toLowerCase().contains("leptospi")) {
+                setDatosLepto(rvList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
+            } else if (dx!=null && dx.getNombre().toLowerCase().contains("molecular") && dx.getNombre().toLowerCase().contains("vih")) {
+                setDatosVIHMolecular(rvList, registrosPos, columnas.size(), lab.getCodigo());
+            } else if (dx!=null && dx.getNombre().toLowerCase().contains("seguimiento") && dx.getNombre().toLowerCase().contains("vih")) {
+                setDatosVIHSeguimiento(rvList, registrosPos, columnas.size(), lab.getCodigo());
+            } else if (dx!=null && dx.getNombre().toLowerCase().contains("serolog") && dx.getNombre().toLowerCase().contains("vih")) {
+                setDatosVIHSerologia(rvList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size(), lab.getCodigo());
+            }else if (dx!=null && dx.getNombre().toLowerCase().contains("mycobacterium") && (dx.getNombre().toLowerCase().contains("tuberculosis") || dx.getNombre().toLowerCase().contains("tb"))) {
+                setDatosXpertTB(rvList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
+            } else if (dx!=null && dx.getNombre().toLowerCase().contains("cultivo") && (dx.getNombre().toLowerCase().contains("tuberculosis") || dx.getNombre().toLowerCase().contains("tb"))) {
+                setDatosCultivoTB(rvList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
             } else if (dx!=null && dx.getNombre().toLowerCase().contains("ifi virus respiratorio") && idDxsVirusResp == null) {
-                setDatosIFIVR(dxList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
-            }else if (dx.getNombre().toLowerCase().contains("molecular virus respiratorio") && idDxsVirusResp == null) {
-                setDatosBioMolVR(dxList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
+                setDatosIFIVR(rvList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
+            }else if (dx!=null && dx.getNombre().toLowerCase().contains("molecular virus respiratorio") && idDxsVirusResp == null) {
+                setDatosBioMolVR(rvList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
             } else if (idDxsVirusResp != null) {
                 filtroRep.setIdDx(Integer.valueOf(idDxsVirusResp[1]));//PONER DX BIOMOL LAB ACTUAL
                 List<ResultadoVigilancia> dxListBio = reportesService.getDiagnosticosAprobadosByFiltroV2(filtroRep);
-                setDatosVirusResp(dxList, dxListBio, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size(), filtroRep);
+                setDatosVirusResp(rvList, dxListBio, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size(), filtroRep);
                 filtroRep.setIdDx(Integer.valueOf(idDxsVirusResp[0]));//VOLVER A PONER DX DE IFI PARA EL PROX LAB
             }else if (dx!=null){
                 tipoReporte = dx.getNombre().replace(" ", "_");
-                setDatosDefecto(dxList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec);
+                setDatosDefecto(rvList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec);
             }else {
-                setDatosDefecto(dxList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec);
+                setDatosDefecto(rvList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec);
             }
         }
         excelView.addObject("titulo", messageSource.getMessage("lbl.minsa", null, null));
@@ -466,6 +487,94 @@ public class ReportesExcelController {
         columnas.add(messageSource.getMessage("lbl.date.res.planting", null, null).toUpperCase());
         columnas.add(messageSource.getMessage("lbl.lote.lj", null, null).toUpperCase());
         columnas.add(messageSource.getMessage("lbl.observations", null, null).toUpperCase());
+    }
+
+    private void setNombreColumnasVIHMolecular(List<String> columnas){
+        columnas.add(messageSource.getMessage("lbl.num", null, null));
+        columnas.add(messageSource.getMessage("lbl.lab.procesa", null, null));
+        columnas.add(messageSource.getMessage("lbl.lab.code.mx", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.code.vih", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.file.number", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("person.ocupacion", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.age", null, null).toUpperCase().replace(":", ""));
+        columnas.add(messageSource.getMessage("lbl.age.um", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("person.sexo", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.pregnant", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.silais", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.muni", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.health.unit", null, null));
+        columnas.add(messageSource.getMessage("lbl.consigned.unit", null, null));
+        columnas.add(messageSource.getMessage("lbl.adn.number", null, null));
+        columnas.add(messageSource.getMessage("lbl.sample.quality", null, null));
+        columnas.add(messageSource.getMessage("lbl.results", null, null));
+        columnas.add(messageSource.getMessage("lbl.result.date", null, null));
+        columnas.add(messageSource.getMessage("lbl.delivery.date.results", null, null));
+        columnas.add(messageSource.getMessage("lbl.reception.datetime", null, null));
+        columnas.add(messageSource.getMessage("lbl.observations", null, null));
+    }
+
+    private void setNombreColumnasVIHSeguimiento(List<String> columnas){
+        columnas.add(messageSource.getMessage("lbl.num", null, null));
+        columnas.add(messageSource.getMessage("lbl.lab.procesa", null, null));
+        columnas.add(messageSource.getMessage("lbl.lab.code.mx", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.code.vih", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.file.number", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("person.ocupacion", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.age", null, null).toUpperCase().replace(":", ""));
+        columnas.add(messageSource.getMessage("lbl.age.um", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("person.sexo", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.pregnant", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.silais", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.muni", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.health.unit", null, null));
+        columnas.add(messageSource.getMessage("lbl.consigned.unit", null, null));
+        columnas.add(messageSource.getMessage("lbl.result.cpml", null, null));
+        columnas.add(messageSource.getMessage("lbl.processing.date", null, null));
+        columnas.add(messageSource.getMessage("lbl.reception.datetime", null, null));
+        columnas.add(messageSource.getMessage("lbl.delivery.date.cv", null, null));
+        columnas.add(messageSource.getMessage("lbl.observations.cv", null, null));
+        columnas.add(messageSource.getMessage("lbl.consigned", null, null));
+        columnas.add(messageSource.getMessage("lbl.cd3.result", null, null));
+        columnas.add(messageSource.getMessage("lbl.cd4.result", null, null));
+        columnas.add(messageSource.getMessage("lbl.cd8.result", null, null));
+        columnas.add(messageSource.getMessage("lbl.cd4.cd8.result", null, null));
+        columnas.add(messageSource.getMessage("lbl.cd4.percent", null, null));
+        columnas.add(messageSource.getMessage("lbl.cd.date", null, null));
+        columnas.add(messageSource.getMessage("lbl.observations.cd", null, null));
+        columnas.add(messageSource.getMessage("lbl.delivery.date.cd", null, null));
+
+    }
+
+    private void setNombreColumnasVIHSerologia(List<String> columnas){
+        columnas.add(messageSource.getMessage("lbl.num", null, null));
+        columnas.add(messageSource.getMessage("lbl.lab.procesa", null, null));
+        columnas.add(messageSource.getMessage("lbl.lab.code.mx", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.code.vih", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.age", null, null).toUpperCase().replace(":", ""));
+        columnas.add(messageSource.getMessage("lbl.age.um", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("person.sexo", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.pregnant", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.silais", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.muni", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.health.unit", null, null));
+        columnas.add(messageSource.getMessage("lbl.consigned.unit", null, null));
+        columnas.add(messageSource.getMessage("lbl.A1", null, null)+messageSource.getMessage("lbl.CS", null, null));
+        columnas.add(messageSource.getMessage("lbl.A2", null, null)+messageSource.getMessage("lbl.CS", null, null));
+        columnas.add(messageSource.getMessage("lbl.sampling.date", null, null).replaceAll(" ",""));
+        columnas.add(messageSource.getMessage("lbl.elisa", null, null));
+        columnas.add(messageSource.getMessage("lbl.fec", null, null)+messageSource.getMessage("lbl.elisa", null, null));
+        columnas.add(messageSource.getMessage("lbl.elisa.dup", null, null));
+        columnas.add(messageSource.getMessage("lbl.fec.elisa.dup", null, null));
+        columnas.add(messageSource.getMessage("lbl.Western.Blot", null, null));
+        columnas.add(messageSource.getMessage("lbl.fecWB", null, null));
+        columnas.add(messageSource.getMessage("lbl.final.result", null, null));
+        columnas.add(messageSource.getMessage("lbl.observation.short", null, null));
+        columnas.add(messageSource.getMessage("lbl.reception.datetime", null, null).replace(":", ""));
+        columnas.add(messageSource.getMessage("lbl.delivery.date.results", null, null));
+        columnas.add(messageSource.getMessage("lbl.observations", null, null));
+        columnas.add(messageSource.getMessage("lbl.purpose.mx", null, null));
+        columnas.add(messageSource.getMessage("lbl.current.date", null, null));
+
     }
 
     private void setNombreColumnasDefecto(List<String> columnas){
@@ -937,6 +1046,173 @@ public class ReportesExcelController {
             } else if (incluirMxInadecuadas && registro[3].toString().toLowerCase().contains("inadecuada")){
                 registro[0]= rowCountInadec++;
                 registrosMxInadec.add(registro);
+            }
+        }
+    }
+
+    private void setDatosVIHMolecular(List<ResultadoVigilancia> dxList, List<Object[]> registros, int numColumnas, String codigoLab) throws Exception{
+// create data rows
+        int rowCount = registros.size()+1;
+        for (ResultadoVigilancia solicitudDx : dxList) {
+            DatosVIH datosVIH = daDatosVIHService.getDatosVIH(solicitudDx.getIdNotificacion());
+            Object[] registro = new Object[numColumnas];
+            registro[1] = solicitudDx.getNombreLabProcesa();
+            registro[2] = solicitudDx.getCodigoMx();
+            registro[3] = solicitudDx.getCodigoVIH();
+            registro[4] = (datosVIH!=null && datosVIH.getExpediente()!=null?datosVIH.getExpediente():"");
+            registro[5] = (datosVIH!=null && datosVIH.getOcupacion()!=null?datosVIH.getOcupacion():"");
+            Integer edad = null;
+            String medidaEdad = "";
+            String[] arrEdad = DateUtil.calcularEdad(solicitudDx.getFechaNacimiento(), new Date()).split("/");
+            if (arrEdad[0] != null && !arrEdad[0].equalsIgnoreCase("0")) {
+                edad = Integer.valueOf(arrEdad[0]); medidaEdad = "A";
+            }else if (arrEdad[1] != null && !arrEdad[1].equalsIgnoreCase("0")) {
+                edad = Integer.valueOf(arrEdad[1]); medidaEdad = "M";
+            }else if (arrEdad[2] != null) {
+                edad = Integer.valueOf(arrEdad[2]); medidaEdad = "D";
+            }
+            registro[6] = edad;
+            registro[7] = medidaEdad;
+            String sexo = solicitudDx.getSexo();
+            registro[8] = sexo.substring(sexo.length() - 1, sexo.length());
+            registro[9] = (datosVIH!=null && datosVIH.getEmbarazo()!=null?datosVIH.getEmbarazo():"");
+            registro[10] = (solicitudDx.getCodigoSilaisNoti()!=null?solicitudDx.getNombreSilaisNoti(): //silais en la notificacion
+                    (solicitudDx.getCodigoSilaisMx()!=null?solicitudDx.getNombreSilaisMx():"")); //silais en la toma mx
+            registro[11] = (solicitudDx.getCodigoMuniNoti()!=null?solicitudDx.getNombreMuniNoti(): //unidad en la notif
+                    (solicitudDx.getCodigoMuniMx()!=null?solicitudDx.getNombreMuniMx():"")); //unidad en la toma mx
+            registro[12] = (solicitudDx.getCodigoUnidadNoti()!=null?solicitudDx.getNombreUnidadNoti()://unidad en la notif
+                    (solicitudDx.getCodigoUnidadMx()!=null?solicitudDx.getNombreUnidadMx():""));//unidad en la toma mx
+            registro[13] = "";
+            registro[14] = "";
+            DatosRecepcionMx recepcionMx = recepcionMxService.getRecepcionMxByCodUnicoMxV2(solicitudDx.getCodigoMx(), codigoLab);
+            if (recepcionMx!=null){
+                registro[15] = recepcionMx.getCalidadMx();
+                if (recepcionMx.getFechaRecibido()!=null) {
+                    registro[19] = DateUtil.DateToString(recepcionMx.getFechaRecibido(),"dd/MM/yyyy");
+                }else{
+                    registro[19] = DateUtil.DateToString(recepcionMx.getFechaHoraRecepcion(),"dd/MM/yyyy");
+                }
+            }
+            registro[16] = parseFinalResultDetails(solicitudDx.getIdSolicitud(), "resultado");
+            registro[17] = DateUtil.DateToString(solicitudDx.getFechaAprobacion(),"dd/MM/yyyy");
+            registro[18] = DateUtil.DateToString(solicitudDx.getFechaAprobacion(),"dd/MM/yyyy");
+
+            registro[20] = parseFinalResultDetails(solicitudDx.getIdSolicitud(), "observaci");
+            registro[0]= rowCount++;
+            //la posici�n que contiene el resultado final
+            registros.add(registro);
+        }
+    }
+
+    private void setDatosVIHSeguimiento(List<ResultadoVigilancia> dxList, List<Object[]> registros, int numColumnas, String codigoLab) throws Exception{
+// create data rows
+        int rowCount = registros.size()+1;
+        for (ResultadoVigilancia solicitudDx : dxList) {
+            DatosVIH datosVIH = daDatosVIHService.getDatosVIH(solicitudDx.getIdNotificacion());
+            Object[] registro = new Object[numColumnas];
+            registro[1] = solicitudDx.getNombreLabProcesa();
+            registro[2] = (solicitudDx.getCodigoMx()!=null?solicitudDx.getCodigoMx():solicitudDx.getCodUnicoMx());
+            registro[3] = solicitudDx.getCodigoVIH();
+            registro[4] = (datosVIH!=null && datosVIH.getExpediente()!=null?datosVIH.getExpediente():"");
+            registro[5] = (datosVIH!=null && datosVIH.getOcupacion()!=null?datosVIH.getOcupacion():"");
+            Integer edad = null;
+            String medidaEdad = "";
+            String[] arrEdad = DateUtil.calcularEdad(solicitudDx.getFechaNacimiento(), new Date()).split("/");
+            if (arrEdad[0] != null && !arrEdad[0].equalsIgnoreCase("0")) {
+                edad = Integer.valueOf(arrEdad[0]); medidaEdad = "A";
+            }else if (arrEdad[1] != null && !arrEdad[1].equalsIgnoreCase("0")) {
+                edad = Integer.valueOf(arrEdad[1]); medidaEdad = "M";
+            }else if (arrEdad[2] != null) {
+                edad = Integer.valueOf(arrEdad[2]); medidaEdad = "D";
+            }
+            registro[6] = edad;
+            registro[7] = medidaEdad;
+            String sexo = solicitudDx.getSexo();
+            registro[8] = sexo.substring(sexo.length() - 1, sexo.length());
+            registro[9] = (datosVIH!=null && datosVIH.getEmbarazo()!=null?datosVIH.getEmbarazo():"");
+            registro[10] = (solicitudDx.getCodigoSilaisNoti()!=null?solicitudDx.getNombreSilaisNoti(): //silais en la notificacion
+                    (solicitudDx.getCodigoSilaisMx()!=null?solicitudDx.getNombreSilaisMx():"")); //silais en la toma mx
+            registro[11] = (solicitudDx.getCodigoMuniNoti()!=null?solicitudDx.getNombreMuniNoti(): //unidad en la notif
+                    (solicitudDx.getCodigoMuniMx()!=null?solicitudDx.getNombreMuniMx():"")); //unidad en la toma mx
+            registro[12] = (solicitudDx.getCodigoUnidadNoti()!=null?solicitudDx.getNombreUnidadNoti()://unidad en la notif
+                    (solicitudDx.getCodigoUnidadMx()!=null?solicitudDx.getNombreUnidadMx():""));//unidad en la toma mx
+            registro[13] = "";
+            //registro[12] = "";
+            DatosRecepcionMx recepcionMx = recepcionMxService.getRecepcionMxByCodUnicoMxV2(solicitudDx.getCodigoMx(), codigoLab);
+            if (recepcionMx!=null){
+                //registro[13] = recepcionMx.getCalidadMx();
+                if (recepcionMx.getFechaRecibido()!=null) {
+                    registro[16] = DateUtil.DateToString(recepcionMx.getFechaRecibido(),"dd/MM/yyyy");
+                }else{
+                    registro[16] = DateUtil.DateToString(recepcionMx.getFechaHoraRecepcion(),"dd/MM/yyyy");
+                }
+            }
+            registro[14] = parseFinalResultDetails(solicitudDx.getIdSolicitud(), "resultado");
+            registro[15] = DateUtil.DateToString(solicitudDx.getFechaAprobacion(),"dd/MM/yyyy");
+            registro[0]= rowCount++;
+            registros.add(registro);
+        }
+    }
+
+    private void setDatosVIHSerologia(List<ResultadoVigilancia> dxList, List<Object[]> registrosPos, List<Object[]> registrosNeg, boolean incluirMxInadecuadas, List<Object[]> registrosMxInadec, int numColumnas, String codigoLab) throws Exception{
+// create data rows
+        int rowCountPos = registrosPos.size()+1;
+        int rowCountNeg = registrosNeg.size()+1;
+        int rowCountInadec = registrosMxInadec.size()+1;
+        for (ResultadoVigilancia solicitudDx : dxList) {
+            DatosVIH datosVIH = daDatosVIHService.getDatosVIH(solicitudDx.getIdNotificacion());
+            Object[] registro = new Object[numColumnas];
+            registro[1] = solicitudDx.getNombreLabProcesa();
+            registro[2] = (solicitudDx.getCodigoMx()!=null?solicitudDx.getCodigoMx():solicitudDx.getCodUnicoMx());
+            registro[3] = solicitudDx.getCodigoVIH();
+            Integer edad = null;
+            String medidaEdad = "";
+            String[] arrEdad = DateUtil.calcularEdad(solicitudDx.getFechaNacimiento(), new Date()).split("/");
+            if (arrEdad[0] != null && !arrEdad[0].equalsIgnoreCase("0")) {
+                edad = Integer.valueOf(arrEdad[0]); medidaEdad = "A";
+            }else if (arrEdad[1] != null && !arrEdad[1].equalsIgnoreCase("0")) {
+                edad = Integer.valueOf(arrEdad[1]); medidaEdad = "M";
+            }else if (arrEdad[2] != null) {
+                edad = Integer.valueOf(arrEdad[2]); medidaEdad = "D";
+            }
+            registro[4] = edad;
+            registro[5] = medidaEdad;
+            String sexo = solicitudDx.getSexo();
+            registro[6] = sexo.substring(sexo.length() - 1, sexo.length());
+            registro[7] = (datosVIH!=null && datosVIH.getEmbarazo()!=null?datosVIH.getEmbarazo():"");
+            registro[8] = (solicitudDx.getCodigoSilaisNoti()!=null?solicitudDx.getNombreSilaisNoti(): //silais en la notificacion
+                    (solicitudDx.getCodigoSilaisMx()!=null?solicitudDx.getNombreSilaisMx():"")); //silais en la toma mx
+            registro[9] = (solicitudDx.getCodigoMuniNoti()!=null?solicitudDx.getNombreMuniNoti(): //unidad en la notif
+                    (solicitudDx.getCodigoMuniMx()!=null?solicitudDx.getNombreMuniMx():"")); //unidad en la toma mx
+            registro[10] = (solicitudDx.getCodigoUnidadNoti()!=null?solicitudDx.getNombreUnidadNoti()://unidad en la notif
+                    (solicitudDx.getCodigoUnidadMx()!=null?solicitudDx.getNombreUnidadMx():""));//unidad en la toma mx
+            registro[11] = "";//unidad consignada
+            registro[12] = (datosVIH!=null?datosVIH.getResA1():"");
+            registro[13] = (datosVIH!=null?datosVIH.getResA2():"");
+            registro[14] = DateUtil.DateToString(solicitudDx.getFechaTomaMx(),"dd/MM/yyyy");
+            validarElisaVIH(registro, solicitudDx.getIdSolicitud(), 15, 17, 19);
+            //registro[12] = "";
+            DatosRecepcionMx recepcionMx = recepcionMxService.getRecepcionMxByCodUnicoMxV2(solicitudDx.getCodigoMx(), codigoLab);
+            if (recepcionMx!=null){
+                //registro[13] = recepcionMx.getCalidadMx();
+                if (recepcionMx.getFechaRecibido()!=null) {
+                    registro[23] = DateUtil.DateToString(recepcionMx.getFechaRecibido(),"dd/MM/yyyy");
+                }else{
+                    registro[23] = DateUtil.DateToString(recepcionMx.getFechaHoraRecepcion(),"dd/MM/yyyy");
+                }
+            }
+            parseVIHSerFinalResultDetails(solicitudDx.getIdSolicitud(), registro, 21);
+            registro[24] = DateUtil.DateToString(solicitudDx.getFechaAprobacion(),"dd/MM/yyyy");
+            registro[27] = DateUtil.DateToString(new Date(),"dd/MM/yyyy");
+            if (registro[21].toString().toLowerCase().contains("negativo")) {
+                registro[0]= rowCountNeg++;
+                registrosNeg.add(registro);
+            } else if (incluirMxInadecuadas && registro[21].toString().toLowerCase().contains("inadecuad")){
+                registro[0]= rowCountInadec++;
+                registrosMxInadec.add(registro);
+            }else if (!registro[21].toString().toLowerCase().contains("indetermin") && !registro[21].toString().toLowerCase().contains("invalido")) {
+                registro[0]= rowCountPos++;
+                registrosPos.add(registro);
             }
         }
     }
@@ -1795,6 +2071,65 @@ public class ReportesExcelController {
         }
     }
 
+    private void validarElisaVIH(Object[] dato, String idSolicitudDx, int indiceElisa, int indiceElisaDup, int indiceWB){
+        List<DatosOrdenExamen> examenes = ordenExamenMxService.getOrdenesExamenByIdSolicitudV2(idSolicitudDx);
+        for (DatosOrdenExamen examen : examenes) {
+            if (examen.getExamen().toUpperCase().contains("ELISA ") && examen.getExamen().toUpperCase().contains("CONFIRM") && examen.getExamen().toUpperCase().contains("VIH")){
+                List<ResultadoExamen> resultados = resultadosService.getDetallesResultadoActivosByExamenV2(examen.getIdOrdenExamen());
+                Date fechaProcesamiento = null;
+                String detalleResultado = "";
+                for (ResultadoExamen resultado : resultados) {
+
+                    if (resultado.getTipo().equals("TPDATO|LIST")) {
+                        Catalogo_Lista cat_lista = resultadoFinalService.getCatalogoLista(resultado.getValor());
+                        detalleResultado = cat_lista.getEtiqueta();
+                    } else if (resultado.getTipo().equals("TPDATO|LOG")) {
+                        detalleResultado = (Boolean.valueOf(resultado.getValor()) ? "lbl.yes" : "lbl.no");
+                    }
+                    fechaProcesamiento = resultado.getFechahProcesa();
+                }
+                if (resultados.size() > 0) {
+                    dato[indiceElisaDup] = detalleResultado;
+                    dato[indiceElisaDup+1] = DateUtil.DateToString(fechaProcesamiento,"dd/MM/yyyy");
+                }
+            }else if (examen.getExamen().toUpperCase().contains("ELISA") && examen.getExamen().toUpperCase().contains("VIH")){
+                List<ResultadoExamen> resultados = resultadosService.getDetallesResultadoActivosByExamenV2(examen.getIdOrdenExamen());
+                Date fechaProcesamiento = null;
+                String detalleResultado = "";
+                for (ResultadoExamen resultado : resultados) {
+                    if (resultado.getTipo().equals("TPDATO|LIST")) {
+                        Catalogo_Lista cat_lista = resultadoFinalService.getCatalogoLista(resultado.getValor());
+                        detalleResultado = cat_lista.getEtiqueta();
+                    } else if (resultado.getTipo().equals("TPDATO|LOG")) {
+                        detalleResultado = (Boolean.valueOf(resultado.getValor()) ? "lbl.yes" : "lbl.no");
+                    }
+                    fechaProcesamiento = resultado.getFechahProcesa();
+                }
+                if (resultados.size() > 0) {
+                    dato[indiceElisa] = detalleResultado;
+                    dato[indiceElisa+1] = DateUtil.DateToString(fechaProcesamiento,"dd/MM/yyyy");
+                }
+            } else if ((examen.getExamen().toUpperCase().contains("WESTERN BLOT") || examen.getExamen().toUpperCase().contains("WB")) && examen.getExamen().toUpperCase().contains("VIH")){
+                List<ResultadoExamen> resultados = resultadosService.getDetallesResultadoActivosByExamenV2(examen.getIdOrdenExamen());
+                Date fechaProcesamiento = null;
+                String detalleResultado = "";
+                for (ResultadoExamen resultado : resultados) {
+                    if (resultado.getTipo().equals("TPDATO|LIST")) {
+                        Catalogo_Lista cat_lista = resultadoFinalService.getCatalogoLista(resultado.getValor());
+                        detalleResultado = cat_lista.getEtiqueta();
+                    } else if (resultado.getTipo().equals("TPDATO|LOG")) {
+                        detalleResultado = (Boolean.valueOf(resultado.getValor()) ? "lbl.yes" : "lbl.no");
+                    }
+                    fechaProcesamiento = resultado.getFechahProcesa();
+                }
+                if (resultados.size() > 0) {
+                    dato[indiceWB] = detalleResultado;
+                    dato[indiceWB+1] = DateUtil.DateToString(fechaProcesamiento,"dd/MM/yyyy");
+                }
+            }
+        }
+    }
+
     private String parseDxs(String idTomaMx, String codigoLab){
         List<Solicitud> solicitudDxList = tomaMxService.getSolicitudesDxByIdTomaV2(idTomaMx, codigoLab);
         String dxs = "";
@@ -1841,6 +2176,71 @@ public class ReportesExcelController {
             }
         }
         return resultados;
+    }
+
+    private String parseFinalResultDetails(String idSolicitud, String respuesta){
+        List<ResultadoSolicitud> resFinalList = resultadoFinalService.getDetResActivosBySolicitudV2(idSolicitud);
+        String resultados="";
+        for(ResultadoSolicitud res: resFinalList){
+            if (res.getRespuesta()!=null && res.getRespuesta().toLowerCase().contains(respuesta)) {
+                //resultados+=(resultados.isEmpty()?res.getRespuesta().getNombre():", "+res.getRespuesta().getNombre());
+                if (res.getTipo().equals("TPDATO|LIST")) {
+                    Catalogo_Lista cat_lista = resultadoFinalService.getCatalogoLista(res.getValor());
+                    resultados+=cat_lista.getEtiqueta();
+                }else if (res.getTipo().equals("TPDATO|LOG")) {
+                    String valorBoleano = (Boolean.valueOf(res.getValor())?"lbl.yes":"lbl.no");
+                    resultados+=valorBoleano;
+                } else {
+                    resultados+=res.getValor();
+                }
+            }else if (res.getRespuestaExamen()!=null && res.getRespuestaExamen().toLowerCase().contains(respuesta)){
+                //resultados+=(resultados.isEmpty()?res.getRespuestaExamen().getNombre():", "+res.getRespuestaExamen().getNombre());
+                if (res.getTipoExamen().equals("TPDATO|LIST")) {
+                    Catalogo_Lista cat_lista = resultadoFinalService.getCatalogoLista(res.getValor());
+                    resultados+=cat_lista.getEtiqueta();
+                } else if (res.getTipoExamen().equals("TPDATO|LOG")) {
+                    String valorBoleano = (Boolean.valueOf(res.getValor())?"lbl.yes":"lbl.no");
+                    resultados+=valorBoleano;
+                }else {
+                    resultados+=res.getValor();
+                }
+            }
+        }
+        return resultados;
+    }
+
+    private void parseVIHSerFinalResultDetails(String idSolicitud, Object[] dato, int indiceRes) {
+        List<ResultadoSolicitud> resFinalList = resultadoFinalService.getDetResActivosBySolicitudV2(idSolicitud);
+        String resultados = "";
+        boolean resultadoSol = false;
+        for (ResultadoSolicitud res : resFinalList) {
+            if (res.getRespuesta() != null) {
+                //si es respuesta solicitud, verificar si es la observacion
+                if (res.getRespuesta().toLowerCase().contains("observac")) {
+                    dato[indiceRes + 1] = res.getValor();
+                } else {
+                    if (res.getTipo().equals("TPDATO|LIST")) {
+                        Catalogo_Lista cat_lista = resultadoFinalService.getCatalogoLista(res.getValor());
+                        resultados += cat_lista.getEtiqueta();
+                    } else if (res.getTipo().equals("TPDATO|LOG")) {
+                        String valorBoleano = (Boolean.valueOf(res.getValor()) ? "lbl.yes" : "lbl.no");
+                        resultados += valorBoleano;
+                    } else if (res.getValor().toLowerCase().contains("inadecuad")) {
+                        resultados += res.getValor();
+                    }
+                    resultadoSol = true;
+                }
+            } else if (res.getRespuestaExamen() != null && (!resultadoSol || resFinalList.size() == 1)) {
+                if (res.getTipoExamen().equals("TPDATO|LIST")) {
+                    Catalogo_Lista cat_lista = resultadoFinalService.getCatalogoLista(res.getValor());
+                    resultados += cat_lista.getEtiqueta();
+                } else if (res.getTipoExamen().equals("TPDATO|LOG")) {
+                    String valorBoleano = (Boolean.valueOf(res.getValor()) ? "lbl.yes" : "lbl.no");
+                    resultados += valorBoleano;
+                }
+            }
+        }
+        dato[indiceRes] = resultados;
     }
 
     /**

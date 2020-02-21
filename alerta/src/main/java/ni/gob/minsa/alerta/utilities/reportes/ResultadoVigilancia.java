@@ -13,6 +13,8 @@ public class ResultadoVigilancia {
     private String idSolicitud;
     private String codigoMx;
     private String codUnicoMx;
+    private String codigoVIH;
+    private String expediente;
     private String codigoLabProcesa;
     private String nombreLabProcesa;
 
@@ -407,5 +409,21 @@ public class ResultadoVigilancia {
 
     public void setNombreLabProcesa(String nombreLabProcesa) {
         this.nombreLabProcesa = nombreLabProcesa;
+    }
+
+    public String getCodigoVIH() {
+        return codigoVIH;
+    }
+
+    public void setCodigoVIH(String codigoVIH) {
+        this.codigoVIH = codigoVIH;
+    }
+
+    public String getExpediente() {
+        return expediente;
+    }
+
+    public void setExpediente(String expediente) {
+        this.expediente = expediente;
     }
 }
