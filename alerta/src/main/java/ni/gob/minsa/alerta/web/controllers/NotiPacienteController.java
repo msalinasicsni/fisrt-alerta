@@ -189,46 +189,48 @@ public class NotiPacienteController {
         Integer indice = 0;
         String idSolicitud = "";
         for (DaSolicitudDx diagnostico : solicitudDxList) {
-            Map<String, String> map = new HashMap<String, String>();
-            idSolicitud = diagnostico.getIdSolicitudDx();
-            map.put("tipoSolicitud", messageSource.getMessage("lbl.routine", null, null));
-            map.put("nombreSolicitud", diagnostico.getCodDx().getNombre());
-            map.put("fechaSolicitud", DateUtil.DateToString(diagnostico.getFechaHSolicitud(), "dd/MM/yyyy hh:mm:ss a"));
-            if (diagnostico.getFechaAprobacion()!=null) {
-                map.put("fechaAprobacion", DateUtil.DateToString(diagnostico.getFechaAprobacion(), "dd/MM/yyyy hh:mm:ss a"));
-            }else{
-                map.put("fechaAprobacion"," ");
-            }
-            map.put("codigoUnicoMx", diagnostico.getIdTomaMx().getCodigoLab()!=null?diagnostico.getIdTomaMx().getCodigoLab():diagnostico.getIdTomaMx().getCodigoUnicoMx());
-            map.put("tipoMx", diagnostico.getIdTomaMx().getCodTipoMx().getNombre());
-            //detalle resultado solicitud
-            List<DatoSolicitudDetalle> resultList = datosSolicitudService.getDatosSolicitudDetalleBySolicitud(idSolicitud);
-            Map<Integer, Object> mapResList = new HashMap<Integer, Object>();
-            int subIndice = 0;
-            Map<String, String> mapRes = new HashMap<String, String>();
-            for (DatoSolicitudDetalle res : resultList) {
-                if (res.getDatoSolicitud() != null) {
-                    if (res.getDatoSolicitud().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                        Catalogo_Lista cat_lista = datosSolicitudService.getCatalogoLista(res.getValor());
-                        mapRes.put("valor", cat_lista.getValor());
-                    } else if (res.getDatoSolicitud().getConcepto().getTipo().getCodigo().equals("TPDATO|LOG")) {
-                        String valorBoleano = (Boolean.valueOf(res.getValor()) ? "lbl.yes" : "lbl.no");
-                        mapRes.put("valor", messageSource.getMessage(valorBoleano, null, null));
-                    } else {
-                        mapRes.put("valor", res.getValor());
-                    }
-                    mapRes.put("respuesta", res.getDatoSolicitud().getNombre());
-
+            if (!diagnostico.getCodDx().getNombre().toLowerCase().contains("covid19")) {//Datos de Covid19, solo en sistema Laboratorio. Andrea 22/07/2020
+                Map<String, String> map = new HashMap<String, String>();
+                idSolicitud = diagnostico.getIdSolicitudDx();
+                map.put("tipoSolicitud", messageSource.getMessage("lbl.routine", null, null));
+                map.put("nombreSolicitud", diagnostico.getCodDx().getNombre());
+                map.put("fechaSolicitud", DateUtil.DateToString(diagnostico.getFechaHSolicitud(), "dd/MM/yyyy hh:mm:ss a"));
+                if (diagnostico.getFechaAprobacion() != null) {
+                    map.put("fechaAprobacion", DateUtil.DateToString(diagnostico.getFechaAprobacion(), "dd/MM/yyyy hh:mm:ss a"));
+                } else {
+                    map.put("fechaAprobacion", " ");
                 }
-                mapRes.put("fechaResultado", DateUtil.DateToString(res.getFechahRegistro(), "dd/MM/yyyy hh:mm:ss a"));
-                mapResList.put(subIndice, mapRes);
-                subIndice++;
-                mapRes = new HashMap<String, String>();
-            }
-            map.put("resultado", new Gson().toJson(mapResList));
+                map.put("codigoUnicoMx", diagnostico.getIdTomaMx().getCodigoLab() != null ? diagnostico.getIdTomaMx().getCodigoLab() : diagnostico.getIdTomaMx().getCodigoUnicoMx());
+                map.put("tipoMx", diagnostico.getIdTomaMx().getCodTipoMx().getNombre());
+                //detalle resultado solicitud
+                List<DatoSolicitudDetalle> resultList = datosSolicitudService.getDatosSolicitudDetalleBySolicitud(idSolicitud);
+                Map<Integer, Object> mapResList = new HashMap<Integer, Object>();
+                int subIndice = 0;
+                Map<String, String> mapRes = new HashMap<String, String>();
+                for (DatoSolicitudDetalle res : resultList) {
+                    if (res.getDatoSolicitud() != null) {
+                        if (res.getDatoSolicitud().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
+                            Catalogo_Lista cat_lista = datosSolicitudService.getCatalogoLista(res.getValor());
+                            mapRes.put("valor", cat_lista.getValor());
+                        } else if (res.getDatoSolicitud().getConcepto().getTipo().getCodigo().equals("TPDATO|LOG")) {
+                            String valorBoleano = (Boolean.valueOf(res.getValor()) ? "lbl.yes" : "lbl.no");
+                            mapRes.put("valor", messageSource.getMessage(valorBoleano, null, null));
+                        } else {
+                            mapRes.put("valor", res.getValor());
+                        }
+                        mapRes.put("respuesta", res.getDatoSolicitud().getNombre());
 
-            mapResponse.put(indice, map);
-            indice++;
+                    }
+                    mapRes.put("fechaResultado", DateUtil.DateToString(res.getFechahRegistro(), "dd/MM/yyyy hh:mm:ss a"));
+                    mapResList.put(subIndice, mapRes);
+                    subIndice++;
+                    mapRes = new HashMap<String, String>();
+                }
+                map.put("resultado", new Gson().toJson(mapResList));
+
+                mapResponse.put(indice, map);
+                indice++;
+            }
         }
         jsonResponse = new Gson().toJson(mapResponse);
         UnicodeEscaper escaper = UnicodeEscaper.above(127);

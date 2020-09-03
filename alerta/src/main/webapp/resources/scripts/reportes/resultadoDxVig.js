@@ -169,6 +169,7 @@ var resultReportDxVig = function () {
                         filtro['fechaInicio'] = $('#initDate').val();
                         filtro['fechaFin'] = $('#endDate').val();
                     }
+                    filtro['consolidarPor'] = $('input[name="rbFechaBusqueda"]:checked', '#result_form').val();
                     $(this).attr("href",parametros.excelUrl+"?filtro="+JSON.stringify(filtro));
                     desbloquearUI();
                 }

@@ -18,6 +18,7 @@ import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.enumeration.HealthUnitType;
 import ni.gob.minsa.alerta.utilities.DateUtil;
+import ni.gob.minsa.alerta.utilities.reportes.DatosSolicitud;
 import org.apache.commons.lang3.text.translate.UnicodeEscaper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -285,29 +286,29 @@ public class expose {
     public @ResponseBody
     String fetchApproveResultsJson(@RequestParam(value = "strIdNotificacion", required = true) String strIdNotificacion) throws Exception{
         logger.info("Obteniendo los diagnósticos con examenes realizados");
-        List<DaSolicitudDx> diagnosticosList = resultadoFinalService.getSolicitudesDxByIdNotificacion(strIdNotificacion);
-        List<DaSolicitudEstudio> estudiosList = resultadoFinalService.getSolicitudesEstByIdNotificacion(strIdNotificacion);
+        List<DatosSolicitud> diagnosticosList = resultadoFinalService.getSolicitudesDxByIdNotificacionV2(strIdNotificacion);
+        List<DatosSolicitud> estudiosList = resultadoFinalService.getSolicitudesEstByIdNotificacionV2(strIdNotificacion);
         return resultadoSolicitudToJson(diagnosticosList,estudiosList);
     }
 
-    private  String resultadoSolicitudToJson(List<DaSolicitudDx> diagnosticosList, List<DaSolicitudEstudio> estudiosList){
+    private  String resultadoSolicitudToJson(List<DatosSolicitud> diagnosticosList, List<DatosSolicitud> estudiosList){
         String jsonResponse="";
         Map<Integer, Object> mapResponse = new HashMap<Integer, Object>();
         Integer indice=0;
         String idSolicitud="";
-        for(DaSolicitudDx diagnostico: diagnosticosList){
+        for(DatosSolicitud diagnostico: diagnosticosList){
             Map<String, String> map = new HashMap<String, String>();
-            idSolicitud = diagnostico.getIdSolicitudDx();
+            idSolicitud = diagnostico.getIdSolicitud();
             map.put("tipoSolicitud",messageSource.getMessage("lbl.routine",null,null));
-            map.put("nombreSolicitud",diagnostico.getCodDx().getNombre());
-            map.put("fechaSolicitud", DateUtil.DateToString(diagnostico.getFechaHSolicitud(), "dd/MM/yyyy hh:mm:ss a"));
+            map.put("nombreSolicitud",diagnostico.getNombre());
+            map.put("fechaSolicitud", diagnostico.getFechaSolicitud());
             if (diagnostico.getFechaAprobacion()!=null) {
-                map.put("fechaAprobacion", DateUtil.DateToString(diagnostico.getFechaAprobacion(), "dd/MM/yyyy hh:mm:ss a"));
+                map.put("fechaAprobacion", diagnostico.getFechaAprobacion());
             }else{
                 map.put("fechaAprobacion"," ");
             }
-            map.put("codigoUnicoMx", diagnostico.getIdTomaMx().getCodigoLab()!=null?diagnostico.getIdTomaMx().getCodigoLab():diagnostico.getIdTomaMx().getCodigoUnicoMx());
-            map.put("tipoMx", diagnostico.getIdTomaMx().getCodTipoMx().getNombre());
+            map.put("codigoUnicoMx", diagnostico.getCodigoMx());
+            map.put("tipoMx", diagnostico.getTipoMx());
             //detalle resultado solicitud
             List<DetalleResultadoFinal> resultList = resultadoFinalService.getDetResActivosBySolicitud(idSolicitud);
             Map<Integer, Object> mapResList = new HashMap<Integer, Object>();
@@ -348,19 +349,19 @@ public class expose {
             mapResponse.put(indice, map);
             indice++;
         }
-        for(DaSolicitudEstudio estudio: estudiosList){
+        for(DatosSolicitud estudio: estudiosList){
             Map<String, String> map = new HashMap<String, String>();
-            idSolicitud = estudio.getIdSolicitudEstudio();
+            idSolicitud = estudio.getIdSolicitud();
             map.put("tipoSolicitud",messageSource.getMessage("lbl.research",null,null));
-            map.put("nombreSolicitud",estudio.getTipoEstudio().getNombre());
-            map.put("fechaSolicitud",DateUtil.DateToString(estudio.getFechaHSolicitud(),"dd/MM/yyyy hh:mm:ss a"));
+            map.put("nombreSolicitud",estudio.getNombre());
+            map.put("fechaSolicitud",estudio.getFechaSolicitud());
             if (estudio.getFechaAprobacion()!=null) {
-                map.put("fechaAprobacion", DateUtil.DateToString(estudio.getFechaAprobacion(), "dd/MM/yyyy hh:mm:ss a"));
+                map.put("fechaAprobacion", estudio.getFechaAprobacion());
             }else{
                 map.put("fechaAprobacion"," ");
             }
-            map.put("codigoUnicoMx", estudio.getIdTomaMx().getCodigoUnicoMx());
-            map.put("tipoMx", estudio.getIdTomaMx().getCodTipoMx().getNombre());
+            map.put("codigoUnicoMx", estudio.getCodigoMx());
+            map.put("tipoMx", estudio.getTipoMx());
             //detalle resultado solicitud
             List<DetalleResultadoFinal> resultList = resultadoFinalService.getDetResActivosBySolicitud(idSolicitud);
             Map<Integer, Object> mapResList = new HashMap<Integer, Object>();

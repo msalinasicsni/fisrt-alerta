@@ -963,83 +963,84 @@ public class ReportesController {
 
         if (posNegRoutineReqList != null) {
             for (DaSolicitudDx soli : posNegRoutineReqList) {
-                boolean mostrar = false;
-                String valorResultado = null;
-                String content = null;
+                if (!soli.getCodDx().getNombre().toLowerCase().contains("covid19")) {//Datos de Covid19, solo en sistema Laboratorio. Andrea 22/07/2020
+                    boolean mostrar = false;
+                    String valorResultado = null;
+                    String content = null;
 
-                //search positive results from list
-                //get Response for each request
-                List<DetalleResultadoFinal> finalRes = resultadoFinalService.getDetResActivosBySolicitud(soli.getIdSolicitudDx());
-                for (DetalleResultadoFinal res : finalRes) {
+                    //search positive results from list
+                    //get Response for each request
+                    List<DetalleResultadoFinal> finalRes = resultadoFinalService.getDetResActivosBySolicitud(soli.getIdSolicitudDx());
+                    for (DetalleResultadoFinal res : finalRes) {
 
-                    if(filtroResu != null){
-                        if(filtroResu.equals("Positivo")){
-                            content = getPositiveResult(res);
-                        }else{
-                            content = getNegativeResult(res);
-                        }
-
-                    }else{
-                        content = getResult(res);
-                    }
-
-                    String[] arrayContent = content.split(",");
-                    valorResultado = arrayContent[0];
-                    mostrar = Boolean.parseBoolean(arrayContent[1]);
-
-                    if (mostrar) {
-                        Map<String, String> map = new HashMap<String, String>();
-                        map.put("solicitud", soli.getCodDx().getNombre());
-                        map.put("idSolicitud", soli.getIdSolicitudDx());
-                        map.put("codigoUnicoMx", soli.getIdTomaMx().getCodigoLab());
-                        map.put("fechaAprobacion", DateUtil.DateToString(soli.getFechaAprobacion(), "dd/MM/yyyy hh:mm:ss a"));
-                        map.put("fechaToma", DateUtil.DateToString(soli.getIdTomaMx().getFechaHTomaMx(), "dd/MM/yyyy hh:mm:ss a"));
-                        map.put("resultado", valorResultado);
-
-                        if (soli.getIdTomaMx().getIdNotificacion().getCodSilaisAtencion() != null) {
-                            map.put("codSilais", soli.getIdTomaMx().getIdNotificacion().getCodSilaisAtencion().getNombre());
-                        } else {
-                            map.put("codSilais", "");
-                        }
-                        if (soli.getIdTomaMx().getIdNotificacion().getCodUnidadAtencion() != null) {
-                            map.put("codUnidadSalud", soli.getIdTomaMx().getIdNotificacion().getCodUnidadAtencion().getNombre());
-                        } else {
-                            map.put("codUnidadSalud", "");
-                        }
-                        map.put("tipoNoti", soli.getIdTomaMx().getIdNotificacion().getCodTipoNotificacion().getValor());
-                        //Si hay persona
-                        if (soli.getIdTomaMx().getIdNotificacion().getPersona() != null) {
-                            /// se obtiene el nombre de la persona asociada a la ficha
-                            String nombreCompleto = "";
-                            nombreCompleto = soli.getIdTomaMx().getIdNotificacion().getPersona().getPrimerNombre();
-                            if (soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoNombre() != null)
-                                nombreCompleto = nombreCompleto + " " + soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoNombre();
-                            nombreCompleto = nombreCompleto + " " + soli.getIdTomaMx().getIdNotificacion().getPersona().getPrimerApellido();
-                            if (soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoApellido() != null)
-                                nombreCompleto = nombreCompleto + " " + soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoApellido();
-                            map.put("persona", nombreCompleto);
-                            if (soli.getIdTomaMx().getIdNotificacion().getDireccionResidencia()!=null && !soli.getIdTomaMx().getIdNotificacion().getDireccionResidencia().isEmpty()){
-                                map.put("direccion",soli.getIdTomaMx().getIdNotificacion().getDireccionResidencia());
-                            }else {
-                                map.put("direccion",(soli.getIdTomaMx().getIdNotificacion().getPersona().getDireccionResidencia()!=null?soli.getIdTomaMx().getIdNotificacion().getPersona().getDireccionResidencia():""));
+                        if (filtroResu != null) {
+                            if (filtroResu.equals("Positivo")) {
+                                content = getPositiveResult(res);
+                            } else {
+                                content = getNegativeResult(res);
                             }
 
-                        } else if (soli.getIdTomaMx().getIdNotificacion().getSolicitante()!=null){
-                            map.put("persona", soli.getIdTomaMx().getIdNotificacion().getSolicitante().getNombre());
-                            map.put("direccion", (soli.getIdTomaMx().getIdNotificacion().getSolicitante().getDireccion()!=null?soli.getIdTomaMx().getIdNotificacion().getSolicitante().getDireccion():""));
                         } else {
-                            map.put("persona", " ");
-                            map.put("direccion", " ");
+                            content = getResult(res);
                         }
 
-                        mapResponse.put(indice, map);
-                        indice++;
-                        break;
+                        String[] arrayContent = content.split(",");
+                        valorResultado = arrayContent[0];
+                        mostrar = Boolean.parseBoolean(arrayContent[1]);
+
+                        if (mostrar) {
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("solicitud", soli.getCodDx().getNombre());
+                            map.put("idSolicitud", soli.getIdSolicitudDx());
+                            map.put("codigoUnicoMx", soli.getIdTomaMx().getCodigoLab());
+                            map.put("fechaAprobacion", DateUtil.DateToString(soli.getFechaAprobacion(), "dd/MM/yyyy hh:mm:ss a"));
+                            map.put("fechaToma", DateUtil.DateToString(soli.getIdTomaMx().getFechaHTomaMx(), "dd/MM/yyyy hh:mm:ss a"));
+                            map.put("resultado", valorResultado);
+
+                            if (soli.getIdTomaMx().getIdNotificacion().getCodSilaisAtencion() != null) {
+                                map.put("codSilais", soli.getIdTomaMx().getIdNotificacion().getCodSilaisAtencion().getNombre());
+                            } else {
+                                map.put("codSilais", "");
+                            }
+                            if (soli.getIdTomaMx().getIdNotificacion().getCodUnidadAtencion() != null) {
+                                map.put("codUnidadSalud", soli.getIdTomaMx().getIdNotificacion().getCodUnidadAtencion().getNombre());
+                            } else {
+                                map.put("codUnidadSalud", "");
+                            }
+                            map.put("tipoNoti", soli.getIdTomaMx().getIdNotificacion().getCodTipoNotificacion().getValor());
+                            //Si hay persona
+                            if (soli.getIdTomaMx().getIdNotificacion().getPersona() != null) {
+                                /// se obtiene el nombre de la persona asociada a la ficha
+                                String nombreCompleto = "";
+                                nombreCompleto = soli.getIdTomaMx().getIdNotificacion().getPersona().getPrimerNombre();
+                                if (soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoNombre() != null)
+                                    nombreCompleto = nombreCompleto + " " + soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoNombre();
+                                nombreCompleto = nombreCompleto + " " + soli.getIdTomaMx().getIdNotificacion().getPersona().getPrimerApellido();
+                                if (soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoApellido() != null)
+                                    nombreCompleto = nombreCompleto + " " + soli.getIdTomaMx().getIdNotificacion().getPersona().getSegundoApellido();
+                                map.put("persona", nombreCompleto);
+                                if (soli.getIdTomaMx().getIdNotificacion().getDireccionResidencia() != null && !soli.getIdTomaMx().getIdNotificacion().getDireccionResidencia().isEmpty()) {
+                                    map.put("direccion", soli.getIdTomaMx().getIdNotificacion().getDireccionResidencia());
+                                } else {
+                                    map.put("direccion", (soli.getIdTomaMx().getIdNotificacion().getPersona().getDireccionResidencia() != null ? soli.getIdTomaMx().getIdNotificacion().getPersona().getDireccionResidencia() : ""));
+                                }
+
+                            } else if (soli.getIdTomaMx().getIdNotificacion().getSolicitante() != null) {
+                                map.put("persona", soli.getIdTomaMx().getIdNotificacion().getSolicitante().getNombre());
+                                map.put("direccion", (soli.getIdTomaMx().getIdNotificacion().getSolicitante().getDireccion() != null ? soli.getIdTomaMx().getIdNotificacion().getSolicitante().getDireccion() : ""));
+                            } else {
+                                map.put("persona", " ");
+                                map.put("direccion", " ");
+                            }
+
+                            mapResponse.put(indice, map);
+                            indice++;
+                            break;
+                        }
+
                     }
 
                 }
-
-
             }
 
         }
@@ -1340,6 +1341,6 @@ public class ReportesController {
     List<Object[]> fetchReportResultDxJson(@RequestParam(value = "filtro", required = true) String filtro) throws Exception{
         logger.info("Obteniendo los datos para Reporte por Resultado ");
         FiltrosReporte filtroRep = jsonToFiltroReportes(filtro);
-        return reportesService.getDataDxResultReport(filtroRep);
+        return reportesService.getDataDxResultReport(filtroRep, null, 8);
     }
 }

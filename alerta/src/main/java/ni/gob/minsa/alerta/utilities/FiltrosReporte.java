@@ -34,6 +34,8 @@ public class FiltrosReporte {
     String consolidarPor;
     String codigosLaboratorios;
     String idTomaMx;
+    Integer idEstudio;
+    String estudios;
 
     public String getCodArea() {
         return codArea;
@@ -233,5 +235,21 @@ public class FiltrosReporte {
 
     public void setIdTomaMx(String idTomaMx) {
         this.idTomaMx = idTomaMx;
+    }
+
+    public Integer getIdEstudio() {
+        return idEstudio;
+    }
+
+    public void setIdEstudio(Integer idEstudio) {
+        this.idEstudio = idEstudio;
+    }
+
+    public String getEstudios() {
+        return estudios;
+    }
+
+    public void setEstudios(String estudios) {
+        this.estudios = estudios;
     }
 }

@@ -18,6 +18,10 @@ var resultReport = function () {
         });
     };
 
+    var desbloquearUI = function () {
+        setTimeout($.unblockUI, 500);
+    };
+
     return {
         //main function to initiate the module
         init: function (parametros) {
@@ -218,6 +222,31 @@ var resultReport = function () {
                     }
                 });
 
+            $("#exportExcel").click(function(){
+                var $validarForm = $("#result_form").valid();
+                if (!$validarForm) {
+                    $validator.focusInvalid();
+                    return false;
+                } else {
+                    bloquearUI(parametros.blockMess);
+                    var filtro = {};
+                    filtro['subunidades'] = $('#ckUS').is(':checked');
+                    filtro['fechaInicio'] = $('#initDate').val();
+                    filtro['fechaFin'] = $('#endDate').val();
+                    filtro['codSilais'] = $('#codSilaisAtencion').find('option:selected').val();
+                    filtro['codUnidadSalud'] = $('#codUnidadAtencion').find('option:selected').val();
+                    filtro['codDepartamento'] = $('#codDepartamento').find('option:selected').val();
+                    filtro['codMunicipio'] = $('#codMunicipio').find('option:selected').val();
+                    filtro['codArea'] = $('#codArea').find('option:selected').val();
+                    filtro['tipoNotificacion'] = $('#codTipoNoti').find('option:selected').val();
+                    filtro['porSilais'] = $('input[name="rbNivelPais"]:checked', '#result_form').val();
+                    filtro['codZona'] = $('#codZona').find('option:selected').val();
+                    filtro['idDx'] = $('#idDx').find('option:selected').val();
+                    $(this).attr("href",parametros.sExcelResultDx+"?filtro="+JSON.stringify(filtro));
+                    desbloquearUI();
+                }
+            });
+
             function getData() {
                 var filtro = {};
                 filtro['subunidades'] = $('#ckUS').is(':checked');
@@ -359,6 +388,8 @@ var resultReport = function () {
             function barChart(datasetsRes,labels) {
                 // LINE CHART
                 // ref: http://www.chartjs.org/docs/#line-chart-introduction
+                console.log(labels);
+                console.log(datasetsRes);
                 $('#lineChart-title').html("<h5>"+title+"</h5>");
                 var barData = { labels: labels,
                     datasets: datasetsRes

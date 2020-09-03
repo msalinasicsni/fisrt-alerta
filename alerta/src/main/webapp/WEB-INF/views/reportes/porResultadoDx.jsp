@@ -275,7 +275,7 @@
                                     <input class="form-control date-picker"
                                            type="text" name="initDate" id="initDate"
 
-                                           placeholder=" <spring:message code="lbl.shipment.start.date"/>"/>
+                                           placeholder=" <spring:message code="lbl.ento.start.date"/>"/>
                                 </label>
 
 
@@ -292,7 +292,7 @@
                                     <input class="form-control date-picker"
                                            type="text" name="endDate" id="endDate"
 
-                                           placeholder=" <spring:message code="lbl.shipment.end.date"/>"/>
+                                           placeholder=" <spring:message code="lbl.ento.end.date"/>"/>
                                 </label>
 
                             </section>
@@ -302,7 +302,8 @@
 
                         <!-- END ROW -->
                         <footer>
-                            <button type="submit" class="btn btn-info"><i class="fa fa-refresh"></i> <spring:message code="update" /></button>
+                            <!--<button type="submit" class="btn btn-info"><i class="fa fa-refresh"></i> <spring:message code="update" /></button> -->
+                            <a id="exportExcel" class="btn btn-success btn-lg pull-right header-btn" href="#"><i class="fa fa-file-excel-o"></i> <spring:message code="lbl.export.excel" /></a>
                         </footer>
                     </fieldset>
                 </form>
@@ -314,106 +315,8 @@
     <!-- end widget -->
 </article>
 
-<article class="col-xs-12 col-sm-12 col-md-7 col-lg-12">
-    <!-- Widget ID (each widget will need unique ID)-->
-    <div class="jarviswidget" id="wid-id-4">
-        <!-- widget options:
-            usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-            data-widget-colorbutton="false"
-            data-widget-editbutton="false"
-            data-widget-togglebutton="false"
-            data-widget-deletebutton="false"
-            data-widget-fullscreenbutton="false"
-            data-widget-custombutton="false"
-            data-widget-collapsed="true"
-            data-widget-sortable="false"
-        -->
-        <header>
-            <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-            <h2><spring:message code="lbl.distritution.by.result"/> </h2>
-        </header>
-        <!-- widget div-->
-        <div>
-            <!-- widget edit box -->
-            <div class="jarviswidget-editbox">
-                <!-- This area used as dropdown edit box -->
-                <input class="form-control" type="text">
-            </div>
-            <!-- end widget edit box -->
-            <!-- widget content -->
-            <div class="widget-body">
-                <table id="tableRES" class="table table-striped table-bordered table-hover" width="100%">
-                    <thead>
-                    <tr>
-                        <th id="firstTh"></th>
-                        <th><spring:message code="lbl.ento.total"/></th>
-                        <th><spring:message code="lbl.positives"/></th>
-                        <th><spring:message code="lbl.negatives"/></th>
-                        <th><spring:message code="lbl.without.res"/></th>
-                        <th><spring:message code="lbl.mx.inadecuada"/></th>
-                        <th><spring:message code="lbl.pos.percentage"/></th>
-                    </tr>
-
-                    </thead>
-                </table>
-            </div>
-            <!-- end widget content -->
-        </div>
-        <!-- end widget div -->
-    </div>
-    <!-- end widget -->
-</article>
-<!-- WIDGET END -->
-
 </div>
 <!-- end row -->
-<!-- row -->
-<div id="dWid3" class="row">
-    <!-- NEW WIDGET START -->
-    <article class="col-xs-12 col-sm-12 col-md-7 col-lg-12">
-        <!-- Widget ID (each widget will need unique ID)-->
-        <div class="jarviswidget" id="wid-id-3">
-            <!-- widget options:
-                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-                data-widget-colorbutton="false"
-                data-widget-editbutton="false"
-                data-widget-togglebutton="false"
-                data-widget-deletebutton="false"
-                data-widget-fullscreenbutton="false"
-                data-widget-custombutton="false"
-                data-widget-collapsed="true"
-                data-widget-sortable="false"
-            -->
-            <header>
-                <span class="widget-icon"> <i class="fa fa-comments"></i> </span>
-                <h2><spring:message code="lbl.distribution.by.positivity"/> </h2>
-
-            </header>
-            <!-- widget div-->
-            <div>
-                <!-- widget edit box -->
-                <div class="jarviswidget-editbox">
-                    <!-- This area used as dropdown edit box -->
-                    <input class="form-control" type="text">
-                </div>
-                <!-- end widget edit box -->
-                <!-- widget content -->
-                <div class="widget-body">
-                    <!-- this is what the user will see -->
-                    <div id="lineChart-title" align="center"></div>
-                    <div id="lineLegend"></div>
-                    <canvas  id="lineChart" height="120"></canvas>
-                </div>
-                <!-- end widget content -->
-            </div>
-            <!-- end widget div -->
-        </div>
-        <!-- end widget -->
-    </article>
-    <!-- WIDGET END -->
-</div>
-<!-- end row -->
-
 </section>
 <!-- end widget grid -->
 </div>
@@ -480,6 +383,7 @@
 <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
 <spring:url var="municipiosURL" value="/api/v1/municipiosbysilais"/>
 <spring:url var="unidadesUrl"   value="/api/v1/uniRepPorSilaisyMuni"/>
+<c:url var="sExcelResultDx" value="/reports/resultadoDx"/>
 <script type="text/javascript">
     $(document).ready(function() {
         pageSetUp();
@@ -489,7 +393,9 @@
             unidadesUrl: "${unidadesUrl}",
             dataTablesTTSWF: "${dataTablesTTSWF}",
             noData: "${noData}",
-            msgNoData: "${msgNoData}"};
+            msgNoData: "${msgNoData}",
+            sExcelResultDx: "${sExcelResultDx}"
+        };
         resultReport.init(parametros);
         SeleccionUnidadReporte.init(parametros);
         handleDatePickers("${pageContext.request.locale.language}");
