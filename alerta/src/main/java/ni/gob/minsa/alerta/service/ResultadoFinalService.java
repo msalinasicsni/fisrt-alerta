@@ -4,8 +4,9 @@ import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudEstudio;
 import ni.gob.minsa.alerta.domain.concepto.Catalogo_Lista;
 import ni.gob.minsa.alerta.domain.resultados.DetalleResultadoFinal;
+import ni.gob.minsa.alerta.utilities.reportes.DatosSolicitud;
 import ni.gob.minsa.alerta.utilities.reportes.ResultadoSolicitud;
-import org.apache.commons.codec.language.Soundex;
+import ni.gob.minsa.alerta.utilities.reportes.ResultadoVigilancia;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -53,6 +54,33 @@ public class ResultadoFinalService {
         return crit.list();
     }
 
+    public List<DatosSolicitud> getSolicitudesDxByIdNotificacionV2(String idNotificacion){
+        Session session = sessionFactory.getCurrentSession();
+        Query queryNotiDx = session.createQuery("select dx.idSolicitudDx as idSolicitud , dx.codDx.nombre as nombre, mx.codigoLab as codigoMx, mx.estadoMx.valor as estadoMx, " +
+                " mx.codTipoMx.nombre as tipoMx, to_char(dx.fechaHSolicitud, 'DD/MM/YYYY HH24:mi:ss') as fechaSolicitud, dx.aprobada as aprobada, to_char(dx.fechaAprobacion, 'DD/MM/YYYY HH24:mi:ss') as fechaAprobacion " +
+                "from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                "where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true and dx.controlCalidad = false and noti.idNotificacion = :idNotificacion " +
+                "and dx.codDx.nombre not like '%Covid19'"+ //Datos de Covid19, solo en sistema Laboratorio. Andrea 22/07/2020
+                "ORDER BY dx.fechaHSolicitud");
+        queryNotiDx.setParameter("idNotificacion", idNotificacion);
+
+        queryNotiDx.setResultTransformer(Transformers.aliasToBean(DatosSolicitud.class));
+        return queryNotiDx.list();
+    }
+
+    public List<DatosSolicitud> getSolicitudesEstByIdNotificacionV2(String idNotificacion){
+        Session session = sessionFactory.getCurrentSession();
+        Query queryNotiDx = session.createQuery("select dx.idSolicitudEstudio as idSolicitud , dx.tipoEstudio.nombre as nombre, mx.codigoUnicoMx as codigoMx, mx.estadoMx.valor as estadoMx, " +
+                " mx.codTipoMx.nombre as tipoMx, to_char(dx.fechaHSolicitud, 'DD/MM/YYYY HH24:mi:ss') as fechaSolicitud, dx.aprobada as aprobada, to_char(dx.fechaAprobacion, 'DD/MM/YYYY HH24:mi:ss') as fechaAprobacion " +
+                "from DaSolicitudEstudio dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+                "where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true and noti.idNotificacion = :idNotificacion " +
+                "ORDER BY dx.fechaHSolicitud");
+        queryNotiDx.setParameter("idNotificacion", idNotificacion);
+
+        queryNotiDx.setResultTransformer(Transformers.aliasToBean(DatosSolicitud.class));
+        return queryNotiDx.list();
+    }
+
     public List<DaSolicitudEstudio> getSolicitudesEstByIdNotificacion(String idNotificacion){
         Session session = sessionFactory.getCurrentSession();
         Criteria crit = session.createCriteria(DaSolicitudEstudio.class, "estudio");
@@ -96,6 +124,7 @@ public class ResultadoFinalService {
         Session session = sessionFactory.getCurrentSession();
         String query = "select a.idDetalle as idDetalle, coalesce((select rs.nombre from RespuestaSolicitud rs where rs.idRespuesta = a.respuesta.idRespuesta), null) as respuesta, coalesce((select rs.codigo from Catalogo rs where rs.codigo = a.respuesta.concepto.tipo.codigo), null) as tipo, a.valor as valor," +
                 " coalesce((select rs.nombre from RespuestaExamen rs where rs.idRespuesta = a.respuestaExamen.idRespuesta), null) as respuestaExamen, coalesce((select rs.codigo from Catalogo rs where rs.codigo = a.respuestaExamen.concepto.tipo.codigo), null) as tipoExamen " +
+                ", a.fechahRegistro as fechahProcesa " +
                 "from DetalleResultadoFinal as a inner join a.solicitudDx as r where a.pasivo = false and r.idSolicitudDx = :idSolicitud ";
 
         Query q = session.createQuery(query);
@@ -105,6 +134,7 @@ public class ResultadoFinalService {
         if (resultadoFinals.size()<=0) {
             String query2 = "select a.idDetalle as idDetalle, coalesce((select rs.nombre from RespuestaSolicitud rs where rs.idRespuesta = a.respuesta.idRespuesta), null) as respuesta, coalesce((select rs.codigo from Catalogo rs where rs.codigo = a.respuesta.concepto.tipo.codigo), null) as tipo, a.valor as valor," +
                     " coalesce((select rs.nombre from RespuestaExamen rs where rs.idRespuesta = a.respuestaExamen.idRespuesta), null) as respuestaExamen, coalesce((select rs.codigo from Catalogo rs where rs.codigo = a.respuestaExamen.concepto.tipo.codigo), null) as tipoExamen " +
+                    ", a.fechahRegistro as fechahProcesa " +
                     "from DetalleResultadoFinal as a inner join a.solicitudEstudio as r where a.pasivo = false and r.idSolicitudEstudio = :idSolicitud ";
             Query q2 = session.createQuery(query2);
             q2.setParameter("idSolicitud", idSolicitud);

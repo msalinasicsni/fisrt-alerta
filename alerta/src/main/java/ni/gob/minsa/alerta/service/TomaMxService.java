@@ -466,7 +466,7 @@ public class TomaMxService {
         return q.list();
     }
     public List<Catalogo_Dx> getCatalogosDx(){
-        String query = "from Catalogo_Dx where pasivo = false order by nombre asc";
+        String query = "from Catalogo_Dx where pasivo = false and nombre not like '%Covid19' order by nombre asc";
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery(query);
         return q.list();

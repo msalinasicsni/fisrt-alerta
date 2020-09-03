@@ -65,12 +65,12 @@ public class SeguridadService {
                 }
             }
             //Desde aca
-            /*infoSesion = new InfoSesion();
+            //infoSesion = new InfoSesion();
             //usuario produccion
-            infoSesion.setUsuarioId(5859);
+            /*infoSesion.setUsuarioId(5859);
             infoSesion.setNombre("ALERTA MANAGUA SILAIS");
             infoSesion.setUsername("alerta-managua");
-            infoSesion.setSistemaSesion("ALERTA");
+            infoSesion.setSistemaSesion("ALERTA");*/
             //usuario de pruebas
             /*infoSesion.setUsuarioId(4791);
             infoSesion.setNombre("Juan Marcio Palacios");
@@ -254,7 +254,7 @@ public class SeguridadService {
                 idUsuario = infoSesion.getUsuarioId();
             }
         }/*else{
-            idUsuario= 6118L; //4772L;///usuario alerta en pruebas
+            idUsuario= 4791L; //4772L;///usuario alerta en pruebas
         }*/
 
         return idUsuario;
