@@ -58,6 +58,8 @@ public class ReportesService {
     private static final String sqlLab = " and dx.labProcesa.codigo = :codigoLab ";
     private static final String sqlFIS = " and noti.fechaInicioSintomas between :fisInicio and :fisFinal ";
     private static final String sqlIdToma = " and mx.idTomaMx = :idTomaMx ";
+    private static final String sqlEstudios = " and dx.tipoEstudio.idEstudio in (%s)";
+    private static final String sqlEstudio = " and dx.tipoEstudio.idEstudio = :idDx ";
 
     /**
      * M�todo que retornar la informaci�n para generar reporte y gr�fico de notificaciones por area (casos y tasas)
@@ -1400,7 +1402,7 @@ public class ReportesService {
                                         || res.getValor().trim().toLowerCase().contains("reactor")
                                         || res.getValor().trim().toLowerCase().contains("detectado")
                                         || res.getValor().trim().toUpperCase().contains("MTB-DET")
-                                        || (!res.getValor().toString().trim().toLowerCase().contains("negativo") && !res.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                        || (!res.getValor().trim().toLowerCase().contains("negativo") && !res.getValor().trim().toLowerCase().contains("indetermin"))) {
                                     pos++;
                                     break;
                                 }
@@ -1993,7 +1995,7 @@ public class ReportesService {
      * @return Lista de objetos a mostrar
      */
     @SuppressWarnings("unchecked")
-    public List<Object[]> getDataDxResultReport(FiltrosReporte filtro) {
+    public List<Object[]> getDataDxResultReport(FiltrosReporte filtro, String nombreDx, int cantidadColumnas) {
         // Retrieve session from Hibernate
         List<Object[]> resTemp1 = new ArrayList<Object[]>();
         List<Object[]> resTemp2 = new ArrayList<Object[]>();
@@ -2012,7 +2014,7 @@ public class ReportesService {
                         " (select coalesce(sum(count(noti.idNotificacion)),0) from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion and noti.codSilaisAtencion.codigo = ent.codigo " +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false  and dx.controlCalidad = false" +
-                        sqlRutina + sqlFechasRut +
+                        sqlRutina + sqlFechasAproRut +
                         " group by noti.codSilaisAtencion.codigo) as dx, " +
                         " coalesce( " + //TOTAL RUTINAS CON RESULTADO
                         " (select sum(case dx.aprobada when true then 1 else 0 end) " +
@@ -2020,7 +2022,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                         " and  noti.codSilaisAtencion.codigo = ent.codigo " +
-                        sqlRutina + sqlFechasRut +
+                        sqlRutina + sqlFechasAproRut +
                         " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                         " and mx.anulada = false),0) as conresultado, " +
                         " coalesce( " + //TOTAL RUTINAS SIN RESULTADO
@@ -2028,7 +2030,7 @@ public class ReportesService {
                         " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                        sqlRutina + sqlFechasRut +
+                        sqlRutina + sqlFechasAproRut +
                         " and  noti.codSilaisAtencion.codigo = ent.codigo " +
                         " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                         " and mx.anulada = false),0) as sinresultado " +
@@ -2036,11 +2038,14 @@ public class ReportesService {
                         " where ent.pasivo = 0 " +
                         " order by ent.codigo ");
 
-                queryIdNoti = session.createQuery(" select noti.codSilaisAtencion.codigo, dx.idSolicitudDx " +
-                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                queryIdNoti = session.createQuery(" select noti.codSilaisAtencion.codigo, dx.idSolicitudDx, r.valor " +
+                        ", coalesce((select rr.concepto.tipo.codigo from RespuestaSolicitud rr where rr.idRespuesta = r.respuesta.idRespuesta),'NULL')"+
+                        ", coalesce((select rr.concepto.tipo.codigo from RespuestaExamen rr where rr.idRespuesta = r.respuestaExamen.idRespuesta),'NULL') "+
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx, DetalleResultadoFinal r " +
                         " where noti.idNotificacion = mx.idNotificacion " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        " and dx.idSolicitudDx = r.solicitudDx.idSolicitudDx and r.pasivo = false "+
                         " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                         " and mx.anulada = false " +
                         " and dx.aprobada = true " +
@@ -2053,7 +2058,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                         " and noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = div.divisionpoliticaId " +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.controlCalidad = false " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " group by noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId) as dx, " +
                         " coalesce( " +
                         " (select sum(case dx.aprobada when true then 1 else 0 end) " +
@@ -2061,7 +2066,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                         " and  noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = div.divisionpoliticaId " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                         " and mx.anulada = false),0) as conresultado, " +
                         " coalesce( " +
@@ -2069,7 +2074,7 @@ public class ReportesService {
                         " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " and  noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId = div.divisionpoliticaId " +
                         " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                         " and mx.anulada = false),0) as sinresultado " +
@@ -2077,11 +2082,14 @@ public class ReportesService {
                         "where div.dependencia is null and div.pasivo = '0'" +
                         " order by div.divisionpoliticaId ");
 
-                queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId, dx.idSolicitudDx " +
-                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.municipio.dependencia.divisionpoliticaId, dx.idSolicitudDx, r.valor " +
+                        ", coalesce((select rr.concepto.tipo.codigo from RespuestaSolicitud rr where rr.idRespuesta = r.respuesta.idRespuesta),'NULL')"+
+                        ", coalesce((select rr.concepto.tipo.codigo from RespuestaExamen rr where rr.idRespuesta = r.respuestaExamen.idRespuesta),'NULL') "+
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx, DetalleResultadoFinal r " +
                         " where noti.idNotificacion = mx.idNotificacion " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        " and dx.idSolicitudDx = r.solicitudDx.idSolicitudDx and r.pasivo = false "+
                         " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false " +
                         " and dx.aprobada = true and dx.controlCalidad = false " +
@@ -2103,7 +2111,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                     " and noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.controlCalidad = false " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " group by noti.codUnidadAtencion.municipio.divisionpoliticaId), " +
                     " coalesce( " +
                     " (select sum(case dx.aprobada when true then 1 else 0 end) " +
@@ -2111,7 +2119,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                     " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                     " and mx.anulada = false),0) as conresultado, " +
                     " coalesce( " +
@@ -2119,7 +2127,7 @@ public class ReportesService {
                     " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
                     " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                     " and mx.anulada = false),0) as sinresultado " +
@@ -2128,12 +2136,15 @@ public class ReportesService {
                     "and uni.municipio.codigoNacional = div.codigoNacional and uni.entidadAdtva.entidadAdtvaId = :codSilais " +
                     " order by div.divisionpoliticaId ");
 
-            queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.municipio.divisionpoliticaId, dx.idSolicitudDx " +
-                    " from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
+            queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.municipio.divisionpoliticaId, dx.idSolicitudDx, r.valor " +
+                    ", coalesce((select rr.concepto.tipo.codigo from RespuestaSolicitud rr where rr.idRespuesta = r.respuesta.idRespuesta),'NULL')"+
+                    ", coalesce((select rr.concepto.tipo.codigo from RespuestaExamen rr where rr.idRespuesta = r.respuestaExamen.idRespuesta),'NULL') "+
+                    " from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti, DetalleResultadoFinal r " +
                     " where noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false " +
                     " and dx.aprobada = true and dx.controlCalidad = false " +
-                    sqlRutina +sqlFechasRut +
+                    " and dx.idSolicitudDx = r.solicitudDx.idSolicitudDx and r.pasivo = false "+
+                    sqlRutina +sqlFechasAproRut +
                     " and noti.codUnidadAtencion.entidadAdtva.entidadAdtvaId = :codSilais " +
                     //" and noti.codUnidadAtencion.municipio.dependenciaSilais.entidadAdtvaId = :codSilais " +
                     " order by noti.codUnidadAtencion.municipio.divisionpoliticaId ");
@@ -2155,7 +2166,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                     " and noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.controlCalidad = false " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " group by noti.codUnidadAtencion.municipio.divisionpoliticaId) as dx, " +
                     " coalesce( " +
                     " (select sum(case dx.aprobada when true then 1 else 0 end) " +
@@ -2163,7 +2174,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                     " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                     " and mx.anulada = false),0) as conresultado, " +
                     " coalesce( " +
@@ -2171,7 +2182,7 @@ public class ReportesService {
                     " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " and  noti.codUnidadAtencion.municipio.divisionpoliticaId = div.divisionpoliticaId " +
                     " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                     " and mx.anulada = false),0) as sinresultado " +
@@ -2179,11 +2190,14 @@ public class ReportesService {
                     "where div.dependencia.divisionpoliticaId = :codDepartamento " +
                     " order by div.divisionpoliticaId ");
 
-            queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.municipio.divisionpoliticaId, dx.idSolicitudDx " +
-                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+            queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.municipio.divisionpoliticaId, dx.idSolicitudDx, r.valor " +
+                    ", coalesce((select rr.concepto.tipo.codigo from RespuestaSolicitud rr where rr.idRespuesta = r.respuesta.idRespuesta),'NULL')"+
+                    ", coalesce((select rr.concepto.tipo.codigo from RespuestaExamen rr where rr.idRespuesta = r.respuestaExamen.idRespuesta),'NULL') "+
+                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx, DetalleResultadoFinal r " +
                     " where noti.idNotificacion = mx.idNotificacion " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                    " and dx.idSolicitudDx = r.solicitudDx.idSolicitudDx and r.pasivo = false "+
                     " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false " +
                     " and dx.aprobada = true and dx.controlCalidad = false " +
@@ -2207,7 +2221,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                     " and noti.codUnidadAtencion.codigo =  uni.codigo " +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.controlCalidad = false " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " group by  noti.codUnidadAtencion.unidadId) as dx, " +
                     " coalesce( " +
                     " (select sum(case dx.aprobada when true then 1 else 0 end) " +
@@ -2215,7 +2229,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                     " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                     " and mx.anulada = false),0) as conresultado, " +
                     " coalesce( " +
@@ -2223,7 +2237,7 @@ public class ReportesService {
                     " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
                     " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                     " and mx.anulada = false),0) as sinresultado " +
@@ -2234,11 +2248,14 @@ public class ReportesService {
                     " order by uni.unidadId ");
 
 
-            queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.unidadId, dx.idSolicitudDx " +
-                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+            queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.unidadId, dx.idSolicitudDx, r.valor " +
+                    ", coalesce((select rr.concepto.tipo.codigo from RespuestaSolicitud rr where rr.idRespuesta = r.respuesta.idRespuesta),'NULL')"+
+                    ", coalesce((select rr.concepto.tipo.codigo from RespuestaExamen rr where rr.idRespuesta = r.respuestaExamen.idRespuesta),'NULL') "+
+                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx, DetalleResultadoFinal r " +
                     " where noti.idNotificacion = mx.idNotificacion " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                    " and dx.idSolicitudDx = r.solicitudDx.idSolicitudDx and r.pasivo = false "+
                     " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false " +
                     " and dx.aprobada = true and dx.controlCalidad = false " +
@@ -2266,7 +2283,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                         " and noti.codUnidadAtencion.codigo =  uni.codigo " +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.controlCalidad = false " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " group by  noti.codUnidadAtencion.unidadId) as dx, " +
                         " coalesce( " +
                         " (select sum(case dx.aprobada when true then 1 else 0 end) " +
@@ -2274,7 +2291,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                         " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                         " and mx.anulada = false),0) as conresultado, " +
                         " coalesce( " +
@@ -2282,7 +2299,7 @@ public class ReportesService {
                         " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
                         " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                         " and mx.anulada = false),0) as sinresultado " +
@@ -2292,11 +2309,14 @@ public class ReportesService {
                         " and uni.tipoUnidad in ("+ HealthUnitType.UnidadesPrimHosp.getDiscriminator()+") " +
                         " order by uni.unidadId ");
 
-                queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.unidadId, dx.idSolicitudDx " +
-                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.unidadId, dx.idSolicitudDx, r.valor " +
+                        ", coalesce((select rr.concepto.tipo.codigo from RespuestaSolicitud rr where rr.idRespuesta = r.respuesta.idRespuesta),'NULL')"+
+                        ", coalesce((select rr.concepto.tipo.codigo from RespuestaExamen rr where rr.idRespuesta = r.respuestaExamen.idRespuesta),'NULL') "+
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx, DetalleResultadoFinal r " +
                         " where noti.idNotificacion = mx.idNotificacion " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        " and dx.idSolicitudDx = r.solicitudDx.idSolicitudDx and r.pasivo = false "+
                         " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false " +
                         " and dx.aprobada = true and dx.controlCalidad = false " +
@@ -2310,7 +2330,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                         " and noti.codUnidadAtencion.codigo =  uni.codigo " +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.controlCalidad = false " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " group by  noti.codUnidadAtencion.unidadId) as dx, " +
                         " coalesce( " +
                         " (select sum(case dx.aprobada when true then 1 else 0 end) " +
@@ -2318,7 +2338,7 @@ public class ReportesService {
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                         " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                         " and mx.anulada = false),0) as conresultado, " +
                         " coalesce( " +
@@ -2326,7 +2346,7 @@ public class ReportesService {
                         " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                         " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
                         " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                         " and mx.anulada = false),0) as sinresultado " +
@@ -2335,11 +2355,14 @@ public class ReportesService {
                         " and uni.tipoUnidad in ("+ HealthUnitType.UnidadesPrimHosp.getDiscriminator()+") " +
                         " order by uni.unidadId ");
 
-                queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.unidadId, dx.idSolicitudDx " +
-                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+                queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.unidadId, dx.idSolicitudDx, r.valor " +
+                        ", coalesce((select rr.concepto.tipo.codigo from RespuestaSolicitud rr where rr.idRespuesta = r.respuesta.idRespuesta),'NULL')"+
+                        ", coalesce((select rr.concepto.tipo.codigo from RespuestaExamen rr where rr.idRespuesta = r.respuestaExamen.idRespuesta),'NULL') "+
+                        " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx, DetalleResultadoFinal r " +
                         " where noti.idNotificacion = mx.idNotificacion " +
-                        sqlRutina +sqlFechasRut +
+                        sqlRutina +sqlFechasAproRut +
                         " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                        " and dx.idSolicitudDx = r.solicitudDx.idSolicitudDx and r.pasivo = false "+
                         " and noti.pasivo = false and dx.anulado = false " +
                         " and mx.anulada = false " +
                         " and dx.aprobada = true and dx.controlCalidad = false " +
@@ -2364,7 +2387,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion" +
                     " and noti.codUnidadAtencion.codigo =  uni.codigo " +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx and noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.controlCalidad = false " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " group by  noti.codUnidadAtencion.unidadId) as dx, " +
                     " coalesce( " +
                     " (select sum(case dx.aprobada when true then 1 else 0 end) " +
@@ -2372,7 +2395,7 @@ public class ReportesService {
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
                     " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                     " and mx.anulada = false),0) as conresultado, " +
                     " coalesce( " +
@@ -2380,7 +2403,7 @@ public class ReportesService {
                     " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
                     " where noti.idNotificacion = mx.idNotificacion.idNotificacion " +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " and  noti.codUnidadAtencion.codigo =  uni.codigo " +
                     " and noti.pasivo = false and dx.anulado = false and dx.controlCalidad = false " +
                     " and mx.anulada = false),0) as sinresultado, " +
@@ -2391,11 +2414,14 @@ public class ReportesService {
 
 
 
-            queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.unidadId, dx.idSolicitudDx " +
-                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx " +
+            queryIdNoti = session.createQuery(" select noti.codUnidadAtencion.unidadId, dx.idSolicitudDx, r.valor " +
+                    ", coalesce((select rr.concepto.tipo.codigo from RespuestaSolicitud rr where rr.idRespuesta = r.respuesta.idRespuesta),'NULL')"+
+                    ", coalesce((select rr.concepto.tipo.codigo from RespuestaExamen rr where rr.idRespuesta = r.respuestaExamen.idRespuesta),'NULL') "+
+                    " from DaNotificacion noti, DaTomaMx mx, DaSolicitudDx dx, DetalleResultadoFinal r " +
                     " where noti.idNotificacion = mx.idNotificacion " +
-                    sqlRutina +sqlFechasRut +
+                    sqlRutina +sqlFechasAproRut +
                     " and mx.idTomaMx = dx.idTomaMx.idTomaMx " +
+                    " and dx.idSolicitudDx = r.solicitudDx.idSolicitudDx and r.pasivo = false "+
                     " and noti.pasivo = false and dx.anulado = false " +
                     " and mx.anulada = false " +
                     " and dx.aprobada = true and dx.controlCalidad = false " +
@@ -2415,26 +2441,30 @@ public class ReportesService {
         queryNotiDx.setParameter("idDx", filtro.getIdDx());
         queryNotiDx.setParameter("fechaInicio", filtro.getFechaInicio());
         queryNotiDx.setParameter("fechaFin", filtro.getFechaFin());
-
         resTemp1.addAll(queryNotiDx.list());
-
         for (Object[] reg : resTemp1) {
-            Object[] reg1 = new Object[8];
+            Object[] reg1 = new Object[cantidadColumnas];
             reg1[0] = reg[1]; //Nombre Silais
-            reg1[1] = reg[2]; //Cantidad Notificaciones (NO SE USA)
-            reg1[2] = (Long)reg[2]; //Cantidad Dx
+            //reg1[1] = reg[2]; //Cantidad Notificaciones (NO SE USA)
+            reg1[1] = (Long)reg[2]; //Cantidad Dx
+            if (!filtro.getCodArea().equals("AREAREP|MUNI") || (filtro.getCodArea().equals("AREAREP|MUNI") && (Long) reg[2]>0)) {
+                //para dengue, chik y zika
+                int pos = 0;
+                int neg = 0;
+                //para ifi
+                int flua = 0, flub = 0, flursv = 0, fluadv = 0, flupiv1 = 0, flupiv2 = 0, flupiv3 = 0, flumpv = 0;
+                //para molecular virus respiratorios
+                int h1n1 = 0, h1n1pd = 0, h3n2 = 0, nosuptipificable = 0, flubpcr = 0;
+                int inadecuada = 0;
+                int noProc = 0;
+                String idSolicitud = "";
+                for (Object[] sol : resTemp2) {
+                    //identidad
+                    if (sol[0].equals(reg[0]) && !sol[1].equals(idSolicitud)) {
 
-            int pos = 0;
-            int neg = 0;
-            int inadecuada = 0;
-            for (Object[] sol : resTemp2) {
-                if (sol[0].equals(reg[0])) {
-
-                    List<DetalleResultadoFinal> finalRes = resultadoFinalService.getDetResActivosBySolicitud(sol[1].toString());
-                    for (DetalleResultadoFinal res : finalRes) {
-                        if (res.getRespuesta() != null) {
-                            if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                Integer idLista = Integer.valueOf(res.getValor());
+                        if (!sol[3].toString().equalsIgnoreCase("NULL")) {
+                            if (sol[3].toString().equalsIgnoreCase("TPDATO|LIST")) {
+                                Integer idLista = Integer.valueOf(sol[2].toString());
                                 Catalogo_Lista valor = null;
                                 try {
                                     valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
@@ -2443,50 +2473,241 @@ public class ReportesService {
                                 }
 
                                 if (valor != null) {
-                                    if (valor.getValor().trim().toLowerCase().contains("negativo")
-                                            || valor.getValor().trim().toLowerCase().contains("no reactor")
-                                            || valor.getValor().trim().toLowerCase().contains("no detectado")
-                                            || valor.getValor().trim().toUpperCase().contains("MTB-ND")) {
-                                        neg++;
-                                        break;
-                                    }else if (valor.getValor().trim().toLowerCase().contains("mx inadecuada")){
-                                        inadecuada++;
-                                        break;
-                                    }else if (valor.getValor().trim().toLowerCase().contains("positivo")
-                                            || valor.getValor().trim().toLowerCase().contains("reactor")
-                                            || valor.getValor().trim().toLowerCase().contains("detectado")
-                                            || valor.getValor().trim().toUpperCase().contains("MTB-DET")
-                                            || (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin"))) {
-                                        pos++;
-                                        break;
+                                    if (nombreDx.toLowerCase().contains("dengue") || nombreDx.toLowerCase().contains("chikun") || nombreDx.toLowerCase().contains("zika") ||
+                                            (nombreDx.toLowerCase().contains("leptospi") && nombreDx.toLowerCase().contains("molec"))) {
+                                        if (valor.getValor().trim().toLowerCase().contains("negativo")
+                                                /*|| valor.getValor().trim().toLowerCase().contains("no reactor")
+                                                || valor.getValor().trim().toLowerCase().contains("no detectado")
+                                                || valor.getValor().trim().toUpperCase().contains("MTB-ND")*/) {
+                                            neg++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("mx inadecuada") || valor.getValor().trim().toLowerCase().contains("inadecuad")) {
+                                            inadecuada++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("no procesado")) {
+                                            noProc++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("positivo")
+                                                /*|| valor.getValor().trim().toLowerCase().contains("reactor")
+                                                || valor.getValor().trim().toLowerCase().contains("detectado")
+                                                || valor.getValor().trim().toUpperCase().contains("MTB-DET")*/
+                                                || (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                            pos++;
+                                            idSolicitud = sol[1].toString();
+                                        }
+                                    }else if (nombreDx.toLowerCase().contains("ifi virus respiratorio")){
+                                        if (valor.getValor().trim().toLowerCase().contains("negativo")) {
+                                            neg++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("influenza a") || valor.getValor().trim().toLowerCase().contains("flu a")){
+                                            flua++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("influenza b") || valor.getValor().trim().toLowerCase().contains("flu b")){
+                                            flub++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("rsv") || valor.getValor().trim().toLowerCase().contains("sincitial")){
+                                            flursv++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("adenovirus") || valor.getValor().trim().toLowerCase().contains("adv")){
+                                            fluadv++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("influenza 1") || valor.getValor().trim().toLowerCase().contains("influenza1")){
+                                            flupiv1++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("influenza 2") || valor.getValor().trim().toLowerCase().contains("influenza2")){
+                                            flupiv2++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("influenza 3") || valor.getValor().trim().toLowerCase().contains("influenza3")){
+                                            flupiv3++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("metapneumovirus") || valor.getValor().trim().toLowerCase().contains("mpv")){
+                                            flumpv++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("inadecuada") || valor.getValor().trim().toLowerCase().contains("inadecuado")) {
+                                            inadecuada++;
+                                            idSolicitud = sol[1].toString();
+                                        }else if (valor.getValor().trim().toLowerCase().equals("no procesado")) {
+                                            noProc++;
+                                            idSolicitud = sol[1].toString();
+                                        }
+                                    } else if (nombreDx.toLowerCase().contains("molecular virus respiratorio") || nombreDx.toLowerCase().contains("influenza")){
+                                        if (valor.getValor().trim().toLowerCase().contains("negativo")) {
+                                            neg++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("h1n1 pdm") || valor.getValor().trim().toLowerCase().contains("h1n1pdm")){
+                                            h1n1pd++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("h1n1")){
+                                            h1n1++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("h3n2")){
+                                            h3n2++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("influenza b") || valor.getValor().trim().toLowerCase().contains("flu b")){
+                                            flubpcr++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("inadecuada") || valor.getValor().trim().toLowerCase().contains("inadecuado")) {
+                                            inadecuada++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("no procesado")) {
+                                            noProc++;
+                                            idSolicitud = sol[1].toString();
+                                        }
+                                    } else if (nombreDx.toLowerCase().contains("leptospi") && nombreDx.toLowerCase().contains("serolog")){
+                                        if (valor.getValor().trim().toLowerCase().contains("negativo")
+                                                || valor.getValor().trim().toLowerCase().contains("no reactor")) {
+                                            neg++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("mx inadecuada") || valor.getValor().trim().toLowerCase().contains("inadecuad")) {
+                                            inadecuada++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("no procesado")) {
+                                            noProc++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("positivo")
+                                                || valor.getValor().trim().toLowerCase().contains("reactor")
+                                                || (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                            pos++;
+                                            idSolicitud = sol[1].toString();
+                                        }
+                                    } else if (nombreDx.toLowerCase().contains("mycobacterium") && (nombreDx.toLowerCase().contains("tuberculosis") || nombreDx.contains("tb"))) {
+                                        if (valor.getValor().trim().toUpperCase().contains("MTB-ND")) {
+                                            neg++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("mx inadecuada") || valor.getValor().trim().toLowerCase().contains("inadecuad")) {
+                                            inadecuada++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("no procesado")) {
+                                            noProc++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toUpperCase().contains("MTB-DET")
+                                                || (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                            pos++;
+                                            idSolicitud = sol[1].toString();
+                                        }
                                     }
                                 }
 
-
-                            } else if (res.getRespuesta().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
-                                if (res.getValor().trim().toLowerCase().contains("negativo")
-                                        || res.getValor().trim().toLowerCase().contains("no reactor")
-                                        || res.getValor().trim().toLowerCase().contains("no detectado")
-                                        || res.getValor().trim().toUpperCase().contains("MTB-ND")) {
-                                    neg++;
-                                    break;
-                                }else if (res.getValor().trim().toLowerCase().contains("mx inadecuada")){
-                                    inadecuada++;
-                                    break;
-                                }else if (res.getValor().trim().toLowerCase().contains("positivo")
-                                        || res.getValor().trim().toLowerCase().contains("reactor")
-                                        || res.getValor().trim().toLowerCase().contains("detectado")
-                                        || res.getValor().trim().toUpperCase().contains("MTB-DET")
-                                        || (!res.getValor().trim().toLowerCase().contains("negativo") && !res.getValor().trim().toLowerCase().contains("indetermin"))) {
-                                    pos++;
-                                    break;
+                            } else if (sol[3].toString().equalsIgnoreCase("TPDATO|TXT")) {
+                                if (nombreDx.toLowerCase().contains("dengue") || nombreDx.toLowerCase().contains("chikun") || nombreDx.toLowerCase().contains("zika") ||
+                                        (nombreDx.toLowerCase().contains("leptospi") && nombreDx.toLowerCase().contains("molec"))) {
+                                    if (sol[2].toString().trim().toLowerCase().contains("negativo")
+                                            /*|| sol[2].toString().trim().toLowerCase().contains("no reactor")
+                                            || sol[2].toString().trim().toLowerCase().contains("no detectado")
+                                            || sol[2].toString().trim().toUpperCase().contains("MTB-ND")*/) {
+                                        neg++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("mx inadecuada") || sol[2].toString().trim().toLowerCase().contains("inadecuad")) {
+                                        inadecuada++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("no procesado")) {
+                                        noProc++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("positivo")
+                                            /*|| sol[2].toString().trim().toLowerCase().contains("reactor")
+                                            || sol[2].toString().trim().toLowerCase().contains("detectado")
+                                            || sol[2].toString().trim().toUpperCase().contains("MTB-DET")
+                                            */|| (!sol[2].toString().trim().toLowerCase().contains("negativo") && !sol[2].toString().trim().toLowerCase().contains("indetermin"))) {
+                                        pos++;
+                                        idSolicitud = sol[1].toString();
+                                    }
+                                } else if (nombreDx.toLowerCase().contains("ifi virus respiratorio")){
+                                    if (sol[2].toString().trim().toLowerCase().contains("negativo")) {
+                                        neg++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("influenza a") || sol[2].toString().trim().toLowerCase().contains("flu a")){
+                                        flua++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("influenza b") || sol[2].toString().trim().toLowerCase().contains("flu b")){
+                                        flub++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("rsv") || sol[2].toString().trim().toLowerCase().contains("sincitial")){
+                                        flursv++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("adenovirus") || sol[2].toString().trim().toLowerCase().contains("adv")){
+                                        fluadv++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("influenza 1") || sol[2].toString().trim().toLowerCase().contains("influenza1")){
+                                        flupiv1++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("influenza 2") || sol[2].toString().trim().toLowerCase().contains("influenza2")){
+                                        flupiv2++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("influenza 3") || sol[2].toString().trim().toLowerCase().contains("influenza3")){
+                                        flupiv3++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("metapneumovirus") || sol[2].toString().trim().toLowerCase().contains("mpv")){
+                                        flumpv++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("inadecuada") || sol[2].toString().trim().toLowerCase().contains("inadecuado")) {
+                                        inadecuada++;
+                                        idSolicitud = sol[1].toString();
+                                    }else if (sol[2].toString().trim().toLowerCase().equals("no procesado")) {
+                                        noProc++;
+                                        idSolicitud = sol[1].toString();
+                                    }
+                                } else if (nombreDx.toLowerCase().contains("molecular virus respiratorio") || nombreDx.toLowerCase().contains("influenza")){
+                                    if (sol[2].toString().trim().toLowerCase().contains("negativo")) {
+                                        neg++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("h1n1 pdm") || sol[2].toString().trim().toLowerCase().contains("h1n1pdm")){
+                                        h1n1pd++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("h1n1")){
+                                        h1n1++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("h3n2")){
+                                        h3n2++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("influenza b") || sol[2].toString().trim().toLowerCase().contains("flu b")){
+                                        flubpcr++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("inadecuada") || sol[2].toString().trim().toLowerCase().contains("inadecuado")) {
+                                        inadecuada++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("no procesado")) {
+                                        noProc++;
+                                        idSolicitud = sol[1].toString();
+                                    }
+                                } else if (nombreDx.toLowerCase().contains("leptospi") && nombreDx.toLowerCase().contains("serolog")){
+                                    if (sol[2].toString().trim().toLowerCase().contains("negativo")
+                                            || sol[2].toString().trim().toLowerCase().contains("no reactor")) {
+                                        neg++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("mx inadecuada") || sol[2].toString().trim().toLowerCase().contains("inadecuad")) {
+                                        inadecuada++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("no procesado")) {
+                                        noProc++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("positivo")
+                                            || sol[2].toString().trim().toLowerCase().contains("reactor")
+                                            || (!sol[2].toString().trim().toLowerCase().contains("negativo") && !sol[2].toString().trim().toLowerCase().contains("indetermin"))) {
+                                        pos++;
+                                        idSolicitud = sol[1].toString();
+                                    }
+                                } else if (nombreDx.toLowerCase().contains("mycobacterium") && (nombreDx.toLowerCase().contains("tuberculosis") || nombreDx.contains("tb"))) {
+                                    if (sol[2].toString().trim().toUpperCase().contains("MTB-ND")) {
+                                        neg++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("mx inadecuada") || sol[2].toString().trim().toLowerCase().contains("inadecuad")) {
+                                        inadecuada++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("no procesado")) {
+                                        noProc++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toUpperCase().contains("MTB-DET")
+                                            || (!sol[2].toString().trim().toLowerCase().contains("negativo") && !sol[2].toString().trim().toLowerCase().contains("indetermin"))) {
+                                        pos++;
+                                        idSolicitud = sol[1].toString();
+                                    }
                                 }
-
                             }
 
-                        } else if (res.getRespuestaExamen() != null) {
-                            if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|LIST")) {
-                                Integer idLista = Integer.valueOf(res.getValor());
+                        }//ES RESPUESTA EXAMEN
+                        else if (!sol[4].toString().equalsIgnoreCase("NULL")) {
+                            if (sol[4].toString().equalsIgnoreCase("TPDATO|LIST")) {
+                                Integer idLista = Integer.valueOf(sol[2].toString());
                                 Catalogo_Lista valor = null;
                                 try {
                                     valor = respuestasExamenService.getCatalogoListaConceptoByIdLista(idLista);
@@ -2495,58 +2716,309 @@ public class ReportesService {
                                 }
 
                                 if (valor != null) {
-                                    if (valor.getValor().trim().toLowerCase().contains("negativo")
-                                            || valor.getValor().trim().toLowerCase().contains("no reactor")
-                                            || valor.getValor().trim().toLowerCase().contains("no detectado")
-                                            || valor.getValor().trim().toUpperCase().contains("MTB-ND")) {
-                                        neg++;
-                                        break;
-                                    }else if (valor.getValor().trim().toLowerCase().contains("mx inadecuada")){
-                                        inadecuada++;
-                                        break;
-                                    } else if (valor.getValor().trim().toLowerCase().contains("positivo")
-                                            || valor.getValor().trim().toLowerCase().contains("reactor")
-                                            || valor.getValor().trim().toLowerCase().contains("detectado")
-                                            || valor.getValor().trim().toUpperCase().contains("MTB-DET")
-                                            || (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin"))) {
-                                        pos++;
-                                        break;
+                                    if (nombreDx.toLowerCase().contains("dengue") || nombreDx.toLowerCase().contains("chikun") || nombreDx.toLowerCase().contains("zika") ||
+                                            (nombreDx.toLowerCase().contains("leptospi") && nombreDx.toLowerCase().contains("molec"))) {
+                                        if (valor.getValor().trim().toLowerCase().contains("negativo")
+                                                /*|| valor.getValor().trim().toLowerCase().contains("no reactor")
+                                                || valor.getValor().trim().toLowerCase().contains("no detectado")
+                                                || valor.getValor().trim().toUpperCase().contains("MTB-ND")*/) {
+                                            neg++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("mx inadecuada") || valor.getValor().trim().toLowerCase().contains("inadecuad")) {
+                                            inadecuada++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("no procesado")) {
+                                            noProc++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("positivo")
+                                                /*|| valor.getValor().trim().toLowerCase().contains("reactor")
+                                                || valor.getValor().trim().toLowerCase().contains("detectado")
+                                                || valor.getValor().trim().toUpperCase().contains("MTB-DET")
+                                                */|| (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                            pos++;
+                                            idSolicitud = sol[1].toString();
+                                        }
+                                    } else if (nombreDx.toLowerCase().contains("ifi virus respiratorio")){
+                                        if (valor.getValor().trim().toLowerCase().contains("negativo")) {
+                                            neg++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("influenza a") || valor.getValor().trim().toLowerCase().contains("flu a")){
+                                            flua++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("influenza b") || valor.getValor().trim().toLowerCase().contains("flu b")){
+                                            flub++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("rsv") || valor.getValor().trim().toLowerCase().contains("sincitial")){
+                                            flursv++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("adenovirus") || valor.getValor().trim().toLowerCase().contains("adv")){
+                                            fluadv++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("influenza 1") || valor.getValor().trim().toLowerCase().contains("influenza1")){
+                                            flupiv1++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("influenza 2") || valor.getValor().trim().toLowerCase().contains("influenza2")){
+                                            flupiv2++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("influenza 3") || valor.getValor().trim().toLowerCase().contains("influenza3")){
+                                            flupiv3++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("metapneumovirus") || valor.getValor().trim().toLowerCase().contains("mpv")){
+                                            flumpv++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("inadecuada") || valor.getValor().trim().toLowerCase().contains("inadecuado")) {
+                                            inadecuada++;
+                                            idSolicitud = sol[1].toString();
+                                        }else if (valor.getValor().trim().toLowerCase().equals("no procesado")) {
+                                            noProc++;
+                                            idSolicitud = sol[1].toString();
+                                        }
+                                    } else if (nombreDx.toLowerCase().contains("molecular virus respiratorio") || nombreDx.toLowerCase().contains("influenza")){
+                                        if (valor.getValor().trim().toLowerCase().contains("negativo")) {
+                                            neg++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("h1n1 pand") || valor.getValor().trim().toLowerCase().contains("h1n1pand") || valor.getValor().trim().toLowerCase().contains("h1n1 pdm") || valor.getValor().trim().toLowerCase().contains("h1n1pdm")){
+                                            h1n1pd++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("h1n1")){
+                                            h1n1++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("h3n2")){
+                                            h3n2++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("subtipificable")){
+                                            nosuptipificable++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("inadecuada") || valor.getValor().trim().toLowerCase().contains("inadecuado")) {
+                                            inadecuada++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("no procesado")) {
+                                            noProc++;
+                                            idSolicitud = sol[1].toString();
+                                        }
+                                    } else if (nombreDx.toLowerCase().contains("leptospi") && nombreDx.toLowerCase().contains("serolog")) {
+                                        if (valor.getValor().trim().toLowerCase().contains("negativo")
+                                                || valor.getValor().trim().toLowerCase().contains("no reactor")) {
+                                            neg++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("mx inadecuada") || valor.getValor().trim().toLowerCase().contains("inadecuad")) {
+                                            inadecuada++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("no procesado")) {
+                                            noProc++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().contains("positivo")
+                                                || valor.getValor().trim().toLowerCase().contains("reactor")
+                                                || (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                            pos++;
+                                            idSolicitud = sol[1].toString();
+                                        }
+                                    } else if (nombreDx.toLowerCase().contains("mycobacterium") && (nombreDx.toLowerCase().contains("tuberculosis") || nombreDx.contains("tb"))) {
+                                        if (valor.getValor().trim().toUpperCase().contains("MTB-ND")) {
+                                            neg++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("mx inadecuada") || valor.getValor().trim().toLowerCase().contains("inadecuad")) {
+                                            inadecuada++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toLowerCase().equals("no procesado")) {
+                                            noProc++;
+                                            idSolicitud = sol[1].toString();
+                                        } else if (valor.getValor().trim().toUpperCase().contains("MTB-DET")
+                                                || (!valor.getValor().trim().toLowerCase().contains("negativo") && !valor.getValor().trim().toLowerCase().contains("indetermin"))) {
+                                            pos++;
+                                            idSolicitud = sol[1].toString();
+                                        }
                                     }
                                 }
 
-                            } else if (res.getRespuestaExamen().getConcepto().getTipo().getCodigo().equals("TPDATO|TXT")) {
-                                if (res.getValor().trim().toLowerCase().contains("negativo")
-                                        || res.getValor().trim().toLowerCase().contains("no reactor")
-                                        || res.getValor().trim().toLowerCase().contains("no detectado")
-                                        || res.getValor().trim().toUpperCase().contains("MTB-ND")) {
-                                    neg++;
-                                    break;
-                                }else if (res.getValor().trim().toLowerCase().contains("mx inadecuada")){
-                                    inadecuada++;
-                                    break;
-                                }else if (res.getValor().trim().toLowerCase().contains("positivo")
-                                        || res.getValor().trim().toLowerCase().contains("reactor")
-                                        || res.getValor().trim().toLowerCase().contains("detectado")
-                                        || res.getValor().trim().toUpperCase().contains("MTB-DET")
-                                        || (!res.getValor().toString().trim().toLowerCase().contains("negativo") && !res.getValor().trim().toLowerCase().contains("indetermin"))) {
-                                    pos++;
-                                    break;
+                            } else if (sol[4].toString().equalsIgnoreCase("TPDATO|TXT")) {
+                                if (nombreDx.toLowerCase().contains("dengue") || nombreDx.toLowerCase().contains("chikun") || nombreDx.toLowerCase().contains("zika") ||
+                                        (nombreDx.toLowerCase().contains("leptospi") && nombreDx.toLowerCase().contains("molec"))) {
+                                    if (sol[2].toString().trim().toLowerCase().contains("negativo")
+                                            /*|| sol[2].toString().trim().toLowerCase().contains("no reactor")
+                                            || sol[2].toString().trim().toLowerCase().contains("no detectado")
+                                            || sol[2].toString().trim().toUpperCase().contains("MTB-ND")*/) {
+                                        neg++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("mx inadecuada") || sol[2].toString().trim().toLowerCase().contains("inadecuad")) {
+                                        inadecuada++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("no procesado")) {
+                                        noProc++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("positivo")
+                                            /*|| sol[2].toString().trim().toLowerCase().contains("reactor")
+                                            || sol[2].toString().trim().toLowerCase().contains("detectado")
+                                            || sol[2].toString().trim().toUpperCase().contains("MTB-DET")
+                                            */|| (!sol[2].toString().trim().toLowerCase().contains("negativo") && !sol[2].toString().trim().toLowerCase().contains("indetermin"))) {
+                                        pos++;
+                                        idSolicitud = sol[1].toString();
+                                    }
+                                } else if (nombreDx.toLowerCase().contains("ifi virus respiratorio")){
+                                    if (sol[2].toString().trim().toLowerCase().contains("negativo")) {
+                                        neg++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("influenza a") || sol[2].toString().trim().toLowerCase().contains("flu a")){
+                                        flua++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("influenza b") || sol[2].toString().trim().toLowerCase().contains("flu b")){
+                                        flub++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("rsv") || sol[2].toString().trim().toLowerCase().contains("sincitial")){
+                                        flursv++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("adenovirus") || sol[2].toString().trim().toLowerCase().contains("adv")){
+                                        fluadv++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("influenza 1") || sol[2].toString().trim().toLowerCase().contains("influenza1")){
+                                        flupiv1++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("influenza 2") || sol[2].toString().trim().toLowerCase().contains("influenza2")){
+                                        flupiv2++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("influenza 3") || sol[2].toString().trim().toLowerCase().contains("influenza3")){
+                                        flupiv3++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("metapneumovirus") || sol[2].toString().trim().toLowerCase().contains("mpv")){
+                                        flumpv++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("inadecuada") || sol[2].toString().trim().toLowerCase().contains("inadecuado")) {
+                                        inadecuada++;
+                                        idSolicitud = sol[1].toString();
+                                    }else if (sol[2].toString().trim().toLowerCase().equals("no procesado")) {
+                                        noProc++;
+                                        idSolicitud = sol[1].toString();
+                                    }
+                                } else if (nombreDx.toLowerCase().contains("molecular virus respiratorio") || nombreDx.toLowerCase().contains("influenza")){
+                                    if (sol[2].toString().trim().toLowerCase().contains("negativo")) {
+                                        neg++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("h1n1 pand") || sol[2].toString().trim().toLowerCase().contains("h1n1pand") || sol[2].toString().trim().toLowerCase().contains("h1n1 pdm") || sol[2].toString().trim().toLowerCase().contains("h1n1pdm")){
+                                        h1n1pd++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("h1n1")){
+                                        h1n1++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("h3n2")){
+                                        h3n2++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("subtipificable")){
+                                        nosuptipificable++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("inadecuada") || sol[2].toString().trim().toLowerCase().contains("inadecuado")) {
+                                        inadecuada++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("no procesado")) {
+                                        noProc++;
+                                        idSolicitud = sol[1].toString();
+                                    }
+                                } else if (nombreDx.toLowerCase().contains("leptospi") && nombreDx.toLowerCase().contains("serolog")){
+                                    if (sol[2].toString().trim().toLowerCase().contains("negativo")
+                                            || sol[2].toString().trim().toLowerCase().contains("no reactor")) {
+                                        neg++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("mx inadecuada") || sol[2].toString().trim().toLowerCase().contains("inadecuad")) {
+                                        inadecuada++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("no procesado")) {
+                                        noProc++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().contains("positivo")
+                                            || sol[2].toString().trim().toLowerCase().contains("reactor")
+                                            || (!sol[2].toString().trim().toLowerCase().contains("negativo") && !sol[2].toString().trim().toLowerCase().contains("indetermin"))) {
+                                        pos++;
+                                        idSolicitud = sol[1].toString();
+                                    }
+                                } else if (nombreDx.toLowerCase().contains("mycobacterium") && (nombreDx.toLowerCase().contains("tuberculosis") || nombreDx.contains("tb"))) {
+                                    if (sol[2].toString().trim().toUpperCase().contains("MTB-ND")) {
+                                        neg++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("mx inadecuada") || sol[2].toString().trim().toLowerCase().contains("inadecuad")) {
+                                        inadecuada++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toLowerCase().equals("no procesado")) {
+                                        noProc++;
+                                        idSolicitud = sol[1].toString();
+                                    } else if (sol[2].toString().trim().toUpperCase().contains("MTB-DET")
+                                            || (!sol[2].toString().trim().toLowerCase().contains("negativo") && !sol[2].toString().trim().toLowerCase().contains("indetermin"))) {
+                                        pos++;
+                                        idSolicitud = sol[1].toString();
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                if (nombreDx.toLowerCase().contains("dengue") || nombreDx.toLowerCase().contains("chikun") || nombreDx.toLowerCase().contains("zika") ||
+                        (nombreDx.toLowerCase().contains("leptospi") && nombreDx.toLowerCase().contains("molec"))) {
+                    reg1[2] = pos; // Positivo
+                    reg1[3] = neg; // Negativo
+                    reg1[4] = (Long) reg[4]; // Sin Resultado dx
+                    Long totalConySinResultado = (long) pos + (long) neg;//solo tomar en cuenta positivos y negativos. Andrea 24072019 //(Long) reg1[2];
+                    reg1[7] = (totalConySinResultado != 0 ? (double) Math.round(Integer.valueOf(reg1[2].toString()).doubleValue() / totalConySinResultado * 100 * 100) / 100 : 0);
+                    reg1[5] = inadecuada; //muestras inadecuadas
+                    reg1[6] = noProc; //muestras con resultado no procesados
+                    resFinal.add(reg1);
+                }else if (nombreDx.toLowerCase().contains("ifi virus respiratorio")){
+                    reg1[2] = flua; // flu a
+                    reg1[3] = flub; // flu b
+                    reg1[4] = flursv; // flu sincitial
+                    reg1[5] = fluadv; // flu adenovirus
+                    reg1[6] = flupiv1; // flu 1
+                    reg1[7] = flupiv2; // flua 2
+                    reg1[8] = flupiv3; // flua 3
+                    reg1[9] = flumpv; // flua meta
+                    reg1[10] = neg; // negativos
+                    reg1[11] = (Long) reg[4]; // Sin Resultado dx
+                    reg1[12] = inadecuada; //muestras inadecuadas
+                    reg1[13] = noProc; //muestras con resultado no procesados
+                    Long positivos = (long) flua + (long) flub + (long) flursv + (long) fluadv + (long) flupiv1 + (long) flupiv2 + (long) flupiv3 + (long) flumpv;
+                    Long totalPosNeg = positivos + (long) neg;//solo tomar en cuenta positivos y negativos. Andrea 24072019 //(Long) reg1[2];
+                    reg1[14] = (totalPosNeg != 0 ? (double) Math.round(positivos.doubleValue() / totalPosNeg * 100 * 100) / 100 : 0);
+                    resFinal.add(reg1);
+                }else if (nombreDx.toLowerCase().contains("molecular virus respiratorio")){ //TODO
+                    reg1[2] = h1n1; // flua a h1n1
+                    reg1[3] = h1n1pd; // flua h1n1 pandÃ©mico
+                    reg1[4] = h3n2; // flua h3n2
+                    reg1[5] = nosuptipificable; // flua no subtipificable
+                    reg1[6] = flubpcr; // flua b
+                    reg1[7] = neg; // Negativo
+                    reg1[8] = (Long) reg[4]; // Sin Resultado dx
+                    reg1[9] = inadecuada; //muestras inadecuadas
+                    reg1[10] = noProc; //muestras con resultado no procesados
+                    Long positivos = (long) h1n1 + (long) h1n1pd + (long) h3n2 + (long) nosuptipificable + (long) flubpcr;
+                    Long totalPosNeg = positivos + (long) neg;//solo tomar en cuenta positivos y negativos. Andrea 24072019 //(Long) reg1[2];
+                    reg1[11] = (totalPosNeg != 0 ? (double) Math.round(positivos.doubleValue() / totalPosNeg * 100 * 100) / 100 : 0);
+                    resFinal.add(reg1);
+                }else if (nombreDx.toLowerCase().contains("leptospi") && nombreDx.toLowerCase().contains("serolog")){
+                    reg1[2] = pos; // Reactor
+                    reg1[3] = neg; // No Reactor
+                    reg1[4] = (Long) reg[4]; // Sin Resultado dx
+                    Long totalConySinResultado = (long) pos + (long) neg;//solo tomar en cuenta positivos y negativos. Andrea 24072019 //(Long) reg1[2];
+                    reg1[7] = (totalConySinResultado != 0 ? (double) Math.round(Integer.valueOf(reg1[2].toString()).doubleValue() / totalConySinResultado * 100 * 100) / 100 : 0);
+                    reg1[5] = inadecuada; //muestras inadecuadas
+                    reg1[6] = noProc; //muestras con resultado no procesados
+                    resFinal.add(reg1);
+                } else if (nombreDx.toLowerCase().contains("mycobacterium") && (nombreDx.toLowerCase().contains("tuberculosis") || nombreDx.contains("tb"))) {
+                    reg1[2] = pos; // MTB-DET
+                    reg1[3] = neg; // MTB-ND
+                    reg1[4] = (Long) reg[4]; // Sin Resultado dx
+                    Long totalConySinResultado = (long) pos + (long) neg;//solo tomar en cuenta positivos y negativos. Andrea 24072019 //(Long) reg1[2];
+                    reg1[7] = (totalConySinResultado != 0 ? (double) Math.round(Integer.valueOf(reg1[2].toString()).doubleValue() / totalConySinResultado * 100 * 100) / 100 : 0);
+                    reg1[5] = inadecuada; //muestras inadecuadas
+                    reg1[6] = noProc; //muestras con resultado no procesados
+                    resFinal.add(reg1);
+                }else {
+                    reg1[2] = pos; // pos
+                    reg1[3] = neg; // neg
+                    reg1[4] = (Long) reg[4]; // Sin Resultado dx
+                    Long totalConySinResultado = (long) pos + (long) neg;//solo tomar en cuenta positivos y negativos. Andrea 24072019 //(Long) reg1[2];
+                    reg1[7] = (totalConySinResultado != 0 ? (double) Math.round(Integer.valueOf(reg1[2].toString()).doubleValue() / totalConySinResultado * 100 * 100) / 100 : 0);
+                    reg1[5] = inadecuada; //muestras inadecuadas
+                    reg1[6] = noProc; //muestras con resultado no procesados
+                    resFinal.add(reg1);
+                }
             }
-
-
-            reg1[3] = pos; // Positivo
-            reg1[4] = neg; // Negativo
-            reg1[5] = (Long)reg[4]; // Sin Resultado dx
-            Long totalConySinResultado = (Long) reg1[2];
-            reg1[6] = (totalConySinResultado != 0 ? (double) Math.round(Integer.valueOf(reg1[3].toString()).doubleValue() / totalConySinResultado * 100 * 100) / 100 : 0);
-            reg1[7] = inadecuada; //muestras inadecuadas
-            resFinal.add(reg1);
-
         }
         return resFinal;
     }
@@ -2661,5 +3133,69 @@ public class ReportesService {
         return queryNotiDx.list();
     }
 
+    public List<ResultadoVigilancia> getEstudiosAprobadosByFiltroV2(FiltrosReporte filtro){
+        Session session = sessionFactory.getCurrentSession();
+        Query queryNotiDx = null;
+        if (filtro.getCodArea().equals("AREAREP|PAIS")) {
+            queryNotiDx = session.createQuery(" select cast(p.personaId as string) as codigoExpUnico, p.primerNombre as primerNombre, p.segundoNombre as segundoNombre, p.primerApellido as primerApellido, p.segundoApellido as segundoApellido, p.fechaNacimiento as fechaNacimiento, p.sexo.codigo as sexo, " +
+                    " p.direccionResidencia as direccionResidencia, p.telefonoResidencia as telefonoResidencia, p.telefonoMovil as telefonoMovil, coalesce((select co.nombre from  Comunidades co where co.codigo=p.comunidadResidencia.codigo), null) as comunidadResidencia, " +
+                    " noti.idNotificacion as idNotificacion, noti.semanasEmbarazo as semanasEmbarazo, noti.fechaInicioSintomas as fechaInicioSintomas, coalesce((select r.valor from Respuesta r where r.codigo = noti.urgente.codigo), null) as urgente,  coalesce((select r.valor from Respuesta r where r.codigo = noti.embarazada.codigo), null) as embarazada, " +
+                    " coalesce((select ea.codigo from EntidadesAdtvas ea where ea.codigo = noti.codSilaisAtencion.codigo ), null) as codigoSilaisNoti, coalesce((select ea.nombre from EntidadesAdtvas ea where ea.codigo = noti.codSilaisAtencion.codigo ), null) as nombreSilaisNoti, " +
+                    " coalesce((select u.codigo from Unidades u where u.codigo = noti.codUnidadAtencion.codigo), null) as codigoUnidadNoti, coalesce((select u.nombre from Unidades u where u.codigo = noti.codUnidadAtencion.codigo), null) as nombreUnidadNoti, " +
+                    " coalesce((select u.codigoNacional from Divisionpolitica u where u.codigoNacional = noti.codUnidadAtencion.municipio.codigoNacional), null) as codigoMuniNoti, coalesce((select u.nombre from Divisionpolitica u where u.codigoNacional = noti.codUnidadAtencion.municipio.codigoNacional), null) as nombreMuniNoti, " +
+                    " coalesce((select u.codigoNacional from Divisionpolitica u where u.codigoNacional = noti.municipioResidencia.codigoNacional), null) as codigoMuniResid, coalesce((select u.nombre from Divisionpolitica u where u.codigoNacional = noti.municipioResidencia.codigoNacional), null) as nombreMuniResid, " +
+                    " coalesce((select ea.codigo from EntidadesAdtvas ea where ea.codigo = noti.municipioResidencia.dependenciaSilais.codigo ), null) as codigoSilaisResid, coalesce((select ea.nombre from EntidadesAdtvas ea where ea.codigo = noti.municipioResidencia.dependenciaSilais.codigo ), null) as nombreSilaisResid, " +
+                    " coalesce((select ea.codigo from EntidadesAdtvas ea where ea.codigo = mx.codSilaisAtencion.codigo ), null) as codigoSilaisMx, coalesce((select ea.nombre from EntidadesAdtvas ea where ea.codigo = mx.codSilaisAtencion.codigo ), null) as nombreSilaisMx, " +
+                    " coalesce((select u.codigo from Unidades u where u.codigo = mx.codUnidadAtencion.codigo), null) as codigoUnidadMx, coalesce((select u.nombre from Unidades u where u.codigo = mx.codUnidadAtencion.codigo), null) as nombreUnidadMx, " +
+                    " coalesce((select u.codigoNacional from Divisionpolitica u where u.codigoNacional = mx.codUnidadAtencion.municipio.codigoNacional), null) as codigoMuniMx, coalesce((select u.nombre from Divisionpolitica u where u.codigoNacional = mx.codUnidadAtencion.municipio.codigoNacional), null) as nombreMuniMx, " +
+                    " mx.idTomaMx as idTomaMx, mx.fechaHTomaMx as fechaTomaMx, mx.codigoUnicoMx as codigoMx, mx.codigoUnicoMx as codUnicoMx, mx.codTipoMx.idTipoMx as idTipoMx, mx.codTipoMx.nombre as nombreTipoMx, dx.idSolicitudEstudio as idSolicitud, dx.fechaAprobacion as fechaAprobacion, noti.codigoPacienteVIH as codigoVIH  " +
+                    " from DaSolicitudEstudio dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti inner join noti.persona p  " +
+                    " where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true " + (filtro.getEstudios()!=null? String.format(sqlEstudios, filtro.getEstudios()) : sqlEstudio) + (filtro.getConsolidarPor().equalsIgnoreCase("FIS")? sqlFIS : sqlFechasAproRut));
 
+        }else if (filtro.getCodArea().equals("AREAREP|SILAIS")) {
+            queryNotiDx = session.createQuery(" select cast(p.personaId as string) as codigoExpUnico, p.primerNombre as primerNombre, p.segundoNombre as segundoNombre, p.primerApellido as primerApellido, p.segundoApellido as segundoApellido, p.fechaNacimiento as fechaNacimiento, p.sexo.codigo as sexo, " +
+                    " p.direccionResidencia as direccionResidencia, p.telefonoResidencia as telefonoResidencia, p.telefonoMovil as telefonoMovil, coalesce((select co.nombre from  Comunidades co where co.codigo=p.comunidadResidencia.codigo), null) as comunidadResidencia, " +
+                    " noti.idNotificacion as idNotificacion, noti.semanasEmbarazo as semanasEmbarazo, noti.fechaInicioSintomas as fechaInicioSintomas, coalesce((select r.valor from Respuesta r where r.codigo = noti.urgente.codigo), null) as urgente,  coalesce((select r.valor from Respuesta r where r.codigo = noti.embarazada.codigo), null) as embarazada, " +
+                    " coalesce((select ea.codigo from EntidadesAdtvas ea where ea.codigo = noti.codSilaisAtencion.codigo ), null) as codigoSilaisNoti, coalesce((select ea.nombre from EntidadesAdtvas ea where ea.codigo = noti.codSilaisAtencion.codigo ), null) as nombreSilaisNoti, " +
+                    " coalesce((select u.codigo from Unidades u where u.codigo = noti.codUnidadAtencion.codigo), null) as codigoUnidadNoti, coalesce((select u.nombre from Unidades u where u.codigo = noti.codUnidadAtencion.codigo), null) as nombreUnidadNoti, " +
+                    " coalesce((select u.codigoNacional from Divisionpolitica u where u.codigoNacional = noti.codUnidadAtencion.municipio.codigoNacional), null) as codigoMuniNoti, coalesce((select u.nombre from Divisionpolitica u where u.codigoNacional = noti.codUnidadAtencion.municipio.codigoNacional), null) as nombreMuniNoti, " +
+                    " coalesce((select u.codigoNacional from Divisionpolitica u where u.codigoNacional = noti.municipioResidencia.codigoNacional), null) as codigoMuniResid, coalesce((select u.nombre from Divisionpolitica u where u.codigoNacional = noti.municipioResidencia.codigoNacional), null) as nombreMuniResid, " +
+                    " coalesce((select ea.codigo from EntidadesAdtvas ea where ea.codigo = noti.municipioResidencia.dependenciaSilais.codigo ), null) as codigoSilaisResid, coalesce((select ea.nombre from EntidadesAdtvas ea where ea.codigo = noti.municipioResidencia.dependenciaSilais.codigo ), null) as nombreSilaisResid, " +
+                    " coalesce((select ea.codigo from EntidadesAdtvas ea where ea.codigo = mx.codSilaisAtencion.codigo ), null) as codigoSilaisMx, coalesce((select ea.nombre from EntidadesAdtvas ea where ea.codigo = mx.codSilaisAtencion.codigo ), null) as nombreSilaisMx, " +
+                    " coalesce((select u.codigo from Unidades u where u.codigo = mx.codUnidadAtencion.codigo), null) as codigoUnidadMx, coalesce((select u.nombre from Unidades u where u.codigo = mx.codUnidadAtencion.codigo), null) as nombreUnidadMx, " +
+                    " coalesce((select u.codigoNacional from Divisionpolitica u where u.codigoNacional = mx.codUnidadAtencion.municipio.codigoNacional), null) as codigoMuniMx, coalesce((select u.nombre from Divisionpolitica u where u.codigoNacional = mx.codUnidadAtencion.municipio.codigoNacional), null) as nombreMuniMx, " +
+                    " mx.idTomaMx as idTomaMx, mx.fechaHTomaMx as fechaTomaMx, mx.codigoUnicoMx as codigoMx, mx.codigoUnicoMx as codUnicoMx, mx.codTipoMx.idTipoMx as idTipoMx, mx.codTipoMx.nombre as nombreTipoMx, dx.idSolicitudEstudio as idSolicitud, dx.fechaAprobacion as fechaAprobacion, noti.codigoPacienteVIH as codigoVIH  " +
+                    " from DaSolicitudEstudio dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti inner join noti.persona p " +
+                    " where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true " + (filtro.getEstudios()!=null? String.format(sqlEstudios, filtro.getEstudios()) : sqlEstudio) + (filtro.getConsolidarPor().equalsIgnoreCase("FIS")? sqlFIS : sqlFechasAproRut) +
+                    " and noti.codSilaisAtencion.entidadAdtvaId =:codSilais ");
+            queryNotiDx.setParameter("codSilais", filtro.getCodSilais());
+
+        } else if (filtro.getCodArea().equals("AREAREP|UNI")) {
+            queryNotiDx = session.createQuery(" select cast(p.personaId as string) as codigoExpUnico, p.primerNombre as primerNombre, p.segundoNombre as segundoNombre, p.primerApellido as primerApellido, p.segundoApellido as segundoApellido, p.fechaNacimiento as fechaNacimiento, p.sexo.codigo as sexo, " +
+                    " p.direccionResidencia as direccionResidencia, p.telefonoResidencia as telefonoResidencia, p.telefonoMovil as telefonoMovil, coalesce((select co.nombre from  Comunidades co where co.codigo=p.comunidadResidencia.codigo), null) as comunidadResidencia, " +
+                    " noti.idNotificacion as idNotificacion, noti.semanasEmbarazo as semanasEmbarazo, noti.fechaInicioSintomas as fechaInicioSintomas, coalesce((select r.valor from Respuesta r where r.codigo = noti.urgente.codigo), null) as urgente,  coalesce((select r.valor from Respuesta r where r.codigo = noti.embarazada.codigo), null) as embarazada, " +
+                    " coalesce((select ea.codigo from EntidadesAdtvas ea where ea.codigo = noti.codSilaisAtencion.codigo ), null) as codigoSilaisNoti, coalesce((select ea.nombre from EntidadesAdtvas ea where ea.codigo = noti.codSilaisAtencion.codigo ), null) as nombreSilaisNoti, " +
+                    " coalesce((select u.codigo from Unidades u where u.codigo = noti.codUnidadAtencion.codigo), null) as codigoUnidadNoti, coalesce((select u.nombre from Unidades u where u.codigo = noti.codUnidadAtencion.codigo), null) as nombreUnidadNoti, " +
+                    " coalesce((select u.codigoNacional from Divisionpolitica u where u.codigoNacional = noti.codUnidadAtencion.municipio.codigoNacional), null) as codigoMuniNoti, coalesce((select u.nombre from Divisionpolitica u where u.codigoNacional = noti.codUnidadAtencion.municipio.codigoNacional), null) as nombreMuniNoti, " +
+                    " coalesce((select u.codigoNacional from Divisionpolitica u where u.codigoNacional = noti.municipioResidencia.codigoNacional), null) as codigoMuniResid, coalesce((select u.nombre from Divisionpolitica u where u.codigoNacional = noti.municipioResidencia.codigoNacional), null) as nombreMuniResid, " +
+                    " coalesce((select ea.codigo from EntidadesAdtvas ea where ea.codigo = noti.municipioResidencia.dependenciaSilais.codigo ), null) as codigoSilaisResid, coalesce((select ea.nombre from EntidadesAdtvas ea where ea.codigo = noti.municipioResidencia.dependenciaSilais.codigo ), null) as nombreSilaisResid, " +
+                    " coalesce((select ea.codigo from EntidadesAdtvas ea where ea.codigo = mx.codSilaisAtencion.codigo ), null) as codigoSilaisMx, coalesce((select ea.nombre from EntidadesAdtvas ea where ea.codigo = mx.codSilaisAtencion.codigo ), null) as nombreSilaisMx, " +
+                    " coalesce((select u.codigo from Unidades u where u.codigo = mx.codUnidadAtencion.codigo), null) as codigoUnidadMx, coalesce((select u.nombre from Unidades u where u.codigo = mx.codUnidadAtencion.codigo), null) as nombreUnidadMx, " +
+                    " coalesce((select u.codigoNacional from Divisionpolitica u where u.codigoNacional = mx.codUnidadAtencion.municipio.codigoNacional), null) as codigoMuniMx, coalesce((select u.nombre from Divisionpolitica u where u.codigoNacional = mx.codUnidadAtencion.municipio.codigoNacional), null) as nombreMuniMx, " +
+                    " mx.idTomaMx as idTomaMx, mx.fechaHTomaMx as fechaTomaMx, mx.codigoUnicoMx as codigoMx, mx.codigoUnicoMx as codUnicoMx, mx.codTipoMx.idTipoMx as idTipoMx, mx.codTipoMx.nombre as nombreTipoMx, dx.idSolicitudEstudio as idSolicitud, dx.fechaAprobacion as fechaAprobacion, noti.codigoPacienteVIH as codigoVIH  " +
+                    " from DaSolicitudEstudio dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti inner join noti.persona p " +
+                    " where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true " + (filtro.getEstudios()!=null? String.format(sqlEstudios, filtro.getEstudios()) : sqlEstudio) + (filtro.getConsolidarPor().equalsIgnoreCase("FIS")? sqlFIS : sqlFechasAproRut) +
+                    " and noti.codUnidadAtencion.unidadId =:codUnidad ");
+            queryNotiDx.setParameter("codUnidad", filtro.getCodUnidad());
+        }
+
+        //queryNotiDx.setParameter("codigoLab", filtro.getCodLaboratio());
+        if (filtro.getIdEstudio()!=null)
+            queryNotiDx.setParameter("idDx", filtro.getIdEstudio());
+        queryNotiDx.setParameter("fechaInicio", filtro.getFechaInicio());
+        queryNotiDx.setParameter("fechaFin", filtro.getFechaFin());
+
+        queryNotiDx.setResultTransformer(Transformers.aliasToBean(ResultadoVigilancia.class));
+        return queryNotiDx.list();
+    }
 }
