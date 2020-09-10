@@ -122,10 +122,19 @@ public class TomaMxController {
      */
     @RequestMapping(value = "notices", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List<DaNotificacion> notices(@RequestParam(value = "strFilter", required = true) String filtro) {
+    List<DaNotificacion> notices(@RequestParam(value = "strFilter", required = true) String filtro,
+                                 @RequestParam(value = "fechaInicio", required = false) String sFechaInicio,
+                                 @RequestParam(value = "fechaFin", required = false) String sFechaFin) throws ParseException {
         logger.info("Obteniendo las notificaciones en JSON");
+        Date dFechaInicio = null;
+        Date dFechaFin = null;
+        if ((sFechaInicio != null && !sFechaInicio.isEmpty()) && (sFechaFin != null && !sFechaFin.isEmpty())){
+            dFechaInicio = DateUtil.StringToDate(sFechaInicio + " 00:00:00");
+            dFechaFin = DateUtil.StringToDate(sFechaFin + " 23:59:59");
+        }
 
-        return daNotificacionService.getNoticesByPerson(filtro);
+
+        return daNotificacionService.getNoticesByPerson(filtro, dFechaInicio, dFechaFin);
     }
 
     /**

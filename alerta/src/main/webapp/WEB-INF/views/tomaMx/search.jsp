@@ -97,22 +97,48 @@
 								<!-- end widget edit box -->
 								<!-- widget content -->
 								<div class="widget-body no-padding">
-									<form id="search-notices" class="smart-form" autocomplete="off">
-                                        <c:choose>
-                                            <c:when test="${not empty esEstudio}">
-                                                <input type="hidden" id="esEstudio" value="true">
-                                            </c:when>
-                                            <c:otherwise>
-                                                <input type="hidden" id="esEstudio" value="false">
-                                            </c:otherwise>
-                                        </c:choose>
-										<fieldset>
-											<section>
-												<label class="input"> <i class="icon-append fa fa-check"></i>
-													<input type="text" id="filtro" name="filtro" placeholder="<spring:message code="person.search.parameters"/>">
-													<b class="tooltip tooltip-bottom-right"><spring:message code="person.search.parameters"/></b> </label>
-											</section>
-										</fieldset>
+                                    <form id="search-notices" class="smart-form" autocomplete="off">
+                                        <fieldset>
+                                            <div class="row">
+                                                <section class="col col-sm-12 col-md-12 col-lg-12">
+                                                    <label class="input"> <i class="icon-append fa fa-check"></i>
+                                                        <input type="text" id="filtro" name="filtro" placeholder="<spring:message code="person.search.parameters"/>">
+                                                        <b class="tooltip tooltip-bottom-right"><spring:message code="person.search.parameters"/></b> </label>
+                                                </section>
+                                            </div>
+                                            <c:choose>
+                                                <c:when test="${not empty esEstudio}">
+                                                    <input type="hidden" id="esEstudio" value="true">
+                                                    <div class="row">
+                                                        <section class="col col-sm-6 col-md-4 col-lg-3">
+                                                            <label class="text-left txt-color-blue font-md">
+                                                                <spring:message code="lbl.noti.start.date" />
+                                                            </label>
+                                                            <label class="input">
+                                                                <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
+                                                                <input type="text" name="fechaInicio" id="fechaInicio"
+                                                                       placeholder="<spring:message code="lbl.date.format"/>"
+                                                                       class="form-control from_date" data-date-end-date="+0d"/>
+                                                            </label>
+                                                        </section>
+                                                        <section class="col col-sm-6 col-md-4 col-lg-3">
+                                                            <label class="text-left txt-color-blue font-md">
+                                                                <spring:message code="lbl.noti.end.date" />
+                                                            </label>
+                                                            <label class="input">
+                                                                <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
+                                                                <input type="text" name="fechaFin" id="fechaFin"
+                                                                       placeholder="<spring:message code="lbl.date.format"/>"
+                                                                       class="form-control to_date" data-date-end-date="+0d"/>
+                                                            </label>
+                                                        </section>
+                                                    </div>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input type="hidden" id="esEstudio" value="false">
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </fieldset>
 										<footer>
 											<button type="submit" id="search-person" class="btn btn-info"><i class="fa fa-search"></i> <spring:message code="act.search" /></button>
 										</footer>
@@ -182,7 +208,7 @@
 			<!-- end widget grid -->
 		</div>
 		<!-- END MAIN CONTENT -->
-
+        <input id="msg_no_results_found" type="hidden" value="<spring:message code="msg.ento.no.results.found"/>"/>
         <input type="hidden" id="inYes"  value="<spring:message code="lbl.yes"/>"/>
         <input type="hidden" id="inNo"  value="<spring:message code="lbl.no"/>"/>
         <input type="hidden" id="titleC"  value="<spring:message code="msg.sending.confirm.title"/>"/>
@@ -209,7 +235,13 @@
 	<script src="${dataTablesBootstrap}"></script>
 	<spring:url value="/resources/js/plugin/datatable-responsive/datatables.responsive.min.js" var="dataTablesResponsive" />
 	<script src="${dataTablesResponsive}"></script>
-	<!-- JQUERY VALIDATE -->
+    <!-- bootstrap datepicker -->
+    <spring:url value="/resources/js/plugin/bootstrap-datepicker/bootstrap-datepicker.js" var="datepickerPlugin" />
+    <script src="${datepickerPlugin}"></script>
+    <spring:url value="/resources/js/plugin/bootstrap-datepicker/locales/bootstrap-datepicker.{languagedt}.js" var="datePickerLoc">
+        <spring:param name="languagedt" value="${pageContext.request.locale.language}" /></spring:url>
+    <script src="${datePickerLoc}"></script>
+    <!-- JQUERY VALIDATE -->
 	<spring:url value="/resources/js/plugin/jquery-validate/jquery.validate.min.js" var="jqueryValidate" />
 	<script src="${jqueryValidate}"></script>
 	<spring:url value="/resources/js/plugin/jquery-validate/messages_{language}.js" var="jQValidationLoc">
@@ -222,6 +254,8 @@
 	<!-- BEGIN PAGE LEVEL SCRIPTS -->
 	<spring:url value="/resources/scripts/muestras/search-notices.js" var="noticesSearch" />
 	<script src="${noticesSearch}"></script>
+    <spring:url value="/resources/scripts/utilidades/handleDatePickers.js" var="handleDatePickers" />
+    <script src="${handleDatePickers}"></script>
     <c:set var="blockMess"><spring:message code="blockUI.message" /></c:set>
 	<!-- END PAGE LEVEL SCRIPTS -->
 	<spring:url value="/tomaMx/notices" var="noticesUrl"/>
@@ -238,6 +272,7 @@
                               createStudyUrl : "${createStudyUrl}"
             };
 			SearchNotices.init(parametros);
+            handleDatePickers("${pageContext.request.locale.language}");
 	    	$("li.samples").addClass("open");
             if ($("#esEstudio").val()=='true'){
                 $("li.tomaMxEstu").addClass("active");

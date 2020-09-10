@@ -63,9 +63,11 @@ var SearchNotices = function () {
     			// Rules for form validation
     				rules : {
     					filtro : {
-    						required : true,
+                            required:function(){return $("#esEstudio").val()=='false' || ($('#fechaInicio').val().length==0 && $('#fechaFin').val().length==0);},
     						minlength: 3
-    					}
+    					},
+                        fechaFin:{required:function(){return $('#fechaInicio').val().length>0;}},
+                        fechaInicio:{required:function(){return $('#fechaFin').val().length>0;}}
     				},
     				// Do not change code below
     				errorPlacement : function(error, element) {
@@ -85,39 +87,56 @@ var SearchNotices = function () {
             	bloquearUI(parametros.blockMess);
     			$.getJSON(parametros.noticesUrl, {
     				strFilter : encodeURI($('#filtro').val()),
+                    fechaInicio: $('#fechaInicio').val(),
+                    fechaFin: $('#fechaFin').val(),
     				ajax : 'true'
     			}, function(data) {
-                    //localStorage.setItem('filtroDataTables_notices_result',encodeURI($('#filtro').val()));
-    				var len = data.length;
-    				for ( var i = 0; i < len; i++) {
-                        var nombreMuniRes = "";
-                        if (data[i].persona.municipioResidencia!=null){
-                            nombreMuniRes = data[i].persona.municipioResidencia.nombre;
+                        var len = data.length;
+                        if (len > 0) {
+                            for (var i = 0; i < len; i++) {
+                                var nombreMuniRes = "";
+                                if (data[i].persona.municipioResidencia != null) {
+                                    nombreMuniRes = data[i].persona.municipioResidencia.nombre;
+                                }
+
+                                var date = new Date(data[i].fechaRegistro);
+                                var dia = function (date) {
+                                    if (date.getDate() >= 10) return date.getDate(); else return "0" + date.getDate()
+                                };
+                                var mes = function (date) {
+                                    if ((date.getMonth() + 1) >= 10) return (date.getMonth() + 1); else return "0" + (date.getMonth() + 1)
+                                };
+                                var dateFormat = dia(date) + "/" + mes(date) + "/" + date.getFullYear();
+
+                                table1.fnAddData(
+                                    [data[i].persona.primerNombre, data[i].persona.segundoNombre, data[i].persona.primerApellido, data[i].persona.segundoApellido, data[i].persona.fechaNacimiento, nombreMuniRes, data[i].codTipoNotificacion.valor, dateFormat, '<a data-toggle="modal" title="Tomar Mx" class="btn btn-primary btn-xs search" data-id=' + data[i].idNotificacion + '><i class="fa fa-eyedropper fa-fw"></i></a>']);
+                            }
+
+                            $(".search").on('click', function () {
+                                getTomaMx($(this).data('id'));
+                            });
+
+                            $(".dataTables_paginate").on('click', function () {
+                                $(".search").on('click', function () {
+                                    getTomaMx($(this).data('id'));
+                                });
+                            });
+
+
+                            setTimeout($.unblockUI, 500);
+
+                        } else {
+                            $.smallBox({
+                                title: $("#msg_no_results_found").val(),
+                                content: $("#smallBox_content").val(),
+                                color: "#C79121",
+                                iconSmall: "fa fa-warning",
+                                timeout: 4000
+                            });
+                            setTimeout($.unblockUI, 500);
                         }
-
-                        var date = new Date(data[i].fechaRegistro);
-                        var dia = function (date){ if (date.getDate() >= 10) return date.getDate(); else return "0"+date.getDate() };
-                        var mes = function (date){ if ((date.getMonth() + 1) >= 10) return (date.getMonth() + 1); else return "0"+(date.getMonth() + 1) };
-                        var dateFormat = dia(date) + "/" + mes(date) + "/" + date.getFullYear();
-
-                        table1.fnAddData(
-    							[data[i].persona.primerNombre, data[i].persona.segundoNombre, data[i].persona.primerApellido, data[i].persona.segundoApellido, data[i].persona.fechaNacimiento, nombreMuniRes, data[i].codTipoNotificacion.valor, dateFormat, '<a data-toggle="modal" title="Tomar Mx" class="btn btn-primary btn-xs search" data-id='+data[i].idNotificacion+'><i class="fa fa-eyedropper fa-fw"></i></a>']);
-    				}
-
-                    $(".search").on('click', function(){
-                          getTomaMx($(this).data('id'));
-                    });
-
-                    $(".dataTables_paginate").on('click', function() {
-                        $(".search").on('click', function () {
-                            getTomaMx($(this).data('id'));
-                        });
-                    });
-
-
-    				setTimeout($.unblockUI, 500);
-
-    			})
+                    }
+                )
     			.fail(function() {
 				    alert( "error" );
 				    setTimeout($.unblockUI, 5);

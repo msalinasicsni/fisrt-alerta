@@ -71,12 +71,16 @@ public class SeguridadService {
             infoSesion.setNombre("ALERTA MANAGUA SILAIS");
             infoSesion.setUsername("alerta-managua");
             infoSesion.setSistemaSesion("ALERTA");*/
+            /*infoSesion.setUsuarioId(5817);
+            infoSesion.setNombre("CENTRO DE SALUD SOCRATES FLORES");
+            infoSesion.setUsername("alerta-socratesf");
+            infoSesion.setSistemaSesion("ALERTA");*/
             //usuario de pruebas
             /*infoSesion.setUsuarioId(4791);
             infoSesion.setNombre("Juan Marcio Palacios");
             infoSesion.setUsername("jpalacios");
-            infoSesion.setSistemaSesion("ALERTA");
-            */
+            infoSesion.setSistemaSesion("ALERTA");*/
+
             /*infoSesion.setUsuarioId(4772);
             infoSesion.setNombre("Admin Alerta");
             infoSesion.setUsername("admalerta");
@@ -254,7 +258,7 @@ public class SeguridadService {
                 idUsuario = infoSesion.getUsuarioId();
             }
         }/*else{
-            idUsuario= 4791L; //4772L;///usuario alerta en pruebas
+            idUsuario= 5817L; //4791L; //4772L;///usuario alerta en pruebas  //5817L CSSFV
         }*/
 
         return idUsuario;

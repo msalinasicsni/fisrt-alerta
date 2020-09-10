@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -67,65 +68,68 @@ public class DaNotificacionService {
     }
 
     @SuppressWarnings("unchecked")
-    public List<DaNotificacion> getNoticesByPerson(String filtro){
+    public List<DaNotificacion> getNoticesByPerson(String filtro, Date dFechaInicio, Date dFechaFin) {
         try {
             filtro = URLDecoder.decode(filtro, "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         Session session = sessionFactory.getCurrentSession();
-        if(filtro.matches("[0-9]*")){
-            return session.createCriteria(DaNotificacion.class, "noti")
-                    .add(Restrictions.and(Restrictions.eq("noti.pasivo",false)))
-                    .createAlias("noti.persona", "persona")
-                    .add(Restrictions.or(
-                                    Restrictions.eq("persona.telefonoResidencia", filtro),
-                                    Restrictions.eq("persona.telefonoMovil", filtro))
-                    )
-                    .list();
-        }else if(filtro.matches("[a-zA-Zí\\s]*")){
-            Soundex varSoundex = new Soundex();
-            Criteria crit = session.createCriteria(DaNotificacion.class, "noti");
-            crit.createAlias("noti.persona", "persona");
-            String[] partes = filtro.split(" ");
-            String[] partesSnd = filtro.split(" ");
-            for(int i=0;i<partes.length;i++){
-                try{
-                    partesSnd[i] = varSoundex.encode(partes[i]);
+        Criteria crit = session.createCriteria(DaNotificacion.class, "noti");
+        crit.add(Restrictions.and(Restrictions.eq("noti.pasivo", false)));
+
+        if (filtro != null && !filtro.isEmpty()) {
+            if (filtro.matches("[0-9]*")) {
+                crit.add(Restrictions.and(Restrictions.eq("noti.pasivo", false)))
+                        .createAlias("noti.persona", "persona")
+                        .add(Restrictions.or(
+                                        Restrictions.eq("persona.telefonoResidencia", filtro),
+                                        Restrictions.eq("persona.telefonoMovil", filtro))
+                        );
+            } else if (filtro.matches("[a-zA-Zí\\s]*")) {
+                Soundex varSoundex = new Soundex();
+                crit.createAlias("noti.persona", "persona");
+                String[] partes = filtro.split(" ");
+                String[] partesSnd = filtro.split(" ");
+                for (int i = 0; i < partes.length; i++) {
+                    try {
+                        partesSnd[i] = varSoundex.encode(partes[i]);
+                    } catch (IllegalArgumentException e) {
+                        partesSnd[i] = "0000";
+                        e.printStackTrace();
+                    }
                 }
-                catch (IllegalArgumentException e){
-                    partesSnd[i] = "0000";
-                    e.printStackTrace();
+                for (int i = 0; i < partes.length; i++) {
+                    Junction conditionGroup = Restrictions.disjunction();
+                    conditionGroup.add(Restrictions.ilike("persona.primerNombre", "%" + partes[i] + "%"))
+                            .add(Restrictions.ilike("persona.primerApellido", "%" + partes[i] + "%"))
+                            .add(Restrictions.ilike("persona.segundoNombre", "%" + partes[i] + "%"))
+                            .add(Restrictions.ilike("persona.segundoApellido", "%" + partes[i] + "%"))
+                            .add(Restrictions.ilike("persona.sndNombre", "%" + partesSnd[i] + "%"));
+                    crit.add(conditionGroup);
                 }
+                crit.add(Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|CAESP")));
+                crit.add(Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|OMX")));
+                crit.add(Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|PCNT")));
+            } else {
+                crit.createAlias("noti.persona", "persona")
+                        .add(Restrictions.or(
+                                        Restrictions.eq("persona.identificacionHse", filtro).ignoreCase(),
+                                        Restrictions.eq("persona.identificacion", filtro).ignoreCase())
+                        )
+                        .add(Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|CAESP")))
+                        .add(Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|OMX")))
+                        .add(Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|PCNT")));
             }
-            for(int i=0;i<partes.length;i++){
-                Junction conditionGroup = Restrictions.disjunction();
-                conditionGroup.add(Restrictions.ilike("persona.primerNombre" , "%"+partes[i]+"%" ))
-                        .add(Restrictions.ilike( "persona.primerApellido" , "%"+partes[i]+"%"  ))
-                        .add(Restrictions.ilike( "persona.segundoNombre" , "%"+partes[i]+"%"  ))
-                        .add(Restrictions.ilike( "persona.segundoApellido" , "%"+partes[i]+"%"  ))
-                        .add(Restrictions.ilike("persona.sndNombre", "%"+partesSnd[i]+"%"));
-                crit.add(conditionGroup);
-            }
-            crit.add( Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|CAESP")));
-            crit.add( Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|OMX")));
-            crit.add( Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|PCNT")));
-            crit.add(Restrictions.and(Restrictions.eq("noti.pasivo",false)));
-            return crit.list();
         }
-        else{
-            return session.createCriteria(DaNotificacion.class, "noti")
-                    .add(Restrictions.and(Restrictions.eq("noti.pasivo",false)))
-                    .createAlias("noti.persona", "persona")
-                    .add( Restrictions.or(
-                                    Restrictions.eq("persona.identificacionHse", filtro).ignoreCase(),
-                                    Restrictions.eq("persona.identificacion", filtro).ignoreCase())
-                    )
-                    .add( Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|CAESP")))
-                    .add( Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|OMX")))
-                    .add( Restrictions.and(Restrictions.ne("codTipoNotificacion.codigo", "TPNOTI|PCNT")))
-                    .list();
+
+        //Se filtra por rango de fecha de registro notificación
+        if (dFechaInicio != null && dFechaFin != null) {
+            crit.add(Restrictions.and(
+                            Restrictions.between("noti.fechaRegistro", dFechaInicio, dFechaFin))
+            );
         }
+        return crit.list();
     }
 
 
