@@ -134,6 +134,7 @@ public class IragController {
     List<TipoVacuna> catTVacMenin;
     List<TipoVacuna> catTVacNeumo;
     List<TipoVacuna> catTVacFlu;
+    List<TipoVacuna> catTVacCovid19;
     List<CondicionPrevia> catCondPre;
     List<ManifestacionClinica> catManCli;
     List<ClasificacionFinalNB> catClasFNB;
@@ -160,6 +161,7 @@ public class IragController {
             catTVacMenin = catalogoService.getTipoVacunaMeningococica();
             catTVacNeumo = catalogoService.getTipoVacunaNeumococica();
             catTVacFlu = catalogoService.getTipoVacunaFlu();
+            catTVacCovid19 = catalogoService.getTipoVacunaCovid19();
             catClasFNB = catalogoService.getClasificacionFinalNB();
             catClasFNV = catalogoService.getClasificacionFinalNV();
             catCie10Irag = cie10Service.getCie10Irag("J", true);
@@ -180,6 +182,7 @@ public class IragController {
             mapModel.put("catTVacMenin", catTVacMenin);
             mapModel.put("catTVacNeumo", catTVacNeumo);
             mapModel.put("catTVacFlu", catTVacFlu);
+            mapModel.put("catTVacCovid19", catTVacCovid19);
             mapModel.put("catCondPre", catCondPre);
             mapModel.put("catManCli", catManCli);
             mapModel.put("departamentos", departamentos);
@@ -2491,6 +2494,7 @@ public class IragController {
         JsonArray tVacMenin = null;
         JsonArray tVacNeumo = null;
         JsonArray tVacFlu = null;
+        JsonArray tVacCovid19 = null;
         String idNotificacion = null;
         String pasivo = null;
         Integer idVacuna = 0;
@@ -2536,7 +2540,10 @@ public class IragController {
             if (!jsonpObject.get("tVacFlu").isJsonNull()) {
                 tVacFlu = jsonpObject.get("tVacFlu").getAsJsonArray();
             }
-
+            //se agrega vacunas de covid19. 07-2022
+            if (!jsonpObject.get("tVacCovid19").isJsonNull()) {
+                tVacCovid19 = jsonpObject.get("tVacCovid19").getAsJsonArray();
+            }
 
             if (jsonpObject.get("idNotificacion") != null && !jsonpObject.get("idNotificacion").getAsString().isEmpty()) {
                 idNotificacion = jsonpObject.get("idNotificacion").getAsString();
@@ -2571,6 +2578,10 @@ public class IragController {
 
                     if(tVacFlu!= null){
                         vacunas.setCodTipoVacuna(jsonArrayToString(tVacFlu));
+                    }
+
+                    if (tVacCovid19 != null) {
+                        vacunas.setCodTipoVacuna(jsonArrayToString(tVacCovid19));
                     }
 
                     vacunas.setDosis(dosis);
@@ -2610,6 +2621,7 @@ public class IragController {
             map.put("tVacMenin", "");
             map.put("tVacNeumo", "");
             map.put("tVacFlu", "");
+            map.put("tVacCovid19", "");
 
             String jsonResponse = new Gson().toJson(map);
             response.getOutputStream().write(jsonResponse.getBytes());

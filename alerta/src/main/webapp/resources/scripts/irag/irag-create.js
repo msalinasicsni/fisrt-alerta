@@ -442,6 +442,7 @@ var CreateIrag = function () {
             var flu = $('#tVacFlu');
             var neumo = $('#tVacNeumo');
             var menin = $('#tVacMenin');
+            var covid19 = $('#tVacCovid19');
 
             //mostrar tipo de vacuna segun seleccion
             codVacuna.change(function () {
@@ -449,10 +450,12 @@ var CreateIrag = function () {
                 flu.attr("name", "");
                 neumo.attr("name", "");
                 menin.attr("name", "");
+                covid19.attr("name", "");
                 hib.val('').change();
                 menin.val('').change();
                 neumo.val('').change();
                 flu.val('').change();
+                covid19.val('').change();
 
                 if (codVacuna.find('option:selected').text() === "Anti Hib") {
                     hib.attr("name", "codTipoVacuna");
@@ -460,7 +463,7 @@ var CreateIrag = function () {
                     $('#dVacMenin').hide();
                     $('#dVacNeumo').hide();
                     $('#dVacFlu').hide();
-
+                    $('#dVacCovid19').hide();
 
                 } else if (codVacuna.find('option:selected').text() === "Anti meningocócica") {
                     menin.attr("name", "codTipoVacuna");
@@ -468,15 +471,28 @@ var CreateIrag = function () {
                     $('#dVacHib').hide();
                     $('#dVacNeumo').hide();
                     $('#dVacFlu').hide();
+                    $('#dVacCovid19').hide();
+
                 } else if (codVacuna.find('option:selected').text() === "Anti neumococica") {
                     neumo.attr("name", "codTipoVacuna");
                     $('#dVacNeumo').show();
                     $('#dVacMenin').hide();
                     $('#dVacHib').hide();
                     $('#dVacFlu').hide();
+                    $('#dVacCovid19').hide();
+
                 } else if (codVacuna.find('option:selected').text() === "Anti influenza") {
                     flu.attr("name", "codTipoVacuna");
                     $('#dVacFlu').show();
+                    $('#dVacNeumo').hide();
+                    $('#dVacMenin').hide();
+                    $('#dVacHib').hide();
+                    $('#dVacCovid19').hide();
+
+                } else if (codVacuna.find('option:selected').val() === "VAC|COVID19") {
+                    covid19.attr("name", "codTipoVacuna");
+                    $('#dVacCovid19').show();
+                    $('#dVacFlu').hide();
                     $('#dVacNeumo').hide();
                     $('#dVacMenin').hide();
                     $('#dVacHib').hide();
@@ -564,6 +580,7 @@ var CreateIrag = function () {
                 obj['tVacMenin'] = $('#tVacMenin').val();
                 obj['tVacNeumo'] = $('#tVacNeumo').val();
                 obj['tVacFlu'] = $('#tVacFlu').val();
+                obj['tVacCovid19'] = $('#tVacCovid19').val();
                 obj['idNotificacion'] = $('#idNotificacion').val();
                 obj['idVacuna'] = '';
                 obj['pasivo'] = '';
@@ -623,6 +640,7 @@ var CreateIrag = function () {
                 obj['tVacMenin'] = $('#tVacMenin').val();
                 obj['tVacNeumo'] = $('#tVacNeumo').val();
                 obj['tVacFlu'] = $('#tVacFlu').val();
+                obj['tVacCovid19'] = $('#tVacCovid19').val();
                 obj['idNotificacion'] = '';
                 obj['idVacuna'] = idRecord;
                 obj['pasivo'] = true;

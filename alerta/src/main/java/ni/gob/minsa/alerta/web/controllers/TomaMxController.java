@@ -124,7 +124,8 @@ public class TomaMxController {
     public @ResponseBody
     List<DaNotificacion> notices(@RequestParam(value = "strFilter", required = true) String filtro,
                                  @RequestParam(value = "fechaInicio", required = false) String sFechaInicio,
-                                 @RequestParam(value = "fechaFin", required = false) String sFechaFin) throws ParseException {
+                                 @RequestParam(value = "fechaFin", required = false) String sFechaFin,
+                                 @RequestParam(value = "paraEstudio", required = true) boolean paraEstudio) throws ParseException {
         logger.info("Obteniendo las notificaciones en JSON");
         Date dFechaInicio = null;
         Date dFechaFin = null;
@@ -133,8 +134,7 @@ public class TomaMxController {
             dFechaFin = DateUtil.StringToDate(sFechaFin + " 23:59:59");
         }
 
-
-        return daNotificacionService.getNoticesByPerson(filtro, dFechaInicio, dFechaFin);
+        return daNotificacionService.getNoticesByPerson(filtro, dFechaInicio, dFechaFin, paraEstudio);
     }
 
     /**

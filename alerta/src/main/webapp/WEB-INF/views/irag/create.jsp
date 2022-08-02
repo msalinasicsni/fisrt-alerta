@@ -949,7 +949,7 @@
                 <form:input type="text" name="fechaInicioSintomas"
                             path="idNotificacion.fechaInicioSintomas"
                             class="form-control date-picker"
-                            data-dateformat="dd/mm/yy" placeholder="${symptomsDate}"/>
+                            data-dateformat="dd/mm/yy" placeholder="${symptomsDate}" data-date-end-date="+0d"/>
                 <b class="tooltip tooltip-bottom-right"> <i class="fa fa-warning txt-color-pink"></i> <spring:message
                         code="msg.enter.sym.date"/></b>
             </div>
@@ -1817,6 +1817,18 @@
                                  <select multiple data-placeholder="${vacType}" id="tVacFlu" class="select2">
                                         <c:forEach items="${catTVacFlu}" var="flu">
                                             <option value="${flu.codigo}">${flu.valor}</option>
+                                        </c:forEach>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div id="dVacCovid19" hidden="hidden">
+                                <div class="input-group">
+                                    <spring:message code="msg.select.vaccine.type" var="vacType"/>
+                                    <span class="input-group-addon"> <i class="fa fa-list-ul fa-fw"></i></span>
+                                    <select multiple data-placeholder="${vacType}" id="tVacCovid19" class="select2">
+                                        <c:forEach items="${catTVacCovid19}" var="covid19">
+                                            <option value="${covid19.codigo}">${covid19.valor}</option>
                                         </c:forEach>
                                     </select>
 

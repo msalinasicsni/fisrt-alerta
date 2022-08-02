@@ -29,6 +29,7 @@ public class ResultadoVigilancia {
     private String telefonoResidencia;
     private String telefonoMovil;
     private String comunidadResidencia;
+    private String identificacion;
 
     private Integer idTipoMx;
     private String nombreTipoMx;
@@ -425,5 +426,13 @@ public class ResultadoVigilancia {
 
     public void setExpediente(String expediente) {
         this.expediente = expediente;
+    }
+
+    public String getIdentificacion() {
+        return identificacion;
+    }
+
+    public void setIdentificacion(String identificacion) {
+        this.identificacion = identificacion;
     }
 }

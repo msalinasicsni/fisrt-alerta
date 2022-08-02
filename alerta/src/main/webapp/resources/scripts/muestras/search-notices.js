@@ -63,7 +63,7 @@ var SearchNotices = function () {
     			// Rules for form validation
     				rules : {
     					filtro : {
-                            required:function(){return $("#esEstudio").val()=='false' || ($('#fechaInicio').val().length==0 && $('#fechaFin').val().length==0);},
+                            required:function(){return ($('#fechaInicio').val().length==0 && $('#fechaFin').val().length==0);},
     						minlength: 3
     					},
                         fechaFin:{required:function(){return $('#fechaInicio').val().length>0;}},
@@ -89,6 +89,7 @@ var SearchNotices = function () {
     				strFilter : encodeURI($('#filtro').val()),
                     fechaInicio: $('#fechaInicio').val(),
                     fechaFin: $('#fechaFin').val(),
+                    paraEstudio: $("#esEstudio").val()=='true',
     				ajax : 'true'
     			}, function(data) {
                         var len = data.length;
@@ -167,7 +168,7 @@ var SearchNotices = function () {
                             buttons: '['+opcSi+']['+opcNo+']'
                         }, function (ButtonPressed) {
                             if (ButtonPressed === opcSi) {
-                                window.location.href = actionUrl;
+                                window.open(actionUrl);
 
                             }
                             if (ButtonPressed === opcNo) {

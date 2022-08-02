@@ -291,6 +291,16 @@ public class CatalogoService {
         return query.list();
     }
 
+    public List<TipoVacuna> getTipoVacunaCovid19(){
+        //Retrieve session Hibernate
+        Session session = sessionFactory.getCurrentSession();
+        //Create a hibernate query (HQL)
+        Query query = session.createQuery("FROM TipoVacuna tvac where tvac.pasivo = false and tvac.codigo like :codigo order by orden");
+        query.setString("codigo","%"+"TVAC|COVID19"+"%");
+        //retrieve all
+        return query.list();
+    }
+
     @SuppressWarnings("unchecked")
     public List<CondicionPrevia> getCondicionPrevia(){
         //Retrieve session Hibernate

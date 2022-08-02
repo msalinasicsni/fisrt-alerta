@@ -106,33 +106,33 @@
                                                         <b class="tooltip tooltip-bottom-right"><spring:message code="person.search.parameters"/></b> </label>
                                                 </section>
                                             </div>
+                                            <div class="row">
+                                                <section class="col col-sm-6 col-md-4 col-lg-3">
+                                                    <label class="text-left txt-color-blue font-md">
+                                                        <spring:message code="lbl.noti.start.date" />
+                                                    </label>
+                                                    <label class="input">
+                                                        <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
+                                                        <input type="text" name="fechaInicio" id="fechaInicio"
+                                                               placeholder="<spring:message code="lbl.date.format"/>"
+                                                               class="form-control from_date" data-date-end-date="+0d"/>
+                                                    </label>
+                                                </section>
+                                                <section class="col col-sm-6 col-md-4 col-lg-3">
+                                                    <label class="text-left txt-color-blue font-md">
+                                                        <spring:message code="lbl.noti.end.date" />
+                                                    </label>
+                                                    <label class="input">
+                                                        <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
+                                                        <input type="text" name="fechaFin" id="fechaFin"
+                                                               placeholder="<spring:message code="lbl.date.format"/>"
+                                                               class="form-control to_date" data-date-end-date="+0d"/>
+                                                    </label>
+                                                </section>
+                                            </div>
                                             <c:choose>
                                                 <c:when test="${not empty esEstudio}">
                                                     <input type="hidden" id="esEstudio" value="true">
-                                                    <div class="row">
-                                                        <section class="col col-sm-6 col-md-4 col-lg-3">
-                                                            <label class="text-left txt-color-blue font-md">
-                                                                <spring:message code="lbl.noti.start.date" />
-                                                            </label>
-                                                            <label class="input">
-                                                                <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
-                                                                <input type="text" name="fechaInicio" id="fechaInicio"
-                                                                       placeholder="<spring:message code="lbl.date.format"/>"
-                                                                       class="form-control from_date" data-date-end-date="+0d"/>
-                                                            </label>
-                                                        </section>
-                                                        <section class="col col-sm-6 col-md-4 col-lg-3">
-                                                            <label class="text-left txt-color-blue font-md">
-                                                                <spring:message code="lbl.noti.end.date" />
-                                                            </label>
-                                                            <label class="input">
-                                                                <i class="icon-prepend fa fa-pencil"></i> <i class="icon-append fa fa-calendar"></i>
-                                                                <input type="text" name="fechaFin" id="fechaFin"
-                                                                       placeholder="<spring:message code="lbl.date.format"/>"
-                                                                       class="form-control to_date" data-date-end-date="+0d"/>
-                                                            </label>
-                                                        </section>
-                                                    </div>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <input type="hidden" id="esEstudio" value="false">

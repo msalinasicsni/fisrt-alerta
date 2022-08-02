@@ -173,10 +173,11 @@ var EnterFormTomaMx = function () {
                             iconSmall: "fa fa-check-circle",
                             timeout: 2000
                         });
-                        clearFields();
+                        //clearFields();
                         desbloquearUI();
                         setTimeout(function () {
-                            window.history.back();//window.location.href = parametros.searchUrl;
+                            window.close();
+                            //window.history.back();//window.location.href = parametros.searchUrl;
                         }, 3000);
 
                     },
@@ -435,11 +436,12 @@ var EnterFormTomaMxStudies = function () {
                                 iconSmall: "fa fa-check-circle",
                                 timeout: 4000
                             });
-                            /*setTimeout(function () {
-                                window.location.href = parametros.searchUrl;
-                            }, 4000);*/
-                            clearFields();
+                            //clearFields();
                             desbloquearUI();
+                            setTimeout(function () {
+                                window.close();//window.location.href = parametros.searchUrl;
+                            }, 3000);
+
                         }
 
                     },

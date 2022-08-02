@@ -1,6 +1,7 @@
 package ni.gob.minsa.alerta.service;
 
 import ni.gob.minsa.alerta.domain.muestra.DaTomaMx;
+import ni.gob.minsa.alerta.domain.muestra.Estudio_UnidadSalud;
 import ni.gob.minsa.alerta.domain.muestra.FiltroMx;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
 import org.apache.commons.codec.language.Soundex;
@@ -8,8 +9,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Junction;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -68,7 +68,7 @@ public class DaNotificacionService {
     }
 
     @SuppressWarnings("unchecked")
-    public List<DaNotificacion> getNoticesByPerson(String filtro, Date dFechaInicio, Date dFechaFin) {
+    public List<DaNotificacion> getNoticesByPerson(String filtro, Date dFechaInicio, Date dFechaFin, boolean paraEstudio) {
         try {
             filtro = URLDecoder.decode(filtro, "utf-8");
         } catch (UnsupportedEncodingException e) {
@@ -128,6 +128,14 @@ public class DaNotificacionService {
             crit.add(Restrictions.and(
                             Restrictions.between("noti.fechaRegistro", dFechaInicio, dFechaFin))
             );
+        }
+        /*si es para busqueda toma mx estudio solo mostrar las notificaciones de unidades de salud autorizadas para estudio*/
+        if (paraEstudio){
+            crit.createAlias("noti.codUnidadAtencion", "unidadS");
+            crit.add(Subqueries.propertyIn("unidadS.codigo", DetachedCriteria.forClass(Estudio_UnidadSalud.class)
+                    .createAlias("unidad", "us")
+                    .add(Restrictions.eq("pasivo",false))
+                    .setProjection(Property.forName("us.codigo"))));
         }
         return crit.list();
     }
