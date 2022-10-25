@@ -10,6 +10,7 @@ import ni.gob.minsa.alerta.domain.irag.*;
 import ni.gob.minsa.alerta.domain.muestra.DaSolicitudDx;
 import ni.gob.minsa.alerta.domain.muestra.OrdenExamen;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
+import ni.gob.minsa.alerta.domain.persona.Ocupacion;
 import ni.gob.minsa.alerta.domain.persona.SisPersona;
 import ni.gob.minsa.alerta.domain.poblacion.Comunidades;
 import ni.gob.minsa.alerta.domain.poblacion.Divisionpolitica;
@@ -140,6 +141,7 @@ public class IragController {
     List<ClasificacionFinalNB> catClasFNB;
     List<ClasificacionFinalNV> catClasFNV;
     List<Cie10> catCie10Irag;
+    List<Ocupacion> catOcupaciones;
     Map<String, Object> mapModel;
 
 
@@ -165,6 +167,7 @@ public class IragController {
             catClasFNB = catalogoService.getClasificacionFinalNB();
             catClasFNV = catalogoService.getClasificacionFinalNV();
             catCie10Irag = cie10Service.getCie10Irag("J", true);
+            catOcupaciones = catalogoService.getListaOcupacion();
 
 
             mapModel = new HashMap<>();
@@ -189,6 +192,7 @@ public class IragController {
             mapModel.put("catNV", catClasFNV);
             mapModel.put("catNB", catClasFNB);
             mapModel.put("catCie10Irag", catCie10Irag);
+            mapModel.put("catOcupaciones", catOcupaciones);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
@@ -509,6 +513,8 @@ public class IragController {
             , @RequestParam(value = "codProcedencia", required = true) String codProcedencia
             , @RequestParam(value = "codCaptacion", required = false) String codCaptacion
             , @RequestParam(value = "diagnostico", required = false) String diagnostico
+            , @RequestParam(value = "ocupacion", required = false) String ocupacion
+            , @RequestParam(value = "trabajadorSalud", required = false) String trabajadorSalud
             , @RequestParam(value = "tarjetaVacuna", required = false) Integer tarjetaVacuna
             , @RequestParam(value = "idNotificacion.fechaInicioSintomas", required = false) String fechaInicioSintomas
             , @RequestParam(value = "codAntbUlSem", required = false) String codAntbUlSem
@@ -589,6 +595,14 @@ public class IragController {
 
             if (!codCaptacion.isEmpty()) {
                 irag.setCodCaptacion(catalogoService.getCaptacion(codCaptacion));
+            }
+
+            if (!ocupacion.isEmpty()) {
+                irag.setOcupacion(catalogoService.getOcupacion(ocupacion));
+            }
+
+            if (!trabajadorSalud.isEmpty()) {
+                irag.setTrabajadorSalud(catalogoService.getRespuesta(trabajadorSalud));
             }
 
             irag.setDiagnostico(cie10Service.getCie10ByCodigo(diagnostico));

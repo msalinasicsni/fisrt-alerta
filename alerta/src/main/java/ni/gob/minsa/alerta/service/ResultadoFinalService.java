@@ -60,7 +60,7 @@ public class ResultadoFinalService {
                 " mx.codTipoMx.nombre as tipoMx, to_char(dx.fechaHSolicitud, 'DD/MM/YYYY HH24:mi:ss') as fechaSolicitud, dx.aprobada as aprobada, to_char(dx.fechaAprobacion, 'DD/MM/YYYY HH24:mi:ss') as fechaAprobacion " +
                 "from DaSolicitudDx dx inner join dx.idTomaMx mx inner join mx.idNotificacion noti " +
                 "where noti.pasivo = false and dx.anulado = false and mx.anulada = false and dx.aprobada = true and dx.controlCalidad = false and noti.idNotificacion = :idNotificacion " +
-                "and dx.codDx.nombre not like '%Covid19'"+ //Datos de Covid19, solo en sistema Laboratorio. Andrea 22/07/2020
+                //"and dx.codDx.nombre not like '%Covid19'"+ //Datos de Covid19, solo en sistema Laboratorio. Andrea 22/07/2020. //permitir Covid19. Andrea 25/08/2022
                 "ORDER BY dx.fechaHSolicitud");
         queryNotiDx.setParameter("idNotificacion", idNotificacion);
 

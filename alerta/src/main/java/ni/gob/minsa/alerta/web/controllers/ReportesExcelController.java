@@ -16,6 +16,7 @@ import ni.gob.minsa.alerta.service.*;
 import ni.gob.minsa.alerta.utilities.ConstantsSecurity;
 import ni.gob.minsa.alerta.utilities.DateUtil;
 import ni.gob.minsa.alerta.utilities.FiltrosReporte;
+import ni.gob.minsa.alerta.utilities.dto.DatosCovidViajeroDTO;
 import ni.gob.minsa.alerta.utilities.reportes.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +92,9 @@ public class ReportesExcelController {
 
     @Resource(name = "daDatosVIHService")
     private DaDatosVIHService daDatosVIHService;
+
+    @Resource(name = "datosSolicitudService")
+    private DatosSolicitudService datosSolicitudService;
 
     @Autowired
     MessageSource messageSource;
@@ -277,6 +281,9 @@ public class ReportesExcelController {
         }else if (idDxsVirusResp != null) {
             tipoReporte = "VIRUS_RESPIRATORIOS";
             setNombreColumnasVirusResp(columnas);
+        } else if (dx!=null && (dx.getNombre().toLowerCase().contains("molecular") && dx.getNombre().toLowerCase().contains("covid19"))) {
+            tipoReporte = "BM_COVID19";
+            setNombreColumnasBioMolCovid19(columnas);
         } else if (dx!=null && (dx.getNombre().toLowerCase().contains("molecular") && dx.getNombre().toLowerCase().contains("sars-cov-2"))) {
             tipoReporte = "BM_SARS-CoV-2";
             setNombreColumnasBioMolCovid19Vigilancia(columnas);
@@ -336,6 +343,8 @@ public class ReportesExcelController {
                 List<ResultadoVigilancia> dxListBio = reportesService.getDiagnosticosAprobadosByFiltroV2(filtroRep);
                 setDatosVirusResp(rvList, dxListBio, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size(), filtroRep);
                 filtroRep.setIdDx(Integer.valueOf(idDxsVirusResp[0]));//VOLVER A PONER DX DE IFI PARA EL PROX LAB
+            } else if (dx!=null && (dx.getNombre().toLowerCase().contains("molecular") && dx.getNombre().toLowerCase().contains("covid19"))) {
+                setDatosBioMolCovid19(rvList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size());
             } else if (dx!=null && (dx.getNombre().toLowerCase().contains("molecular") && dx.getNombre().toLowerCase().contains("sars-cov-2"))) {
                 setDatosBioMolCovid19Vigilancia(rvList, registrosPos, registrosNeg, filtroRep.isIncluirMxInadecuadas(), registrosMxInadec, columnas.size(), lab.getCodigo());
             }else if (dx!=null){
@@ -841,6 +850,27 @@ public class ReportesExcelController {
         columnas.add(messageSource.getMessage("lbl.final.case.classification.short", null, null).toUpperCase());
     }
 
+    private void setNombreColumnasBioMolCovid19(List<String> columnas){
+        columnas.add(messageSource.getMessage("lbl.num", null, null));
+        columnas.add(messageSource.getMessage("lbl.lab.code.mx", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.names", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.lastnames", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.age", null, null).toUpperCase().replace(":",""));
+        columnas.add(messageSource.getMessage("lbl.age.um", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.address", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.silais", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.muni", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.invoice.number", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("person.sexo", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.fis.short", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.ftm", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.result.pcr", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.approve.date.2", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.res.final", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.num.cedula", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.lugar.viaja", null, null).toUpperCase());
+    }
+
     private void setNombreColumnasBioMolCovid19Vigilancia(List<String> columnas){
         columnas.add(messageSource.getMessage("lbl.num", null, null));
         columnas.add(messageSource.getMessage("lbl.lab.code.mx", null, null).toUpperCase());
@@ -859,6 +889,8 @@ public class ReportesExcelController {
         columnas.add(messageSource.getMessage("lbl.approve.date.2", null, null).toUpperCase());
         columnas.add(messageSource.getMessage("lbl.res.final", null, null).toUpperCase());
         columnas.add(messageSource.getMessage("lbl.num.cedula", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("person.ocupacion", null, null).toUpperCase());
+        columnas.add(messageSource.getMessage("lbl.irag.trab.salud.short", null, null).toUpperCase());
     }
 
     public Integer getSemanaEpi(Date fechaSemana) throws Exception{
@@ -1855,6 +1887,83 @@ public class ReportesExcelController {
         }
     }
 
+
+    /**
+     * Metodo para llenar datos de dx Biologia Molecular Covid19 para Reporte de Vigilancia generado en excel
+     * @param dxList Lista con los dx a evaluar
+     * @param registrosPos Registros que iran a la tabla de positivos en el excel
+     * @param registrosNeg Registros que iran a la tabla de negativos en el excel
+     * @param incluirMxInadecuadas True para llenar lista de mx inadecuadas, false en caso contrario
+     * @param registrosMxInadec Si incluirMxInadecuadas = True, Registros con dx con resultado de Mx Inadecuada
+     * @throws Exception
+     */
+    private void setDatosBioMolCovid19(List<ResultadoVigilancia> dxList, List<Object[]> registrosPos, List<Object[]> registrosNeg, boolean incluirMxInadecuadas, List<Object[]> registrosMxInadec, int numColumnas) throws Exception{
+// create data rows
+        int rowCountPos = 1;
+        int rowCountNeg = 1;
+        int rowCountInadec = 1;
+        for (ResultadoVigilancia solicitudDx : dxList) {
+            String nombres = "";
+            String apellidos = "";
+
+            Object[] registro = new Object[numColumnas];
+            registro[1] = (solicitudDx.getCodigoMx()!=null?solicitudDx.getCodigoMx():solicitudDx.getCodUnicoMx());
+
+            nombres = solicitudDx.getPrimerNombre();
+            if (solicitudDx.getSegundoNombre()!=null)
+                nombres += " "+solicitudDx.getSegundoNombre();
+            registro[2] = nombres;
+
+            apellidos = solicitudDx.getPrimerApellido();
+            if (solicitudDx.getSegundoApellido()!=null)
+                apellidos += " "+solicitudDx.getSegundoApellido();
+            registro[3] = apellidos;
+
+            Integer edad = null;
+            String medidaEdad = "";
+            String[] arrEdad = DateUtil.calcularEdad(solicitudDx.getFechaNacimiento(), new Date()).split("/");
+            if (arrEdad[0] != null && !arrEdad[0].equalsIgnoreCase("0")) {
+                edad = Integer.valueOf(arrEdad[0]); medidaEdad = "A";
+            }else if (arrEdad[1] != null && !arrEdad[1].equalsIgnoreCase("0")) {
+                edad = Integer.valueOf(arrEdad[1]); medidaEdad = "M";
+            }else if (arrEdad[2] != null) {
+                edad = Integer.valueOf(arrEdad[2]); medidaEdad = "D";
+            }
+            registro[4] = edad;
+            registro[5] = medidaEdad;
+            String direccion = solicitudDx.getDireccionResidencia();
+            if (solicitudDx.getTelefonoResidencia()!=null || solicitudDx.getTelefonoMovil()!=null ){
+                direccion += ". TEL. ";
+                direccion+= (solicitudDx.getTelefonoResidencia()!=null?solicitudDx.getTelefonoResidencia()+",":"");
+                direccion+= (solicitudDx.getTelefonoMovil()!=null?solicitudDx.getTelefonoMovil():"");
+            }
+            registro[6] = direccion;
+            registro[7] = solicitudDx.getNombreSilaisResid(); //silais residencia
+            registro[8] = solicitudDx.getNombreMuniResid(); //municipio residencia
+            DatosCovidViajeroDTO datosCovid = datosSolicitudService.getDatosCovidViajero(solicitudDx.getIdSolicitud(), solicitudDx.getIdentificacion());
+            registro[9] = datosCovid.getNumeroFactura();
+            String sexo = solicitudDx.getSexo();
+            registro[10] = sexo.substring(sexo.length()-1, sexo.length());
+            registro[11] = DateUtil.DateToString(solicitudDx.getFechaInicioSintomas(),"dd/MM/yyyy");
+            registro[12] = DateUtil.DateToString(solicitudDx.getFechaTomaMx(),"dd/MM/yyyy");
+            validarPCRCovid19(registro, solicitudDx.getIdSolicitud());
+            registro[14] = DateUtil.DateToString(solicitudDx.getFechaAprobacion(),"dd/MM/yyyy");
+            registro[15] = parseFinalResultDetails(solicitudDx.getIdSolicitud());
+            registro[16] = datosCovid.getIdentificacion();
+            registro[17] = datosCovid.getLugarDondeViaja();
+            if (registro[15].toString().toLowerCase().contains("positivo")) {
+                registro[0]= rowCountPos++;
+                registrosPos.add(registro);
+            } else if (registro[15].toString().toLowerCase().contains("negativo")) {
+                registro[0]= rowCountNeg++;
+                registrosNeg.add(registro);
+            } else if (incluirMxInadecuadas && registro[15].toString().toLowerCase().contains("inadecuad")){
+                registro[0]= rowCountInadec++;
+                registrosMxInadec.add(registro);
+            }
+        }
+    }
+
     /**
      * Metodo para llenar datos de dx Biologia Molecular SARS-CoV-2(vigilancia) para Reporte de Vigilancia generado en excel
      * @param dxList Lista con los dx a evaluar
@@ -1921,6 +2030,11 @@ public class ReportesExcelController {
             registro[14] = DateUtil.DateToString(solicitudDx.getFechaAprobacion(),"dd/MM/yyyy");
             registro[15] = parseFinalResultDetails(solicitudDx.getIdSolicitud());
             registro[16] = solicitudDx.getIdentificacion();
+            //poner ocupacion y si es trabajador de la salud
+            DatosDaIrag irag = daIragService.getFormByIdV2(solicitudDx.getIdNotificacion());
+            registro[17] = (irag.getOcupacion()!=null?irag.getOcupacion():"");
+            registro[18] = (irag.getTrabajadorSalud()!=null?irag.getTrabajadorSalud():"");
+
             if (registro[15].toString().toLowerCase().contains("positivo")) {
                 registro[0]= rowCountPos++;
                 registrosPos.add(registro);

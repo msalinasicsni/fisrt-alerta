@@ -21,6 +21,7 @@ import javax.naming.NamingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -220,12 +221,13 @@ public class SeguridadService {
 
     /**
      * M�todo que determina si un usuario determinado esta configurado como usario de nivel central en el sistema
+     * 2022.10.11 - Se consulta directamente desde consulta SQL, no se usa el componente.
      * @param pUsuarioId id del usuario autenticado
      * @param pSistema c�digo del sistema actual, ALERTA
      * @return TRUE: si es de nivel central  o la seguridad esta deshabilitada, FALSE: no es nivel central o sucedi� un error
      */
     public boolean esUsuarioNivelCentral(long pUsuarioId, String pSistema) {
-        boolean nivelCentral=false;
+        /*boolean nivelCentral=false;
         if (seguridadHabilitada()) {
             try {
                 InitialContext ctx = new InitialContext();
@@ -239,10 +241,34 @@ public class SeguridadService {
             } catch (Exception e) {
                 nivelCentral = false;
             }
-        }
-        return nivelCentral;
+        }*/
+        return esUsuarioNivelCentralSQL(pUsuarioId, pSistema);
     }
 
+    /***
+     * Metodo que determina si un usuario determinado esta configurado como usario de nivel central en el sistema, sin usar el componente de persona
+     * @param pUsuarioId  id del usuario autenticado
+     * @param pSistema codigo del sistema actual, ALERTA
+     * @return TRUE: si es de nivel central  o la seguridad esta deshabilitada, FALSE: no es nivel central o sucedio un error
+     */
+    public boolean esUsuarioNivelCentralSQL(long pUsuarioId, String pSistema) {
+        boolean nivelCentral=false;
+        //if (seguridadHabilitada()) {
+            try {
+                String query = "select count(1) " +
+                        "from PORTAL.MIEMBROS mi inner join PORTAL.SISTEMAS si on mi.SISTEMA = si.SISTEMA_ID inner join PORTAL.USUARIOS us on mi.USUARIO = us.USUARIO_ID " +
+                        "where us.usuario_id = :pUsuarioId and si.CODIGO = :pSistema and mi.NIVEL_CENTRAL = 1";
+                Query qrUsuarioEntidad = sessionFactory.getCurrentSession().createSQLQuery(query);
+                qrUsuarioEntidad.setParameter("pUsuarioId", pUsuarioId);
+                qrUsuarioEntidad.setParameter("pSistema", pSistema);
+
+                nivelCentral = ((BigDecimal)qrUsuarioEntidad.list().get(0)).intValue() > 0;
+            } catch (Exception ex) {
+                nivelCentral = false;
+            }
+        //}
+        return nivelCentral;
+    }
     /**
      * M�todo que consulta la sessi�n con informaci�n del usuario y obtiene el id el usuario auntenticado
      * @param request petici�n actual
@@ -258,7 +284,7 @@ public class SeguridadService {
                 idUsuario = infoSesion.getUsuarioId();
             }
         }/*else{
-            idUsuario= 5817L; //4791L; //4772L;///usuario alerta en pruebas  //5817L CSSFV
+            idUsuario= 4772L; //4791L; //4772L;///usuario alerta en pruebas  //5817L CSSFV
         }*/
 
         return idUsuario;

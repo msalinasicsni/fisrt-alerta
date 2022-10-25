@@ -963,7 +963,7 @@ public class ReportesController {
 
         if (posNegRoutineReqList != null) {
             for (DaSolicitudDx soli : posNegRoutineReqList) {
-                if (!soli.getCodDx().getNombre().toLowerCase().contains("covid19")) {//Datos de Covid19, solo en sistema Laboratorio. Andrea 22/07/2020
+                //if (!soli.getCodDx().getNombre().toLowerCase().contains("covid19")) {//Datos de Covid19, solo en sistema Laboratorio. Andrea 22/07/2020 //permitir Covid19. Andrea 25/08/2022
                     boolean mostrar = false;
                     String valorResultado = null;
                     String content = null;
@@ -1040,7 +1040,7 @@ public class ReportesController {
 
                     }
 
-                }
+                //}
             }
 
         }

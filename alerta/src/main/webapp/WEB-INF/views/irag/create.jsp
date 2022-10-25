@@ -784,6 +784,59 @@
 </fieldset>
 
 <fieldset>
+<div class="row">
+    <section class="col col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <spring:message var="occupation" code="person.ocupacion"/>
+        <label class="text-left txt-color-blue font-md">
+                ${occupation}
+        </label>
+
+
+        <div class="input-group">
+            <spring:message code="msg.select.diagnosis" var="sDx"/>
+            <span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
+            <select id="ocupacion" name="ocupacion" class="select2">
+                <option value=""></option>
+                <c:forEach items="${catOcupaciones}" var="enf">
+                    <c:choose>
+                        <c:when test="${irag.ocupacion.codigo eq enf.codigo}">
+                            <option selected value="${enf.codigo}">${enf.nombre}</option>
+                        </c:when>
+                        <c:otherwise>
+                            <option value="${enf.codigo}">${enf.nombre}</option>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </select>
+        </div>
+
+    </section>
+
+    <section class="col col-xs-12 col-sm-12 col-md-8 col-lg-4">
+        <label class="text-left txt-color-blue font-md hidden-xs">
+            <spring:message code="lbl.irag.trab.salud"/>
+        </label>
+
+        <div class="input-group">
+            <span class="input-group-addon"> <i class="fa fa-location-arrow fa-fw"></i></span>
+            <select name="trabajadorSalud" id="trabajadorSalud" class="select2">
+                <option value=""></option>
+                <c:forEach items="${catResp}" var="cresp">
+                    <c:choose>
+                        <c:when test="${cresp.codigo eq  irag.trabajadorSalud.codigo}">
+                            <option selected value="${cresp.codigo}">${cresp.valor}</option>
+                        </c:when>
+                        <c:otherwise>
+                            <option value="${cresp.codigo}">${cresp.valor}</option>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </select>
+        </div>
+    </section>
+    </div>
+ </fieldset>
+<fieldset>
     <legend class="text-left txt-color-blue font-md">
         <spring:message code="lbl.vaccination.history"/>
     </legend>

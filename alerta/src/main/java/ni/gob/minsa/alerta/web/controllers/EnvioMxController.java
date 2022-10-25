@@ -180,17 +180,20 @@ public class EnvioMxController {
                 for (int i = 0; i < cantOrdenes; i++) {
                     String idSoli = jObjectOrdenes.get(String.valueOf(i)).getAsString();
                     DaTomaMx tomaMxUpd = tomaMxService.getTomaMxById(idSoli);
-                    try {
-                        int proce = tomaMxService.updateLabProcesaDxByMx(envioOrden.getLaboratorioDestino().getCodigo(), tomaMxUpd.getIdTomaMx());
-                        int tieneEstudio = 0;
-                        if (proce == 0) tieneEstudio = envioMxService.tieneEstudios(tomaMxUpd.getIdTomaMx());
-                        if (proce>0 || tieneEstudio>0)
-                            tomaMxService.updateEnvioEnTomaMx(estadoMx.getCodigo(), envioOrden.getIdEnvio(), tomaMxUpd, usuario.getUsername());
-                    }catch (Exception ex){
-                        resultado=resultado+". \n "+ex.getMessage();
-                        ex.printStackTrace();
+                    //tiene que estar en estado pendiente para ser procesada. 05/08/2022
+                    if (tomaMxUpd.getEstadoMx().getCodigo().equalsIgnoreCase("ESTDMX|PEND")) {
+                        try {
+                            int proce = tomaMxService.updateLabProcesaDxByMx(envioOrden.getLaboratorioDestino().getCodigo(), tomaMxUpd.getIdTomaMx());
+                            int tieneEstudio = 0;
+                            if (proce == 0) tieneEstudio = envioMxService.tieneEstudios(tomaMxUpd.getIdTomaMx());
+                            if (proce > 0 || tieneEstudio > 0)
+                                tomaMxService.updateEnvioEnTomaMx(estadoMx.getCodigo(), envioOrden.getIdEnvio(), tomaMxUpd, usuario.getUsername());
+                        } catch (Exception ex) {
+                            resultado = resultado + ". \n " + ex.getMessage();
+                            ex.printStackTrace();
+                        }
+                        cantOrdenesProc++;
                     }
-                    cantOrdenesProc++;
                 }
                 idEnvio = envioOrden.getIdEnvio();
             }

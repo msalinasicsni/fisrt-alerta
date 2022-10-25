@@ -4,10 +4,13 @@ import ni.gob.minsa.alerta.domain.audit.Auditable;
 import ni.gob.minsa.alerta.domain.estructura.Catalogo;
 import ni.gob.minsa.alerta.domain.estructura.Cie10;
 import ni.gob.minsa.alerta.domain.notificacion.DaNotificacion;
+import ni.gob.minsa.alerta.domain.persona.Ocupacion;
 import ni.gob.minsa.alerta.domain.portal.Usuarios;
 import ni.gob.minsa.alerta.domain.vigilanciaEntomologica.Procedencia;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -71,6 +74,9 @@ public class DaIrag implements Serializable, Auditable {
     private Usuarios usuario;
     private String actor;
     private String id;
+    //nuevas variables. Juan marcio 25/08/2022
+    private Ocupacion ocupacion;
+    private Respuesta trabajadorSalud;
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -560,6 +566,29 @@ public class DaIrag implements Serializable, Auditable {
 
     public void setOtraCondicion(String otraCondicion) {
         this.otraCondicion = otraCondicion;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Catalogo.class, optional = true)
+    @JoinColumn(name = "COD_ES_TRAB_SALUD", referencedColumnName = "CODIGO", nullable = true)
+    @ForeignKey(name = "COD_TRAB_SALUD_IRAG_FK")
+    public Respuesta getTrabajadorSalud() {
+        return trabajadorSalud;
+    }
+
+    public void setTrabajadorSalud(Respuesta trabajadorSalud) {
+        this.trabajadorSalud = trabajadorSalud;
+    }
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToOne(fetch=FetchType.LAZY,targetEntity=Ocupacion.class)
+    @JoinColumn(name="CODIGO_OCUPACION",referencedColumnName="CODIGO", nullable=true)
+    @ForeignKey(name = "CODIGO_OCUPACION_IRAG_FK")
+    public Ocupacion getOcupacion() {
+        return this.ocupacion;
+    }
+
+    public void setOcupacion(Ocupacion ocupacion) {
+        this.ocupacion = ocupacion;
     }
 
     @Override

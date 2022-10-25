@@ -189,7 +189,7 @@ public class NotiPacienteController {
         Integer indice = 0;
         String idSolicitud = "";
         for (DaSolicitudDx diagnostico : solicitudDxList) {
-            if (!diagnostico.getCodDx().getNombre().toLowerCase().contains("covid19")) {//Datos de Covid19, solo en sistema Laboratorio. Andrea 22/07/2020
+            //if (!diagnostico.getCodDx().getNombre().toLowerCase().contains("covid19")) {//Datos de Covid19, solo en sistema Laboratorio. Andrea 22/07/2020 //permitir Covid19. Andrea 25/08/2022
                 Map<String, String> map = new HashMap<String, String>();
                 idSolicitud = diagnostico.getIdSolicitudDx();
                 map.put("tipoSolicitud", messageSource.getMessage("lbl.routine", null, null));
@@ -230,7 +230,7 @@ public class NotiPacienteController {
 
                 mapResponse.put(indice, map);
                 indice++;
-            }
+            //}
         }
         jsonResponse = new Gson().toJson(mapResponse);
         UnicodeEscaper escaper = UnicodeEscaper.above(127);
